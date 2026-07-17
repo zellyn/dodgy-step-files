@@ -24416,14 +24416,15 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
-### Tfa071 — ShapeFix_Face.FixPeriodicDegenerated apex-curve direction
-- **Category**: §12.3c (face / sewing / free bounds)
-- **Sources**: OCCT method `ShapeFix_Face.FixPeriodicDegenerated_at3102` (line 3204)
-- **Description**: Conical face with apex below wire bounds. When apex V parameter sits outside wire V-range and isUDecrease=false, apex curve direction and conditional wire reversal produce inconsistent orientation. Wire reversal triggered at line 3204 but apex curve construction does not account for actual wire topology.
-- **Reproducer recipe**: Cone geometry with semi-angle ~0.52 rad, apex at V=-1; wire wrapping cone at V=1..3 with non-decreasing U. FixPeriodicDegenerated applies apex curve construction and conditionally reverses wire when apex below wire lower bound.
-- **Expected kernel behavior**: OCCT healing should detect apex positioning, build correct downward apex curve, and reverse wire orientation consistently. Failure: wire reversal applied but apex curve direction remains inconsistent.
+### Tfa071 — Cone face with apex below the wire's V-range loads intact with all 3 faces present; FixPeriodicDegenerated's apex-curve/wire-reversal logic is never invoked on an ordinary read
+
+**Defect**: Conical face (semi-angle 0.52 rad) with apex at V=-1, below the wire's V-range (V=1..3). Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the file loads with all 3 faces intact, matching this entry's own `n_faces_total == 3` assertion below — the outer 5-edge wire and two single-edge closed-curve faces load exactly as encoded, no crash, no merge, no orientation change. `ShapeFix_Face::FixPeriodicDegenerated` is never invoked during an ordinary read (not called by that class's default `Perform()`) — the original title's claim that "wire reversal is triggered but apex curve direction remains inconsistent" describes a code path this file never reaches.
+
+**Sources**: OCCT method `ShapeFix_Face::FixPeriodicDegenerated` — verified NOT invoked during an ordinary `STEPControl_Reader` read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); geometry loads with apex/wire exactly as encoded.
+
 - **Tier-3 assertion**: face[0].surface_type == "cone"
 - **Tier-3 assertion**: face[0].quadric.semi_angle == 0.52
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixPeriodicDegenerated's apex-curve direction and conditional wire reversal produce inconsistent orientation; that method is never invoked on an ordinary read and the file loads with all 3 faces intact, no inconsistency observable. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "cone apex below wire V-range loads intact", "apex curve reversal never invoked".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
 - **Tier-3 assertion**: n_faces_total == 3
 
@@ -24445,12 +24446,13 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Tier-3 assertion**: shape_null == True
 
-### Tfa074 — ShapeFix_Face.FixWiresTwoCoincEdges orientation detection
-- **Category**: §12.3c (face / sewing / free bounds)
-- **Sources**: OCCT method `ShapeFix_Face.FixWiresTwoCoincEdges_at2830` (line 2876)
-- **Description**: Face with two identical edges [E, E] at FORWARD orientation in single 2-edge wire. Orientation mismatch detection (line 2876) fails to recognize that both edges are identical at same orientation, allowing coincident-edge pattern to pass unmerged.
-- **Reproducer recipe**: Single PLANE face with 2-edge wire containing identical edge E at FORWARD orientation twice. Pattern should trigger merge but orientation check at 2876 does not correctly identify matching orientation.
-- **Expected kernel behavior**: When E1==E2 and both at FORWARD, wires should be merged into single wire. Failure: orientation sensitivity rejects merge even though orientations match.
+### Tfa074 — Face whose wire reuses the SAME edge twice at forward orientation (zero-area) loads intact alongside a companion plane; FixWiresTwoCoincEdges is never invoked on an ordinary read
+
+**Defect**: `CLOSED_SHELL` with two faces: face[0]'s wire is `[E,E]` — the SAME `EDGE_CURVE` reused twice, both at `.T.` (FORWARD) orientation, a zero-area degenerate 2-edge wire; face[1] is an ordinary 10×10 plane included only to keep the overall shape non-empty (per this fixture's own header comment). Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the file loads with `n_faces_total == 2` (matching this entry's own assertion below) — the degenerate 2-edge wire loads exactly as encoded, not merged into a single edge, no crash. `ShapeFix_Face::FixWiresTwoCoincEdges` is never invoked during an ordinary read — the original title's claim that "the orientation check at line 2876 fails to detect the matching pair, merge is skipped" describes a code path this file never reaches.
+
+**Sources**: OCCT method `ShapeFix_Face::FixWiresTwoCoincEdges` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the doubled edge loads intact, unmerged.
+
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixWiresTwoCoincEdges's orientation check fails to detect a same-orientation duplicate-edge pair; that method is never invoked on an ordinary read, and the degenerate wire loads exactly as encoded (both faces present, `n_faces_total == 2`). Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "same edge reused twice in one wire loads intact", "zero-area doubled-edge wire never merged".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 - **Tier-3 assertion**: n_faces_total == 2
 
@@ -24463,19 +24465,11 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Tier-3 assertion**: shape_null == True
 
-### Tfa076 — FixAddNaturalBound seam-edge skip
+### Tfa076 — Torus face with a seam-crossing outer wire loads intact with all 4 boundary edges present; FixAddNaturalBound is never invoked on an ordinary read
 
-**Category**: §12.3c Face Topology — ShapeFix_Face Boundary Insertion
+**Defect**: Surface-of-revolution (torus, major radius 5.0, minor radius 2.0) with a 4-edge outer wire crossing the U-seam. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the face loads with its outer wire's 4 circular edges intact exactly as encoded (matching the edge[0..3] radius assertions below), no crash, no boundary alteration. `ShapeFix_Face::FixAddNaturalBound` is never invoked during an ordinary read — the original title's claim that "the seam edge position prevents correct interval detection, natural boundary insertion is skipped" describes a code path this file never reaches (no natural boundary insertion is attempted at all, because the healer never runs).
 
-**Sources**: OCCT_HEAL_COVERAGE_V3.md `FixAddNaturalBound_at877` (FAN-004: periodicity-conditional)
-
-**Description**: Surface-of-revolution with seam edge. Natural boundary insertion skipped when seam edge confuses the closure detector on periodicity-conditional surfaces. Face has outer wire on torus-like surface; FixAddNaturalBound should detect periodic boundary and insert natural edges, but seam edge position prevents correct interval detection.
-
-**Reproducer recipe**: Load Tfa076.stp; call ShapeFix_Face::FixAddNaturalBound; expect natural bounds added to wire set, but seam edge at u=0 causes interval detection to bypass U-closed surface condition on non-periodic mode.
-
-**Expected kernel behavior**: Kernel should detect seam edge independently and insert natural bounds even when periodicity interval detection fails; natural bounds at U-seam should be distinct from inner wire structure.
-
-**Expected validation**: CheckSplittingVertices should report vertex count increases; no degenerate inner loops introduced; edge loop closure maintained.
+**Sources**: OCCT method `ShapeFix_Face::FixAddNaturalBound` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the seam-crossing wire loads exactly as encoded.
 
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "torus"
@@ -24489,38 +24483,25 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Tier-3 assertion**: edge[2].analytic.radius == 2.0
 - **Tier-3 assertion**: edge[3].curve_type == "circle"
 - **Tier-3 assertion**: edge[3].analytic.radius == 7.0
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixAddNaturalBound's periodicity-conditional interval detection is bypassed by the seam edge; that method is never invoked on an ordinary read, and the seam-crossing wire loads intact with all 4 edges present. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "torus seam-crossing wire loads intact", "natural boundary insertion never invoked on periodic surface".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
-### Tfa077 — FixSmallAreaWire small-area early-exit
+### Tfa077 — Planar face with a micro-scale (0.001×0.001mm) outer wire loads intact and unremoved; FixSmallAreaWire is never invoked on an ordinary read
 
-**Category**: §12.3c Face Topology — ShapeFix_Face Wire Removal
+**Defect**: Planar face with an outer wire of area 0.001×0.001 mm², well below any plausible small-area healing threshold, in a 7-face block context. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the file loads with all 7 faces intact — the micro-scale wire is not removed, merged, or flagged; it loads exactly as encoded, no crash. `ShapeFix_Face::FixSmallAreaWire` is never invoked during an ordinary read — the original title's claim that "a degenerate-orientation check bypasses the early exit, keeping the low-area wire in the face" describes a code path this file never reaches (no removal is ever attempted, because the healer never runs).
 
-**Sources**: OCCT_HEAL_COVERAGE_V3.md `FixSmallAreaWire_at2332` (FSA-002: numerical-threshold)
-
-**Description**: Planar face with micro-scale outer wire (0.001×0.001 mm²). Area is below tolerance threshold; SmallAreaWire fixer should remove it. Degenerate orientation check bypasses early exit even though wire is small, keeping low-area wire in face.
-
-**Reproducer recipe**: Load Tfa077.stp; call ShapeFix_Face::FixSmallAreaWire with default threshold; expect wire removal but threshold check on degenerate orientation prevents action.
-
-**Expected kernel behavior**: Kernel should remove small-area wires regardless of orientation flag state; all wires below area tolerance should be candidates for removal.
-
-**Expected validation**: Wire count should decrease; no outer bound remains; face should be marked for deletion or context cleanup.
+**Sources**: OCCT method `ShapeFix_Face::FixSmallAreaWire` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the micro-scale wire loads unremoved.
 
 - **Tier-3 assertion**: load == "ok"
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixSmallAreaWire's degenerate-orientation check bypasses its own early exit; that method is never invoked on an ordinary read, and the micro-scale wire loads intact and unremoved. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "micro-scale outer wire loads unremoved", "small-area wire never removed on ordinary read".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
-### Tfa078 — FixLoopWire intersecting-loops merge
+### Tfa078 — Planar face with two geometrically-overlapping inner loops loads all three wires (outer + 2 inner) intact and unmerged; FixLoopWire is never invoked on an ordinary read
 
-**Category**: §12.3c Face Topology — ShapeFix_Face Loop Merging
+**Defect**: Planar face with two inner loops whose footprints overlap (hole1 at 20–40mm, hole2 at 50–70mm, overlap at the midline). Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the affected face loads with all 3 wires present and distinct (outer + 2 separate 4-edge inner wires, matching the oracle's per-face wire count) — no merge, no self-touch, no tangency is introduced. `ShapeFix_Face::FixLoopWire` is never invoked during an ordinary read — the original title's claim that "loop merge introduces a tangent self-touch at the merge seam" describes a code path this file never reaches (no merge is ever attempted).
 
-**Sources**: OCCT_HEAL_COVERAGE_V3.md `FixLoopWire_at2479` (FLW-007: merge-greediness)
-
-**Description**: Planar face with two inner loops positioned such that their geometric footprints intersect (hole1 at 20–40 mm, hole2 at 50–70 mm; overlap at midline). FixLoopWire merges intersecting loops but merge introduces tangent self-touch at boundary contact point.
-
-**Reproducer recipe**: Load Tfa078.stp; call ShapeFix_Face::FixLoopWire; expect loop merge at intersection boundary but merged wire self-touches at merge seam (u=45 mm).
-
-**Expected kernel behavior**: Kernel should detect intersecting loops and either: (a) reject merge and keep separate, or (b) merge with internal vertex split to eliminate tangency.
-
-**Expected validation**: Edge loop closure maintained; no gap-at-merge introduced; self-touch validation catches tangent point as potential singularity.
+**Sources**: OCCT method `ShapeFix_Face::FixLoopWire` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the overlapping loops load unmerged.
 
 - **Tier-3 assertion**: load == "ok"
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixLoopWire merges the intersecting loops and introduces a tangent self-touch; that method is never invoked on an ordinary read, and both inner loops load intact and unmerged. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "overlapping inner loops load unmerged", "loop merge never invoked on ordinary read".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(42) ifc=schema_n/a`
 ### Tfa079 — CLOSED_SHELL bottom face: outer edge pre-split at a vertex reused as an inner triangle's apex (shared endpoint, not a T-junction)
 
@@ -24538,35 +24519,44 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 
 - **Notes**: Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original title/description claimed `CheckSplittingVertices` fires on a genuine T-junction; live-oracle verification shows the vertex is a reused, genuine shared endpoint (skip-guard case), not an independent touching vertex. See Tfa249 for the genuine trigger (closes `tkshh-splitting-vertex-face`). Synonyms: "redundant vertex reused across outer and inner wire", "shared-endpoint T-vertex (non-firing)".
 - **Tier-3 assertion**: n_faces_total == 6
-### Tfa080 — CheckTwisted normal-inversion
+### Tfa080 — B-spline saddle-surface face loads as an ordinary valid face; CheckTwisted is never invoked to classify it
 
-**Category**: §12.3c Face Topology — ShapeAnalysis_CheckSmallFace Twist Detection
+**Defect**: B-spline surface with hyperbolic (saddle) geometry, rectangular parametric boundary. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the face loads as an ordinary valid `bspline`-type face in a 6-face block context (matching the `face[0].surface_type == "bspline"` assertion below), no crash, no diagnostic. `ShapeAnalysis_CheckSmallFace::CheckTwisted` is never invoked during an ordinary `STEPControl_Reader` read — the original title's claim of a detected "normal inversion at the center (u,v)" describes a classification this file never receives.
 
-**Sources**: OCCT_HEAL_COVERAGE_V3.md `CheckTwisted_at975` (line 1015: normal inversion scalar product negative)
+**Sources**: OCCT method `ShapeAnalysis_CheckSmallFace::CheckTwisted` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the saddle surface loads as an ordinary face.
 
-**Description**: B-spline surface with hyperbolic (saddle) geometry. Surface normal flips sign at (u=0.5, v=0.5) interior point due to zero Gaussian curvature. Face boundary rectangular but interior normal inversion indicates saddle twist where curvature changes sign.
-
-**Reproducer recipe**: Load Tfa080.stp; call ShapeAnalysis_CheckSmallFace::CheckTwisted; expect detection of normal inversion at center (u, v) parameters.
-
-**Expected kernel behavior**: Kernel should sample surface normals at interior grid points (u, v) ∈ (0,1)²; detect sign flip via scalar product < 0; report twist angle > 90°.
-
-**Expected validation**: Twist flag set to true; interior point count > threshold; at least one scalar product < 0 at non-boundary location.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "bspline"
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed CheckTwisted detects a normal-inversion "twist" on this saddle surface; that checker is never invoked on an ordinary read, so no twist classification is ever produced. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "B-spline saddle surface loads as ordinary face", "twist detection never invoked on saddle geometry".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
-### Tfa081 — ShapeFix_Face.FixOrientation reversed-normal heal
-Face with inward-pointing surface normal (same_sense=.F.). Healer detects via outer-wire winding direction and flips to outward orientation. Planar square boundary, defect is orientation flag mismatch.
+### Tfa081 — Cube with one face's normal flagged same_sense=.F. loads with the reversal intact as encoded (valid STEP semantics, not a healer failure); FixOrientation is never invoked on an ordinary read
+
+**Defect**: Cube (6 faces) with one face's `same_sense` flag set to `.F.` (inward-pointing surface normal relative to the shell). Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the file loads with `n_faces_total == 6` (matching this entry's own assertion below); the flagged face's reversed orientation is honored exactly as encoded — `same_sense=.F.` is standard STEP semantics for a face whose surface normal opposes its shell-consistent orientation, not an error condition requiring repair. `ShapeFix_Face::FixOrientation` is never invoked during an ordinary read — the original title's claim that "the healer detects via winding and flips to outward orientation" describes a code path this file never reaches.
+
+**Sources**: OCCT method `ShapeFix_Face::FixOrientation` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the reversed face loads with its encoded orientation intact.
+
 - **Tier-3 assertion**: n_faces_total == 6
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixOrientation actively detects and heals the reversed face's winding; that method is never invoked on an ordinary read, and `same_sense=.F.` is itself valid STEP semantics OCCT interprets correctly without any healing pass. Same batch pattern as Tfa113 (cube with reversed face, already corrected). Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "reversed-normal cube face loads intact", "same_sense=.F. is not an error needing FixOrientation".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
-### Tfa082 — ShapeAnalysis_CheckSmallFace.CheckPin pin-direction classification
-Planar face with sharp pin singularity along V parametric axis (vertical). Classifier assumes pin aligns with U-parameter axis; axis-agnostic detection required. B-spline surface (B_SPLINE_SURFACE_WITH_KNOTS, degree 2×2) with 3×3 pole grid; V=0 row is collapsed to a single point — true pin singularity at v=0.
+### Tfa082 — B-spline face with a collapsed v=0 control-point row (genuine pin singularity) loads as an ordinary valid face; CheckPin is never invoked to classify it
+
+**Defect**: `B_SPLINE_SURFACE_WITH_KNOTS` (degree 2×2, 3×3 pole grid) whose v=0 row is collapsed to a single point — a genuine pin/apex singularity along the V axis. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the file loads as a single ordinary valid `bspline`-type face (matching `n_faces_total` and `face[0].surface_type == "bspline"` assertions below, `is_rational == False`), no crash. `ShapeAnalysis_CheckSmallFace::CheckPin` is never invoked during an ordinary read — the original title's claim that "the classifier assumes pin alignment with the U axis" describes a classification this file never receives.
+
+**Sources**: OCCT method `ShapeAnalysis_CheckSmallFace::CheckPin` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the collapsed-row surface loads as an ordinary face.
+
 - **OCC behavior**: OCCT loads B_SPLINE_SURFACE_WITH_KNOTS directly; surface_type="bspline", is_rational=False (uniform weights, not NURBS).
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "bspline"
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed CheckPin misclassifies this V-axis pin singularity because it assumes U-axis alignment; that checker is never invoked on an ordinary read, so no pin classification (correct or incorrect) is ever produced. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "collapsed v=0 control row loads as ordinary bspline face", "pin classifier never invoked on ordinary read".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
-### Tfa083 — ShapeFix_Face.FixNotchedEdges near-tangent notch detection
-Face boundary with two consecutive edges forming 179.8-degree angle (near-reversal notch). Tangent-angle comparison fails for near-tangent threshold. Small notch bulge on bottom edge of rectangle.
+### Tfa083 — Face boundary with a near-tangent (179.8°) notch loads intact with all 7 boundary edges present; FixNotchedEdges is never invoked to detect it
+
+**Defect**: Face boundary with two consecutive edges forming a 179.8° angle (a near-reversal notch/bulge). Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the affected faces load with 7-edge outer wires intact exactly as encoded (matching `n_faces_total == 9` below), no crash, no edge removal or merge at the notch. `ShapeFix_Face::FixNotchedEdges` is never invoked during an ordinary read — the original title's claim that "the tangent-angle comparison fails for this near-tangent threshold" describes a detection this file never receives (no notch detection is ever attempted).
+
+**Sources**: OCCT method `ShapeFix_Face::FixNotchedEdges` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the near-tangent notch loads intact.
+
 - **Tier-3 assertion**: n_faces_total == 9
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixNotchedEdges's tangent-angle comparison fails at the near-tangent (179.8°) threshold; that method is never invoked on an ordinary read, so the notch is never even evaluated, let alone misjudged. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "near-tangent notch loads intact with 7-edge wire", "notch detection never invoked on ordinary read".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(45) ifc=schema_n/a`
 ### Tfa084 — ShapeAnalysis_FreeBoundsProperties.CheckNotches gap-after-fix
 Rectangular face with interior notch that, when removed, leaves 0.1-unit gap between surviving edges. CheckNotches must flag orphaned gaps as invalid; defect: gap detection skipped.
@@ -24580,47 +24570,61 @@ Rectangular face with interior notch that, when removed, leaves 0.1-unit gap bet
 - **Expected kernel behavior**: reject the malformed bound with a clear per-entity diagnostic (a bound wire must be closed); never crash.
 - **Notes**: Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — the original title/description claimed `ShapeFix_Face::FixSplitFace`'s binary-split loop silently misses zones beyond the first pair; that method is never invoked (the reader crashes first). Root cause isolated by removal-test to the non-closed single-edge `FACE_INNER_BOUND`s. Same crash class as Tfa118. Synonyms: "single-edge inner bound crash", "open wire face bound segfault", "malformed splitter bound crashes reader".
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-### Tfa086 — ShapeFix_Face.FixWiresTwoCoincEdges: 3-edge coincidence
-Face with three wires sharing a coincident edge. FixWiresTwoCoincEdges only handles the 2-wire case and misses the 3rd wire. Rectangular face with outer boundary and 3 inner holes positioned side-by-side along a shared horizontal edge at Y=5.
+### Tfa086 — Rectangular face with three inner hole wires (not just a claimed 2-wire-vs-3-wire edge case) crashes the reader (SIGSEGV) as soon as the extra bound wire is present; loads cleanly with only the outer wire — ShapeFix_Face::FixWiresTwoCoincEdges is never reached
+
+**Defect**: Rectangular face with outer boundary and 3 inner holes positioned side-by-side along a shared horizontal edge at Y=5. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): isolation testing (stripping the `ADVANCED_FACE`'s bound list, leaving unreferenced entities in place) shows the outer wire alone loads cleanly; restoring just ONE of the three inner holes (not all three) already reproduces the SIGSEGV. `ShapeFix_Face::FixWiresTwoCoincEdges` is never reached — the process crashes during shape translation, before any wire-level healing pass could run.
+
+**Root cause**: not a specific single-edge-bound defect (unlike the Tfa085/Tfa106/Tfa118 family) — isolation confirms the crash trigger is the presence of the additional bound wire as encoded, but the precise internal mechanism (e.g. `BRepLib` pcurve/tolerance handling on multi-bound faces of this construction) was not traced further in this pass.
+
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed ShapeFix_Face::FixWiresTwoCoincEdges handles the 2-wire coincidence case but misses the 3rd wire; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "multi-bound face crashes reader, outer-alone loads clean", "any single inner hole (not just a 3rd) crashes the reader".
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-### Tfa087 — ShapeAnalysis_CheckSmallFace.CheckStripEdges: aspect-ratio threshold
-Face with aspect ratio exactly equal to the strip-detection threshold (100.0). Non-strict comparison (≤ instead of <) misclassifies as strip when it should not. Very thin rectangle 100.0 × 1.0 on plane.
+### Tfa087 — Thin rectangle face at the exact strip-detection aspect-ratio threshold (100:1) loads as an ordinary valid face; CheckStripEdges is never invoked to classify it
+
+**Defect**: Very thin rectangle (100.0 × 1.0) on a plane, aspect ratio exactly 100.0 — the claimed strip-detection threshold. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the file loads with `n_faces_total == 6` (matching this entry's own assertion below), the thin rectangle face loading as an ordinary valid face, no crash, no classification artifact. `ShapeAnalysis_CheckSmallFace::CheckStripEdges` is never invoked during an ordinary read — the original title's claim of a "non-strict comparison misclassifying it as a strip" describes a classification this file never receives.
+
+**Sources**: OCCT method `ShapeAnalysis_CheckSmallFace::CheckStripEdges` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the threshold-aspect-ratio face loads as ordinary.
+
 - **Tier-3 assertion**: n_faces_total == 6
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed CheckStripEdges misclassifies this exact-threshold face due to a non-strict comparison; that checker is never invoked on an ordinary read, so no strip classification is ever produced. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "100:1 aspect ratio face loads as ordinary face", "strip detection never invoked at threshold boundary".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
-### Tfa088 — ShapeFix_Face.FixAddNaturalBound: sphere natural boundary
-Full-sphere face (complete spherical surface) requesting natural boundary correction. The code attempts to construct a single-edge bound when a "no-boundary" representation should be used. Sphere radius 5.0 centered at origin.
+### Tfa088 — Full-sphere face with an existing 4-edge boundary wire loads intact as encoded; FixAddNaturalBound is never invoked to alter it
+
+**Defect**: Full-sphere face (radius 5.0) whose boundary is already encoded as a 4-edge wire (four quarter-arcs of the same great circle) rather than a natural single-edge bound. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the file loads as a single face with its 4-edge boundary intact exactly as encoded (matching `n_faces_total == 1`, `face[0].surface_type == "sphere"`, and the radius-5.0 edge assertions below), no crash, no boundary reconstruction. `ShapeFix_Face::FixAddNaturalBound` is never invoked during an ordinary read — the original title's claim that "the code attempts to construct a single-edge bound where a no-boundary representation should be used" describes a construction this file never triggers.
+
+**Sources**: OCCT method `ShapeFix_Face::FixAddNaturalBound` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the sphere's existing boundary loads unaltered.
+
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "sphere"
 - **Tier-3 assertion**: face[0].quadric.radius == 5.0
 - **Tier-3 assertion**: edge[0].curve_type == "circle"
 - **Tier-3 assertion**: edge[0].analytic.radius == 5.0
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixAddNaturalBound mis-constructs a natural boundary for this full sphere; that method is never invoked on an ordinary read, and the fixture's own already-encoded 4-edge boundary loads unaltered. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "full sphere with pre-encoded boundary loads intact", "natural boundary construction never invoked".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
-### Tfa089 — ShapeAnalysis_CheckSmallFace.CheckSpotFace: tolerance scaling
-Face slightly larger than the spot threshold (0.1 × 0.1 square) but with vertex tolerances (0.05) larger than the face dimension. Tolerance-scaled spot comparison incorrectly misclassifies as spot face.
+### Tfa089 — Face slightly larger than the spot-detection threshold (with large vertex tolerances) loads as an ordinary valid face; CheckSpotFace is never invoked to classify it
+
+**Defect**: Face slightly larger than a claimed spot threshold (0.1×0.1 square) but with per-vertex tolerances (0.05) comparable to the face dimension. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the file loads with `n_faces_total == 6` (matching this entry's own assertion below), the tolerance-heavy face loading as an ordinary valid face, no crash. `ShapeAnalysis_CheckSmallFace::CheckSpotFace` is never invoked during an ordinary read — the original title's claim of a "tolerance-scaled comparison incorrectly misclassifying it as a spot face" describes a classification this file never receives.
+
+**Sources**: OCCT method `ShapeAnalysis_CheckSmallFace::CheckSpotFace` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the tolerance-heavy face loads as ordinary.
+
 - **Tier-3 assertion**: n_faces_total == 6
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed CheckSpotFace's tolerance-scaled comparison misclassifies this face as a spot; that checker is never invoked on an ordinary read, so no spot classification is ever produced. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "large-tolerance near-spot face loads as ordinary face", "spot classification never invoked on ordinary read".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 ### Tfa090 — ShapeFix_Face.Perform: mode-flag ordering
 Face with reversed outer orientation and incomplete inner bound (missing closing edge). Mode-flag order in Perform prevents FixNaturalBound from running before FixOrientation, blocking proper edge-completion and orientation correction sequence. Square 5.0 × 5.0 with 1.0 × 1.0 incomplete hole.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-### Tfa091 — ShapeFix_Face.FixLoopWire intersecting-loop touch
+### Tfa091 — Face with two inner wires sharing a tangent-touch vertex crashes the reader (SIGSEGV) as soon as the extra bound wire is present; loads cleanly with only the outer wire — ShapeFix_Face::FixLoopWire is never reached
 
-Face with two inner wires that share a single tangent-touch point; FixLoopWire merge produces a wire with a self-touch vertex. Tests OCCT healing when merging intersecting loops creates collapsed topology on a plane surface.
+**Defect**: Face with two inner wires that share a single tangent-touch point, on a PLANE surface. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): isolation testing (stripping the `ADVANCED_FACE`'s bound list, leaving unreferenced entities in place) shows the outer wire alone loads cleanly; restoring just ONE of the two inner wires already reproduces the SIGSEGV. `ShapeFix_Face::FixLoopWire` is never reached — the process crashes during shape translation, before any wire-level healing pass could run.
 
-**Defect class:** Intersecting-loop merge collapse  
-**Surface:** PLANE  
-**Wires:** 1 outer + 2 inner (sharing single vertex)  
-**Expected behavior:** FixLoopWire should detect vertex reuse and prevent self-intersection during merge  
-**Test corpus:** wave 12 – shape-healing face coverage  
+**Root cause**: not a specific single-edge-bound defect (unlike the Tfa085/Tfa106/Tfa118 family) — isolation confirms the crash trigger is the presence of the additional bound wire as encoded, but the precise internal mechanism (e.g. `BRepLib` pcurve/tolerance handling on multi-bound faces of this construction) was not traced further in this pass.
 
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed ShapeFix_Face::FixLoopWire merges intersecting loops and produces a wire with a self-touch vertex; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "multi-bound face crashes reader, outer-alone loads clean", "tangent-touching inner wire crashes reader, outer-alone loads clean".
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-### Tfa092 — ShapeAnalysis_CheckSmallFace.CheckTwisted concave-saddle
+### Tfa092 — B-spline saddle-surface face (mixed convex/concave curvature) loads as an ordinary valid face with its encoded edge orientations intact; CheckTwisted is never invoked to classify it
 
-Face whose BSpline surface has both convex and concave regions (hyperbolic paraboloid saddle). Twisted-face classifier confuses two-zone topology when computing normal orientation. Surface curvature is positive in X direction (bulge up) and negative in Y direction (pinch down).
+**Defect**: `B_SPLINE_SURFACE` (degree 2×2, hyperbolic paraboloid) with mixed convex/concave curvature zones (positive curvature in X, negative in Y). Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the file loads with `n_faces_total == 6`, `face[0].surface_type == "bspline"` at the encoded 2×2 degree, and the encoded forward/reversed edge-orientation counts intact (matching the assertions below), no crash. `ShapeAnalysis_CheckSmallFace::CheckTwisted` is never invoked during an ordinary read — the original title's claim that "the classifier confuses two-zone topology when computing normal orientation" describes a classification this file never receives.
 
-**Defect class:** Saddle topology with mixed curvature zones  
-**Surface:** B_SPLINE_SURFACE (degree 2×2, hyperbolic)  
-**Expected behavior:** CheckTwisted must detect saddle and avoid misclassification  
-**Test corpus:** wave 12 – shape-healing face coverage  
+**Sources**: OCCT method `ShapeAnalysis_CheckSmallFace::CheckTwisted` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the saddle surface loads as an ordinary face.
 
 - **Tier-3 assertion**: n_faces_total == 6
 - **Tier-3 assertion**: face[0].surface_type == "bspline"
@@ -24628,17 +24632,15 @@ Face whose BSpline surface has both convex and concave regions (hyperbolic parab
 - **Tier-3 assertion**: face[0].bspline.v_degree == 2
 - **Tier-3 assertion**: face[0].edge_orientations.forward == 4
 - **Tier-3 assertion**: face[1].edge_orientations.reversed == 4
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed CheckTwisted confuses this saddle surface's mixed-curvature topology; that checker is never invoked on an ordinary read, so no twist classification (correct or confused) is ever produced. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "mixed-curvature saddle B-spline loads as ordinary face", "twist classifier never invoked on saddle topology".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
-### Tfa093 — ShapeFix_Face.FixSmallAreaWire interior-wire skip
+### Tfa093 — Face with a normal-size and a tiny inner wire crashes the reader (SIGSEGV) as soon as the extra bound wire is present; loads cleanly with only the outer wire — ShapeFix_Face::FixSmallAreaWire is never reached
 
-Face has two inner wires: one normal (1.0 m²) and one TINY (0.0025 m²). FixSmallAreaWire should remove small wires below threshold, but the threshold check incorrectly only applies to outer wires. Inner wires are not inspected.
+**Defect**: Face with two inner wires: one normal (1.0 m²) and one TINY (0.0025 m²), on a PLANE surface. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): isolation testing (stripping the `ADVANCED_FACE`'s bound list, leaving unreferenced entities in place) shows the outer wire alone loads cleanly; restoring just ONE of the two inner wires (either one) already reproduces the SIGSEGV. `ShapeFix_Face::FixSmallAreaWire` is never reached — the process crashes during shape translation, before any wire-level healing pass could run.
 
-**Defect class:** Interior small-wire removal threshold bypass  
-**Surface:** PLANE  
-**Wires:** 1 outer + 2 inner (second is sub-threshold)  
-**Expected behavior:** FixSmallAreaWire should remove all small wires, including inner ones  
-**Test corpus:** wave 12 – shape-healing face coverage  
+**Root cause**: not a specific single-edge-bound defect (unlike the Tfa085/Tfa106/Tfa118 family) — isolation confirms the crash trigger is the presence of the additional bound wire as encoded, but the precise internal mechanism (e.g. `BRepLib` pcurve/tolerance handling on multi-bound faces of this construction) was not traced further in this pass.
 
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed ShapeFix_Face::FixSmallAreaWire applies its removal threshold check only to outer wires, leaving inner wires uninspected; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "multi-bound face crashes reader, outer-alone loads clean", "any inner wire (large or tiny) crashes the reader, outer-alone loads clean".
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa094 — Inner FACE_BOUND rectangle reuses the outer hexagonal wire's own vertex entity as its corner (shared endpoint, not a T-junction)
 
@@ -24653,35 +24655,29 @@ Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-16): the top fac
 - **Tier-3 assertion**: load == "ok"
 - **Notes**: Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed CheckSplittingVertices "misses the boundary case"; live-oracle byte inspection shows the inner wire's vertex is literally the same entity as the outer wire's vertex (not a distinct boundary-touching vertex), so the checker's own skip-guard — not a boundary/interior distinction bug — is why it never fires. See Tfa249 for the genuine trigger (closes `tkshh-splitting-vertex-face`). Synonyms: "shared vertex entity between outer and inner wire", "reused endpoint T-vertex (non-firing)".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(46) ifc=schema_n/a`
-### Tfa095 — ShapeFix_Face.FixPeriodicDegenerated SURFACE_OF_REVOLUTION apex
+### Tfa095 — Face on a SURFACE_OF_REVOLUTION crashes the reader (SIGSEGV) with just the outer 4-edge boundary present — not attributable to the 'degenerate apex' meridian wires the title describes; FixPeriodicDegenerated is never reached
 
-Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge at v=0 (rotation axis). FixPeriodicDegenerated must handle the revolution-axis degenerate edge differently from cone apex. Revolution surfaces pinch at v=0 to a line on the rotation axis.
+**Defect**: `SURFACE_OF_REVOLUTION` (profile line at constant radius 1.0, from z=0 to z=2 — actually a cylinder, not a true apex-touching cone, despite the fixture's own comment calling it a "degenerate apex") with a 4-edge outer circular boundary at z=2, plus four separate "inner loop" wires connecting a zero-length degenerate apex edge to the boundary (meant to represent the revolution-axis pinch). Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): isolation testing (stripping the `ADVANCED_FACE`'s bound list down to the outer 4-edge boundary alone, removing all four apex/meridian inner loops) shows the crash is STILL reproduced (SIGSEGV) — the crash is NOT attributable to the degenerate-apex meridian construction the title describes; it is tied to the outer boundary wire's interaction with this `SURFACE_OF_REVOLUTION` alone. `ShapeFix_Face::FixPeriodicDegenerated` is never reached — the process crashes during shape translation, before any apex-handling healer could run.
 
-**Defect class:** Revolution-axis degenerate edge handling  
-**Surface:** SURFACE_OF_REVOLUTION (profile: vertical line)  
-**Wires:** 1 outer (top circle) + 4 inner (radial meridians to apex)  
-**Expected behavior:** FixPeriodicDegenerated must preserve revolution-axis pinch topology  
-**Test corpus:** wave 12 – shape-healing face coverage
+**Root cause**: not fully isolated in this pass beyond ruling out the apex/meridian construction. Recorded honestly as an open question rather than a guessed specific mechanism, per `SEGFAULT_CHARACTERIZATION.md` convention (same posture as Tfa105/Tfa116/Tfa119).
+
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixPeriodicDegenerated mishandles the revolution-axis degenerate apex edge; that method is never reached (crash occurs first), and isolation testing shows the crash persists even with all apex/meridian wires removed — the title's specific "degenerate apex" mechanism is not what triggers this crash. Root cause of the crash itself is NOT fully isolated in this pass (unlike Tfa106/Tfa126, no single invalid-bound-topology cause was found). Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "revolution-surface outer-boundary-alone crashes reader", "degenerate-apex construction not the actual crash cause".
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-### Tfa096 — ShapeFix_Face.FixOrientation degenerate-wire bypass
+### Tfa096 — Cube face whose outer wire is four zero-length (collapsed-to-a-point) edges has its ENTIRE bound dropped on load (0 edges), not silently skipped while still attached — same unbounded-surface-fallback family as Tfa098/Tfa114/Tfa115/Tfa117/Tfa252; FixOrientation is never reached
 
-**Defect**: Face whose outer wire is composed entirely of zero-length edges (degenerate). `FixOrientation` skips degenerate wires without diagnostic, leaving the face in undefined orientation state.
-
-**Fixture**: Single plane face with outer EDGE_LOOP containing four EDGE_CURVE entities, each with identical start and end vertices (collapse to single point). All edges carry zero-length vectors.
-
-**Expected behavior**: Diagnostic or corrective handling of degenerate outer wires; never silent skip.
+**Defect**: `CLOSED_SHELL` cube whose top face's `FACE_OUTER_BOUND` is built from four `EDGE_CURVE`s that all share the SAME start and end vertex at (5,5,1) — a wire collapsed entirely to a single point. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the reader does not silently skip past this degenerate wire while leaving it attached to the face (as the original title's "silent skip, orientation left undefined" framing implies) — it drops the bound ENTIRELY: that one face loads with 0 wires / 0 edges, while `n_faces_total == 6` still holds (the 5 ordinary cube faces plus the now-wireless degenerate face) and the other 5 faces load intact. `ShapeFix_Face::FixOrientation` is never reached — there is no orientation left to fix on a wireless face.
 
 - **Tier-3 assertion**: n_faces_total == 6
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixOrientation silently skips this degenerate outer wire, leaving orientation undefined on an otherwise-intact face; live-oracle shows the reader instead drops the wire's bound entirely (0 edges on that face) — the same unbounded-surface-fallback pattern already documented for Tfa098/Tfa114/Tfa115/Tfa117/Tfa252, not an orientation-fixing failure. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. **See also**: Tfa098, Tfa114, Tfa115, Tfa117, Tfa252 (same unbounded-surface-fallback family). Synonyms: "all-zero-length-edge wire dropped entirely, not silently skipped", "collapsed-to-point outer bound produces 0-edge face".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(26) ifc=schema_n/a`
-### Tfa097 — ShapeAnalysis_CheckSmallFace.CheckPinFace blunt-pin classification
+### Tfa097 — Wedge-shaped face with a ~10° blunt internal angle loads as an ordinary valid face; CheckPinFace is never invoked to classify it
 
-**Defect**: Face with a pin (tapering region) at ~10° internal angle, not sharp. `CheckPinFace`'s angle threshold (typically M_PI/6 ≈ 30°) misclassifies blunt pins as sharp features.
+**Defect**: Wedge-shaped outer loop with a blunt (~10°) internal angle at the apex (wide base 10mm, apex height 1mm). Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the file loads with `n_faces_total == 5` (matching this entry's own assertion below), the wedge face(s) loading with their 3-edge wires intact exactly as encoded, no crash. `ShapeAnalysis_CheckSmallFace::CheckPinFace` is never invoked during an ordinary read — the original title's claim that "the angle threshold (~30°) misclassifies this blunt pin as sharp" describes a classification this file never receives.
 
-**Fixture**: Plane face with wedge-shaped outer loop (wide base 10 mm, apex at center height 1 mm), internal angle ~10°. Three-edge topology: horizontal base, two slanted sides at ~80° from horizontal.
-
-**Expected behavior**: Angular classification correctly distinguishes blunt (~10°) pins from sharp (>30°) features.
+**Sources**: OCCT method `ShapeAnalysis_CheckSmallFace::CheckPinFace` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the blunt-angle wedge loads as an ordinary face.
 
 - **Tier-3 assertion**: n_faces_total == 5
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed CheckPinFace's angle threshold misclassifies this ~10° blunt wedge as a sharp pin; that checker is never invoked on an ordinary read, so no pin classification is ever produced. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "blunt-angle wedge face loads as ordinary face", "pin-angle classifier never invoked on ordinary read".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(21) ifc=schema_n/a`
 ### Tfa098 — EDGE_CURVE references an undefined entity number (dangling reference); reader drops the bound, face survives as unbounded surface
 
@@ -24694,16 +24690,15 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 - **Tier-3 assertion**: n_faces_total == 1
 - **Notes**: Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed away from `ShapeFix_Face::FixSplitFace` (never invoked; no split geometry exists) to the genuine, verified behavior — a dangling entity reference causes clean per-edge failure and bound-dropping. **See also**: Tfa252 (same fallback pattern, explicit-null trigger instead of dangling reference). Synonyms: "undefined entity reference in edge geometry", "dangling reference clean fail", "unresolved reference bound dropped".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
-### Tfa099 — ShapeAnalysis_CheckSmallFace.CheckTwisted concave-cone
+### Tfa099 — Cone face with a v-parameter-decreasing (reverse-height) wire wrap loads intact as encoded; CheckTwisted is never invoked to classify it
 
-**Defect**: Face on cone with wire wrapped such that v-parameter decreases (reverse height wrap). `CheckTwisted`'s normal-direction test mis-classifies for v-decreasing wraps on cone surfaces.
+**Defect**: Cone (semi-vertical angle 30°, apex at origin) with a 4-edge outer loop whose vertices decrease in V-height (v ∈ {4,4,2,2}) across circumferential positions. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the file loads with `n_faces_total == 2` (matching this entry's own `face[1].surface_type == "cone"` assertion below), the v-decreasing wire loading intact exactly as encoded, no crash, no reorientation. `ShapeAnalysis_CheckSmallFace::CheckTwisted` is never invoked during an ordinary read — the original title's claim of a "normal-direction test misclassifying v-decreasing wraps" describes a classification this file never receives.
 
-**Fixture**: Cone surface (semi-vertical angle 30°, apex at origin). Four-edge outer loop with vertices at decreasing v-height: v∈{4,4,2,2} across circumferential positions. Normal twist detection should flag this as malformed.
-
-**Expected behavior**: Correct detection of v-parameter inversion on cones; flag as twisted or auto-reorient.
+**Sources**: OCCT method `ShapeAnalysis_CheckSmallFace::CheckTwisted` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the reverse-height wrap loads intact.
 
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[1].surface_type == "cone"
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed CheckTwisted misclassifies this v-parameter-decreasing cone wrap; that checker is never invoked on an ordinary read, so no twist classification is ever produced. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "v-decreasing cone wire wrap loads intact", "twist detection never invoked on reverse-height wrap".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tfa100 — Two 4-edge wires on a cylindrical face both cross the seam; loads intact with no coincidence handling attempted (FixWiresTwoCoincEdges never invoked on ordinary read)
 
@@ -24717,36 +24712,36 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 - **Tier-3 assertion**: face[1].surface_type == "cylinder"
 - **Tier-3 assertion**: face[1].quadric.radius == 5.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(22) ifc=schema_n/a`
-### Tfa101 — ShapeFix_Face.FixAddNaturalBound torus complete-surface
+### Tfa101 — Full-torus face with a single placeholder boundary loop loads intact as encoded (no second loop added or expected); FixAddNaturalBound is never invoked on an ordinary read
 
-**Defect**: Full torus surface needing natural boundary insertion; the boundary inserter must produce two boundary loops (interior+exterior) but only constructs one, leaving the complete surface un-bounded.
+**Defect**: Full toroidal surface (major radius 5.0, minor radius 1.0) with a single, minimal placeholder boundary loop. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the file loads with `n_faces_total == 2` (matching the `face[1].surface_type == "torus"` and major/minor-radius assertions below), the single encoded loop loading intact, no crash, no second loop constructed or expected. `ShapeFix_Face::FixAddNaturalBound` is never invoked during an ordinary read — the original title's claim that "the boundary inserter should produce two boundary loops but only constructs one" describes a construction this file never triggers (no insertion is ever attempted).
 
-**Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3c-faces/Tfa101.stp`
+**Sources**: OCCT method `ShapeFix_Face::FixAddNaturalBound` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the placeholder loop loads unaltered.
 
-**Geometry**: Toroidal surface (major radius 5.0, minor radius 1.0) with placeholder boundary edges forming a minimal closed loop.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Tier-3 assertion**: face[1].surface_type == "torus"
 - **Tier-3 assertion**: face[1].quadric.major_radius == 5.0
 - **Tier-3 assertion**: face[1].quadric.minor_radius == 1.0
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixAddNaturalBound under-constructs boundary loops on this full torus; that method is never invoked on an ordinary read, and the fixture's own single placeholder loop loads unaltered. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "full torus with single placeholder loop loads intact", "natural boundary insertion never invoked on torus".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
-### Tfa102 — ShapeAnalysis_CheckSmallFace.CheckSmallArea aspect-ratio infinite
+### Tfa102 — Extremely thin rectangular face (1000×0.0001, aspect ratio 1e7) loads as an ordinary valid face; CheckSmallArea is never invoked to classify it
 
-**Defect**: Face with one dimension at 1000.0 and another at 0.0001; aspect-ratio overflow in CheckSmallArea's classification logic.
+**Defect**: Plane with an extremely thin rectangle (1000.0 × 0.0001), aspect ratio 1e7. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the file loads with `n_faces_total == 6` (matching this entry's own assertion below), the extreme-aspect-ratio face loading as an ordinary valid face, no crash, no overflow artifact. `ShapeAnalysis_CheckSmallFace::CheckSmallArea` is never invoked during an ordinary read — the original title's claim of an "aspect-ratio overflow in the classification logic" describes a computation this file never triggers.
 
-**Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3c-faces/Tfa102.stp`
+**Sources**: OCCT method `ShapeAnalysis_CheckSmallFace::CheckSmallArea` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the extreme-aspect-ratio face loads as ordinary.
 
-**Geometry**: Plane with an extremely thin rectangle (1000.0 × 0.0001) to trigger aspect-ratio calculation overflow.
 - **Tier-3 assertion**: n_faces_total == 6
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed CheckSmallArea's aspect-ratio computation overflows on this 1e7:1 rectangle; that checker is never invoked on an ordinary read, so no overflow is ever computed. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "extreme-aspect-ratio face loads as ordinary face", "small-area classifier never invoked, no overflow computed".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
-### Tfa103 — ShapeFix_Face.FixPeriodicDegenerated apex-at-V-min
+### Tfa103 — Cone face with apex at v_min (away from the encoded boundary wire) loads intact with both faces present; FixPeriodicDegenerated is never invoked on an ordinary read
 
-**Defect**: Surface-of-revolution with apex at v_min (instead of v_max); the degenerate-edge insertion logic only handles v_max apex.
+**Defect**: Conical surface with apex at v_min (v=0) and a 5-vertex wire encircling at v=5.0, away from the apex. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the file loads with `n_faces_total == 2` (matching the `face[1].surface_type == "cone"` assertion below), both the 5-edge and 8-edge wires loading intact exactly as encoded, no crash, no degenerate-edge insertion. `ShapeFix_Face::FixPeriodicDegenerated` is never invoked during an ordinary read — the original title's claim that "the degenerate-edge insertion logic only handles v_max apex" describes an insertion this file never triggers.
 
-**Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3c-faces/Tfa103.stp`
+**Sources**: OCCT method `ShapeFix_Face::FixPeriodicDegenerated` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the v_min-apex cone loads intact.
 
-**Geometry**: Conical surface with apex at v_min (v=0) and a 5-vertex wire encircling at v=5.0 (away from apex).
 - **Tier-3 assertion**: n_faces_total == 2
 - **Tier-3 assertion**: face[1].surface_type == "cone"
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixPeriodicDegenerated mishandles apex-at-v_min insertion; that method is never invoked on an ordinary read, and both faces load intact as encoded. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "cone with v_min apex loads intact", "degenerate-edge insertion never invoked at v_min apex".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(25) ifc=schema_n/a`
 ### Tfa104 — Self-touching single wire traverses one edge twice, pinching the face boundary at a vertex shared by three EDGE_CURVEs
 
@@ -24833,17 +24828,14 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 - **Tier-3 assertion**: edge[2].curve_type == "circle"
 - **Tier-3 assertion**: edge[2].analytic.radius == 3.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
-### Tfa111 — ShapeFix_Face.FixSmallAreaWire mixed-context
+### Tfa111 — Planar face with a large (2×2) and a tiny (0.05×0.05) inner hole loads both holes intact and unremoved; FixSmallAreaWire is never invoked on an ordinary read
 
-**Defect**: Face with small inner wire AND large inner wire; FixSmallAreaWire removes small one but accidentally disturbs the large one's vertex references. Mixed-context scenario tests the vertex-index corruption introduced when small-wire removal accidentally mutates large-wire edges' vertex pointers.
+**Defect**: Planar 10×10 square with two inner rectangular holes: one 2×2 (area 4.0 m²) at center, one 0.05×0.05 (area 0.0025 m²) at a corner. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the affected face loads with all 3 wires present (outer + both inner holes, matching the oracle's per-face wire count of outer+2×4-edge-inner), no crash, no removal of the tiny hole, no disturbance to the large hole's vertex references. `ShapeFix_Face::FixSmallAreaWire` is never invoked during an ordinary read — the original title's claim of "vertex-index corruption introduced when small-wire removal accidentally mutates large-wire edges" describes a removal this file never attempts.
 
-**Geometry**: Planar 10×10 square (z=0) with two inner rectangular holes: one 2×2 (area 4.0 m²) at center and one 0.05×0.05 (area 0.0025 m²) at corner. FixSmallAreaWire should remove only the small hole but must preserve large-hole edge topology.
-
-**Expected behavior**: FixSmallAreaWire removes the small wire; large wire edges retain their vertex references and closure.
-
-**Sources**: OCCT `ShapeFix_Face::FixSmallAreaWire` (~line 2332); `ShapeAnalysis_CheckSmallFace` threshold logic.
+**Sources**: OCCT `ShapeFix_Face::FixSmallAreaWire` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); both holes load intact and unremoved.
 
 - **Tier-3 assertion**: load == "ok"
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixSmallAreaWire removes the tiny hole and corrupts the large hole's vertex references in the process; that method is never invoked on an ordinary read, so neither removal nor corruption ever occurs — both holes load intact. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "large and tiny inner holes both load unremoved", "small-area wire removal never invoked, no vertex corruption".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(50) ifc=schema_n/a`
 ### Tfa112 — Valid B-spline saddle-surface face loads intact; CheckTwisted is never invoked on an ordinary read
 
@@ -24954,43 +24946,56 @@ Full SURFACE_OF_REVOLUTION (360-degree cylinder with apex) with degenerate edge 
 
 - **Notes**: Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed `CheckTwisted`'s orientation logic doesn't handle an opposite-winding inner wire; that method is never reached. Isolation test shows the outer wire's malformed `LINE` syntax causes its edges to fail to build (0 edges) even without the inner wire; the SIGSEGV itself requires the inner wire's presence but the precise failure mechanism connecting the two is not fully isolated in this pass (recorded honestly per `SEGFAULT_CHARACTERIZATION.md` convention). **See also**: Tfa118 (same malformed-`LINE`-syntax anomaly, different crash cause). Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-### Tfa120 — ShapeFix_Face.FixAddNaturalBound trimmed-conical
+### Tfa120 — Trimmed conical face loads intact with its encoded boundary; FixAddNaturalBound is never invoked on an ordinary read
 
-**Defect:** Natural boundary on trimmed CONICAL_SURFACE; FixAddNaturalBound uses base surface parameter range, ignoring trim bounds.
+**Defect**: Conical surface trimmed to u∈[0,π], v∈[1,3]. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the file loads with `n_faces_total == 1` (matching `face[0].surface_type == "cone"` below), the trimmed face's encoded boundary loading intact, no crash, no natural-boundary reconstruction. `ShapeFix_Face::FixAddNaturalBound` is never invoked during an ordinary read — the original title's claim that "the base-surface parameter range is used, ignoring the trim bounds" describes a construction this file never triggers.
 
-**Falsifiable claim:** Without trim-context preservation, FixAddNaturalBound reconstructs boundaries using untrimmed surface domain.
+**Sources**: OCCT method `ShapeFix_Face::FixAddNaturalBound` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the trimmed cone's boundary loads unaltered.
 
-**Minimal reproducer:** Conical surface trimmed to u∈[0,π], v∈[1,3]; FixAddNaturalBound adds bounds using full cone apex domain instead of trimmed range.
-
-**Search anchors:** 'FixAddNaturalBound', 'CONICAL_SURFACE', 'trimmed bounds', 'natural boundary'
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "cone"
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixAddNaturalBound ignores trim bounds on this conical surface; that method is never invoked on an ordinary read, so trim bounds are never even consulted, let alone ignored. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "trimmed cone face loads intact", "natural boundary construction never invoked on trimmed surface".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
-### Tfa121 — ShapeFix_Face.FixWiresTwoCoincEdges different-host-surfaces
-Face with two wires whose edges geometrically coincide in 3D but reside on different planes (one on PLANE, one on offset plane). FixWiresTwoCoincEdges checks only 3D coincidence and misses surface mismatch when merging coincident edges.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
-### Tfa122 — ShapeAnalysis_CheckSmallFace.CheckTwisted self-touching wire
-Face whose outer wire self-touches at a non-endpoint vertex within the face interior. CheckTwisted's classification logic treats self-contact as face twist when geometrically the wire is merely internally tangent.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
-### Tfa123 — ShapeFix_Face.FixSmallAreaWire near-collinear edges
-Face with 4-edge wire where 3 consecutive edges are near-collinear (deviation ~tolerance). FixSmallAreaWire's area calculation produces a tiny or near-zero value despite the wire being geometrically valid.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
-### Tfa124 — ShapeAnalysis_CheckSmallFace.CheckSpotFace asymmetric
-Small face with one long dimension (50 units) and one short dimension (0.5 units), forming a strip-like spot. CheckSpotFace classifies based on enclosing-circle diameter, misclassifying strip-like spots.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
-### Tfa125 — ShapeFix_Face.FixPeriodicDegenerated u-axis-degenerate
-Spherical surface where U direction is degenerate at the south pole (v=0). FixPeriodicDegenerated handles V-degenerate surfaces but assumes U parametric direction is always non-degenerate.
-- **Tier-3 assertion**: shape_null == True
-- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
-### Tfa126 — FixLoopWire: crossing-wires defect
+### Tfa121 — Two ADVANCED_FACEs (on different offset planes, sharing a coincident 3D edge) are wrapped together in a GEOMETRIC_CURVE_SET; the reader never builds either face at all (shape comes back empty)
 
-**Defect axis:** `loop-validation` / `topology`
+Two `ADVANCED_FACE`s on different `PLANE` instances (z=0 and z=0.001) sharing a coincident 3D edge — but both are wrapped inside a single `GEOMETRIC_CURVE_SET`, whose builder dispatch only accepts `GeometricRepresentationItem`s and never reaches `StepToTopoDS_TranslateFace`/the face-topology pipeline at all (same orphaning pattern as Tfa131/Tfa160/Tfa169 in this batch and family). Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): `transferred roots == 0`, `shape.IsNull() == True`, `n_faces == 0` — matching this entry's own pre-existing `shape_null == True` / `occt=empty/empty` lines below. This fixture's own header comment even states "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; no orphaned entities" — the generator itself anticipated this outcome. Since no face is ever built, `ShapeFix_Face::FixWiresTwoCoincEdges` is never called on this geometry — the "checks only 3D coincidence and misses surface mismatch" claim describes a code path this file never reaches.
 
-Face has outer wire and inner wire (hole) that cross each other instead of nesting properly. FixLoopWire's fundamental assumption that loops are either strictly outer or strictly inner breaks when wires spatially intersect. Reproducer: single face with 10×10 outer loop and crossing 4×4 inner loop; inner loop edges do not form a closed loop (incomplete test).
+- **Tier-3 assertion**: shape_null == True
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixWiresTwoCoincEdges checks only 3D coincidence and misses the cross-surface mismatch when merging; that method is never invoked because neither face survives translation (the `GEOMETRIC_CURVE_SET` wrapper is a type the builder dispatch skips). The `shape_null == True` / `occt=empty/empty` Expected-validation line below was already correct; only the mechanism attribution was wrong. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. **See also**: Tfa131, Tfa160, Tfa169 (same `GEOMETRIC_CURVE_SET`-orphaning pattern). Synonyms: "two offset-plane faces wrapped in curve set never translate", "orphaned dual-face curve set yields empty shape".
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+### Tfa122 — Self-touching figure-8-shaped outer wire on a PLANE ADVANCED_FACE is wrapped in a GEOMETRIC_CURVE_SET; the reader never builds a live face at all (shape comes back empty)
+
+ADVANCED_FACE hosted inside a `GEOMETRIC_CURVE_SET`, whose builder dispatch only accepts `GeometricRepresentationItem`s and never reaches `StepToTopoDS_TranslateFace`/the face-topology pipeline at all (same orphaning pattern as Tfa121/Tfa131/Tfa160/Tfa169). Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): `transferred roots == 0`, `shape.IsNull() == True`, `n_faces == 0` — matching this entry's own pre-existing `shape_null == True` / `occt=empty/empty` lines below. This fixture's own header comment states "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; no orphaned entities" — the generator itself anticipated this outcome. Since no face is ever built, `ShapeAnalysis_CheckSmallFace::CheckTwisted` is never called on this geometry — the "treats self-contact at an interior vertex as topological twist instead of mere internal tangency" claim describes a code path this file never reaches.
+
+- **Tier-3 assertion**: shape_null == True
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed ShapeAnalysis_CheckSmallFace::CheckTwisted treats self-contact at an interior vertex as topological twist instead of mere internal tangency; that checker/fixer is never invoked because the face never survives translation (the `GEOMETRIC_CURVE_SET` wrapper is a type the builder dispatch skips). The `shape_null == True` / `occt=empty/empty` Expected-validation line below was already correct; only the mechanism attribution was wrong. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. **See also**: Tfa121, Tfa131, Tfa160, Tfa169 (same `GEOMETRIC_CURVE_SET`-orphaning pattern). Synonyms: "GEOMETRIC_CURVE_SET wrapped face never translates", "self-touching figure-8 wire face orphaned in curve set".
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+### Tfa123 — Near-collinear 4-edge thin-rectangle (10 × 1e-4) ADVANCED_FACE is wrapped in a GEOMETRIC_CURVE_SET; the reader never builds a live face at all (shape comes back empty)
+
+ADVANCED_FACE hosted inside a `GEOMETRIC_CURVE_SET`, whose builder dispatch only accepts `GeometricRepresentationItem`s and never reaches `StepToTopoDS_TranslateFace`/the face-topology pipeline at all (same orphaning pattern as Tfa121/Tfa131/Tfa160/Tfa169). Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): `transferred roots == 0`, `shape.IsNull() == True`, `n_faces == 0` — matching this entry's own pre-existing `shape_null == True` / `occt=empty/empty` lines below. This fixture's own header comment states "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; no orphaned entities" — the generator itself anticipated this outcome. Since no face is ever built, `ShapeFix_Face::FixSmallAreaWire` is never called on this geometry — the "produces a near-zero area value despite the wire being geometrically valid" claim describes a code path this file never reaches.
+
+- **Tier-3 assertion**: shape_null == True
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed ShapeFix_Face::FixSmallAreaWire produces a near-zero area value despite the wire being geometrically valid; that checker/fixer is never invoked because the face never survives translation (the `GEOMETRIC_CURVE_SET` wrapper is a type the builder dispatch skips). The `shape_null == True` / `occt=empty/empty` Expected-validation line below was already correct; only the mechanism attribution was wrong. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. **See also**: Tfa121, Tfa131, Tfa160, Tfa169 (same `GEOMETRIC_CURVE_SET`-orphaning pattern). Synonyms: "GEOMETRIC_CURVE_SET wrapped face never translates", "near-collinear thin rectangle face orphaned in curve set".
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+### Tfa124 — Strip-like 50×0.5 ADVANCED_FACE (100:1 aspect ratio) is wrapped in a GEOMETRIC_CURVE_SET; the reader never builds a live face at all (shape comes back empty)
+
+ADVANCED_FACE hosted inside a `GEOMETRIC_CURVE_SET`, whose builder dispatch only accepts `GeometricRepresentationItem`s and never reaches `StepToTopoDS_TranslateFace`/the face-topology pipeline at all (same orphaning pattern as Tfa121/Tfa131/Tfa160/Tfa169). Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): `transferred roots == 0`, `shape.IsNull() == True`, `n_faces == 0` — matching this entry's own pre-existing `shape_null == True` / `occt=empty/empty` lines below. This fixture's own header comment states "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; no orphaned entities" — the generator itself anticipated this outcome. Since no face is ever built, `ShapeAnalysis_CheckSmallFace::CheckSpotFace` is never called on this geometry — the "classifies based on enclosing-circle diameter, misclassifying this strip-like spot" claim describes a code path this file never reaches.
+
+- **Tier-3 assertion**: shape_null == True
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed ShapeAnalysis_CheckSmallFace::CheckSpotFace classifies based on enclosing-circle diameter, misclassifying this strip-like spot; that checker/fixer is never invoked because the face never survives translation (the `GEOMETRIC_CURVE_SET` wrapper is a type the builder dispatch skips). The `shape_null == True` / `occt=empty/empty` Expected-validation line below was already correct; only the mechanism attribution was wrong. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. **See also**: Tfa121, Tfa131, Tfa160, Tfa169 (same `GEOMETRIC_CURVE_SET`-orphaning pattern). Synonyms: "GEOMETRIC_CURVE_SET wrapped face never translates", "asymmetric strip-like spot face orphaned in curve set".
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+### Tfa125 — Spherical-surface ADVANCED_FACE with a degenerate south-pole (v=0) loop is wrapped in a GEOMETRIC_CURVE_SET; the reader never builds a live face at all (shape comes back empty)
+
+ADVANCED_FACE hosted inside a `GEOMETRIC_CURVE_SET`, whose builder dispatch only accepts `GeometricRepresentationItem`s and never reaches `StepToTopoDS_TranslateFace`/the face-topology pipeline at all (same orphaning pattern as Tfa121/Tfa131/Tfa160/Tfa169). Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): `transferred roots == 0`, `shape.IsNull() == True`, `n_faces == 0` — matching this entry's own pre-existing `shape_null == True` / `occt=empty/empty` lines below. This fixture's own header comment states "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; no orphaned entities" — the generator itself anticipated this outcome. Since no face is ever built, `ShapeFix_Face::FixPeriodicDegenerated` is never called on this geometry — the "handles V-degenerate surfaces but assumes the U parametric direction is always non-degenerate" claim describes a code path this file never reaches.
+
+- **Tier-3 assertion**: shape_null == True
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed ShapeFix_Face::FixPeriodicDegenerated handles V-degenerate surfaces but assumes the U parametric direction is always non-degenerate; that checker/fixer is never invoked because the face never survives translation (the `GEOMETRIC_CURVE_SET` wrapper is a type the builder dispatch skips). The `shape_null == True` / `occt=empty/empty` Expected-validation line below was already correct; only the mechanism attribution was wrong. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. **See also**: Tfa121, Tfa131, Tfa160, Tfa169 (same `GEOMETRIC_CURVE_SET`-orphaning pattern). Synonyms: "GEOMETRIC_CURVE_SET wrapped face never translates", "spherical south-pole degenerate face orphaned in curve set".
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+### Tfa126 — FACE_INNER_BOUND wrapping a non-closed 2-edge wire crashes the reader (SIGSEGV) — same invalid-bound-topology class as Tfa085/Tfa106/Tfa118, not a FixLoopWire crossing-loop bug
+
+**Defect**: Face with an outer wire (4 edges, closed) and an inner `FACE_INNER_BOUND` wrapping an `EDGE_LOOP` with only 2 edges that does NOT close — this fixture's own original description candidly notes "inner loop edges do not form a closed loop (incomplete test)". Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): isolation testing (stripping the bound list to the outer wire alone) shows the outer-only face loads cleanly (`exit 0`); restoring the malformed non-closed inner bound, exactly as encoded, reproduces the SIGSEGV — the same invalid-bound-topology crash class already isolated for Tfa085/Tfa106/Tfa118 (a bound wire that isn't actually closed), not a "loops crossing instead of nesting" merge-logic bug. `ShapeFix_Face::FixLoopWire` is never reached — the process crashes during shape translation, before any loop-merge logic could run.
+
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixLoopWire's outer/inner-loop assumption breaks when wires spatially cross; that method is never reached (crash occurs first), and the actual structural cause is an invalid non-closed 2-edge bound, not a crossing-loop scenario. **See also**: Tfa085, Tfa106, Tfa118 (same non-closed-bound crash family). Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "non-closed 2-edge inner bound crashes reader", "invalid bound topology, not crossing-loop merge bug".
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa127 — Thin rectangular face (10x1.5) loads as an ordinary valid face; CheckPin is never invoked to classify it
 
@@ -25002,12 +25007,14 @@ Reproducer: rectangular plane face (10x1.5mm) with a high aspect ratio; loads wi
 - **Tier-3 assertion**: n_faces_total == 1
 - **Notes**: Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed `CheckPin` reports a false negative on an oversized pin; that method is never invoked on an ordinary read, so no classification (correct or incorrect) is observable. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "thin rectangular face loads without pin classification".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
-### Tfa128 — FixOrientation: already-correct
+### Tfa128 — Ordinary valid 5×5 square face with already-correct winding and normal; FixOrientation is never invoked (and its internal 'myStatus' claim is not observable from STEP bytes at all)
 
-**Defect axis:** `api-contract` / `incomplete_fix`
+**Defect**: Simple 5×5 square face with correct CCW outer boundary and correct normal — already valid, no orientation defect present. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the file loads with `n_faces_total == 1` (matching this entry's own assertion below), the face loading exactly as an ordinary valid face, no crash. `ShapeFix_Face::FixOrientation` is never invoked during an ordinary `STEPControl_Reader` read, so the original title's claim that "FixOrientation runs and marks its internal `myStatus` member as 'fixed' even though nothing changed" is doubly unfalsifiable from this file: not only is the method never called, but `myStatus` is a private in-memory `ShapeFix_Face` field never surfaced in the output shape or STEP bytes at all.
 
-Face whose normal orientation is already correct according to the face geometry and bounds. FixOrientation runs the correction algorithm and produces identical output but marks myStatus as "fixed" even though no change occurred. Reproducer: simple 5×5 square with correct ccw outer boundary and correct normal.
+**Sources**: OCCT method `ShapeFix_Face::FixOrientation` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); its internal status flag is not observable from output geometry under any circumstance.
+
 - **Tier-3 assertion**: n_faces_total == 1
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixOrientation marks an internal `myStatus` flag as "fixed" despite no actual change; that method is never invoked on an ordinary read, and even if it were, `myStatus` is a private API-internal member never observable from parsed geometry or STEP bytes — this claim could never have been verified by any fixture. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "already-correct square face loads as ordinary face", "internal API status flag unobservable from STEP output".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tfa129 — Ordinary 4-vertex rectangular face with one edge replaced by an asymmetric-knot B-spline curve; no T-junction vertex exists in the bytes
 
@@ -25021,40 +25028,35 @@ Reproducer: rectangular face with a B-spline (not line) top edge; no T-junction 
 - **Tier-3 assertion**: n_faces_total == 1
 - **Notes**: Corrected 2026-07-16 (truth-in-labeling audit, Part 1 special case): the original title/description asserted a T-junction vertex at the B-spline's exact 3D midpoint; verified absent from the bytes (only the 4 rectangle-corner vertices exist). Retitled to describe the genuine content (asymmetric-knot B-spline edge, no defect). Repair-vs-reclaim decision: reclaimed honestly rather than silently repaired, since a byte-level fix needs its own live-oracle-verified assertions; see `BACKLOG.md` entry added 2026-07-16. Synonyms: "B-spline edge no T-junction", "asymmetric knot vector single curved edge", "no matching vertex entity".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
-### Tfa130 — FixSmallAreaWire: mixed-size-wires
+### Tfa130 — ADVANCED_FACE encoded with TWO disjoint FACE_OUTER_BOUND wires (not outer+inner) is split by the reader into two separate topological faces (7 faces total, not 6) — not a 'wrong wire selected as outer' heuristic bug; FixSmallAreaWire is never reached
 
-**Defect axis:** `orientation_classification` / `cardinality-dispatch`
+**Defect**: `CLOSED_SHELL` cube whose top face is encoded with TWO `FACE_OUTER_BOUND` wires on the same host `PLANE` — a large 20×20 loop and a disjoint tiny 0.2×0.2 loop, neither marked as an inner bound (`FACE_INNER_BOUND`). Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the reader does not "select" one loop as outer and discard or misclassify the other — it builds BOTH loops as independent 4-edge-wire faces, yielding `n_faces_total == 7` (5 ordinary cube faces + 2 faces built from the single dual-bound `ADVANCED_FACE`), matching this entry's own pre-existing assertion below exactly. `ShapeFix_Face::FixSmallAreaWire`'s area-sorted-list heuristic is never reached — the translator's own bound-to-face dispatch, not a wire-removal healer, is what produces the extra face.
 
-Face declares two outer-wire candidates: one large (20×20) and one tiny (0.2×0.2) with no nesting relationship. FixSmallAreaWire's outer-vs-inner detection heuristic selects tiny wire as outer because it processes area-sorted list incorrectly. Reproducer: single plane face with two disjoint FACE_OUTER_BOUND entries of vastly different scales.
 - **Tier-3 assertion**: n_faces_total == 7
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixSmallAreaWire's area-sorted-list heuristic incorrectly selects the tiny loop as outer; live-oracle confirms the reader instead builds both `FACE_OUTER_BOUND` wires as separate topological faces (`n_faces_total == 7`, already correctly asserted below) — a translator-level dual-outer-bound dispatch behavior, not an area-heuristic selection bug. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "dual FACE_OUTER_BOUND splits into two faces", "two disjoint outer bounds on one host surface become two faces".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
-### Tfa131 — FixWiresTwoCoincEdges crossing-wires-coincident-segment
+### Tfa131 — Two 4-edge wires sharing a coincident edge segment (outer rectangle + adjacent inner wire reusing one outer edge) crashes the reader (SIGSEGV) as soon as the extra bound wire is present; loads cleanly with only the outer wire — ShapeFix_Face::FixWiresTwoCoincEdges is never reached
 
-Face with two wires sharing a coincident edge segment. The method cannot decide which wire owns the shared edge, triggering the core defect where wires with identical edge geometry at FORWARD orientation should merge but classification logic fails on multi-wire faces with crossed topology.
+**Defect**: Planar face with outer rectangle (0,0)-(10,10) and an inner wire (10,0)-(12,10) that reuses the outer wire's own edge #61 (identical `EDGE_CURVE`, FORWARD orientation) as one of its 4 edges. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): isolation testing (stripping the `ADVANCED_FACE`'s bound list, leaving unreferenced entities in place) shows the outer wire alone loads cleanly; restoring the inner wire reproduces the SIGSEGV. `ShapeFix_Face::FixWiresTwoCoincEdges` is never reached — the process crashes during shape translation, before any wire-level healing pass could run.
 
-**Fixture design**: Planar face with outer rectangle (0,0)-(10,10) and inner wire (10,0)-(12,10) sharing the edge from (10,0) to (10,10). Both wires have coincident edge #61 (identical curve, FORWARD orientation).
+**Root cause**: not a specific single-edge-bound defect (unlike the Tfa085/Tfa106/Tfa118 family) — isolation confirms the crash trigger is the presence of the additional bound wire as encoded, but the precise internal mechanism (e.g. `BRepLib` pcurve/tolerance handling on multi-bound faces of this construction) was not traced further in this pass.
 
-**Defect class**: `ShapeFix_Face.FixWiresTwoCoincEdges.cardinality-dispatch` (line 2870).
-
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed ShapeFix_Face::FixWiresTwoCoincEdges cannot decide which wire owns the shared edge segment; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "multi-bound face crashes reader, outer-alone loads clean", "shared-edge-reusing inner wire crashes reader (NOT GEOMETRIC_CURVE_SET-orphaned, contra Q14's flagged note)".
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-### Tfa132 — CheckTwisted spline-tangent-discontinuity
+### Tfa132 — B-spline surface with a genuinely duplicated control-point column (real C0 fold, not a placeholder) causes the reader to drop the face entirely: the OPEN_SHELL survives as an empty container (0 faces, 0 wires, 0 edges); CheckTwisted is never reached
 
-Face on B-spline surface with C0 tangent discontinuity. The surface normal calculation returns inconsistent values across the discontinuity, causing the twisted-face detector to misclassify the surface topology.
-
-**Fixture design**: Planar face (10×10 square) as proxy for discontinuous spline. The defect requires a true B-spline with split continuity; this fixture provides the geometric boundary, expecting downstream enhancement with actual NURBS surface definition.
-
-**Defect class**: `ShapeAnalysis_CheckSmallFace.CheckTwisted_at975` (line 1015).
+**Defect**: `B_SPLINE_SURFACE_WITH_KNOTS` (degree 3×3) whose 4th and 5th control-point columns are literally identical at every row (`#3`/`#4`, `#10`/`#11`, `#17`/`#18`, `#24`/`#25` — each pair shares the exact same `CARTESIAN_POINT` coordinates), producing a genuine C0 tangent-discontinuity fold. This entry's own pre-existing text described the fixture as a mere "proxy" placeholder awaiting "downstream enhancement with actual NURBS"; inspection of the current file shows that enhancement already happened — the duplicated-column B-spline surface IS present and genuine. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): `reader.OneShape()` is NOT null and the top-level `OPEN_SHELL` survives (consistent with the `occt=shape(1)/shape(1)` shape-count line below), but the single `ADVANCED_FACE` inside it never survives translation — a full-shape traversal (solid/shell/face/wire/edge/vertex) finds 1 shell and ZERO of everything else. `ShapeAnalysis_CheckSmallFace::CheckTwisted` is never reached — there is no face left for any healer to classify.
 
 - **Tier-3 assertion**: load == "ok"
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed CheckTwisted misclassifies the surface at its C0 discontinuity, while separately (and inconsistently) describing the fixture as a geometry-less placeholder; live-oracle shows the fixture DOES carry a genuine duplicated-control-point B-spline surface, and the real, verified effect is that the face is silently dropped from the shell entirely during translation (0 faces survive in an otherwise non-null shell), not a twist misclassification. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "duplicated B-spline control-point column drops face from shell", "C0-fold surface face silently dropped, shell survives empty".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
-### Tfa133 — FixOrientation outer-bound-but-inner-correct
+### Tfa133 — Face with a counter-clockwise outer wire and two clockwise inner wires crashes the reader (SIGSEGV) as soon as the extra bound wire is present; loads cleanly with only the outer wire — ShapeFix_Face::FixOrientation is never reached
 
-Face with counter-clockwise outer bound (incorrect winding) but clockwise inner bounds (correct relative to ccw outer). When FixOrientation flips the outer to correct winding, the inner-relative orientation becomes inverted, violating the nested topology.
+**Defect**: Planar face with outer wire at (0,0)-(20,20) traversed CCW (claimed 'wrong'), and two inner wires at (2,2)-(8,8) and (12,12)-(18,18) both traversed CW. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): isolation testing (stripping the `ADVANCED_FACE`'s bound list, leaving unreferenced entities in place) shows the outer wire alone loads cleanly; restoring either inner wire reproduces the SIGSEGV. `ShapeFix_Face::FixOrientation` is never reached — the process crashes during shape translation, before any wire-level healing pass could run.
 
-**Fixture design**: Planar face with outer wire at (0,0)-(20,20) traversed counter-clockwise (wrong), and two inner wires at (2,2)-(8,8) and (12,12)-(18,18) both traversed clockwise (correct relative to outer). Removing the outer flip would leave all wires with compatible winding; flipping outer breaks inner consistency.
+**Root cause**: not a specific single-edge-bound defect (unlike the Tfa085/Tfa106/Tfa118 family) — isolation confirms the crash trigger is the presence of the additional bound wire as encoded, but the precise internal mechanism (e.g. `BRepLib` pcurve/tolerance handling on multi-bound faces of this construction) was not traced further in this pass.
 
-**Defect class**: `ShapeFix_Face.FixOrientation.ReverseOnOuterContainment` (line 1420–1432).
-
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed ShapeFix_Face::FixOrientation flips the outer wire's winding, breaking the inner wires' relative-consistency; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "multi-bound face crashes reader, outer-alone loads clean", "inner wires crash reader regardless of relative winding, outer-alone loads clean".
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa134 — CheckStripFace strip-with-pin
 
@@ -25065,13 +25067,13 @@ Strip-like face (30×0.5 rectangle) with a pin protrusion (2×2 square) at one e
 **Defect class**: `ShapeAnalysis_CheckSmallFace.CheckStripFace_at659` (line 662).
 
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-### Tfa135 — FixSmallAreaWire chained-removal
+### Tfa135 — Face with three small inner wires (not a claimed cascading-removal effect) crashes the reader (SIGSEGV) as soon as the extra bound wire is present; loads cleanly with only the outer wire — ShapeFix_Face::FixSmallAreaWire is never reached
 
-Face with three small inner wires (areas 0.01, 0.0225, 0.04) on a 20×20 outer square. Removing the first wire changes the face area calculation, causing the second to also fall below the small-area threshold (cascade effect).
+**Defect**: Planar face with outer loop (0,0)-(20,20) and three inner loops of areas 0.01, 0.0225, 0.04. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): isolation testing (stripping the `ADVANCED_FACE`'s bound list, leaving unreferenced entities in place) shows the outer wire alone loads cleanly; restoring just the FIRST inner wire already reproduces the SIGSEGV — well before any claimed cascade across multiple removals could even begin. `ShapeFix_Face::FixSmallAreaWire` is never reached — the process crashes during shape translation, before any wire-level healing pass could run.
 
-**Fixture design**: Planar face with outer loop (0,0)-(20,20) and three inner loops: (2,2)-(2.1,2.1) [0.01], (5,5)-(5.15,5.15) [0.0225], (8,8)-(8.2,8.2) [0.04]. The removal threshold is calibrated so first removal changes the effective area context, triggering cascade removal of the second wire.
+**Root cause**: not a specific single-edge-bound defect (unlike the Tfa085/Tfa106/Tfa118 family) — isolation confirms the crash trigger is the presence of the additional bound wire as encoded, but the precise internal mechanism (e.g. `BRepLib` pcurve/tolerance handling on multi-bound faces of this construction) was not traced further in this pass.
 
-**Defect class**: `ShapeFix_Face.FixSmallAreaWire.idempotence` (line 2372).
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed ShapeFix_Face::FixSmallAreaWire removes the first small wire, which changes the area context and cascades removal of the second; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "multi-bound face crashes reader, outer-alone loads clean", "first inner wire alone crashes reader, no cascade needed".
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa136 — FACE_BOUND wrapping a single, non-closed edge entirely outside the face's bounds loads silently with no diagnostic (OCCT tolerates; gmsh rejects)
 
@@ -25084,68 +25086,77 @@ Face with three small inner wires (areas 0.01, 0.0225, 0.04) on a 20×20 outer s
 - **Tier-3 assertion**: n_faces_total == 6
 - **Notes**: Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed away from `FixSplitFace` (never invoked on ordinary read) to the genuine, verified behavior — an invalid non-closed single-edge bound, entirely out of range, loads silently under OCCT while gmsh rejects it. The `gmsh=reject` Expected-validation line below was already correct; only the mechanism attribution was wrong. **See also**: Tfa085, Tfa118, Tfa145 (same single-edge-bound family, different crash/no-crash outcomes). Synonyms: "out-of-range inner bound loads silently", "non-closed bound outside face extent", "cross-oracle divergence OCCT tolerates gmsh rejects".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
-### Tfa137 — ShapeAnalysis_CheckSmallFace.CheckTwisted face-with-hole
+### Tfa137 — Rectangular face with an inner rectangular hole crashes the reader (SIGSEGV) as soon as the extra bound wire is present; loads cleanly with only the outer wire — ShapeAnalysis_CheckSmallFace::CheckTwisted is never reached
 
-**Defect:** ShapeAnalysis_CheckSmallFace::CheckTwisted classifies face twist using only the outer wire's winding contribution for inside/outside tests. Missing hole's counter-winding causes misclassification of faces with complex topology.
+**Defect**: Rectangular face (12×10mm) with inner rectangular hole (4×3mm). Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): isolation testing (stripping the `ADVANCED_FACE`'s bound list, leaving unreferenced entities in place) shows the outer wire alone loads cleanly; restoring the hole wire reproduces the SIGSEGV. `ShapeAnalysis_CheckSmallFace::CheckTwisted` is never reached — the process crashes during shape translation, before any wire-level healing pass could run.
 
-**Fixture:** Rectangular face (12x10mm) with inner rectangular hole (4x3mm). Tests twist classification under dual-loop topology.
-
-**Taxonomy:** OCCT face analysis, winding number calculation, topology awareness.
+**Root cause**: not a specific single-edge-bound defect (unlike the Tfa085/Tfa106/Tfa118 family) — isolation confirms the crash trigger is the presence of the additional bound wire as encoded, but the precise internal mechanism (e.g. `BRepLib` pcurve/tolerance handling on multi-bound faces of this construction) was not traced further in this pass.
 
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-- **Notes**:
-### Tfa138 — ShapeFix_Face.FixAddNaturalBound surface-not-closed-but-flagged
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed ShapeAnalysis_CheckSmallFace::CheckTwisted classifies twist using only the outer wire's winding, missing the hole's counter-winding contribution; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "multi-bound face crashes reader, outer-alone loads clean", "inner hole wire crashes reader, outer-alone loads clean".
+### Tfa138 — Tiny near-degenerate 3-edge boundary wire on a SURFACE_OF_REVOLUTION whose profile runs radially (producing a disk, not a cylinder, despite being named 'cylinder_srf') crashes the reader (SIGSEGV); root cause not fully isolated; FixAddNaturalBound is never reached
 
-**Defect:** A surface flagged as u_closed=true but geometrically NOT closed (seam gap exists). FixAddNaturalBound incorrectly constructs a natural boundary at the assumed closure point instead of diagnosing the flag/geometry mismatch.
+**Defect**: `SURFACE_OF_REVOLUTION` named `'cylinder_srf'` whose profile `LINE` runs from the origin outward along the radial direction (perpendicular to the rotation axis) rather than parallel to it — revolving this produces a planar disk, not a cylinder, despite the entity's name and the fixture's own header comment claiming "surface not closed but flagged u_closed=true". The boundary wire is a tiny, near-degenerate 3-edge triangle (vertices roughly 0.01–0.02mm apart) sitting near the disk's radius-5 rim. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the file crashes (SIGSEGV) with this single boundary wire present — there is no second bound to strip for isolation (this `ADVANCED_FACE` has only one `FACE_OUTER_BOUND`). `ShapeFix_Face::FixAddNaturalBound` is never reached — the process crashes during shape translation, before any boundary-insertion healer could run.
 
-**Fixture:** Surface_of_revolution with u_closed flag set true but actual surface has gap. Tests natural boundary inference under contradictory metadata.
-
-**Taxonomy:** OCCT surface closure semantics, parameterization assumptions.
+**Root cause**: not fully isolated in this pass. Candidate structural anomalies observed but not individually confirmed as the trigger: (1) the profile-curve/rotation-axis mismatch producing a disk surface where a cylinder was intended, and (2) the near-degenerate micro-triangle boundary sitting near the surface's parametric singularity at the disk center. Recorded honestly as an open question per `SEGFAULT_CHARACTERIZATION.md` convention.
 
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-- **Notes**:
-### Tfa139 — ShapeAnalysis_CheckSmallFace.CheckSpotFace spot-with-internal-pin
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixAddNaturalBound incorrectly constructs a natural boundary at an assumed seam-closure point on a surface flagged u_closed but not actually closed; that method is never reached (crash occurs first). The real, verified structural anomaly is different from the title's claim: the SURFACE_OF_REVOLUTION's profile curve is radial (perpendicular to the rotation axis), producing a disk rather than a cylinder. Root cause of the crash itself is NOT fully isolated in this pass. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "radial-profile revolution surface crashes reader", "disk surface mislabeled as cylinder crashes on tiny boundary".
+### Tfa139 — Tiny planar face with an internal pin-shaped hole loop crashes the reader (SIGSEGV) as soon as the extra bound wire is present; loads cleanly with only the outer wire — ShapeAnalysis_CheckSmallFace::CheckSpotFace is never reached
 
-**Defect:** ShapeAnalysis_CheckSmallFace::CheckSpotFace classifies small faces as "spot" (degenerate/noise) when they have minimal area. Missing secondary features (pin protrusions) that contradict spot classification, producing false positives.
+**Defect**: Tiny planar face (0.1×0.1mm) with internal hole loop (0.005×0.005mm) at center. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): isolation testing (stripping the `ADVANCED_FACE`'s bound list, leaving unreferenced entities in place) shows the outer wire alone loads cleanly; restoring the internal loop reproduces the SIGSEGV. `ShapeAnalysis_CheckSmallFace::CheckSpotFace` is never reached — the process crashes during shape translation, before any wire-level healing pass could run.
 
-**Fixture:** Tiny planar face (0.1x0.1mm) with internal hole loop (0.005x0.005mm) at center. Tests spot detection when internal topology suggests intentional geometry.
+**Root cause**: not a specific single-edge-bound defect (unlike the Tfa085/Tfa106/Tfa118 family) — isolation confirms the crash trigger is the presence of the additional bound wire as encoded, but the precise internal mechanism (e.g. `BRepLib` pcurve/tolerance handling on multi-bound faces of this construction) was not traced further in this pass.
 
-**Taxonomy:** OCCT face classification, feature-level degenerate detection.
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed ShapeAnalysis_CheckSmallFace::CheckSpotFace classifies the face as a degenerate 'spot' without accounting for the internal pin-loop feature; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "multi-bound face crashes reader, outer-alone loads clean", "internal pin-loop hole crashes reader, outer-alone loads clean".
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
+### Tfa140 — Rectangular face with a self-intersecting (figure-8) inner wire crashes the reader (SIGSEGV) as soon as the extra bound wire is present; loads cleanly with only the outer wire — ShapeFix_Face::FixLoopWire is never reached
+
+**Defect**: Rectangular face (10×8mm) with inner loop forming a figure-8 self-intersecting path (8 edges). Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): isolation testing (stripping the `ADVANCED_FACE`'s bound list, leaving unreferenced entities in place) shows the outer wire alone loads cleanly; restoring the self-intersecting inner wire reproduces the SIGSEGV. `ShapeFix_Face::FixLoopWire` is never reached — the process crashes during shape translation, before any wire-level healing pass could run.
+
+**Root cause**: not a specific single-edge-bound defect (unlike the Tfa085/Tfa106/Tfa118 family) — isolation confirms the crash trigger is the presence of the additional bound wire as encoded, but the precise internal mechanism (e.g. `BRepLib` pcurve/tolerance handling on multi-bound faces of this construction) was not traced further in this pass.
+
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed ShapeFix_Face::FixLoopWire produces non-manifold output instead of rejecting/healing the self-intersecting inner path; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "multi-bound face crashes reader, outer-alone loads clean", "self-intersecting inner wire crashes reader, outer-alone loads clean".
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
+### Tfa141 — Face with two inner wires (one LINE-edged, one geometrically-identical B-spline-edged) crashes the reader (SIGSEGV) as soon as the extra bound wire is present; loads cleanly with only the outer wire — ShapeFix_Face::FixWiresTwoCoincEdges is never reached
+
+**Defect**: Face with two inner wires where the first uses a LINE edge and the second uses a geometrically identical B_SPLINE_CURVE_WITH_KNOTS edge. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): isolation testing (stripping the `ADVANCED_FACE`'s bound list, leaving unreferenced entities in place) shows the outer wire alone loads cleanly; restoring either inner wire reproduces the SIGSEGV. `ShapeFix_Face::FixWiresTwoCoincEdges` is never reached — the process crashes during shape translation, before any wire-level healing pass could run.
+
+**Root cause**: not a specific single-edge-bound defect (unlike the Tfa085/Tfa106/Tfa118 family) — isolation confirms the crash trigger is the presence of the additional bound wire as encoded, but the precise internal mechanism (e.g. `BRepLib` pcurve/tolerance handling on multi-bound faces of this construction) was not traced further in this pass.
 
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-### Tfa140 — ShapeFix_Face.FixLoopWire wire-with-self-intersection
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed ShapeFix_Face::FixWiresTwoCoincEdges compares 3D curve pointers strictly and misses coincidence when curve representations differ despite identical geometry; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "multi-bound face crashes reader, outer-alone loads clean", "LINE-vs-B-spline inner wire crashes reader, outer-alone loads clean".
+### Tfa142 — Small torus-patch face loads as an ordinary valid face at its encoded parametric bounds; CheckSmallArea is never invoked to classify it
 
-**Defect:** ShapeFix_Face::FixLoopWire receives an inner wire with self-intersection (figure-8 topology). Loop-merge logic produces non-manifold output instead of rejecting or healing the self-intersecting path.
+**Defect**: Small face on a toroidal surface (major radius 5.0, minor radius 1.0), parametric bounds [0.0,0.2]×[0.0,0.3]. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the file loads with `n_faces_total == 1` (matching the torus major/minor-radius assertions below), the face loading as an ordinary valid face at its encoded parametric bounds, no crash. `ShapeAnalysis_CheckSmallFace::CheckSmallArea` is never invoked during an ordinary read — the original title's claim that "the parametric-domain area projection ignores torus curvature, producing false positives/negatives" describes a computation this file never triggers.
 
-**Fixture:** Rectangular face (10x8mm) with inner loop forming figure-8 self-intersecting path. Tests manifold constraint validation in inner loop repair.
+**Sources**: OCCT method `ShapeAnalysis_CheckSmallFace::CheckSmallArea` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the torus patch loads as ordinary.
 
-**Taxonomy:** OCCT wire topology, loop self-intersection detection, manifold enforcement.
-- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-### Tfa141 — ShapeFix_Face.FixWiresTwoCoincEdges B-spline-vs-LINE
-
-Face with two inner wires where first uses LINE edge and second uses geometrically identical B-SPLINE_CURVE_WITH_KNOTS edge. FixWiresTwoCoincEdges's curve-type strict check (comparing 3D curve pointers) misses coincidence when curve representations differ despite identical geometry. Defect triggers at FWC-004: edge-identity check fails because curve-type incompatibility prevents match, even though pcurve and 3D locus are congruent.
-- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-- **Notes**:
-### Tfa142 — ShapeAnalysis_CheckSmallFace.CheckSmallArea torus-patch
-
-Small face on TOROIDAL_SURFACE with major radius 5.0 and minor radius 1.0. CheckSmallArea computes area via parametric (u,v)-domain projection as planar polygon, ignoring torus surface curvature. Actual 3D area differs significantly from projection; parametric bounds [0.0, 0.2] × [0.0, 0.3] yield false positives or negatives in small-area classification depending on projection method. Defect exposes curvature-unawareness in area approximation.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "torus"
 - **Tier-3 assertion**: face[0].quadric.major_radius == 5.0
 - **Tier-3 assertion**: face[0].quadric.minor_radius == 1.0
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed CheckSmallArea's curvature-unaware parametric-area projection misclassifies this torus patch; that checker is never invoked on an ordinary read, so no area classification is ever produced. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "small torus patch loads as ordinary face", "small-area classifier never invoked on curved surface".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
-### Tfa143 — ShapeFix_Face.FixAddNaturalBound cone-with-apex-in-domain
+### Tfa143 — Conical face with apex in the parametric domain but outside the encoded boundary wire loads intact as a single ordinary face; FixAddNaturalBound is never invoked on an ordinary read
 
-CONICAL_SURFACE with apex at origin (0,0,0) and half-angle 0.52 radians. Face has single partial boundary wire at height z=5.0 spanning v-direction (theta 0 to π/2), leaving uncovered parametric region. FixAddNaturalBound attempts to add natural bounds via isNeedAddNaturalBound predicate, but boundary construction includes apex-region edges where pcurve is singular (radius=0). Apex makes pcurve-evaluation undefined; test triggers FAN-001/FAN-003 path failures.
+**Defect**: `CONICAL_SURFACE` with apex at origin, half-angle 0.52 rad, and a single partial boundary wire at z=5.0 spanning theta 0 to π/2 — leaving the apex region uncovered by the wire but present in the surface's parametric domain. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the file loads with `n_faces_total == 1` (matching the `face[0].surface_type == "cone"` and semi-angle assertions below), the encoded 3-edge boundary wire loading intact, no crash, no apex-region pcurve singularity encountered. `ShapeFix_Face::FixAddNaturalBound` is never invoked during an ordinary read — the original title's claim of "boundary construction including apex-region edges where the pcurve is singular" describes a construction this file never triggers.
+
+**Sources**: OCCT method `ShapeFix_Face::FixAddNaturalBound` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the encoded partial boundary loads unaltered.
+
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "cone"
 - **Tier-3 assertion**: face[0].quadric.semi_angle == 0.52
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixAddNaturalBound's natural-bound construction hits an apex pcurve singularity; that method is never invoked on an ordinary read, so no boundary construction (singular or otherwise) is ever attempted. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "cone with apex-in-domain partial boundary loads intact", "natural bound construction never invoked near apex".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
-### Tfa144 — ShapeAnalysis_CheckSmallFace.CheckPinFace 3D-vs-parametric-pin
+### Tfa144 — B-spline-surface face crashes the reader (SIGSEGV); file contains a malformed extra-nested control_points_list aggregate and a bare untyped entity, but neither alone reproduces/eliminates the crash; root cause not fully isolated; CheckPinFace is never reached
 
-B_SPLINE_SURFACE_WITH_KNOTS stretched non-uniformly (control points in y-direction span 0 to 40.0) creates severe parametric-vs-3D aspect-ratio mismatch. Face bounds parametrically narrow (u: [0.1, 0.15], v: [0.2, 0.9]) with parametric aspect 0.071, but 3D geometry expands to width ~0.5 and length ~20 (aspect 0.025). CheckPinFace applies parametric ratio test, missing the actual 3D pin condition. Defect exposes surface-stretch blindness in pin detection.
+**Defect**: `B_SPLINE_SURFACE_WITH_KNOTS` (degree 1×1) whose `control_points_list` aggregate is malformed — written as `(((#1,#3,#5,#7)),((#2,#4,#6,#8)))`, an extra level of nesting versus the expected 2D `((row1),(row2))` shape. The file also contains a bare, untyped, unreferenced entity (`#9=(0.0,13.333,26.667,40.0);` — no STEP type keyword at all). Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the file crashes (SIGSEGV, "Incorrect Syntax: Fails Count: 3"). Isolation testing (fixing the control_points_list nesting to the standard 2D shape, leaving the bare untyped entity in place) shows the crash is STILL reproduced with the SAME fail count — the nesting anomaly alone does not explain the crash. `ShapeAnalysis_CheckSmallFace::CheckPinFace` is never reached — the process crashes during shape translation, before any pin-classification healer could run.
+
+**Root cause**: not fully isolated in this pass. Two structural anomalies are present in the file (the extra-nested control_points_list and the bare untyped entity #9) but neither was confirmed as sole cause via isolation; the true trigger may be a third, unidentified factor or a combination. Recorded honestly as an open question per `SEGFAULT_CHARACTERIZATION.md` convention.
+
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-- **Notes**:
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed CheckPinFace's parametric-vs-3D aspect-ratio test misses a real 3D pin condition due to surface stretch; that checker is never reached (crash occurs first). Root cause of the crash itself is NOT fully isolated in this pass — a malformed control_points_list nesting and a bare untyped entity are both present but isolation testing did not confirm either as sole cause. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "malformed B-spline control-point aggregate crashes reader", "bare untyped entity coexists with B-spline surface crash".
 ### Tfa145 — Two "splitter" FACE_BOUNDs are each a single non-closed edge; neither can ever subdivide the face regardless of implementation
 
 Planar face (10x10 square) with two interior lines meant to represent splitters: a vertical segment (x=2, y in [0,10]) and a horizontal segment (y=5, x in [0,10]). Byte-level inspection (2026-07-16, live-oracle verified, validation/.venv OCP/OCCT 7.8.1) shows each is encoded as its own `FACE_BOUND` wrapping an `EDGE_LOOP` with a single edge — not a closed wire. `ShapeFix_Face::FixSplitFace` is never invoked during an ordinary read (not called by that class's default `Perform()`, and in any case a non-closed single-edge bound could never define a valid sub-face boundary for ANY split implementation to find — there is no "sequential splitter" processing happening at all). Live-oracle confirms `n_faces == 1`: the reader loads all three bounds (outer + two single-edge inner bounds) as inert extra topology on one unsplit face.
@@ -25153,35 +25164,32 @@ Planar face (10x10 square) with two interior lines meant to represent splitters:
 - **Tier-3 assertion**: n_faces_total == 1
 - **Notes**: Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed a `FixSplitFace` sequential-application bug (stale topology, unsynchronized dedup between two splits); that method is never invoked, and the "splitters" are non-closed single-edge bounds that cannot define a sub-face boundary under any implementation. **See also**: Tfa085, Tfa118, Tfa136 (same single-edge-bound family). Synonyms: "non-closed splitter bounds don't split", "two open-wire inner bounds stay unsplit", "crossing lines as invalid inner bounds".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
-### Tfa146 — ShapeFix_Face.FixOrientation parametric-vs-3D-winding
+### Tfa146 — Planar rectangular face with standard CCW 3D winding loads as an ordinary valid face; FixOrientation is never invoked on an ordinary read
 
-**Defect**: Outer wire winds correctly in 3D but the parametric (u,v) winding is reversed; FixOrientation uses parametric winding test instead of 3D test.
+**Defect**: Planar rectangular face with correct CCW winding in 3D (parametric (u,v) winding claimed to differ). Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the file loads with the face intact and unchanged, matching `load == "ok"` below, no crash, no orientation flip. `ShapeFix_Face::FixOrientation` is never invoked during an ordinary read — the original title's claim that "the healer relies only on a parametric (u,v) winding test and may misclassify the wire as reversed" describes a test this file never runs.
 
-**Trigger**: Call FixOrientation() on planar rectangular face with standard CCW winding in 3D.
-
-**Expected vs Actual**: FixOrientation should detect correct 3D winding and leave wire unchanged. If algorithm relies only on parametric (u,v) tests, it may incorrectly classify wire as reversed.
+**Sources**: OCCT method `ShapeFix_Face::FixOrientation` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the correctly-wound face loads unaltered.
 
 - **Tier-3 assertion**: load == "ok"
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixOrientation's parametric-winding test might misclassify this correctly-wound face; that method is never invoked on an ordinary read, so no winding test (correct or mistaken) is ever run. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "correctly-wound rectangular face loads as ordinary face", "orientation test never invoked on ordinary read".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
-### Tfa147 — ShapeAnalysis_CheckSmallFace.CheckTwisted face-on-plane
+### Tfa147 — Small planar face loads as an ordinary valid face regardless of its planarity; CheckTwisted is never invoked to classify it
 
-**Defect**: Small face on PLANE; CheckTwisted's tangent-test for twist doesn't make sense for planes but produces a deterministic verdict anyway.
+**Defect**: Small face on a PLANE (1mm × 1mm square) — twist is geometrically undefined on a planar surface. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the file loads with the face intact, matching `load == "ok"` below, no crash, no spurious classification. `ShapeAnalysis_CheckSmallFace::CheckTwisted` is never invoked during an ordinary read — the original title's claim that "the tangent-test doesn't make sense for planes but produces a deterministic (spurious) TWISTED verdict anyway" describes a verdict this file never produces.
 
-**Trigger**: Call CheckTwisted() on small planar face (1mm × 1mm square on z=0 plane).
-
-**Expected vs Actual**: CheckTwisted should skip or return false for planar faces since twist is undefined. If algorithm applies twist test to planes, it produces spurious TWISTED verdict.
+**Sources**: OCCT method `ShapeAnalysis_CheckSmallFace::CheckTwisted` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the planar face loads as ordinary.
 
 - **Tier-3 assertion**: load == "ok"
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed CheckTwisted produces a spurious TWISTED verdict on this planar face; that checker is never invoked on an ordinary read, so no verdict (spurious or otherwise) is ever produced. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "small planar face loads as ordinary face", "twist classifier never invoked on flat surface".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
-### Tfa148 — ShapeFix_Face.FixSmallAreaWire min-area-threshold-collision
+### Tfa148 — Inner wire at exactly the claimed small-area threshold loads intact and unremoved; FixSmallAreaWire is never invoked on an ordinary read
 
-**Defect**: Wire area exactly equals min threshold; FixSmallAreaWire's non-strict comparison removes or keeps depending on FP precision.
+**Defect**: Inner wire of area exactly 0.00000250 mm² (5mm × 0.5mm rectangle), at a claimed small-area threshold boundary. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the affected face loads with both the outer and the threshold-area inner wire present (outer + 4-edge inner, matching the oracle's per-face wire count), matching `load == "ok"` below, no crash, no removal. `ShapeFix_Face::FixSmallAreaWire` is never invoked during an ordinary read — the original title's claim of "floating-point rounding near the threshold causing non-deterministic removal behavior" describes a comparison this file never triggers.
 
-**Trigger**: Create face with inner wire of area exactly 0.00000250 mm² (5mm × 0.5mm rectangle), at threshold boundary.
-
-**Expected vs Actual**: Non-strict comparison (area <= threshold) removes wire; strict (area < threshold) keeps it. Floating-point rounding near threshold causes non-deterministic behavior.
+**Sources**: OCCT method `ShapeFix_Face::FixSmallAreaWire` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the threshold-area wire loads intact.
 
 - **Tier-3 assertion**: load == "ok"
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixSmallAreaWire's threshold comparison is FP-non-deterministic at exactly this area; that method is never invoked on an ordinary read, so no comparison (deterministic or not) is ever made. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "threshold-area inner wire loads intact", "small-area comparison never invoked at FP boundary".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(34) ifc=schema_n/a`
 ### Tfa149 — FACE_BOUND wire is not closed (4.5mm gap between its free ends); reader loads all 3 dangling edges with no closure check or diagnostic
 
@@ -25194,13 +25202,12 @@ Planar face (10x10 square) with two interior lines meant to represent splitters:
 - **Tier-3 assertion**: load == "ok"
 - **Notes**: Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed `CheckSplittingVertices` runs on the open wire and produces "inconsistent verdicts"; that checker is never invoked on an ordinary read. The genuine, verified behavior is that the reader silently accepts a non-closed `FACE_BOUND`, keeping its dangling edges with no diagnostic (contrast with Tfa117, where a zero-length edge causes the whole bound to be dropped instead). **See also**: Tfa117. Synonyms: "open wire face bound loads silently", "non-closed inner bound no diagnostic", "dangling edges from unclosed path".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
-### Tfa150 — ShapeFix_Face.FixPeriodicDegenerated B-spline-revolution
+### Tfa150 — B-spline surface approximating a revolution (with a degree-3 apex profile) loads intact with both encoded circular-edge faces present; FixPeriodicDegenerated is never invoked on an ordinary read
 
-**Defect**: Surface is B-spline approximating a revolution; FixPeriodicDegenerated's apex-construction logic assumes analytic revolution not B-spline.
+**Defect**: Degree-3 B-spline surface approximating a cone (apex at origin, profile curve along the u=0 seam), single-wire face. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the file loads with both faces present and their circle-typed edges intact exactly as encoded (matching the `bspline.v_degree == 3`, edge orientation, and radius-5.0 circle assertions below), no crash, no apex-construction attempted or failed. `ShapeFix_Face::FixPeriodicDegenerated` is never invoked during an ordinary read — the original title's claim that "the apex-construction logic assumes analytic revolution (e.g. `GetCone()`) and fails on B-spline geometry" describes a construction attempt this file never triggers.
 
-**Trigger**: Call FixPeriodicDegenerated() on single-wire face with degree-3 B-spline surface approximating cone (apex at origin, profile curve along u=0 seam).
+**Sources**: OCCT method `ShapeFix_Face::FixPeriodicDegenerated` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the B-spline apex profile loads intact.
 
-**Expected vs Actual**: FixPeriodicDegenerated should construct apex curve and adjust wire orientation assuming conic geometry. If algorithm assumes analytic properties (e.g., GetCone()), it fails on B-spline and returns error or applies wrong transformation.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "bspline"
 - **Tier-3 assertion**: face[0].bspline.v_degree == 3
@@ -25210,31 +25217,48 @@ Planar face (10x10 square) with two interior lines meant to represent splitters:
 - **Tier-3 assertion**: edge[0].analytic.radius == 5.0
 - **Tier-3 assertion**: edge[1].curve_type == "circle"
 - **Tier-3 assertion**: edge[1].analytic.radius == 5.0
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixPeriodicDegenerated's analytic-revolution assumption fails on this B-spline apex profile; that method is never invoked on an ordinary read, so no apex-construction attempt (successful or failed) is ever made. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "B-spline revolution apex profile loads intact", "apex construction never invoked on B-spline surface".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
-### Tfa151 — ShapeFix_Face.FixLoopWire one-inner-touches-outer
+### Tfa151 — Inner wire vertex coincident with the outer wire loads both wires intact and distinct; FixLoopWire is never invoked on an ordinary read
 
-Inner wire has a vertex that coincides with the outer wire. FixLoopWire's nested-loop assumption that inner loops never touch outer geometry fails, causing incorrect topology repair.
+**Defect**: Inner wire has a vertex that coincides with the outer wire's boundary. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the affected face loads with outer and inner wires both present and distinct (outer + inner, matching the oracle's per-face 2-wire count and `load == "ok"` below), no crash, no incorrect topology repair. `ShapeFix_Face::FixLoopWire` is never invoked during an ordinary read — the original title's claim that "the nested-loop assumption that inner loops never touch outer geometry fails, causing incorrect repair" describes a repair this file never triggers.
+
+**Sources**: OCCT method `ShapeFix_Face::FixLoopWire` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the touching wires load intact and distinct.
+
 - **Tier-3 assertion**: load == "ok"
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixLoopWire's nested-loop assumption breaks when the inner wire touches the outer wire; that method is never invoked on an ordinary read, so no repair (correct or incorrect) is ever attempted. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "inner wire touching outer wire loads intact", "loop-merge repair never invoked on touching wires".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(35) ifc=schema_n/a`
-### Tfa152 — ShapeAnalysis_CheckSmallFace.CheckSpotFace exactly-zero-area
+### Tfa152 — Degenerate zero-area face loads as encoded (no classification applied); CheckSpotFace is never invoked on an ordinary read
 
-Face with degenerate geometry producing area=0.0. CheckSpotFace's threshold check treats zero area as "definitely small" without distinguishing manufacturing tolerance from true degeneracy.
+**Defect**: Face with degenerate geometry producing area=0.0. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the file loads with the face present exactly as encoded, matching `load == "ok"` below, no crash, no spot/degeneracy classification applied. `ShapeAnalysis_CheckSmallFace::CheckSpotFace` is never invoked during an ordinary read — the original title's claim that "the threshold check treats zero area as definitely small, without distinguishing tolerance from true degeneracy" describes a classification this file never receives.
+
+**Sources**: OCCT method `ShapeAnalysis_CheckSmallFace::CheckSpotFace` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the zero-area face loads unclassified.
+
 - **Tier-3 assertion**: load == "ok"
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed CheckSpotFace's threshold check can't distinguish tolerance from true zero-area degeneracy; that checker is never invoked on an ordinary read, so no classification (correct or mistaken) is ever produced. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "zero-area face loads without classification", "spot-face check never invoked at exact-zero area".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
-### Tfa153 — ShapeFix_Face.FixSmallAreaWire computational-overflow
+### Tfa153 — Vertex coordinates at 1e15 magnitude are rejected at the Part-21 parse stage (both OCCT and gmsh); the reader never reaches geometry construction, let alone FixSmallAreaWire
 
-Face with very large vertex coordinates (1e15). FixSmallAreaWire's area calculation overflows float precision when scaling by coordinates near machine limits.
-- **Notes**: Validation observed: parser-level rejection by both OCCT and gmsh ("Incorrect Syntax: Fails Count: 2" diagnostic from both), where OCCT categorizes the result as silent-empty and gmsh as reject. The cited FixSmallAreaWire code path is not reached at fixture scale because the parser rejects the 1e15-magnitude REAL literals before geometry construction begins. The kernel-divergence-at-parser-level (occt=empty vs gmsh=reject for identical input) still demonstrates the defect class.
+**Defect**: Face with vertex coordinates at 1e15 magnitude. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): both OCCT and gmsh reject the file at the Part-21 parse stage ("Incorrect Syntax: Fails Count: 2"), before any geometry — let alone a face area calculation — is ever built; `ShapeFix_Face::FixSmallAreaWire` is never reached. OCCT categorizes the result as silent-empty (`transferred roots == 0`, `shape.IsNull() == True`); gmsh reports an outright parse rejection — the kernel-divergence at the parser level (empty vs. reject for the same malformed input) is itself the demonstrated defect, not an area-overflow bug in a wire-removal healer.
+
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixSmallAreaWire's area calculation overflows at 1e15-scale coordinates; that code path is never reached because the Part-21 parser rejects the 1e15-magnitude REAL literals first (this analysis was already present in this entry's own pre-existing Notes below). Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "1e15 coordinate REAL literal parser rejection", "extreme-magnitude vertex rejected before geometry build". Validation observed: parser-level rejection by both OCCT and gmsh ("Incorrect Syntax: Fails Count: 2" diagnostic from both), where OCCT categorizes the result as silent-empty and gmsh as reject. The cited FixSmallAreaWire code path is not reached at fixture scale because the parser rejects the 1e15-magnitude REAL literals before geometry construction begins. The kernel-divergence-at-parser-level (occt=empty vs gmsh=reject for identical input) still demonstrates the defect class.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=reject ifc=schema_n/a`
-### Tfa154 — ShapeAnalysis_CheckSmallFace.CheckTwisted disconnected-wire-region
+### Tfa154 — Wire with a disconnected internal chain inside the outer bound loads intact, both segments present; CheckTwisted is never invoked on an ordinary read
 
-Face whose wire has a disconnected region (open chain inside an otherwise closed wire). CheckTwisted doesn't handle disconnect; assumes all edges in outer bound form a single topological cycle.
+**Defect**: Face whose wire has a disconnected region (an open chain of edges inside an otherwise closed wire). Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the affected face loads with the outer wire and the disconnected inner chain both present (outer + inner, matching the oracle's per-face 2-wire count and `load == "ok"` below), no crash, no forced single-cycle assumption applied. `ShapeAnalysis_CheckSmallFace::CheckTwisted` is never invoked during an ordinary read — the original title's claim that "CheckTwisted assumes all edges in the outer bound form a single topological cycle" describes an assumption this file never tests.
+
+**Sources**: OCCT method `ShapeAnalysis_CheckSmallFace::CheckTwisted` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); both wire segments load intact.
+
 - **Tier-3 assertion**: load == "ok"
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed CheckTwisted's single-cycle assumption breaks on this disconnected wire region; that checker is never invoked on an ordinary read, so no assumption is ever tested or broken. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "disconnected wire region loads intact", "twist check never invoked on disconnected chain".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
-### Tfa155 — ShapeFix_Face.FixOrientation seam-vertex-shared
+### Tfa155 — Two wires on a cylinder both anchored at the same seam vertex load intact and distinct; FixOrientation is never invoked on an ordinary read
 
-Face on cylinder where two wires both start at the seam vertex. FixOrientation's winding test gets confused by the shared seam; both loops anchor to identical XYZ coordinate.
+**Defect**: Face on a cylinder (radius 5.0) where two wires both start at the same seam vertex — an identical XYZ anchor coordinate shared by both loops. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the file loads with 4 faces total (matching the `face[0]`/`face[3]` cylinder-radius-5.0 and edge circle-radius assertions below), the seam-shared wires loading intact and distinct, no crash, no winding-test confusion. `ShapeFix_Face::FixOrientation` is never invoked during an ordinary read — the original title's claim that "the winding test gets confused by the shared seam anchor" describes a test this file never runs.
+
+**Sources**: OCCT method `ShapeFix_Face::FixOrientation` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the seam-shared wires load intact and distinct.
+
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 5.0
@@ -25244,22 +25268,35 @@ Face on cylinder where two wires both start at the seam vertex. FixOrientation's
 - **Tier-3 assertion**: edge[1].analytic.radius == 5.0
 - **Tier-3 assertion**: edge[3].curve_type == "circle"
 - **Tier-3 assertion**: edge[3].analytic.radius == 5.0
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixOrientation's winding test gets confused by the shared seam vertex; that method is never invoked on an ordinary read, so no winding test (confused or otherwise) is ever run. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: "seam-shared-vertex cylinder wires load intact", "orientation winding test never invoked at shared seam".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
-### Tfa156 — ShapeFix_Face.FixSmallAreaWire wire-with-tangent-edges
-Face with outer wire and inner wire whose edges form a tangent smooth curve. FixSmallAreaWire's polygon approximation underestimates the enclosed area, causing missed edge tangency repair.
+### Tfa156 — Face with an outer wire and a tangent-smooth (diamond) inner wire is wrapped in a GEOMETRIC_CURVE_SET; the reader never builds a live face at all (shape comes back empty)
+
+ADVANCED_FACE hosted inside a `GEOMETRIC_CURVE_SET`, whose builder dispatch only accepts `GeometricRepresentationItem`s and never reaches `StepToTopoDS_TranslateFace`/the face-topology pipeline at all (same orphaning pattern as Tfa121/Tfa131/Tfa160/Tfa169). Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): `transferred roots == 0`, `shape.IsNull() == True`, `n_faces == 0` — matching this entry's own pre-existing `shape_null == True` / `occt=empty/empty` lines below. This fixture's own header comment states "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; no orphaned entities" — the generator itself anticipated this outcome. Since no face is ever built, `ShapeFix_Face::FixSmallAreaWire` is never called on this geometry — the "underestimates the tangent inner wire's enclosed area via polygon approximation, missing tangency repair" claim describes a code path this file never reaches.
+
 - **Tier-3 assertion**: shape_null == True
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed ShapeFix_Face::FixSmallAreaWire underestimates the tangent inner wire's enclosed area via polygon approximation, missing tangency repair; that checker/fixer is never invoked because the face never survives translation (the `GEOMETRIC_CURVE_SET` wrapper is a type the builder dispatch skips). The `shape_null == True` / `occt=empty/empty` Expected-validation line below was already correct; only the mechanism attribution was wrong. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. **See also**: Tfa121, Tfa131, Tfa160, Tfa169 (same `GEOMETRIC_CURVE_SET`-orphaning pattern). Synonyms: "GEOMETRIC_CURVE_SET wrapped face never translates", "tangent-edge inner wire face orphaned in curve set".
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
-### Tfa157 — ShapeAnalysis_CheckSmallFace.CheckPin extreme-axis-pin
-Pin face with 1000x aspect ratio (1000mm × 1mm). CheckPin's threshold calculation overflows when processing extreme aspect ratios on thin axis pins.
+### Tfa157 — Extreme-aspect-ratio (1000:1) pin-shaped ADVANCED_FACE is wrapped in a GEOMETRIC_CURVE_SET; the reader never builds a live face at all (shape comes back empty)
+
+ADVANCED_FACE hosted inside a `GEOMETRIC_CURVE_SET`, whose builder dispatch only accepts `GeometricRepresentationItem`s and never reaches `StepToTopoDS_TranslateFace`/the face-topology pipeline at all (same orphaning pattern as Tfa121/Tfa131/Tfa160/Tfa169). Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): `transferred roots == 0`, `shape.IsNull() == True`, `n_faces == 0` — matching this entry's own pre-existing `shape_null == True` / `occt=empty/empty` lines below. This fixture's own header comment states "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; no orphaned entities" — the generator itself anticipated this outcome. Since no face is ever built, `ShapeAnalysis_CheckSmallFace::CheckPin` is never called on this geometry — the "overflows its threshold calculation at extreme aspect ratios on thin axis pins" claim describes a code path this file never reaches.
+
 - **Tier-3 assertion**: shape_null == True
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed ShapeAnalysis_CheckSmallFace::CheckPin overflows its threshold calculation at extreme aspect ratios on thin axis pins; that checker/fixer is never invoked because the face never survives translation (the `GEOMETRIC_CURVE_SET` wrapper is a type the builder dispatch skips). The `shape_null == True` / `occt=empty/empty` Expected-validation line below was already correct; only the mechanism attribution was wrong. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. **See also**: Tfa121, Tfa131, Tfa160, Tfa169 (same `GEOMETRIC_CURVE_SET`-orphaning pattern). Synonyms: "GEOMETRIC_CURVE_SET wrapped face never translates", "extreme-aspect-ratio pin face orphaned in curve set".
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
-### Tfa158 — ShapeFix_Face.FixOrientation closed-shell-context-loss
-Face with ambiguous orientation flag and inner hole. FixOrientation makes context-free decisions that would benefit from closed-shell context; applied in isolation, orientation fix is unreliable.
+### Tfa158 — Face with an ambiguous orientation flag and an inner hole is wrapped in a GEOMETRIC_CURVE_SET; the reader never builds a live face at all (shape comes back empty)
+
+ADVANCED_FACE hosted inside a `GEOMETRIC_CURVE_SET`, whose builder dispatch only accepts `GeometricRepresentationItem`s and never reaches `StepToTopoDS_TranslateFace`/the face-topology pipeline at all (same orphaning pattern as Tfa121/Tfa131/Tfa160/Tfa169). Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): `transferred roots == 0`, `shape.IsNull() == True`, `n_faces == 0` — matching this entry's own pre-existing `shape_null == True` / `occt=empty/empty` lines below. This fixture's own header comment states "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; no orphaned entities" — the generator itself anticipated this outcome. Since no face is ever built, `ShapeFix_Face::FixOrientation` is never called on this geometry — the "makes context-free orientation decisions that would need closed-shell context to be reliable" claim describes a code path this file never reaches.
+
 - **Tier-3 assertion**: shape_null == True
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed ShapeFix_Face::FixOrientation makes context-free orientation decisions that would need closed-shell context to be reliable; that checker/fixer is never invoked because the face never survives translation (the `GEOMETRIC_CURVE_SET` wrapper is a type the builder dispatch skips). The `shape_null == True` / `occt=empty/empty` Expected-validation line below was already correct; only the mechanism attribution was wrong. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. **See also**: Tfa121, Tfa131, Tfa160, Tfa169 (same `GEOMETRIC_CURVE_SET`-orphaning pattern). Synonyms: "GEOMETRIC_CURVE_SET wrapped face never translates", "ambiguous-orientation face with hole orphaned in curve set".
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
-### Tfa159 — ShapeAnalysis_CheckSmallFace.CheckStripFace cylindrical-strip
-Strip face on cylindrical surface (narrow angular band, full height). CheckStripFace's aspect ratio uses parametric domain (0–2π, bounded v), which doesn't reflect true 3D strip geometry in 3D arc length.
+### Tfa159 — Narrow angular-strip (5°) ADVANCED_FACE on a CYLINDRICAL_SURFACE is wrapped in a GEOMETRIC_CURVE_SET; the reader never builds a live face at all (shape comes back empty)
+
+ADVANCED_FACE hosted inside a `GEOMETRIC_CURVE_SET`, whose builder dispatch only accepts `GeometricRepresentationItem`s and never reaches `StepToTopoDS_TranslateFace`/the face-topology pipeline at all (same orphaning pattern as Tfa121/Tfa131/Tfa160/Tfa169). Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): `transferred roots == 0`, `shape.IsNull() == True`, `n_faces == 0` — matching this entry's own pre-existing `shape_null == True` / `occt=empty/empty` lines below. This fixture's own header comment states "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; no orphaned entities" — the generator itself anticipated this outcome. Since no face is ever built, `ShapeAnalysis_CheckSmallFace::CheckStripFace` is never called on this geometry — the "uses parametric-domain width instead of true 3D arc length, miscomputing the aspect ratio" claim describes a code path this file never reaches.
+
 - **Tier-3 assertion**: shape_null == True
+- **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed ShapeAnalysis_CheckSmallFace::CheckStripFace uses parametric-domain width instead of true 3D arc length, miscomputing the aspect ratio; that checker/fixer is never invoked because the face never survives translation (the `GEOMETRIC_CURVE_SET` wrapper is a type the builder dispatch skips). The `shape_null == True` / `occt=empty/empty` Expected-validation line below was already correct; only the mechanism attribution was wrong. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. **See also**: Tfa121, Tfa131, Tfa160, Tfa169 (same `GEOMETRIC_CURVE_SET`-orphaning pattern). Synonyms: "GEOMETRIC_CURVE_SET wrapped face never translates", "narrow cylindrical strip face orphaned in curve set".
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Tfa160 — ShapeFix_Face.FixWiresTwoCoincEdges loop-inside-loop
 Face with inner wire (hole) fully inside outer wire; inner wire's bottom edge is geometrically coincident with outer wire's bottom edge. FixWiresTwoCoincEdges detects the coincidence but cannot resolve ownership.
