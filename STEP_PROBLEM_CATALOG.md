@@ -1508,7 +1508,7 @@ _Section summary: 82 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 1
 - **Tier-3 assertion**: n_vertices_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
@@ -1739,7 +1739,7 @@ _Section summary: 82 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
@@ -1806,7 +1806,7 @@ _Section summary: 82 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
@@ -2144,7 +2144,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 0
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
@@ -2159,7 +2159,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_faces_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
@@ -2274,7 +2274,7 @@ End of file.
 - **Byte assertion**: contains(b'TOROIDAL_SURFACE(')
 - **Byte assertion**: contains(b'-50.0,10.0')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Tier-3 assertion**: face[0].surface_type == "torus"
@@ -2312,7 +2312,7 @@ End of file.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "bspline"
 - **Tier-3 assertion**: face[0].bspline.is_u_periodic == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -2329,7 +2329,7 @@ End of file.
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS(')
 - **Byte assertion**: count(b'(0.0,0.0,10.0)') >= 3
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
@@ -2345,7 +2345,7 @@ End of file.
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'12.5663706144')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
@@ -2415,7 +2415,7 @@ End of file.
 - **Reproducer recipe**: `FACE_OUTER_BOUND` with four `ORIENTED_EDGE`s whose 2D pcurves form a bow-tie in the face's UV plane.
 - **Expected kernel behavior**: reject; boundary cannot be unambiguously interpreted; healers must split the face or report. Do not assume orientation by ad-hoc winding.
 - **Notes**: **See also**: Gp026. Synonyms: "non-simple EDGE_LOOP self-crosses in UV", "bow-tie quadrilateral face boundary", "face wire crosses itself in parameter space", "Jordan-curve violation in face outer bound", "edge_loop forms bow-tie in UV plane".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Byte assertion**: contains(b'EDGE_LOOP(')
 - **Byte assertion**: count_entity_def(b'ORIENTED_EDGE') == 4
@@ -2431,7 +2431,7 @@ End of file.
 - **Reproducer recipe**: 4-edge `ADVANCED_FACE` whose two long sides are 100mm and two short sides are 1e-7 mm; or `PLANE` whose ref direction equals normal direction (zero-area on construction); or face with all vertices within tolerance ball.
 - **Expected kernel behavior**: drop the face when below tolerance and merge its incident edges (or accept it and reject downstream operations that would deref it), never crash on a zero-area surface definition.
 - **Notes**: **See also**: Tfa006, Tfa007, Tfa008, Tfa012, Tfa015. Synonyms: "zero-area face sliver", "spot face collapses to point", "strip face one direction near zero", "pin face tiny aspect-ratio rectangle", "ADVANCED_FACE area below tolerance".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Byte assertion**: contains(b'1.0E-7')
 - **Byte assertion**: contains(b'(100.0,0.0,0.0)')
@@ -2447,7 +2447,7 @@ End of file.
 - **Reproducer recipe**: Two surfaces meeting at near-tangency; trim with intersection curves so resulting face is bounded by two long edges and two infinitesimal end-edges.
 - **Expected kernel behavior**: heal; replace short edges with `tolerant_vertex`, then collapse the sliver face into a `tolerant_edge`. Reject if collapse would violate manifold-ness.
 - **Notes**: **See also**: Tfa008, Tfa014. Synonyms: "sliver face high aspect ratio", "two long edges within tolerance", "near-zero area face with long perimeter", "grazing-angle intersection produces sliver", "nearly-tangent surface intersection face".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Byte assertion**: contains(b'1.0E-5')
 - **Byte assertion**: contains(b'(250.0,0.0,0.0)')
@@ -2463,7 +2463,7 @@ End of file.
 - **Reproducer recipe**: `EDGE_CURVE` with 3D curve from t=0 to t=1; surface curve with pcurve traced as 1→0 in surface parameter; both linked to same `EDGE_CURVE`.
 - **Expected kernel behavior**: detect the direction mismatch and reverse the pcurve sense to align with the 3D curve, or reject as malformed.
 - **Notes**: **See also**: Tsh033. Synonyms: "3D curve and pcurve trace edge in opposite directions", "pcurve direction reversed relative to 3D curve", "FixReversed2d direction mismatch", "pcurve and 3D curve disagree about parameter direction", "edge sense mismatch between 2D and 3D".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'SURFACE_CURVE(')
@@ -2482,7 +2482,7 @@ End of file.
 - **Reproducer recipe**: Cylinder face wire with three consecutive edges whose pcurves are at U+0, U+2π, U+0 — middle edge shifted by one period.
 - **Expected kernel behavior**: re-shift each pcurve to land in a single coherent period band that matches its neighbours, preserving 3D consistency, or reject as malformed.
 - **Notes**: **See also**: Gn031, Gp023, Gp029. Synonyms: "pcurves shifted by integer period on closed surface", "FixShifted period mismatch", "per-edge pcurve period offset varies", "wire UV image broken into multiple period bands", "individual pcurves in different period bands".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'6.2831853072')
@@ -2501,7 +2501,7 @@ End of file.
 - **Reproducer recipe**: `VERTEX_POINT(A=(0,0,0))`, `VERTEX_POINT(B=(10,0,0))`, `EDGE_CURVE` referring to `LINE(pnt=(0,0,0.5), dir=(1,0,0))` — line is parallel to AB but offset by 0.5.
 - **Expected kernel behavior**: heal-to-vertices; replace the line so it passes through both vertices, preserving original direction.
 - **Notes**: **See also**: N023. Synonyms: "line displaced from true position", "LINE pnt offset from vertex points", "edge line direction correct but offset", "FPX Expert PCB displaced line", "line parallel-displaced from edge endpoints".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Byte assertion**: contains(b'(0.0,0.0,0.5)')
 - **Byte assertion**: contains(b'(10.0,0.0,0.0)')
@@ -2518,7 +2518,7 @@ End of file.
 - **Reproducer recipe**: STEP cylinder of radius 25.0 mm exported as `B_SPLINE_SURFACE_WITH_KNOTS` of degree (2,1) with rational weights; no `CYLINDRICAL_SURFACE` anywhere in file.
 - **Expected kernel behavior**: heal by analytic recovery; fit candidate primitive within tolerance, replace; reject canonicalization if recovered surface deviates beyond user-supplied tolerance.
 - **Notes**: **See also**: Gn014. Synonyms: "round-trip planar face becomes trimmed B-spline", "PLANE exported as degree-1 NURBS", "untrimmed plane returns as trimmed B-spline surface", "Rhino round-trip flattens plane into NURBS", "planar surface lost to BSpline degree (1,1) form".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS(')
 - **Byte assertion**: count_entity_def(b'PLANE') == 0
@@ -2570,7 +2570,7 @@ End of file.
 - **Reproducer recipe**: Two faces on same non-periodic BSpline surface that happen to share a long curve along U=const, where the U-range does not wrap.
 - **Expected kernel behavior**: heal; verify periodicity flag and parametric distance before treating as seam; do not insert seam-degenerate edge.
 - **Notes**: Synonyms: "pseudo-seam edge surface_curve has same pcurve twice", "looks like seam but surface not periodic", "PCURVE_S1_AND_S2 with duplicate pcurve reference", "seam-like edge on non-periodic BSpline surface", "false seam from coincidental shared edge".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Byte assertion**: contains(b'.PCURVE_S1_AND_S2.')
 - **Byte assertion**: contains(b'(#46,#46)')
@@ -2589,7 +2589,7 @@ End of file.
 - **Reproducer recipe**: `TRIMMED_CURVE` over a unit-radius `CIRCLE` with `trim_1=PARAMETER_VALUE(2π)`, `trim_2=PARAMETER_VALUE(0)` and `sense_agreement=.T.`.
 - **Expected kernel behavior**: heal; clamp/wrap parameter values into natural domain; if `last < first`, swap or wrap modulo period.
 - **Notes**: **See also**: Gp007. Synonyms: "curve last parameter less than first", "trimmed_curve has reversed parameter range", "EDGE_CURVE first/last out of natural domain", "trim_2 less than trim_1 on circle", "PARAMETER_VALUE last smaller than first".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Byte assertion**: contains(b'TRIMMED_CURVE(')
 - **Byte assertion**: contains(b'PARAMETER_VALUE(6.2831853071795864)')
@@ -2605,7 +2605,7 @@ End of file.
 - **Reproducer recipe**: `ADVANCED_FACE` on `CYLINDRICAL_SURFACE` of radius 10 mm whose `EDGE_CURVE` is a `LINE` 0.5 mm radially off the cylinder.
 - **Expected kernel behavior**: heal; `rebuild-edge` re-intersects host faces and rebuilds vertices; reproject curve onto surface, or replace with surface intersection.
 - **Notes**: **See also**: Tsh042, N024. Synonyms: "edge geometry inconsistent with adjacent faces actual intersection", "edges for the geometry do not match the surfaces", "stale edge curve after face translation", "edge deviates from cylinder beyond tolerance", "edge curve doesn lie on host surface intersection".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'(10.5,0.0,0.0)')
@@ -2622,7 +2622,7 @@ End of file.
 - **Reproducer recipe**: Take a trimmed face F1 on surface S1; build F2 on different surface S2 by reprojecting every edge of F1 onto S2 without first deduplicating the outer wire.
 - **Expected kernel behavior**: a face-construction or rehosting pass must ensure exactly one outer wire per face; merge duplicates or reject. A multiply-traced outer wire produces ambiguous parametric trims.
 - **Notes**: **See also**: Gp014. Synonyms: "ADVANCED_FACE has two FACE_OUTER_BOUND entries", "duplicated outer contour with overlapping pcurves", "face has two outer wires", "outer boundary stored twice", "rehosting face onto new surface duplicates wire".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Byte assertion**: count_entity_def(b'FACE_OUTER_BOUND') == 2
 - **Byte assertion**: contains(b'(#81,#82)')
@@ -2638,7 +2638,7 @@ End of file.
 - **Expected kernel behavior**: reject this surface; emit warning; carry on with face omission.
 - **Closure intent**: ambiguous
 - **Notes**: **See also**: Gs036. Synonyms: "surface of linear extrusion direction parallel to basis line", "extruded curve collapses to line", "SURFACE_OF_LINEAR_EXTRUSION degenerate basis", "extrusion vector colinear with LINE basis", "surface collapses because direction matches basis line".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Byte assertion**: contains(b'SURFACE_OF_LINEAR_EXTRUSION(')
 - **Byte assertion**: count_entity_def(b'LINE') == 1
@@ -2653,7 +2653,7 @@ End of file.
 - **Reproducer recipe**: STEP `TOROIDAL_SURFACE` or bicubic NURBS face plus `TRIMMED_CURVE` defined via `PCURVE`; tessellate with default size factor.
 - **Expected kernel behavior**: heal; apply chordal-error refinement to trim curves consistently with surface refinement.
 - **Notes**: Synonyms: "trim curves on torus produce jagged tessellation borders", "TRIMMED_CURVE on ELLIPSE pcurve", "border mesh chaotic on TOROIDAL_SURFACE", "tessellator falls back to coarse parametric sampling on trim", "tube.stp jagged trim curve mesh".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Byte assertion**: contains(b'TOROIDAL_SURFACE(')
 - **Byte assertion**: contains(b'TRIMMED_CURVE(')
@@ -2672,7 +2672,7 @@ End of file.
 - **Reproducer recipe**: Build a planar face whose outer wire visits a shared vertex twice (figure-eight); export.
 - **Expected kernel behavior**: split the pinched face at the shared vertex into two manifold faces; re-fit a twisted face's parametrisation if recoverable; insert degenerate edges at poles for the belt-wire-on-periodic case; or reject as malformed when the topology cannot be recovered.
 - **Notes**: **See also**: Gn025, Tfa010, Twi041. Synonyms: "twisted face EDGE_LOOP revisits shared vertex", "Mobius-cell face pathology", "pinched face self-touches at one vertex", "vertex-split face boundary visits vertex three times", "single vertex visited multiple times by outer wire".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Byte assertion**: count_entity_def(b'ORIENTED_EDGE') == 6
 - **Byte assertion**: contains(b'(5.0,5.0,0.0)')
@@ -2687,7 +2687,7 @@ End of file.
 - **Reproducer recipe**: `COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,$)` referenced by a `COMPOSITE_CURVE`.
 - **Expected kernel behavior**: heal; drop the null segment with a warning; never crash.
 - **Notes**: **See also**: Ad085, Gs054, Gs055. Synonyms: "composite curve segment with null parent_curve", "COMPOSITE_CURVE_SEGMENT.parent_curve is dollar-sign", "null parent in composite curve segment", "dropping null segment with warning", "parent_curve null reference in composite".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Byte assertion**: contains(b'COMPOSITE_CURVE_SEGMENT(')
 - **Byte assertion**: contains(b',$)')
@@ -2703,7 +2703,7 @@ End of file.
 - **Reproducer recipe**: `DIRECTION('',(0.,0.,0.))` referenced by `AXIS2_PLACEMENT_3D`; or axis `(0,0,1)` and ref_direction `(0,0,1)`.
 - **Expected kernel behavior**: reject the surface/placement; healers may project ref_direction onto plane normal or substitute global Z/X; never crash.
 - **Notes**: **See also**: Gn010, Gs001, Gs032. Synonyms: "negative-radius zero-magnitude direction or vector", "DIRECTION with all-zero direction_ratios", "zero-magnitude VECTOR", "axis and ref_direction colinear cannot form orthonormal frame", "PLANE ref direction parallel to normal".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Byte assertion**: contains(b'DIRECTION(\'\',(0.0,0.0,0.0))')
 - **Byte assertion**: count(b'DIRECTION(\'\',(0.0,0.0,1.0))') >= 2
@@ -2721,7 +2721,7 @@ End of file.
 - **Byte assertion**: contains(b'OFFSET_SURFACE(')
 - **Byte assertion**: contains(b'SURFACE_OF_LINEAR_EXTRUSION(')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -2733,7 +2733,7 @@ End of file.
 - **Reproducer recipe**: Self-touching BSpline surface with pcurve crossing the near-period; sample pcurve at uniform parameter and observe UV jump > 0.95 of period.
 - **Expected kernel behavior**: heal — detect jump; insert additional point; adjust by inferred period.
 - **Notes**: **See also**: Gn033. Synonyms: "pcurve U/V parameter has large jump near periodic boundary on BSpline", "huge jump in pcurve at near-period seam", "near-periodicity not recognized produces UV spike", "self-touching BSpline surface pcurve straddles wraparound", "2D pcurve crosses near-period boundary uncaught".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS(')
 - **Byte assertion**: contains(b'(0.99,0.5)')
@@ -2772,7 +2772,7 @@ End of file.
 - **Reproducer recipe**: `B_SPLINE_CURVE` with multi-knot near degree multiplicity producing a cusp; reference from `EDGE_CURVE`.
 - **Expected kernel behavior**: accept geometrically; downstream meshers detect and refuse / heal; archive-stable only if validation properties still match.
 - **Notes**: **See also**: Gn008. Synonyms: "high-curvature curve cusp from NURBS knot insertion", "B-spline curve near-cusp from full-degree multi-knot", "RATIONAL_B_SPLINE_CURVE weight ratio above 1000", "mesher over-resolves cusp on NURBS curve", "BSpline curve high local curvature artifact".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS(')
 - **Byte assertion**: contains(b'(4,3,4)')
@@ -2801,7 +2801,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 6
 - **Tier-3 assertion**: n_faces_total == 6
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(38) ifc=schema_n/a`
@@ -2839,7 +2839,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') == 0
 - **Tier-3 assertion**: n_faces_total == 4
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(20) ifc=schema_n/a`
@@ -2858,7 +2858,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 5
 - **Tier-3 assertion**: n_faces_total == 5
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(33) ifc=schema_n/a`
@@ -2878,7 +2878,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 6
 - **Tier-3 assertion**: n_faces_total == 6
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(40) ifc=schema_n/a`
@@ -2897,7 +2897,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 5
 - **Tier-3 assertion**: n_faces_total == 5
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(33) ifc=schema_n/a`
@@ -2928,7 +2928,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 6
 - **Tier-3 assertion**: n_faces_total == 6
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(38) ifc=schema_n/a`
@@ -2944,7 +2944,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 6
 - **Tier-3 assertion**: n_faces_total == 6
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(38) ifc=schema_n/a`
@@ -2961,7 +2961,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 6
 - **Tier-3 assertion**: n_faces_total == 6
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(38) ifc=schema_n/a`
@@ -2977,7 +2977,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'FACE_BOUND')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
 - **Tier-3 assertion**: n_faces_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`
@@ -2993,7 +2993,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
 - **Tier-3 assertion**: n_faces_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
@@ -3008,7 +3008,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: count(b'FACE_OUTER_BOUND') >= 2
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
@@ -3024,7 +3024,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'ORIENTED_CLOSED_SHELL')
 - **Byte assertion**: count_entity_def(b'CLOSED_SHELL') == 2
 - **Tier-3 assertion**: n_faces_total == 12
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(76) ifc=schema_n/a`
@@ -3040,7 +3040,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 3
 - **Tier-3 assertion**: n_faces_total == 3
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`
@@ -3071,7 +3071,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 3
 - **Tier-3 assertion**: n_faces_total == 3
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
@@ -3088,7 +3088,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
@@ -3104,7 +3104,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
@@ -3135,7 +3135,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
@@ -3164,7 +3164,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') == 2
 - **Byte assertion**: count_entity_def(b'CLOSED_SHELL') == 2
 - **Tier-3 assertion**: n_faces_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -3181,7 +3181,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(16) ifc=schema_n/a`
@@ -3225,7 +3225,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'CLOSED_SHELL')
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
@@ -3242,7 +3242,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
@@ -3258,7 +3258,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
@@ -3274,7 +3274,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
@@ -3306,7 +3306,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
 - **Tier-3 assertion**: n_faces_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -3324,7 +3324,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: count_entity_def(b'OPEN_SHELL') == 2
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
@@ -3338,7 +3338,7 @@ _Section summary: 101 entries._
 - **Reproducer recipe**: Two-triangle Shell sharing one edge; prism in -Z direction.
 - **Expected kernel behavior**: Heal and accept: normalize side faces to perimeter edges only; coerce connected input to a single solid.
 - **Notes**: **See also**: Tsh019. Synonyms: "extrude-per-face produces duplicated internal walls", "compsolid has shared interior faces", "Boolean fails on shell extrusion result", "prism of multi-face shell returns disjoint solids", "internal walls between extruded faces".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
@@ -4873,7 +4873,7 @@ _Section summary: 70 entries._
 - **Reproducer recipe**: Convert a Catia procedural blend to STEP — the blend often becomes several `B_SPLINE_SURFACE_WITH_KNOTS` patches whose tangent planes at shared edges differ by more than the resolution tolerance. (Real-world translators may emit `RATIONAL_B_SPLINE_SURFACE` patches; this fixture uses plain B-spline patches to isolate the G1-break defect without rationality as a confound.)
 - **Expected kernel behavior**: accept; report as quality warning; archive-stable only if validation properties (volume, area) still match within tolerance.
 - **Notes**: **See also**: M026, M027. Synonyms: "tangent jump at shared edge after translation", "G1 broken across faces after import", "smooth surfaces become creased on round-trip", "translator re-fits surfaces and loses tangent continuity".
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
+- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Byte assertion**: count_entity_def(b'B_SPLINE_SURFACE_WITH_KNOTS') == 2
 - **Byte assertion**: contains(b'1.0E-5')
@@ -4913,7 +4913,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: count(b'0.005') >= 3
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -4925,7 +4925,7 @@ _Section summary: 70 entries._
 - **Reproducer recipe**: `PLUS_MINUS_TOLERANCE(TOLERANCE_VALUE(LENGTH_MEASURE(0.005), LENGTH_MEASURE(-0.005)),..);` with values swapped.
 - **Expected kernel behavior**: warn or auto-swap; reject the wrong-type case.
 - **Notes**: **See also**: N033. Synonyms: "upper tolerance bound less than lower", "PLUS_MINUS_TOLERANCE has equal bounds", "tolerance bound uses wrong measure type", "angle measure used for length tolerance".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Byte assertion**: count_entity_def(b'PLUS_MINUS_TOLERANCE') == 4
 - **Byte assertion**: contains(b'-0.005') and contains(b'0.005')
@@ -4942,7 +4942,7 @@ _Section summary: 70 entries._
 - **Reproducer recipe**: Dimension with nominal value `5.0`, tolerance `+0.01/-0.01`, but no `precision_qualifier` on either the value or the nominal, and no global default.
 - **Expected kernel behavior**: accept; fall through the precision hierarchy correctly; emit warning when default is needed.
 - **Notes**: **See also**: Pmi008. Synonyms: "tolerance ignored without decimal-place qualifier", "default precision not picked up", "tolerance value shown wrong precision", "fallback chain broken for precision qualifier".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Byte assertion**: count_entity_def(b'PLUS_MINUS_TOLERANCE') == 2
 - **Byte assertion**: contains(b'0.01') and contains(b'-0.01')
@@ -4990,7 +4990,7 @@ _Section summary: 70 entries._
 - **Description**: Adjacent faces are not "approximately equal" to an interval solid: the maximum gap between any two trimmed surfaces along their shared edge exceeds the chosen interval radius. Without this guarantee the boundary reconstruction is not provably gap-free; the model is effectively non-watertight for any tolerance below the maximum gap.
 - **Reproducer recipe**: Two B-spline trims along a shared edge whose maximum Hausdorff distance is 5×ε in a model with declared tolerance ε.
 - **Expected kernel behavior**: heal; reconstruct an interval solid that bounds both surfaces in a tube of radius ε; if no such tube exists, refine geometry until it does.
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Notes**: Synonyms: "face-pair gap exceeds interval bound", "model not watertight by interval-solid metric", "shared edge gap larger than interval radius", "interval-solid validity violated".
 - **Byte assertion**: count_entity_def(b'B_SPLINE_SURFACE_WITH_KNOTS') == 2
@@ -6455,7 +6455,7 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -6512,7 +6512,7 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -6531,7 +6531,7 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -6598,7 +6598,7 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -6617,7 +6617,7 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -6685,7 +6685,7 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -6817,7 +6817,7 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -6834,7 +6834,7 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -6932,7 +6932,7 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: silently accepts with diagnostic and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -6968,7 +6968,7 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: silently accepts with diagnostic and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -6986,7 +6986,7 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: silently accepts with diagnostic and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -7017,7 +7017,7 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: silently accepts with diagnostic and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -7041,7 +7041,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: count_entity_def(b'PRODUCT') == 0
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Defect causes the loader to either abort, silently drop the affected entity, or accept it with corrupted attributes; downstream operations on the affected sub-shape produce results inconsistent with the producer's intent.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -7057,7 +7057,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'\\X2\\') or matches(rb"[\x80-\xff]")
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Defect causes the loader to either abort, silently drop the affected entity, or accept it with corrupted attributes; downstream operations on the affected sub-shape produce results inconsistent with the producer's intent.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -7158,7 +7158,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_edges_total == 1
 - **Tier-3 assertion**: n_vertices_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
@@ -7224,7 +7224,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'DOCUMENT_FILE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Defect causes the loader to either abort, silently drop the affected entity, or accept it with corrupted attributes; downstream operations on the affected sub-shape produce results inconsistent with the producer's intent.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -7283,7 +7283,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Description**: An OpenSCAD-produced model with `difference(){ outer; inner; }` exports STEP containing the difference result PLUS the original argument cylinders as separate solids. On re-import the user sees the union of the operands instead of the hollow.
 - **Reproducer recipe**: STEP file with multiple `MANIFOLD_SOLID_BREP` instances representing pre-Boolean operands, no indication that they were CSG inputs.
 - **Expected kernel behavior**: Producers should emit only final result solid; receivers can't fix this without provenance hints.
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: silently accepts with diagnostic and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Notes**: Synonyms: "pre-Boolean operands left in file alongside result", "duplicate solids: original plus boolean output", "writer ships both inputs and output of cut/union", "extra geometry left over from history".
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') == 3
@@ -7305,7 +7305,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') >= 2
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -7317,7 +7317,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Description**: A `MAPPED_ITEM` whose `transformation_operator` `AXIS2_PLACEMENT_3D` encodes a left-handed coordinate system (improper rotation, det = -1) doesn't round-trip; receiver loses the reflection.
 - **Reproducer recipe**: STEP `MAPPED_ITEM` with `AXIS2_PLACEMENT_3D` direction vectors that form a left-handed frame.
 - **Expected kernel behavior**: Reader handles non-orthonormal-but-orthogonal placements explicitly, or rejects with clear error.
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: silently accepts with diagnostic and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Notes**: Synonyms: "AXIS2_PLACEMENT_3D has negative determinant", "improper rotation in placement matrix", "left-handed frame in axis placement", "mirror transform encoded as rotation".
 - **Byte assertion**: contains(b'MAPPED_ITEM')
@@ -7339,7 +7339,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'COLOUR_RGB')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -7404,7 +7404,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: count_entity_def(b'MAPPED_ITEM') == 2
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -7421,7 +7421,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -7438,7 +7438,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: matches(rb'CARTESIAN_POINT[^;]*1000[0-9]')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -7449,7 +7449,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Description**: With "write parametric pcurves" enabled, certain BSpline-surface faces with a hole loop whose pcurve domain is degenerate (zero length) or maps outside the surface's natural domain cause the STEP writer's face-emission pass to dereference null and crash. When such files are nonetheless emitted, they contain malformed pcurves on read.
 - **Reproducer recipe**: face on a BSpline surface with a hole loop whose pcurve domain is degenerate or extends outside the surface's natural domain.
 - **Expected kernel behavior**: Detect and skip / fix the bad pcurve before writing; reader should reject malformed pcurves with clear message.
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: silently accepts with diagnostic and loads shape(1); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Notes**: Synonyms: "Boolean-history face with degenerate hole-loop pcurve crashes writer", "writer dies on degenerate inner-loop pcurve", "STEP write crash from boolean leftover".
 - **Byte assertion**: contains(b'PCURVE')
@@ -7467,7 +7467,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Reproducer recipe**: Truncated STEP file (writer crash before END marker) — also see P069 for general truncation.
 - **Expected kernel behavior**: skip non-shape labels with a warning, or filter them out before traversal. A null subshape encountered during writer traversal must not crash the writer.
 - **Notes**: Validation observed: silent-empty rather than crash. Kernel-mishandling-by-silent-acceptance still demonstrates the defect class. Synonyms: "empty/null shape entries in OCAF document", "OCAF doc with NULL shape labels corrupts STEP write", "writer chokes on empty TDF labels".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Byte assertion**: contains(b'Empty/null shape entries') or contains(b'P028') or contains(b'truncated')
@@ -7497,7 +7497,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 6
 - **Tier-3 assertion**: n_edges_total == 24
 - **Tier-3 assertion**: n_vertices_total == 48
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a`
@@ -7546,7 +7546,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -7593,7 +7593,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -7616,7 +7616,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -7640,7 +7640,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -7661,7 +7661,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -7724,7 +7724,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -7750,7 +7750,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -7775,7 +7775,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -7798,7 +7798,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -7820,7 +7820,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -7842,7 +7842,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 2
 - **Tier-3 assertion**: n_edges_total == 8
 - **Tier-3 assertion**: n_vertices_total == 16
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a`
@@ -7865,7 +7865,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -7887,7 +7887,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -7908,7 +7908,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -7934,7 +7934,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 1
 - **Tier-3 assertion**: n_vertices_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
@@ -7959,7 +7959,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -7985,7 +7985,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 2
 - **Tier-3 assertion**: n_edges_total == 8
 - **Tier-3 assertion**: n_vertices_total == 16
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -8012,7 +8012,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -8074,7 +8074,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 2
 - **Tier-3 assertion**: n_edges_total == 8
 - **Tier-3 assertion**: n_vertices_total == 16
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
@@ -8117,7 +8117,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') == 2
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8157,7 +8157,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'SHAPE_ASPECT')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8177,7 +8177,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'ANNOTATION_PLANE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8197,7 +8197,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'PRESENTATION_VIEW')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8238,7 +8238,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'PRESENTED_ITEM_REPRESENTATION')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8257,7 +8257,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: count_entity_def(b'SHAPE_ASPECT') == 2
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8283,7 +8283,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'ANNOTATION_PLANE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8320,7 +8320,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'SHAPE_DIMENSION_REPRESENTATION') == 2
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8337,7 +8337,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'composite') or contains(b'stacked')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8349,7 +8349,7 @@ _Section summary: 106 entries._
 - **Description**: NX permits an annotation whose leader is not in the same plane as the text. Polyline and Tessellated graphic presentation in STEP both require all geometry of an `annotation_occurrence` to be coplanar. Writers project the leader onto the annotation plane, but the projection no longer touches the geometry it was attached to. Required handling is to split into multiple `annotation_occurrence`s (one per coplanar subset) under one `draughting_callout`, with the first subset as principal.
 - **Reproducer recipe**: NX-style annotation: text in plane Z=10; leader endpoints (0,0,5) and (0,0,0). Export as either Polyline or Tessellated graphic presentation.
 - **Expected kernel behavior**: Split such annotations into coplanar subsets gathered under one `draughting_callout`; preserve attachment by referencing original geometry from the leader subset.
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Notes**: Synonyms: "non-coplanar leader collapsed onto annotation plane", "leader attachment point lost when projected to plane", "PMI leader pulled out of 3D into 2D", "leader dropped when not in annotation plane".
 - **Byte assertion**: count_entity_def(b'ANNOTATION_CURVE_OCCURRENCE') == 2
@@ -8372,7 +8372,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'TRIANGULATED_FACE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8407,7 +8407,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'PRECISION_QUALIFIER') == 0
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8424,7 +8424,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'CONVERSION_BASED_UNIT')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8456,7 +8456,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'DIMENSIONAL_LOCATION')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8473,7 +8473,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'PLUS_MINUS_TOLERANCE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8489,7 +8489,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'PLANE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8505,7 +8505,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'POLYLINE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8522,7 +8522,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'PLANE') == 5
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8539,7 +8539,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'POLYLINE') == 2
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8573,7 +8573,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'MAPPED_ITEM') == 0
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8605,7 +8605,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8622,7 +8622,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: matches(rb"'4ce0ACF8-1a2b-4c3d-9e8f-7a6b5c4dXYZ'")
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8639,7 +8639,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'POSITION_TOLERANCE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8656,7 +8656,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'POSITION_TOLERANCE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8673,7 +8673,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'DATUM_SYSTEM') == 0
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8690,7 +8690,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'DATUM_SYSTEM')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8707,7 +8707,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'DATUM_REFERENCE_ELEMENT')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8739,7 +8739,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'POSITION_TOLERANCE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8756,7 +8756,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'MEASURE_REPRESENTATION_ITEM')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8786,7 +8786,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'DESCRIPTIVE_REPRESENTATION_ITEM')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8803,7 +8803,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'SHAPE_ASPECT')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8835,7 +8835,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'DIMENSIONAL_SIZE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8866,7 +8866,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'DATUM_SYSTEM')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8883,7 +8883,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'DATUM_SYSTEM')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8914,7 +8914,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'STYLED_ITEM')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8931,7 +8931,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'COLOUR_RGB')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8947,7 +8947,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'ANNOTATION_PLANE') == 1
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8964,7 +8964,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'STYLED_ITEM') == 0
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8997,7 +8997,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'CURVE_STYLE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -9014,7 +9014,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'PRESENTATION_STYLE_ASSIGNMENT')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -9031,7 +9031,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'PLUS_MINUS_TOLERANCE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -9048,7 +9048,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'COMPLEX_TRIANGULATED_SURFACE_SET')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -9079,7 +9079,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'CONFIGURATION_ITEM') == 2
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -9151,7 +9151,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'POSITION_TOLERANCE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -9168,7 +9168,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'PRODUCT') == 3
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -9185,7 +9185,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'PLUS_MINUS_TOLERANCE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -9202,7 +9202,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'PLUS_MINUS_TOLERANCE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -9240,7 +9240,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'SHAPE_ASPECT') == 2
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -9257,7 +9257,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'SHAPE_ASPECT') == 3
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -9273,7 +9273,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'GEOMETRIC_TOLERANCE_WITH_DEFINED_UNIT')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -9304,7 +9304,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'SHAPE_ASPECT_RELATIONSHIP') == 3
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -9321,7 +9321,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'SHAPE_ASPECT')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -9338,7 +9338,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'PRODUCT_DEFINITION') == 2
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -9432,7 +9432,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result) — exactly the behavior the catalog forbids. Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)) — exactly the behavior the catalog forbids. Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -10312,7 +10312,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'10.0')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_edges_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Pipe sweep cannot construct the swept body; the kernel returns a NULL shape and the swept feature is absent from the loaded assembly.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -10330,7 +10330,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'LINE') >= 2
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_edges_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Pipe sweep cannot construct the swept body; the kernel returns a NULL shape and the swept feature is absent from the loaded assembly.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`
@@ -10457,7 +10457,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'LINE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_edges_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Offset operation fails or produces an invalid shape; the kernel returns NULL or raises `StdFail_NotDone`, and the offset feature is absent from the resulting BRep.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -10474,7 +10474,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'LINE') == 2
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_edges_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Offset operation fails or produces an invalid shape; the kernel returns NULL or raises `StdFail_NotDone`, and the offset feature is absent from the resulting BRep.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`
@@ -10580,7 +10580,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'WORKPLAN')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
+- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -10666,7 +10666,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'SETUP')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -10690,7 +10690,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "missing subroutine", "STEP-NC dangling executable", "selective branch unresolved", "control-flow target not declared".
 - **Byte assertion**: contains(b'SELECTIVE')
 - **Tier-3 assertion**: n_faces_total == 1
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: silently accepts with diagnostic and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -10971,7 +10971,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_edges_total == 1
 - **Tier-3 assertion**: n_vertices_total == 3
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`
@@ -11022,7 +11022,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_edges_total == 1
 - **Tier-3 assertion**: n_vertices_total == 6
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
+- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`
@@ -11098,7 +11098,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_edges_total == 2
 - **Tier-3 assertion**: n_vertices_total == 6
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
@@ -11435,7 +11435,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_edges_total == 1
 - **Tier-3 assertion**: n_vertices_total == 2
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -11628,7 +11628,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'(2.0,0.0,0.0)')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -11902,7 +11902,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'(0.5,0.5,0.707)')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -11958,7 +11958,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AXIS2_PLACEMENT_3D')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 5
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
@@ -12359,7 +12359,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'CC_DESIGN_APPROVAL')
 - **Byte assertion**: contains(b'#999')
 - **Tier-3 assertion**: n_faces_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -12562,7 +12562,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'LAMINATE_TABLE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
+- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -12652,7 +12652,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'pad_diameter')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -12683,7 +12683,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'TOP_ONLY')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -12738,7 +12738,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'TERMINAL') >= 4
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 4
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
@@ -12881,7 +12881,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'library_pin_count')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 4
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
@@ -12910,7 +12910,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'CARTESIAN_POINT')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 2
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`
@@ -12940,7 +12940,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'mechanical_placement_constraint')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -12971,7 +12971,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'PLY_BOUNDARY_REPRESENTATION')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -13028,7 +13028,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'TERMINAL') >= 4
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 4
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
@@ -13065,7 +13065,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: matches(rb'DIRECTION\(\'not_unit_length\',\(2\.0,0\.0,0\.0\)\)')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 3
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
@@ -13100,7 +13100,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: matches(rb'GEOMETRIC_REPRESENTATION_CONTEXT\(\'no_units\',\$,3\)')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 3
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
@@ -13140,7 +13140,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'SHAPE_DEFINITION_REPRESENTATION')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 3
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
@@ -13524,7 +13524,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'SURFACE_CURVE(')
 - **Byte assertion**: contains(b'EDGE_CURVE(')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Geometric-utility computation (intersection, projection, extrema) returns a wrong or NULL result; downstream operations that depend on it propagate the wrong value into the loaded geometry.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -13547,7 +13547,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  is the lemon/apple geometry); flag as suspicious for healers; reject if
  strict.
 - **Notes**: **See also**: Gs002. Synonyms: "toroidal surface major/minor radii swapped", "torus stored with reversed radius proportions", "thin donut becomes apple/lemon from swapped radii", "TOROIDAL_SURFACE radius order inverted", "producer wrote major and minor radius in wrong order".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Byte assertion**: contains(b'TOROIDAL_SURFACE(')
 - **Byte assertion**: contains(b'0.5,5.0')
@@ -13575,7 +13575,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'3.141592653589793')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Tier-3 assertion**: face[0].surface_type == "sphere"
@@ -13599,7 +13599,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'OFFSET_CURVE_3D(')
 - **Byte assertion**: contains(b'SURFACE_OF_REVOLUTION(')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -13633,7 +13633,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Reproducer recipe**: `#21=COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#30); #30=COMPOSITE_CURVE('',(#21,..),.F.);`
 - **Expected kernel behavior**: detect the cycle; drop the offending segment with a warning; never crash.
 - **Notes**: **See also**: Gs035, Gs055. Synonyms: "composite curve segment self-cyclic to its containing composite", "COMPOSITE_CURVE_SEGMENT.parent_curve points back at COMPOSITE_CURVE", "infinite recursion on self-referential composite curve", "stack overflow from cycle in composite curve segments", "circular reference in composite curve definition".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Byte assertion**: contains(b'COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#30)')
 - **Byte assertion**: contains(b'COMPOSITE_CURVE(')
@@ -13714,7 +13714,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: Ad088.
 - **Byte assertion**: matches(rb',\s*\)\s*\)\s*;')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: silently accepts with diagnostic and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -13775,7 +13775,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 20
 - **Byte assertion**: count(b'#') >= 30
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -13926,7 +13926,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ISO-10303-21')
 - **Byte assertion**: contains(b'END-ISO-10303-21')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -14121,7 +14121,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ISO-10303-21')
 - **Byte assertion**: contains(b'END-ISO-10303-21')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -14181,7 +14181,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: Pf032.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 29
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -14200,7 +14200,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: A067.
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -14219,7 +14219,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1296) ifc=schema_n/a`
@@ -14238,7 +14238,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -14274,7 +14274,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_edges_total == 1
 - **Tier-3 assertion**: n_vertices_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Tier-3 assertion**: edge[0].curve_type == "circle"
@@ -14325,7 +14325,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'TESSELLATED_CONNECTING_EDGE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 0
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
@@ -14340,7 +14340,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: count_entity_def(b'COORDINATES_LIST') == 6
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 0
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
@@ -14369,7 +14369,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: matches(rb"INTEGER_REPRESENTATION_ITEM\('number of faces',6\)")
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 6
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Appearance/style attributes detach from their target shape; the geometry loads correctly but colors, layers, or material assignments are dropped or attached to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
@@ -14398,7 +14398,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'LINE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_edges_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -14425,7 +14425,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'TESSELLATED_CONSTRUCTIVE_GEOMETRY_REPRESENTATION')
 - **Byte assertion**: contains(b'442 2 1 4')
 - **Tier-3 assertion**: shape_null == False
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
@@ -14502,7 +14502,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: not_contains(b'PRESENTATION_STYLE_ASSIGNMENT')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 0
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
@@ -14740,7 +14740,7 @@ _Section summary: 52 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Tier-3 assertion**: face[0].surface_type == "bspline"
@@ -14829,7 +14829,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b"STYLED_ITEM('null_item_style',(#606),$)")
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Appearance/style attributes detach from their target shape; the geometry loads correctly but colors, layers, or material assignments are dropped or attached to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -14874,7 +14874,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: count_entity_def(b'PRESENTATION_LAYER_ASSIGNMENT') >= 2
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 3
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
@@ -14891,7 +14891,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: matches(rb'PRESENTATION_LAYER_ASSIGNMENT\([^)]*,\(\)\)')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Appearance/style attributes detach from their target shape; the geometry loads correctly but colors, layers, or material assignments are dropped or attached to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -14934,7 +14934,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'TEXTURE_MAPPING')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 4
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
@@ -14982,7 +14982,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'LIMITED_AREA_INDICATOR')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 4
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
@@ -15076,7 +15076,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'GEOMETRIC_CURVE_SET')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -15133,7 +15133,7 @@ _Section summary: 28 entries._
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 8
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -15154,7 +15154,7 @@ _Section summary: 28 entries._
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -15172,7 +15172,7 @@ _Section summary: 28 entries._
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_edges_total == 15
 - **Tier-3 assertion**: n_vertices_total == 15
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
@@ -15214,7 +15214,7 @@ _Section summary: 28 entries._
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 8
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -15238,7 +15238,7 @@ _Section summary: 28 entries._
 - **Tier-3 assertion**: n_faces_total == 100
 - **Tier-3 assertion**: n_edges_total == 400
 - **Tier-3 assertion**: n_vertices_total == 800
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(900) ifc=schema_n/a`
@@ -15256,7 +15256,7 @@ _Section summary: 28 entries._
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -15277,7 +15277,7 @@ _Section summary: 28 entries._
  - `COMPOSITE_CURVE_SEGMENT` whose parent_curve is the composite
 - **Expected kernel behavior**: Tarjan SCC during bind; reject with
 - **Notes**: **See also**: A012, Pf011, Pf030, Ad085.
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 2
 - **Tier-3 assertion**: load == "ok"
@@ -15298,7 +15298,7 @@ _Section summary: 28 entries._
 - **Notes**: **See also**: Pf010. Validation observed: this is a deliberately scaled-down representative; the structural pattern is present but the production-scale resource exhaustion / catastrophic timing is not exercised at fixture size. To trigger the documented kernel-crash, multiply the entity-replication factor by ~10^N as noted in the reproducer recipe. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: length > 100
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -15334,7 +15334,7 @@ _Section summary: 28 entries._
 - **Notes**: **See also**: A001, Pf001, Ad027.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 10
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
@@ -15358,7 +15358,7 @@ _Section summary: 28 entries._
 - **Notes**: **See also**: P008, P009.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 32
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -15380,7 +15380,7 @@ _Section summary: 28 entries._
 - **Closure intent**: solid
 - **Closure defect**: gap
 - **Notes**: **See also**: M023, Pf027. Provenance tier: runtime-only; bytes alone cannot demonstrate this defect; the catalogued symptoms (quadratic-time stitching, Boolean failures, resource exhaustion at ~10k+ faces) are runtime resource consumption that scales with mesh size. A fixture-scale `OPEN_SHELL` does not embody the production-scale exhaustion; a behavioral test on the stitching/Boolean pipeline at scale is the appropriate venue.
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 8
 - **Byte assertion**: contains(b'OPEN_SHELL')
@@ -15408,7 +15408,7 @@ _Section summary: 28 entries._
 - **Notes**: distinct from #417 (huge-shell ShapeFix slowness). **See also**: A026. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -15429,7 +15429,7 @@ _Section summary: 28 entries._
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 8
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(441) ifc=schema_n/a`
@@ -15446,7 +15446,7 @@ _Section summary: 28 entries._
 - **Expected kernel behavior**: Heal and accept: allocator-tuned working-set release after STEP assembly read; coerce resident memory back to baseline. Must not OOM across repeated reads.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 5
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -15466,7 +15466,7 @@ _Section summary: 28 entries._
 - **Expected kernel behavior**: Heal and accept: free typed-value tables on library teardown; coerce to bounded resident memory.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -15514,7 +15514,7 @@ _Section summary: 28 entries._
 - **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_REAL_NO_DOT)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 3
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -15600,7 +15600,7 @@ _Section summary: 28 entries._
 - **Notes**: Validation observed: this is a deliberately scaled-down representative; the structural pattern is present but the production-scale resource exhaustion / catastrophic timing is not exercised at fixture size. To trigger the documented kernel-crash, multiply the entity-replication factor by ~10^N as noted in the reproducer recipe. **See also**: Twi041. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 5
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -15621,7 +15621,7 @@ _Section summary: 28 entries._
 - **Notes**: **See also**: Pf015, Pmi062.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 4
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Tier-3 assertion**: face[0].surface_type == "torus"
@@ -15654,7 +15654,7 @@ _Section summary: 28 entries._
 - **Expected kernel behavior**: Heal and accept: configurable join cutoff with a quiet mode for non-interactive callers; coerce the join policy.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(900) ifc=schema_n/a`
@@ -15691,7 +15691,7 @@ _Section summary: 28 entries._
 - **Notes**: **See also**: Ad032, Pf010. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 3
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -16090,7 +16090,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: count_entity_def(b'SHAPE_REPRESENTATION_RELATIONSHIP') >= 3
 - **Byte assertion**: matches(rb'(?s)#100=SHAPE_REPRESENTATION_RELATIONSHIP[^;]+#101[^;]+;.*#101=SHAPE_REPRESENTATION_RELATIONSHIP[^;]+#102')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -16105,7 +16105,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') >= 2 and matches(rb'(?s)NEXT_ASSEMBLY_USAGE_OCCURRENCE[^;]+#12,#22[^;]+;.*NEXT_ASSEMBLY_USAGE_OCCURRENCE[^;]+#22,#12')
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') >= 2
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -16120,7 +16120,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') >= 10 or count(b'#') >= 100
 - **Byte assertion**: count(b'#1') >= 5
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1296) ifc=schema_n/a`
@@ -16303,7 +16303,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'ISO-10303-21')
 - **Byte assertion**: contains(b'END-ISO-10303-21')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -17166,7 +17166,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(21) ifc=schema_n/a`
@@ -17198,7 +17198,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -17227,7 +17227,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: Heal and accept, or reject with E_NURBS_INVARIANT diagnostic: each NURBS invariant is inspected independently; the cusp-at-tolerance-boundary case is decided by the kernel's working precision policy.
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -17285,7 +17285,7 @@ _Section summary: 41 entries._
  kernel's choice.
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -17312,7 +17312,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(26) ifc=schema_n/a`
@@ -17362,7 +17362,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Tier-3 assertion**: face[0].surface_type == "torus"
@@ -17395,7 +17395,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: Heal and accept, or warn and accept: lex policy on integer-in-REAL coerces / normalizes the literal; metadata policy on missing author warns. Both independently decided.
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -17423,7 +17423,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
@@ -17450,7 +17450,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Tier-3 assertion**: face[0].surface_type == "bspline"
@@ -17482,7 +17482,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(25) ifc=schema_n/a`
@@ -17537,7 +17537,7 @@ _Section summary: 41 entries._
  direction-degeneracy each independently rejected/repaired.
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -17588,7 +17588,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: Heal and accept, or warn and accept: PMI ordering invariant, saved-view link invariant, and unit-consistency invariant each addressed independently; normalize where possible, warn otherwise.
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -17640,7 +17640,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
@@ -17667,7 +17667,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
@@ -17696,7 +17696,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Tier-3 assertion**: face[0].surface_type == "torus"
@@ -18618,7 +18618,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: count_entity_def(b'SURFACE_PATCH') == 2
 - **Byte assertion**: contains(b'(0.0,0.3)')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
@@ -18646,7 +18646,7 @@ _Section summary: 41 entries._
 - **Reproducer recipe**: CIRCLE radius 5.0; OFFSET_CURVE_3D over it with ref_distance = -5.0 → entire curve collapses to center point.
 - **Expected kernel behavior**: detect collapse / cusp at construction time and either reject the offset as degenerate or treat the result as a point set rather than a curve.
 - **Notes**: **See also**: Gs048. Synonyms: "OFFSET_CURVE_3D ref_distance equal to radius of curvature creates collapse", "circle offset by negative radius collapses to centre", "offset curve cusp at every point", "0/0 in offset curve first derivative", "offset distance equals local radius produces degeneracy".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Byte assertion**: contains(b'OFFSET_CURVE_3D(')
 - **Byte assertion**: contains(b'-5.0')
@@ -18662,7 +18662,7 @@ _Section summary: 41 entries._
 - **Reproducer recipe**: TOROIDAL_SURFACE major=10, minor=3; PLANE z=0. The intersection is two concentric circles at radius 7 and 13. The fixture's INTERSECTION_CURVE represents only the outer branch (r=13).
 - **Expected kernel behavior**: detect that the producer's basis curve does not cover the full surface intersection and warn; or reject INTERSECTION_CURVE if the kernel expects a single branch and detect-time analysis disagrees.
 - **Notes**: **See also**: Gp- pcurve entries. Synonyms: "INTERSECTION_CURVE represents only one branch", "torus-plane intersection has two circles only one stored", "multiple disjoint intersection branches dropped", "single CURVE_ON_SURFACE pair cannot represent multi-branch intersection", "producer chose one branch silently dropping others".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Byte assertion**: contains(b'INTERSECTION_CURVE(')
 - **Byte assertion**: contains(b'TOROIDAL_SURFACE(')
@@ -18699,7 +18699,7 @@ _Section summary: 41 entries._
 - **Reproducer recipe**: SURFACE_OF_LINEAR_EXTRUSION over a basis LINE with extrusion VECTOR of magnitude 0.0.
 - **Expected kernel behavior**: detect zero-magnitude vectors and reject the surface as degenerate (it has no area).
 - **Notes**: **See also**: Gs032, Gs037. Synonyms: "SURFACE_OF_LINEAR_EXTRUSION zero-magnitude vector", "extrusion VECTOR magnitude 0", "extrusion surface degenerates to basis curve", "zero-length extrusion produces no area", "magnitude 0 in VECTOR for extrusion".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Byte assertion**: contains(b'SURFACE_OF_LINEAR_EXTRUSION(')
 - **Byte assertion**: contains(b"VECTOR('extr_v',#20,0.0)")
@@ -18714,7 +18714,7 @@ _Section summary: 41 entries._
 - **Reproducer recipe**: two CYLINDRICAL_SURFACE blends meeting at the origin: blend A radius 1.0, blend B radius 2.0. At the shared vertex the two fillet surfaces cannot meet smoothly.
 - **Expected kernel behavior**: reconcile the radii by transitioning between them through a third spherical / variable-radius patch, or reject as inconsistent.
 - **Notes**: First entry exercising AP242 BLENDED_EDGE_SURFACE. Synonyms: "BLENDED_EDGE_SURFACE mismatched fillet radii at shared vertex", "two AP242 fillets meet with different radii", "0-thickness gap where blends meet", "blend A radius 1 blend B radius 2 conflict", "constant-radius export of variable-radius fillet creates discontinuity".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Byte assertion**: count_entity_def(b'BLENDED_EDGE_SURFACE') == 2
 - **Byte assertion**: contains(b"BLENDED_EDGE_SURFACE('blendA_radius_1',#25,1.0)")
@@ -18730,7 +18730,7 @@ _Section summary: 41 entries._
 - **Reproducer recipe**: COMPOSITE_CURVE of two POLYLINE segments wrapped in OFFSET_CURVE_2D each, with `ref_distance` = +1.0 on the first and `-1.0` on the second.
 - **Expected kernel behavior**: detect the C0 discontinuity at the chain junction and either reject or insert a connecting segment (line, arc) bridging the gap.
 - **Notes**: **See also**: Gs043. Synonyms: "OFFSET_CURVE_2D ref_distance sign flips mid composite chain", "C0 discontinuity at composite curve junction from offset sign change", "offset side switches mid-chain", "successive offset segments don meet", "ref_distance +1 then -1 on adjacent segments".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Byte assertion**: count_entity_def(b'OFFSET_CURVE_2D') == 2
 - **Byte assertion**: contains(b"OFFSET_CURVE_2D('off1',#20,1.0,.T.)")
@@ -18748,7 +18748,7 @@ _Section summary: 41 entries._
 - **Reproducer recipe**: A face on a degree-2 B-spline surface whose U knot vector is `(0,0,0, 0.5,0.5,0.5, 1,1,1)`; the face itself is a simple square.
 - **Expected kernel behavior**: detect C0 isoparametric lines and either split the surface (and propagate splits to bound faces and edges) or report the discontinuity. Splitting must keep edge/wire/face topology consistent.
 - **Notes**: Surface-side analogue of Gp033. Synonyms: "B-spline surface C0 isoparametric line triggers split", "knot multiplicity equals degree creates C0 isoline", "BSpline surface kink across entire isoline", "split surface at C0 isoline propagates to face/edge topology", "ShapeUpgrade_SplitSurface needed for C0 isoparametric line".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS(')
 - **Byte assertion**: contains(b'(3,3,3)')
@@ -18770,7 +18770,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
@@ -18787,7 +18787,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
@@ -19009,7 +19009,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'VERTEX_POINT')
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') == 3
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell construction reports invalidity (free edges, multi-connected vertices, or wrong orientation); BRepCheck flags the shape, and downstream solid construction either produces an invalid solid or fails outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
@@ -19553,7 +19553,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 7
 - **Tier-3 assertion**: n_faces_total == 7
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(44) ifc=schema_n/a`
@@ -19580,7 +19580,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`
@@ -19606,7 +19606,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
@@ -19682,7 +19682,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Tsh046, Tsh049. Provenance tier: runtime-only; bytes alone cannot demonstrate this defect; the static fixture encodes only the merge precondition (two coplanar faces sharing an edge). The defective wire arises only after the kernel performs the merge operation. A behavioral test against the merge implementation is the appropriate venue. Synonyms: "shared edges not removed after face merge", "interior edge listed twice in merged wire", "dangling zero-area edge after unification", "merged face wire still has internal partitions", "edges between merged faces not deduped".
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
@@ -19706,7 +19706,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Tsh048. Synonyms: "shell merge loses non-unit DIRECTION location", "scaled instance comes in at origin after merge", "MAPPED_ITEM placement dropped on shell union", "non-uniform scale in REPRESENTATION_MAP lost", "compound location vanishes after topology op".
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
@@ -19755,7 +19755,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: matches(rb'EDGE_LOOP\s*\(\s*\x27[^\x27]*\x27\s*,\s*\(\s*\)\s*\)')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
 - **Tier-3 assertion**: n_faces_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -19778,7 +19778,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
@@ -19799,7 +19799,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Tfa016, Tsh001. Synonyms: "merge of opposite-normal faces returns inverted face", "merging same-plane faces with opposite normals breaks shell", "unifier ignores face direction", "merged face has wrong outward direction", "opposite-orientation faces merged silently".
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
@@ -19821,7 +19821,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Twi076, Tsh056b. Synonyms: "face merge hangs on figure-eight wire", "infinite loop in unifier on non-simple wire", "edge walker stuck on pinched face", "non-simple wire causes hang", "face merge fails to terminate". Validation observed: the source bytes declare 1 ADVANCED_FACE entity, but OCCT's traversal of the non-simple figure-eight wire produces n_faces_total=2 — this divergence IS the defect (bytes/tier-3 inconsistency is intentional, allowlisted in `DOCUMENTED_DIVERGENCE` of `_bytes_tier3_audit.py`).
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
@@ -19871,7 +19871,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
@@ -19897,7 +19897,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: A007. Synonyms: "history map missing intermediate edges after merge", "PMI lost during multi-pass face merge", "color attribute disappears on edges from merged faces", "shape history incomplete after unification", "edge mapping doesn't follow merge chain".
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 4
 - **Tier-3 assertion**: n_faces_total == 4
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a`
@@ -19918,7 +19918,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: count_entity_def(b'OPEN_SHELL') == 8
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 8
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(72) ifc=schema_n/a`
@@ -19939,7 +19939,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Tsh019, Tfa032. Synonyms: "face merge corrupts non-manifold interior edge", "InvalidMultiConnexity error after Boolean", "edge connected to too many faces after merge", "non-manifold interior seam breaks unifier", "merge across non-manifold edge produces bad shape".
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 4
 - **Tier-3 assertion**: n_faces_total == 4
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(26) ifc=schema_n/a`
@@ -20396,7 +20396,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 5
 - **Tier-3 assertion**: n_faces_total == 5
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
@@ -20436,7 +20436,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Tier-3 assertion**: face[0].surface_type == "torus"
@@ -20485,7 +20485,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: count(b'TRIANGULATED_FACE') >= 2
 - **Byte assertion**: count(b'COORDINATES_LIST') >= 2
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -20505,7 +20505,7 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: n_faces_total == 6
 - **Tier-3 assertion**: n_edges_total == 24
 - **Tier-3 assertion**: n_vertices_total == 48
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a`
@@ -20525,7 +20525,7 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: n_faces_total == 12
 - **Tier-3 assertion**: n_edges_total == 48
 - **Tier-3 assertion**: n_vertices_total == 96
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(108) ifc=schema_n/a`
@@ -20546,7 +20546,7 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: n_faces_total == 3
 - **Tier-3 assertion**: n_edges_total == 12
 - **Tier-3 assertion**: n_vertices_total == 24
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`
@@ -20625,7 +20625,7 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -20645,7 +20645,7 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -20662,7 +20662,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 2
 - **Byte assertion**: contains(b'1.0e6') or contains(b'1.0E6') or contains(b'1.E6') or contains(b'1000000')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
@@ -20680,7 +20680,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'LINE')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 2
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
@@ -20698,7 +20698,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'VECTOR_2D')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -22060,7 +22060,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -22108,7 +22108,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -22133,7 +22133,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -23641,7 +23641,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 10 or count_entity_def(b'LINE') >= 3 or count_entity_def(b'CIRCLE') >= 3
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 5
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P2
 - **Model impact**: Orphan construction entities load into the entity table but no top-level shape references them; they consume memory and confuse instance-count-based heuristics but do not appear in the geometric output.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -23688,7 +23688,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Visible in §12.6 / §12.8 colour-bound entries; Wr019 documents the writer-side root cause. Bytes alone are insufficient to demonstrate this defect;. Tagged provenance_tier: writer-side.
 - **Byte assertion**: count_entity_def(b'STYLED_ITEM') == 0 and count_entity_def(b'COLOUR_RGB') == 0
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Color/style attributes are absent from the loaded model; geometry is intact but every face renders in the receiver's default appearance.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -23704,7 +23704,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: contains(b"PRODUCT('BREP_")
 - **Byte assertion**: count(b"BREP_001") >= 1 or contains(b'BREP_')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Feature labels and product names load as empty strings; geometry is intact but human-readable identifiers on every entity are gone.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -23719,7 +23719,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: §12.7 covers PMI input defects; Wr021 covers writer-side data loss. Bytes alone are insufficient to demonstrate this defect;. Tagged provenance_tier: writer-side.
 - **Byte assertion**: count_entity_def(b'GEOMETRIC_TOLERANCE') == 0 and count_entity_def(b'DIMENSIONAL_LOCATION') == 0
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: PMI/GD&T entities are absent from the loaded model; the BRep is intact but no dimensions, tolerances, or datum references attach to it.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -23734,7 +23734,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: AP242-specific; AP203 has no saved-view representation. Bytes alone are insufficient to demonstrate this defect;. Tagged provenance_tier: writer-side.
 - **Byte assertion**: count_entity_def(b'CAMERA_MODEL_D3') == 0 and count_entity_def(b'PRESENTATION_VIEW') == 0
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Saved-view/camera entities are absent; the loaded model has no preferred view associations, so PMI that depended on a view orientation displays at default.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -23749,7 +23749,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: prostep ivip CAx-IF Recommended Practice for Validation Properties. Bytes alone are insufficient to demonstrate this defect;. Tagged provenance_tier: writer-side.
 - **Byte assertion**: count_entity_def(b'GEOMETRIC_VALIDATION_PROPERTY') == 0
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Validation property entities are absent; the receiver cannot cross-check the loaded volume/area/centroid against the producer's recorded values.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -23765,7 +23765,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: count(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') >= 4
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') >= 4
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The NAUO assembly tree flattens; multi-level parent/child links collapse into a single tier; sub-components that should have appeared at depth load at the assembly root.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -23781,7 +23781,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: contains(b'screw->plate')
 - **Byte assertion**: contains(b"'screw") or contains(b"'plate")
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The assembly graph re-roots so a former component becomes the top product; sub-components attach to the wrong parent and the loaded assembly tree differs structurally from the producer's intent.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -23872,7 +23872,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: §12.7 covers PMI loss; Wr031 covers the schema-level root cause. Bytes alone are insufficient to demonstrate this defect;. Tagged provenance_tier: writer-side.
 - **Byte assertion**: matches(rb"FILE_SCHEMA\(\(\s*'AUTOMOTIVE_DESIGN")
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: AP242-specific entity types are dropped during downgrade emission; the loaded model contains only the geometric subset and PMI/kinematics/manufacturing data is absent.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -23887,7 +23887,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Inverse of Wr031. Provenance tier: writer-side (Q5 reclassification 2026-07-01).
 - **Byte assertion**: contains(b'AP242') and (count_entity_def(b'GEOMETRIC_TOLERANCE_RELATIONSHIP') >= 1 or contains(b"GEOMETRIC_TOLERANCE_RELATIONSHIP('','',$,$)"))
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Synthesized AP242 stubs for AP203 input load as empty PMI/kinematics entities; the loaded model has placeholder structure with no actual annotation data.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -23949,7 +23949,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: matches(rb'ADVANCED_FACE\([^;]*\.F\.\)')
 - **Byte assertion**: count(b'.F.') >= 1
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Solid orientation flips on re-export; loaded shells have inward-facing normals where outward was intended, and downstream booleans/rendering treat the inside as the outside.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -24015,7 +24015,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: count(b"=DIRECTION('',") >= 1
 - **Byte assertion**: count(b"=CARTESIAN_POINT('',") + count(b"=DIRECTION('',") + count(b"=PLANE('',") >= 3
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Every entity loads with empty `name` attribute; geometry is intact but human-readable names that the producer left implicit are now explicitly empty strings.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -24211,7 +24211,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}).
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}).
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -46034,7 +46034,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'(2,2)')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (empty result); OCCT's STEP-to-`Geom_BSplineSurface` translator reports `Surface has not been created` for the interior full-multiplicity U knot and the resulting `ADVANCED_FACE` is not mapped to `TopoDS` — identical failure signature to the already-shipped Gs049 (verified via `STEPControl_Reader.PrintCheckTransfer` on both files); OCCT loads shape(1) (1 root shell, 0 faces). Kernel-bug witnessed: this is a receiver-side (OCCT STEP-reader) limitation, orthogonal to the knot-removal repair mechanism this fixture demonstrates (independently verified against `Geom_BSplineSurface`/`ShapeUpgrade_SplitSurfaceContinuity` directly).
+- **OCC behavior**: accepts with ERR diagnostic (loads shape(1), 0 faces); OCCT's STEP-to-`Geom_BSplineSurface` translator reports `Surface has not been created` for the interior full-multiplicity U knot and the resulting `ADVANCED_FACE` is not mapped to `TopoDS` — identical failure signature to the already-shipped Gs049 (verified via `STEPControl_Reader.PrintCheckTransfer` on both files); OCCT loads shape(1) (1 root shell, 0 faces). Kernel-bug witnessed: this is a receiver-side (OCCT STEP-reader) limitation, orthogonal to the knot-removal repair mechanism this fixture demonstrates (independently verified against `Geom_BSplineSurface`/`ShapeUpgrade_SplitSurfaceContinuity` directly).
 - **Severity**: P2
 - **Model impact**: Continuity healers that split on every formally-sub-threshold knot (rather than first attempting removal) needlessly fragment surfaces that are geometrically indistinguishable from a smooth single-span surface, multiplying face/edge counts and downstream processing cost (meshing, fillet placement, tessellation-based rendering) without any corresponding geometric benefit; the correct removal-first behavior keeps such surfaces as a single face.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
