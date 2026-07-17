@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tsh260 — Non-conformal T-junction: free edge&#x27;s endpoints hang on the interior of an unrelated longer edge, split by sewing&#x27;s Cutting node insertion</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Tsh260</span>
+</nav>
+<header class="title-bar">
+<h1>Tsh260 <span class="sep">—</span> <span class="entry-title">Non-conformal T-junction: free edge&#x27;s endpoints hang on the interior of an unrelated longer edge, split by sewing&#x27;s Cutting node insertion</span></h1>
+<p class="category">§12.3a shells (sub-class: sewing hanging-vertex / T-junction conformalization — `sew-cutting-hanging-vertex-split`)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../`step-examples/12-3a-shells/Tsh260.stp`">View raw fixture (.stp`)</a> <code class="path">`step-examples/12-3a-shells/Tsh260.stp`</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>occt-coverage GAP audit, `exchange/problems.json` `sew-cutting-hanging-vertex-split` (`BRepBuilderAPI_Sewing::Cutting` `BRepBuilderAPI_Sewing.cxx:3655-3687`</li>
+<li>`CreateCuttingNodes` `:4449-4463`</li>
+<li>`CreateSections` `:4532-4535,4581-4590`</li>
+<li>`ProjectPointsOnCurve` `:4308-4364`). This class had been re-scored PARTIAL→GAP (BACKLOG.md §(e), Wave-4 adjudication) after two independent sessions FAILED to reproduce Cutting firing — the withdrawal keyed on `Sewing::IsModified(edge)` (which stays False across a Cutting split) and on ambiguous single-hanging-vertex or shared-corner geometries. This fixture reproduces the split by result-topology inspection instead, using the geometry the class actually requires: a free edge whose *whole span* lies strictly interior to a longer edge.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An `OPEN_SHELL` with TWO coplanar (z=0) triangular `ADVANCED_FACE`s, each on a `PLANE` (normal +Z). Face LONG carries a full-length reference edge `EDGE_CURVE` running x=1, y:[0,2] (apex off at (-3,1,0)). Face SHORT carries a free candidate `EDGE_CURVE` running x=1, y:[0.5,1.5] (apex off at (5,1,0)). The candidate edge&#x27;s BOTH endpoints — (1,0.5,0) and (1,1.5,0) — lie STRICTLY in the interior of LONG&#x27;s reference edge and share NO vertex with it: a genuine non-conformal T-junction (the two edges look connected in 3D but the topology does not share a node). No pcurves; both faces are planar quadric-free triangles reusing the corpus&#x27;s 3D-`EDGE_CURVE`-only convention (as in Tsh246).</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`OPEN_SHELL` with two planar triangular `ADVANCED_FACE`s; one face hosts a long straight `EDGE_CURVE` (x=1, y:[0,2]); the other hosts a shorter straight `EDGE_CURVE` (x=1, y:[0.5,1.5]) whose two endpoints are strictly interior to the long edge&#x27;s span and are not topologically shared with it.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>when the shape is passed through `BRepBuilderAPI_Sewing` (the standard shell-sewing / STEP-shell-stitching pass), detect the two hanging vertices projecting onto the interior of the long reference edge and split that edge at the projected parameters (`Cutting`/`CreateCuttingNodes`/`CreateSections`), so the shared boundary becomes conformal; the single long edge is replaced by three collinear sub-edges partitioned exactly at the interior nodes.</p></section>
+<section><h2>Notes</h2>
+<p>Why we believe this test is valid — RUNTIME-SCAFFOLD verified against this fixture&#x27;s own bytes (this worktree&#x27;s `validation/.venv`, OCP/OCCT 7.8.1). `STEPControl_Reader.ReadFile` → `TransferRoots` loads shape_null=False with 2 faces and 6 unique edges (`TopTools_IndexedMapOfShape`), the long reference edge `[(1,0,0),(1,2,0)]` present intact. Feeding the read shape to `BRepBuilderAPI_Sewing(1e-2, sew=True, analysis=True, cutting=True, nonmanifold=False)` and calling `Perform()` yields a result with 7 unique edges in which the long reference edge is GONE and is replaced by exactly three collinear sub-edges — `[(1,0,0),(1,0.5,0)]`, `[(1,0.5,0),(1,1.5,0)]`, `[(1,1.5,0),(1,2,0)]` — cut precisely at the two hanging vertices (1,0.5,0)/(1,1.5,0) contributed by Face SHORT&#x27;s candidate edge; `NbContigousEdges()==1` (the middle section merges with the candidate). This is a genuine `Cutting` edge split reachable from a plain STEP read plus the sewing pass — the runtime-scaffold demonstration BACKLOG.md §(e) recorded as never yet produced. Note `Sewing::IsModified(long_edge)` returns False (OCCT does not register Cutting sections under `Modified`), which is why prior IsModified-keyed probes missed it; the split is unambiguous in the result topology (three new interior nodes with no other possible source). Sewing is NOT on the default STEP read path (default read leaves the T-junction non-conformal), so this fixture is oracle-invisible to the shape-count oracle and requires the sewing scaffold to observe. Synonyms: &quot;hanging vertex T-junction sewing split STEP&quot;, &quot;BRepBuilderAPI_Sewing Cutting interior node edge split&quot;, &quot;free edge endpoint on interior of another edge conformalize&quot;, &quot;CreateCuttingNodes projected node edge partition&quot;, &quot;non-conformal shell T-junction sew&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(14) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;PLANE&#x27;) == 2</code></li>
+<li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 2</code></li>
+<li><code>count_entity_def(b&#x27;EDGE_CURVE&#x27;) == 6</code></li>
+<li><code>count_entity_def(b&#x27;OPEN_SHELL&#x27;) == 1</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 2</code></li>
+<li><code>n_edges_total == 6</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>face[1].surface_type == &quot;plane&quot;</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tsh259.html">&larr; Tsh259</a> <a class="up" href="index.html">§12.3a Shells / orientation</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

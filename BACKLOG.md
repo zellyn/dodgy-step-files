@@ -1303,6 +1303,42 @@ reclassify bytes-sufficient→runtime-only. Data: scratchpad NO_PINNING_AUDIT.md
 - Everything else verified demonstrating. Coverage: reachability+mutation across all ~2400 STEP fixtures,
   double-verified, over-flags rejected (Pmi075/M008 cleared).
 
+## OCCT problem-coverage — Tier-2 pass (2026-07-17)
+
+**Scoreboard now: STEP-exercisable 126/16/1 = 88.1% COVERED, 99.3% at-least-PARTIAL — ONE GAP left.**
+Two GAPs targeted; the buildable one closed, the other double-confirmed unreachable:
+- **`sew-cutting-hanging-vertex-split`** GAP→PARTIAL via **Tsh260** (new §12-3a fixture). Runtime-scaffold
+  verified: STEP read → 6 edges; `BRepBuilderAPI_Sewing` → 7 edges with the long edge split at 2 interior
+  hanging-vertex nodes. Cracked the item two prior sessions failed on (they keyed on `Sewing::IsModified`,
+  which stays False across a `Cutting` split). 2 auxiliary subvariants remain → PARTIAL not COVERED.
+- **`tkshh-indirect-elementary-surface-axes`** — the last GAP; RE-CONFIRMED structurally unreachable via
+  STEP (writer negates ref_direction on read-back; `StepToGeom.cxx:1139` clamps negative cone semi-angle).
+  No fixture shipped (would be a Tfa-style "repair never fires" trap). Effectively a carve-out.
+
+**Two maintainer findings for a future re-audit (recorded in the scoreboard notes too):**
+- **`tkshh-sliver-solid`** Merge-disposition subvariant is structurally unreachable — STEPControl_Reader
+  rebuilds each top-level solid independently (0 shared `TopoDS_Face` even with shared STEP entity IDs), so
+  `ShapeFix_FixSmallSolid::Merge` (needs literal face identity) can't be reached. Reachability-capped PARTIAL.
+- **`tkshh-wire-missing-or-bad-degenerated-edge`** has a STALE-CITATION problem: its evidence fixtures
+  Tfa071/103/150 were retitled TODAY (Q14) to "FixPeriodicDegenerated never invoked" — the specific
+  2-wire-split path may now have ZERO genuine coverage vs the generic `ShapeFix_Wire::FixDegenerated`.
+  NEEDS RE-AUDIT before trusting the PARTIAL verdict.
+
+**Remaining lever = Tier 3 (structural oracle):** the 5 detect-only `bc-*` GAPs + 3 `bc-*` PARTIALs
+(`bc-multiple-3d-curve`, `bc-invalid-point-on-surface`, `bc-intersecting-wires`,
+`bc-invalid-polygon-on-triangulation`, `bc-invalid-tolerance-value`, `bc-invalid-degenerated-flag`,
+`bc-invalid-imbrication-of-shells`, `bc-check-fail`) are not gradable by the shape-count oracle; a
+non-kernel structural linter (v2, DANGLING_REF + brepcheck-style structural predicates) would make them
+observable. This is the highest-leverage remaining coverage work.
+
+**MAINTENANCE — mutation snapshot refresh due (2026-07-17):** `tests/data/mutation_snapshot.json` is from
+2026-07-02 (166 fixtures behind). The `test_snapshot_covers_current_corpus` floor was lowered 95%→93% to
+unblock (growing non-mutatable §12.15 `Ip*`/§12.14 `Me*` fixtures structurally can't be in a STEP-byte
+mutation snapshot, so coverage declines independent of freshness). A proper refresh should run **CI-side**
+(`_mutation_test --all --mutations 3 --workers 8`, needs baseline-cache repop) — NOT locally, because
+borderline gmsh baselines diverge macOS-ARM vs CI-Linux ([[reference_gmsh_platform_divergence]]). After a
+CI-side refresh the floor can be raised back toward 95%+.
+
 ## OCCT problem-coverage remediation queue (2026-07-12)
 
 Adversarial audit of `occt-coverage/{tkshhealing,exchange}/problems.json` found the original
