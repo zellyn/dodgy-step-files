@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa144 — ShapeAnalysis_CheckSmallFace.CheckPinFace 3D-vs-parametric-pin</title>
+  <title>Tfa144 — B-spline-surface face crashes the reader (SIGSEGV); file contains a malformed extra-nested control_points_list aggregate and a bare untyped entity, but neither alone reproduces/eliminates the crash; root cause not fully isolated; CheckPinFace is never reached</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa144</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa144 <span class="sep">—</span> <span class="entry-title">ShapeAnalysis_CheckSmallFace.CheckPinFace 3D-vs-parametric-pin</span></h1>
+<h1>Tfa144 <span class="sep">—</span> <span class="entry-title">B-spline-surface face crashes the reader (SIGSEGV); file contains a malformed extra-nested control_points_list aggregate and a bare untyped entity, but neither alone reproduces/eliminates the crash; root cause not fully isolated; CheckPinFace is never reached</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
@@ -27,11 +27,13 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>ShapeAnalysis_CheckSmallFace.CheckPinFace 3D-vs-parametric-pin</p></section>
+<p>B-spline-surface face crashes the reader (SIGSEGV); file contains a malformed extra-nested control_points_list aggregate and a bare untyped entity, but neither alone reproduces/eliminates the crash; root cause not fully isolated; CheckPinFace is never reached</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Notes</h2>
+<p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed CheckPinFace&#x27;s parametric-vs-3D aspect-ratio test misses a real 3D pin condition due to surface stretch; that checker is never reached (crash occurs first). Root cause of the crash itself is NOT fully isolated in this pass — a malformed control_points_list nesting and a bare untyped entity are both present but isolation testing did not confirm either as sole cause. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;malformed B-spline control-point aggregate crashes reader&quot;, &quot;bare untyped entity coexists with B-spline surface crash&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

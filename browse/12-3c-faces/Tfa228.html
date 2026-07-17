@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa228 — ShapeFix_Face.FixAddNaturalBound.null-surface-guard</title>
+  <title>Tfa228 — A flat 1×1 square wire declared on a TOROIDAL_SURFACE whose donut body sits far outside the wire&#x27;s coordinates collapses to a single degenerate edge on load — FixAddNaturalBound is never invoked</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa228</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa228 <span class="sep">—</span> <span class="entry-title">ShapeFix_Face.FixAddNaturalBound.null-surface-guard</span></h1>
+<h1>Tfa228 <span class="sep">—</span> <span class="entry-title">A flat 1×1 square wire declared on a TOROIDAL_SURFACE whose donut body sits far outside the wire&#x27;s coordinates collapses to a single degenerate edge on load — FixAddNaturalBound is never invoked</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
@@ -26,11 +26,13 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>ShapeFix_Face.FixAddNaturalBound.null-surface-guard</p></section>
+<p>A flat 1×1 square wire declared on a TOROIDAL_SURFACE whose donut body sits far outside the wire&#x27;s coordinates collapses to a single degenerate edge on load — FixAddNaturalBound is never invoked</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Notes</h2>
+<p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed this exercises `FixAddNaturalBound`&#x27;s null-surface early-return guard on &quot;a valid toroidal face&quot;; the surface is valid but the wire is not conformant with it at all (a flat square sitting inside the torus&#x27;s empty hole, nowhere near the donut body), and the real, verified behavior is severe silent edge/vertex loss (4 edges → 1) plus a solid that never materializes as a `TopAbs_SOLID`. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;non-conformant wire on torus collapses to single edge&quot;, &quot;wire far from host surface silent data loss&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

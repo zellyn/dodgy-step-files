@@ -30,7 +30,7 @@
 <section><h2>Description</h2>
 <p>triangle 1 has three vertices collinear along the X axis; area is exactly 0 and normal is undefined. Every traversal that uses the face normal breaks.</p></section>
 <section><h2>Reproducer recipe</h2>
-<p>triangle 1 vertices `(0,-1,0), (1,-1,0), (2,-1,0)` — all on the line y=-1, z=0. Triangle 0 is a clean control.</p></section>
+<p>triangle 1 vertex `(0,-1,0), (1,-1,0), (2,-1,0)` — all on the line y=-1, z=0. Triangle 0 is a clean control.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>detect zero-area triangles and either remove or flag; never compute a normal from a degenerate face.</p></section>
 <section><h2>Expected validation</h2>

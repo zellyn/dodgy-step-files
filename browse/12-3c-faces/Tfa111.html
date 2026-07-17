@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa111 — ShapeFix_Face.FixSmallAreaWire mixed-context</title>
+  <title>Tfa111 — Planar face with a large (2×2) and a tiny (0.05×0.05) inner hole loads both holes intact and unremoved; FixSmallAreaWire is never invoked on an ordinary read</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa111</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa111 <span class="sep">—</span> <span class="entry-title">ShapeFix_Face.FixSmallAreaWire mixed-context</span></h1>
+<h1>Tfa111 <span class="sep">—</span> <span class="entry-title">Planar face with a large (2×2) and a tiny (0.05×0.05) inner hole loads both holes intact and unremoved; FixSmallAreaWire is never invoked on an ordinary read</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
@@ -26,11 +26,13 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>ShapeFix_Face.FixSmallAreaWire mixed-context</p></section>
+<p>Planar face with a large (2×2) and a tiny (0.05×0.05) inner hole loads both holes intact and unremoved; FixSmallAreaWire is never invoked on an ordinary read</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Notes</h2>
+<p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixSmallAreaWire removes the tiny hole and corrupts the large hole&#x27;s vertex references in the process; that method is never invoked on an ordinary read, so neither removal nor corruption ever occurs — both holes load intact. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;large and tiny inner holes both load unremoved&quot;, &quot;small-area wire removal never invoked, no vertex corruption&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(50) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

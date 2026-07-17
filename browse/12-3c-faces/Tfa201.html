@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa201 — CheckSpotFace parametric interior singularity</title>
+  <title>Tfa201 — B-spline face with an interior control-point peak (ratio 17.5:1 vs boundary) loads intact as an ordinary face; CheckSpotFace is never invoked on an ordinary read</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,8 +12,8 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa201</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa201 <span class="sep">—</span> <span class="entry-title">CheckSpotFace parametric interior singularity</span></h1>
-<p class="category">§12.3c faces (sub-class: spot-detection)</p>
+<h1>Tfa201 <span class="sep">—</span> <span class="entry-title">B-spline face with an interior control-point peak (ratio 17.5:1 vs boundary) loads intact as an ordinary face; CheckSpotFace is never invoked on an ordinary read</span></h1>
+<p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
 </p>
@@ -23,16 +23,16 @@
 <a class="big-link" href="../../step-examples/12-3c-faces/Tfa201.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa201.stp</code>
 </section>
 <section><h2>Sources</h2><ul>
-<li>OCCT/ShapeAnalysis_CheckSmallFace.CheckSpotFace_at235 (line 246)</li>
+<li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>B-spline face with interior peak singularity (pole height 3.5 vs 0.2 boundary). Tests parametric spot classification branch detecting interior singularities without vertex-like discrete geometry.</p></section>
+<p>B-spline face with an interior control-point peak (ratio 17.5:1 vs boundary) loads intact as an ordinary face; CheckSpotFace is never invoked on an ordinary read</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal</p></section>
+<p>heal or reject (mechanism-specific; see Description)</p></section>
 <section><h2>Notes</h2>
-<p>CheckSpotFace case 2; interior singularity detection</p></section>
+<p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed `ShapeAnalysis_CheckSmallFace::CheckSpotFace` &quot;interior-singularity detection case (case 2, line 246) that would classify this control-point peak as spot-geometry&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;interior control-point peak loads without spot classification&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

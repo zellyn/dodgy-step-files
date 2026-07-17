@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa091 — ShapeFix_Face.FixLoopWire intersecting-loop touch</title>
+  <title>Tfa091 — Face with two inner wires sharing a tangent-touch vertex crashes the reader (SIGSEGV) as soon as the extra bound wire is present; loads cleanly with only the outer wire — ShapeFix_Face::FixLoopWire is never reached</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa091</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa091 <span class="sep">—</span> <span class="entry-title">ShapeFix_Face.FixLoopWire intersecting-loop touch</span></h1>
+<h1>Tfa091 <span class="sep">—</span> <span class="entry-title">Face with two inner wires sharing a tangent-touch vertex crashes the reader (SIGSEGV) as soon as the extra bound wire is present; loads cleanly with only the outer wire — ShapeFix_Face::FixLoopWire is never reached</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
@@ -27,11 +27,13 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>ShapeFix_Face.FixLoopWire intersecting-loop touch</p></section>
+<p>Face with two inner wires sharing a tangent-touch vertex crashes the reader (SIGSEGV) as soon as the extra bound wire is present; loads cleanly with only the outer wire — ShapeFix_Face::FixLoopWire is never reached</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Notes</h2>
+<p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed ShapeFix_Face::FixLoopWire merges intersecting loops and produces a wire with a self-touch vertex; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;multi-bound face crashes reader, outer-alone loads clean&quot;, &quot;tangent-touching inner wire crashes reader, outer-alone loads clean&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

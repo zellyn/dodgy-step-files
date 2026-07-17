@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa241 — `ShapeFix_Face.FixOrientation.WireBoundingBoxComputation`</title>
+  <title>Tfa241 — TOROIDAL_SURFACE face with two properly-nested wires (outer + concentric inner hole) loads intact as a single valid face; FixOrientation is never invoked</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa241</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa241 <span class="sep">—</span> <span class="entry-title">`ShapeFix_Face.FixOrientation.WireBoundingBoxComputation`</span></h1>
+<h1>Tfa241 <span class="sep">—</span> <span class="entry-title">TOROIDAL_SURFACE face with two properly-nested wires (outer + concentric inner hole) loads intact as a single valid face; FixOrientation is never invoked</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
@@ -26,11 +26,13 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>`ShapeFix_Face.FixOrientation.WireBoundingBoxComputation`</p></section>
+<p>TOROIDAL_SURFACE face with two properly-nested wires (outer + concentric inner hole) loads intact as a single valid face; FixOrientation is never invoked</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Notes</h2>
+<p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed `FixOrientation`&#x27;s periodic bounding-box centering causes &quot;false containment classification&quot; without an anchor; live-oracle shows a perfectly ordinary, correctly-loaded two-wire face with valid topology — no classification failure of any kind is observable. Also fixes a literal `em-dash` text-corruption artifact left in the original title/body by a prior markdown-conversion bug (unrelated to the truth-in-labeling defect, cleaned up in passing). This entry is part of a 5-fixture torus family (Tfa241–Tfa245, all sharing an `em-dash`-garbled title from a prior markdown-conversion mishap, now fixed) built around periodic-surface wire/bound placement; each was independently live-oracle-verified — the family does NOT behave uniformly (see siblings&#x27; Notes for the differing outcomes). Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;concentric torus wires load cleanly&quot;, &quot;nested inner hole on toroidal face ordinary case&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(26) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
@@ -39,6 +41,9 @@
 <li><code>face[1].quadric.major_radius == 5.0</code></li>
 <li><code>face[1].quadric.minor_radius == 1.5</code></li>
 </ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tfa245.html">Tfa245</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
 </section>

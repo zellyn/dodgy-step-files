@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa205 — FixAddNaturalBound cone apex degenerate</title>
+  <title>Tfa205 — CONICAL_SURFACE face (half-angle 45°) with a boundary loop at the apex loads intact; FixAddNaturalBound is never invoked on an ordinary read</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,8 +12,8 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa205</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa205 <span class="sep">—</span> <span class="entry-title">FixAddNaturalBound cone apex degenerate</span></h1>
-<p class="category">§12.3c faces (sub-class: natural-bound)</p>
+<h1>Tfa205 <span class="sep">—</span> <span class="entry-title">CONICAL_SURFACE face (half-angle 45°) with a boundary loop at the apex loads intact; FixAddNaturalBound is never invoked on an ordinary read</span></h1>
+<p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
 </p>
@@ -23,16 +23,16 @@
 <a class="big-link" href="../../step-examples/12-3c-faces/Tfa205.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa205.stp</code>
 </section>
 <section><h2>Sources</h2><ul>
-<li>OCCT/ShapeFix_Face.FixAddNaturalBound (line 1744)</li>
+<li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Conical surface (half-angle 45°) with apex vertex at z=1.414. Tests natural-bound insertion on degenerate apex geometry without explicit seam edge.</p></section>
+<p>CONICAL_SURFACE face (half-angle 45°) with a boundary loop at the apex loads intact; FixAddNaturalBound is never invoked on an ordinary read</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal</p></section>
+<p>heal or reject (mechanism-specific; see Description)</p></section>
 <section><h2>Notes</h2>
-<p>Cone apex degenerate; natural bound synthesis</p></section>
+<p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed `ShapeFix_Face::FixAddNaturalBound` &quot;inserts a natural boundary at the degenerate apex geometry, adjusting face topology&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;cone-apex boundary loop loads without natural-bound insertion&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

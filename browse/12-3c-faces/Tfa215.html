@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa215 — ShapeFix_Face.FixMissingSeam.orientation-correction-partial-closure</title>
+  <title>Tfa215 — A single TOROIDAL_SURFACE ADVANCED_FACE with a mixed-orientation (.T./.F.) 4-edge wire and a reversed FACE_OUTER_BOUND is silently SPLIT into three separate torus faces (8 edges from 4 declared) — FixMissingSeam is never invoked</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa215</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa215 <span class="sep">—</span> <span class="entry-title">ShapeFix_Face.FixMissingSeam.orientation-correction-partial-closure</span></h1>
+<h1>Tfa215 <span class="sep">—</span> <span class="entry-title">A single TOROIDAL_SURFACE ADVANCED_FACE with a mixed-orientation (.T./.F.) 4-edge wire and a reversed FACE_OUTER_BOUND is silently SPLIT into three separate torus faces (8 edges from 4 declared) — FixMissingSeam is never invoked</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
@@ -26,11 +26,13 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>ShapeFix_Face.FixMissingSeam.orientation-correction-partial-closure</p></section>
+<p>A single TOROIDAL_SURFACE ADVANCED_FACE with a mixed-orientation (.T./.F.) 4-edge wire and a reversed FACE_OUTER_BOUND is silently SPLIT into three separate torus faces (8 edges from 4 declared) — FixMissingSeam is never invoked</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Notes</h2>
+<p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed `FixMissingSeam` applies orientation sign-flips to correctly rebuild the seam from mixed edge/bound orientation flags; that method is never invoked, and the real, verified outcome is a 1-declared-face → 3-actual-face split, the most severe face-count inflation found among this family&#x27;s related toroidal fixtures (compare Tfa186, Tfa243 — same silent-split pattern, smaller magnitude). Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;mixed-orientation torus wire splits into three faces&quot;, &quot;reversed FACE_OUTER_BOUND silent face inflation&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
@@ -45,6 +47,9 @@
 <li><code>face[2].quadric.major_radius == 3.0</code></li>
 <li><code>face[2].quadric.minor_radius == 1.0</code></li>
 </ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tfa186.html">Tfa186</a>, <a href="Tfa243.html">Tfa243</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
 </section>

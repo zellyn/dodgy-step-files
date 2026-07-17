@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa185 — ShapeFix_Face.FixAddNaturalBound surface-with-discontinuity</title>
+  <title>Tfa185 — ADVANCED_FACE on a C0-discontinuous (interior knot multiplicity 2) B-spline surface is silently dropped entirely, leaving an empty OPEN_SHELL — FixAddNaturalBound is never invoked</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,9 +12,10 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa185</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa185 <span class="sep">—</span> <span class="entry-title">ShapeFix_Face.FixAddNaturalBound surface-with-discontinuity</span></h1>
+<h1>Tfa185 <span class="sep">—</span> <span class="entry-title">ADVANCED_FACE on a C0-discontinuous (interior knot multiplicity 2) B-spline surface is silently dropped entirely, leaving an empty OPEN_SHELL — FixAddNaturalBound is never invoked</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
 </p>
 </header>
@@ -26,16 +27,21 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>ShapeFix_Face.FixAddNaturalBound surface-with-discontinuity</p></section>
+<p>ADVANCED_FACE on a C0-discontinuous (interior knot multiplicity 2) B-spline surface is silently dropped entirely, leaving an empty OPEN_SHELL — FixAddNaturalBound is never invoked</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Notes</h2>
+<p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed `FixAddNaturalBound` bridges the discontinuity but selects the wrong boundary topology; that method is never invoked, and the real, verified behavior is more severe than a topology mistake: the face is dropped in its entirety, silently, while the shape as a whole still reports a successful (non-null, 1-root) load — a genuine &quot;empty face silently accepted&quot; defect distinct from the claimed mechanism. **See also**: Tfa114, Tfa115 (same silent-whole-bound-drop family, there triggered by collapsed/zero-length geometry rather than a C0 surface crease). Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;C0 knot-multiplicity crease drops face entirely&quot;, &quot;empty shell hides dropped B-spline face&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>load == &quot;ok&quot;</code></li>
 </ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tfa114.html">Tfa114</a>, <a href="Tfa115.html">Tfa115</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
 </section>

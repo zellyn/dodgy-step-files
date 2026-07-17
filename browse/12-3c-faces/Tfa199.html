@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa199 — ShapeFix_Face.FixMissingSeam seam-detection</title>
+  <title>Tfa199 — CYLINDRICAL_SURFACE face with an ordinary periodic-surface seam loads intact via the reader&#x27;s standard periodic-closure handling; FixMissingSeam is never invoked</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,8 +12,8 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa199</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa199 <span class="sep">—</span> <span class="entry-title">ShapeFix_Face.FixMissingSeam seam-detection</span></h1>
-<p class="category">§12.3c faces (sub-class: periodic surface seam reconstruction)</p>
+<h1>Tfa199 <span class="sep">—</span> <span class="entry-title">CYLINDRICAL_SURFACE face with an ordinary periodic-surface seam loads intact via the reader&#x27;s standard periodic-closure handling; FixMissingSeam is never invoked</span></h1>
+<p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
 </p>
@@ -23,16 +23,16 @@
 <a class="big-link" href="../../step-examples/12-3c-faces/Tfa199.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa199.stp</code>
 </section>
 <section><h2>Sources</h2><ul>
-<li>OCCT/ShapeFix_Face.FixMissingSeam (seam-detection method)</li>
+<li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Cylindrical and other periodic surfaces require a seam edge connecting the parametrically discontinuous boundary. A face missing the seam edge exhibits incorrect winding or fails containment checks. The missing-seam fixer detects the gap by analyzing edge coverage across the periodic parameter range; detection may fail if edges are nearly tangent or parameterized asymmetrically.</p></section>
+<p>CYLINDRICAL_SURFACE face with an ordinary periodic-surface seam loads intact via the reader&#x27;s standard periodic-closure handling; FixMissingSeam is never invoked</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: insert synthetic seam edge; reject: if seam-space analysis is ambiguous</p></section>
+<p>heal or reject (mechanism-specific; see Description)</p></section>
 <section><h2>Notes</h2>
-<p>Seam detection relies on edge parameter-space analysis; misaligned boundaries or non-conformal parameterization defeat the heuristic. Synonyms: &quot;cylindrical face seam missing&quot;, &quot;periodic boundary incomplete&quot;, &quot;U=0 to U=2π edge gap&quot;.</p></section>
+<p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed `ShapeFix_Face::FixMissingSeam` &quot;detects the gap by analyzing edge coverage across the periodic parameter range; detection may fail if edges are nearly tangent or asymmetrically parameterized&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;cylindrical seam closure handled by ordinary periodic-surface translation, not a seam detector&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa234 — FixAddNaturalBound seam-edge exclusion</title>
+  <title>Tfa234 — CYLINDRICAL_SURFACE face (radius 1.5) with an explicit seam edge loads intact; FixAddNaturalBound is never invoked on an ordinary read</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa234</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa234 <span class="sep">—</span> <span class="entry-title">FixAddNaturalBound seam-edge exclusion</span></h1>
+<h1>Tfa234 <span class="sep">—</span> <span class="entry-title">CYLINDRICAL_SURFACE face (radius 1.5) with an explicit seam edge loads intact; FixAddNaturalBound is never invoked on an ordinary read</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
@@ -26,11 +26,13 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>FixAddNaturalBound seam-edge exclusion</p></section>
+<p>CYLINDRICAL_SURFACE face (radius 1.5) with an explicit seam edge loads intact; FixAddNaturalBound is never invoked on an ordinary read</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Notes</h2>
+<p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed `ShapeFix_Face::FixAddNaturalBound` &quot;rejects natural-boundary insertion when a seam edge is already present, via a conditional mode check&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;explicit-seam cylindrical face loads without natural-bound rejection logic&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

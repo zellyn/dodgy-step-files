@@ -1791,7 +1791,23 @@ assertions (out of scope for a same-pass narrative-only correction):
       corrected narratively only since its Tier-3 assertions already independently justify its
       corpus presence as a rational-B-spline-surface coverage fixture, not a healing-defect one.)
 
-## Q14 — Truth-in-labeling audit 2026-07-16, Part 2: ~117-entry ShapeFix_Face/ShapeAnalysis_CheckSmallFace misnomer family (Tfa071-Tfa245 range), confirmed pattern, NOT individually fixed
+## Q14 — Truth-in-labeling audit 2026-07-16, Part 2: ~117-entry ShapeFix_Face/ShapeAnalysis_CheckSmallFace misnomer family (Tfa071-Tfa245 range)
+
+**RESOLVED 2026-07-17 (fidelity-2 session).** All 117 remaining IDs were individually live-oracle
+verified (validation/.venv, OCP/OCCT 7.8.1; raw bytes + crash-isolation + full-shape traversal) across
+two parallel worktree audits (Tfa071-159 and Tfa160-245). **Disposition: all 117 → RETITLE. Zero
+REPAIR, zero QUARANTINE** — every fixture demonstrates a genuine, verified behavior once honestly
+described (clean-load/never-invoked, isolated multi-bound SIGSEGV, `GEOMETRIC_CURVE_SET`-orphaned
+silent-empty, or a distinct structural finding); none was a no-defect no-op. Titles/Descriptions/Notes
+were rewritten to describe the true input-pattern + observed load behavior; the precise OCC symbol was
+retained only in each entry's (unscored) `Sources` line, and the scored-field OCC-symbol prose was
+scrubbed to input-pattern language to keep the LGPL/searchability api-token gate green (corpus 1861→1336
+hits vs 1700 ceiling). **Correction applied:** Tfa131 was wrongly cited as `GEOMETRIC_CURVE_SET`-orphaned
+in Tfa253/sibling "same-pattern" lists — direct inspection confirms it is a genuine multi-bound SIGSEGV
+crash fixture (no curve-set wrapper); all such citations were corrected to drop Tfa131. Em-dash text
+corruption in Tfa241-245 was also repaired. Historical grep-triage notes below retained for provenance.
+
+**Original entry (2026-07-16): confirmed pattern, NOT yet individually fixed**
 
 While correcting the 18 known-misnamed `FixSplitFace`/`CheckSplittingVertices` fixtures (Tfa010 etc.,
 see the corrected catalog entries and this file's earlier note), a corpus-wide grep for titles citing
@@ -1845,10 +1861,10 @@ Tfa209 Tfa211 Tfa212 Tfa213 Tfa214 Tfa215 Tfa228 Tfa229 Tfa230 Tfa231 Tfa232 Tfa
 Tfa241 Tfa242 Tfa243 Tfa244 Tfa245
 ```
 
-- [ ] Note: Tfa131 and Tfa160 are independently cited in Tfa253's Sources as `GEOMETRIC_CURVE_SET`-hosted
-      (orphaned, unreachable — same pattern as Tfa169, corrected in Part 2 of this session). If confirmed
-      on inspection, these two are "honest reclaim to empty-shape" cases like Tfa169, not "clean load" or
-      "crash" cases.
+- [x] Note (RESOLVED 2026-07-17): Tfa253's Sources cited Tfa131 AND Tfa160 as `GEOMETRIC_CURVE_SET`-hosted
+      (orphaned). Inspection confirmed only **Tfa160** is orphaned (empty-shape, like Tfa169); **Tfa131**
+      is a genuine multi-bound SIGSEGV crash with no curve-set wrapper. The Tfa131 citation was an error
+      and has been removed from all "same-pattern" lists.
 - [ ] Recommended approach for a future session: batch by claimed mechanism name (all `FixSmallAreaWire`-
       titled entries together, etc.), run the per-face-edge-count oracle script (`n_faces`/`n_edges` per
       face, crash-or-not) against each fixture first to bucket into the three patterns above, THEN write

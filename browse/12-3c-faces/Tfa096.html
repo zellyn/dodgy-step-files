@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa096 — ShapeFix_Face.FixOrientation degenerate-wire bypass</title>
+  <title>Tfa096 — Cube face whose outer wire is four zero-length (collapsed-to-a-point) edges has its ENTIRE bound dropped on load (0 edges), not silently skipped while still attached — same unbounded-surface-fallback family as Tfa098/Tfa114/Tfa115/Tfa117/Tfa252; FixOrientation is never reached</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa096</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa096 <span class="sep">—</span> <span class="entry-title">ShapeFix_Face.FixOrientation degenerate-wire bypass</span></h1>
+<h1>Tfa096 <span class="sep">—</span> <span class="entry-title">Cube face whose outer wire is four zero-length (collapsed-to-a-point) edges has its ENTIRE bound dropped on load (0 edges), not silently skipped while still attached — same unbounded-surface-fallback family as Tfa098/Tfa114/Tfa115/Tfa117/Tfa252; FixOrientation is never reached</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
@@ -26,16 +26,21 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>ShapeFix_Face.FixOrientation degenerate-wire bypass</p></section>
+<p>Cube face whose outer wire is four zero-length (collapsed-to-a-point) edges has its ENTIRE bound dropped on load (0 edges), not silently skipped while still attached — same unbounded-surface-fallback family as Tfa098/Tfa114/Tfa115/Tfa117/Tfa252; FixOrientation is never reached</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Notes</h2>
+<p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixOrientation silently skips this degenerate outer wire, leaving orientation undefined on an otherwise-intact face; live-oracle shows the reader instead drops the wire&#x27;s bound entirely (0 edges on that face) — the same unbounded-surface-fallback pattern already documented for Tfa098/Tfa114/Tfa115/Tfa117/Tfa252, not an orientation-fixing failure. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. **See also**: Tfa098, Tfa114, Tfa115, Tfa117, Tfa252 (same unbounded-surface-fallback family). Synonyms: &quot;all-zero-length-edge wire dropped entirely, not silently skipped&quot;, &quot;collapsed-to-point outer bound produces 0-edge face&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(26) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>n_faces_total == 6</code></li>
 </ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tfa098.html">Tfa098</a>, <a href="Tfa114.html">Tfa114</a>, <a href="Tfa115.html">Tfa115</a>, <a href="Tfa117.html">Tfa117</a>, <a href="Tfa252.html">Tfa252</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
 </section>

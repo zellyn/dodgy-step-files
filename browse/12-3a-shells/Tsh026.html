@@ -29,7 +29,7 @@
 <li>19-datasets.md D015 (Thingi10K ~1%)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A `CLOSED_SHELL` contains two `ADVANCED_FACE` instances that are geometrically coincident; the same face appears twice on the same supporting `PLANE` with identical `EDGE_LOOP` geometry, producing a coincident layered face. Often from a botched Boolean. Typical signature: a shell with N+1 faces where the cube/box should have N, the duplicated face being a flat z=0 cap stored under two different `ADVANCED_FACE` instance ids.</p></section>
+<p>A `CLOSED_SHELL` contains two `ADVANCED_FACE` instances that are geometrically coincident; the same face appears twice on the same supporting `PLANE` with identical `EDGE_LOOP` geometry, producing a coincident layered face. Often from a botched Boolean. Typical signature: a shell with N+1 face where the cube/box should have N, the duplicated face being a flat z=0 cap stored under two different `ADVANCED_FACE` instance ids.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Two `ADVANCED_FACE`s on the same `PLANE` with identical loops; both attached to the same shell.</p></section>
 <section><h2>Expected kernel behavior</h2>

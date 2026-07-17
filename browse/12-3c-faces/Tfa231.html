@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa231 — FixSmallAreaWire shape-type filter</title>
+  <title>Tfa231 — PLANE face with an outer 3×3 boundary and a tiny (0.05×0.05) inner hole loads intact; FixSmallAreaWire is never invoked on an ordinary read</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa231</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa231 <span class="sep">—</span> <span class="entry-title">FixSmallAreaWire shape-type filter</span></h1>
+<h1>Tfa231 <span class="sep">—</span> <span class="entry-title">PLANE face with an outer 3×3 boundary and a tiny (0.05×0.05) inner hole loads intact; FixSmallAreaWire is never invoked on an ordinary read</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
@@ -26,11 +26,13 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>FixSmallAreaWire shape-type filter</p></section>
+<p>PLANE face with an outer 3×3 boundary and a tiny (0.05×0.05) inner hole loads intact; FixSmallAreaWire is never invoked on an ordinary read</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Notes</h2>
+<p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed `ShapeFix_Face::FixSmallAreaWire` &quot;performs early rejection of non-WIRE or invalid-orientation sub-shapes via a shape-type filter&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;tiny inner hole loads without a dedicated shape-type filter pass&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

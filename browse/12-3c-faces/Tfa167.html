@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa167 — ShapeAnalysis_CheckSmallFace.CheckTwisted mobius-strip-face</title>
+  <title>Tfa167 — ADVANCED_FACE hosted inside a GEOMETRIC_CURVE_SET — the curve-set builder rejects the face item and the whole transfer yields an empty shape</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa167</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa167 <span class="sep">—</span> <span class="entry-title">ShapeAnalysis_CheckSmallFace.CheckTwisted mobius-strip-face</span></h1>
+<h1>Tfa167 <span class="sep">—</span> <span class="entry-title">ADVANCED_FACE hosted inside a GEOMETRIC_CURVE_SET — the curve-set builder rejects the face item and the whole transfer yields an empty shape</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
@@ -26,16 +26,21 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>ShapeAnalysis_CheckSmallFace.CheckTwisted mobius-strip-face</p></section>
+<p>ADVANCED_FACE hosted inside a GEOMETRIC_CURVE_SET — the curve-set builder rejects the face item and the whole transfer yields an empty shape</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Notes</h2>
+<p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed `ShapeAnalysis_CheckSmallFace::CheckTwisted` actively detects/fails-to-resolve a face-level defect; that method is never invoked at all, because the face never survives to face-translation in the first place (the GEOMETRIC_CURVE_SET/ADVANCED_FACE type mismatch drops it earlier, during representation-item dispatch). Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. **See also**: Tfa003, Tfa169 (unreachable/orphaned-entity family), Tfa252 (Sources cites the same GEOMETRIC_CURVE_SET dispatch mechanism for null-geometry edges). Synonyms: &quot;GEOMETRIC_CURVE_SET-hosted self-intersecting wire never reaches twist check&quot;, &quot;ADVANCED_FACE inside GEOMETRIC_CURVE_SET empty transfer&quot;, &quot;curve-set builder type mismatch drops face&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>shape_null == True</code></li>
 </ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tfa003.html">Tfa003</a>, <a href="Tfa169.html">Tfa169</a>, <a href="Tfa252.html">Tfa252</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
 </section>
