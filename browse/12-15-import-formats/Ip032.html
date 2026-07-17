@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ip032 — PLY unknown per-vertex LIST property crashes an independent reader (formerly ignored)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <span class="sep">/</span> <span class="current">Ip032</span>
+</nav>
+<header class="title-bar">
+<h1>Ip032 <span class="sep">—</span> <span class="entry-title">PLY unknown per-vertex LIST property crashes an independent reader (formerly ignored)</span></h1>
+<p class="category">§12.15 import-format parser robustness (sub-class: unrecognized-list-typed-property)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../import-examples/12-15-import-formats/Ip032.ply">View raw fixture (.ply)</a> <code class="path">import-examples/12-15-import-formats/Ip032.ply</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from cnr-isti-vclab/meshlab#1624 (GPL-3.0 — pattern only, no bytes copied).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An ASCII PLY vertex element declares a custom, non-standard property that is *list-typed* rather than scalar: `property list uchar int neighbor_indices`, i.e. each vertex row carries its own count-prefixed integer list (here, 2 neighbor indices) in addition to `x y z`. The header is fully self-describing (count-type `uchar`, value-type `int`, declared per PLY spec) and every vertex row supplies exactly the count it declares. ml#1624 reports this construct — previously silently skipped by MeshLab — now over-reads or crashes, a regression from tolerant to fragile on a file the spec permits. Distinct from Ip009 (extra *scalar* fields) and Ip015 (zero-count element): this is a *list-typed* custom property on the vertex element, which a naive property-skipper (that assumes every unknown property is a fixed-width scalar) mishandles by advancing the read cursor by a wrong, fixed byte count.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>an ASCII PLY with `element vertex 3`, `property float x/y/z`, then `property list uchar int neighbor_indices` before `end_header`; each of the 3 vertex rows carries `x y z &lt;count&gt; &lt;count ints&gt;` (here count=2), followed by a normal triangular face element.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>skip unrecognized properties by consuming exactly their declared per-row structure (read the list&#x27;s own count prefix and skip that many list elements), never assume unknown properties are fixed-width scalars.</p></section>
+<section><h2>Notes</h2>
+<p>Live-verified 2026-07-17 with trimesh 4.12.2: loads cleanly, correctly skips the unrecognized `neighbor_indices` list property per vertex row and returns the intended 3 vertices / 1 face with correct coordinates — no exception, no corruption. ml#1624 documents MeshLab&#x27;s PLY importer regressing from silent-ignore to over-read/crash on this same list-typed unknown-property pattern. Synonyms: &quot;PLY unknown list property crash&quot;, &quot;custom per-vertex list field&quot;, &quot;PLY property skip assumes scalar width&quot;, &quot;non-standard vertex list property&quot;. Provenance tier: bytes-only.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;property list uchar int neighbor_indices&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ply
+<span class="lineno">2</span>format ascii 1.0
+<span class="lineno">3</span>element vertex 3
+<span class="lineno">4</span>property float x
+<span class="lineno">5</span>property float y
+<span class="lineno">6</span>property float z
+<span class="lineno">7</span><mark>property list uchar int neighbor_indices</mark>
+<span class="lineno">8</span>element face 1
+<span class="lineno">9</span>property list uchar int vertex_indices
+<span class="lineno">10</span>end_header
+<span class="lineno">11</span>0.0 0.0 0.0 2 1 2
+<span class="lineno">12</span>1.0 0.0 0.0 2 0 2
+<span class="lineno">13</span>0.0 1.0 0.0 2 0 1
+<span class="lineno">14</span>3 0 1 2
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ip031.html">&larr; Ip031</a> <a class="up" href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <a class="next" href="Ip033.html">Ip033 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ip025 — OBJ face record forward-referencing vertices declared later in the file</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <span class="sep">/</span> <span class="current">Ip025</span>
+</nav>
+<header class="title-bar">
+<h1>Ip025 <span class="sep">—</span> <span class="entry-title">OBJ face record forward-referencing vertices declared later in the file</span></h1>
+<p class="category">§12.15 import-format parser robustness (sub-class: index-resolution-ordering)</p>
+<p class="severity-badge severity-p3">P3 — cosmetic / metadata-only</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../import-examples/12-15-import-formats/Ip025.obj">View raw fixture (.obj)</a> <code class="path">import-examples/12-15-import-formats/Ip025.obj</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from isl-org/Open3D issue #5582, &quot;Vertex Index disorder when reading from obj file&quot; (MIT — pattern only, no bytes copied).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A `f` statement appears in the file before the `v` records it references, relying on the loader resolving indices against the complete, final vertex table rather than an in-progress running list. A single-pass, streaming-style loader that resolves each face&#x27;s indices against only the vertices seen so far cannot resolve a forward reference at all (index 1 doesn&#x27;t exist yet when the `f` line is read) — the independent Open3D loader was observed to bind faces to the wrong vertices under this kind of ordering/disorder.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a face record `f 1 2 3` placed as the first content line, followed by the three `v` lines it references.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>resolve every OBJ index against the final, complete 1-based global vertex table after a full pass over the file; forward references are legal OBJ and must resolve correctly regardless of physical line order.</p></section>
+<section><h2>Notes</h2>
+<p>Cross-oracle: trimesh 4.12.2 resolves the forward reference correctly — `trimesh.load()` returns `vertices.shape==(3,3)`, `faces==[[0,1,2]]`, exactly the intended triangle — verified 2026-07-17. Positive/reference result: trimesh&#x27;s OBJ loader extracts all `v`/`vn`/`vt`/`f` records via a two-pass, regex-based approach (`_parse_vertices` runs over the whole text before face resolution) rather than a single streaming pass, so forward references are immune to the disorder Open3D&#x27;s issue tracker reports; a naive streaming single-pass reader would fail or mis-bind on this exact construct. Synonyms: &quot;OBJ forward vertex reference&quot;, &quot;face before vertex declaration&quot;, &quot;vertex index disorder&quot;, &quot;two-pass vs streaming OBJ resolution&quot;. Provenance tier: bytes-only.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;f 1 2 3&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span><mark>f 1 2 3</mark>
+<span class="lineno">2</span>v 0.0 0.0 0.0
+<span class="lineno">3</span>v 1.0 0.0 0.0
+<span class="lineno">4</span>v 0.0 1.0 0.0
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ip024.html">&larr; Ip024</a> <a class="up" href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <a class="next" href="Ip031.html">Ip031 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

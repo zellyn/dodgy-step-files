@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ip033 — glTF POINTS-mode primitive (no indices) routed through a triangle assembler</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <span class="sep">/</span> <span class="current">Ip033</span>
+</nav>
+<header class="title-bar">
+<h1>Ip033 <span class="sep">—</span> <span class="entry-title">glTF POINTS-mode primitive (no indices) routed through a triangle assembler</span></h1>
+<p class="category">§12.15 import-format parser robustness (sub-class: primitive-mode-mismatch)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../import-examples/12-15-import-formats/Ip033.gltf">View raw fixture (.gltf)</a> <code class="path">import-examples/12-15-import-formats/Ip033.gltf</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from cnr-isti-vclab/meshlab#1387 (`confirmed`), ml#1484 (GPL-3.0 — pattern only, no bytes copied).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A minimal, spec-valid glTF 2.0 document defines one mesh primitive with `&quot;mode&quot;: 0` (POINTS) and only a `POSITION` accessor — no `indices`, as the glTF spec permits for point-cloud primitives (draw mode 0 renders each vertex as an independent point, no connectivity needed). ml#1387/#1484 report MeshLab&#x27;s glTF importer feeding every primitive, regardless of declared `mode`, into a templated `populateTriangles&lt;T&gt;()` assembler that assumes triangle connectivity — producing a SEGV on a POINTS primitive with no index buffer to read triangles from. Distinct from the assimp-mined glTF candidates (Ip004/Ip007/Ip008/Ip011/Ip012, all attribute/accessor layout defects): this file has no accessor or buffer defect at all — every accessor is well-formed and in-bounds — the defect is purely that the primitive&#x27;s declared draw `mode` is never branched on before triangle assembly.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a glTF JSON with one mesh, one primitive whose `attributes` is `{&quot;POSITION&quot;: 0}` (no `&quot;indices&quot;` key) and `&quot;mode&quot;: 0`, backed by a correctly-sized base64 data-URI buffer holding 3 well-formed VEC3/float32 positions.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>branch on the primitive&#x27;s declared `mode` before assembling triangle connectivity; render/import POINTS (and LINES/LINE_STRIP/etc.) primitives through a mode-appropriate path, or reject with a diagnostic if only triangle primitives are supported — never assume every primitive has triangle indices.</p></section>
+<section><h2>Notes</h2>
+<p>Live-verified 2026-07-17 with trimesh 4.12.2: loads cleanly as a `Scene` containing one `trimesh.points.PointCloud` with `vertices.shape=(3,3)` — trimesh correctly branches on `mode: 0` and never attempts triangle assembly. ml#1387 (`confirmed`) and ml#1484 document MeshLab&#x27;s glTF importer crashing (SEGV) on this same well-formed POINTS-mode pattern by unconditionally routing every primitive through its triangle assembler. Synonyms: &quot;glTF POINTS mode primitive crash&quot;, &quot;point cloud primitive routed to triangle assembler&quot;, &quot;glTF mode 0 no indices SEGV&quot;, &quot;primitive mode not branched before triangulation&quot;. Provenance tier: bytes-only.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;&quot;mode&quot;: 0&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>{
+<span class="lineno">2</span>  &quot;asset&quot;: { &quot;version&quot;: &quot;2.0&quot; },
+<span class="lineno">3</span>  &quot;scene&quot;: 0,
+<span class="lineno">4</span>  &quot;scenes&quot;: [ { &quot;nodes&quot;: [0] } ],
+<span class="lineno">5</span>  &quot;nodes&quot;: [ { &quot;mesh&quot;: 0 } ],
+<span class="lineno">6</span>  &quot;meshes&quot;: [
+<span class="lineno">7</span>    {
+<span class="lineno">8</span>      &quot;primitives&quot;: [
+<span class="lineno">9</span>        {
+<span class="lineno">10</span>          &quot;attributes&quot;: { &quot;POSITION&quot;: 0 },
+<span class="lineno">11</span>          <mark>&quot;mode&quot;: 0</mark>
+<span class="lineno">12</span>        }
+<span class="lineno">13</span>      ]
+<span class="lineno">14</span>    }
+<span class="lineno">15</span>  ],
+<span class="lineno">16</span>  &quot;buffers&quot;: [
+<span class="lineno">17</span>    {
+<span class="lineno">18</span>      &quot;uri&quot;: &quot;data:application/octet-stream;base64,AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAgD8AAAAA&quot;,
+<span class="lineno">19</span>      &quot;byteLength&quot;: 36
+<span class="lineno">20</span>    }
+<span class="lineno">21</span>  ],
+<span class="lineno">22</span>  &quot;bufferViews&quot;: [
+<span class="lineno">23</span>    { &quot;buffer&quot;: 0, &quot;byteOffset&quot;: 0, &quot;byteLength&quot;: 36, &quot;target&quot;: 34962 }
+<span class="lineno">24</span>  ],
+<span class="lineno">25</span>  &quot;accessors&quot;: [
+<span class="lineno">26</span>    {
+<span class="lineno">27</span>      &quot;bufferView&quot;: 0,
+<span class="lineno">28</span>      &quot;componentType&quot;: 5126,
+<span class="lineno">29</span>      &quot;count&quot;: 3,
+<span class="lineno">30</span>      &quot;type&quot;: &quot;VEC3&quot;,
+<span class="lineno">31</span>      &quot;max&quot;: [1.0, 1.0, 0.0],
+<span class="lineno">32</span>      &quot;min&quot;: [0.0, 0.0, 0.0]
+<span class="lineno">33</span>    }
+<span class="lineno">34</span>  ]
+<span class="lineno">35</span>}
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ip032.html">&larr; Ip032</a> <a class="up" href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <a class="next" href="Ip046.html">Ip046 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

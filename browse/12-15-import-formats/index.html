@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</h1>
 <p class="blurb">Raw malformed import-format files (OBJ/PLY/OFF/glTF/COLLADA/3MF/FBX) that exercise a parser&#x27;s robustness: header-count lies, out-of-range indices, dangling refs, truncated/encoding faults. Graded against independent loaders (assimp, trimesh); not Part-21.</p>
-<p class="meta">16 entries</p>
+<p class="meta">33 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
@@ -34,6 +34,23 @@
 <tr><td><a href="Ip014.html"><code>Ip014</code></a></td><td>COLLADA document with no `library_geometries` (empty scene)</td><td><code>bytes-only</code></td><td><code></code></td></tr>
 <tr><td><a href="Ip015.html"><code>Ip015</code></a></td><td>PLY zero-count face element alongside a populated vertex element (silent type change)</td><td><code>bytes-only</code></td><td><code></code></td></tr>
 <tr><td><a href="Ip016.html"><code>Ip016</code></a></td><td>OFF face names a negative vertex index (unvalidated, wraps to the last vertex)</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip017.html"><code>Ip017</code></a></td><td>OBJ face record with fewer than three vertex references</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip020.html"><code>Ip020</code></a></td><td>OBJ vertex-normal index out of range silently discards the entire normal channel</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip021.html"><code>Ip021</code></a></td><td>Non-finite (NaN) value in a vertex COLOR channel is silently clamped to zero</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip022.html"><code>Ip022</code></a></td><td>ASCII STL with multiple solid…endsolid bodies in one file</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip023.html"><code>Ip023</code></a></td><td>Binary STL whose 80-byte header begins with the ASCII text &quot;solid&quot;</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip024.html"><code>Ip024</code></a></td><td>OFF inline comment on the vertex/face count line desynchronizes every subsequent row</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip025.html"><code>Ip025</code></a></td><td>OBJ face record forward-referencing vertices declared later in the file</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip031.html"><code>Ip031</code></a></td><td>OFF well-formed n-gon face crashes fan-triangulation on an independent reader</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip032.html"><code>Ip032</code></a></td><td>PLY unknown per-vertex LIST property crashes an independent reader (formerly ignored)</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip033.html"><code>Ip033</code></a></td><td>glTF POINTS-mode primitive (no indices) routed through a triangle assembler</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip046.html"><code>Ip046</code></a></td><td>Draco connectivity `num_faces` count-driven decompression bomb</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip047.html"><code>Ip047</code></a></td><td>Draco truncated bitstream over-read</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip048.html"><code>Ip048</code></a></td><td>Draco invalid encoder-method header byte</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip049.html"><code>Ip049</code></a></td><td>Draco unsupported bitstream version</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip050.html"><code>Ip050</code></a></td><td>Draco encoder-method/body mismatch → silent-empty decode</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip051.html"><code>Ip051</code></a></td><td>Draco point-cloud `num_points` count-driven bomb</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip052.html"><code>Ip052</code></a></td><td>Draco point-cloud attribute `num_components` overflow</td><td><code>bytes-only</code></td><td><code></code></td></tr>
 </tbody></table>
 </main>
 <footer>

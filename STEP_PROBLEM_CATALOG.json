@@ -35547,6 +35547,591 @@
   },
   {
     "byte_assertions": [
+      "contains(b'f 1 2\\n')"
+    ],
+    "category": "§12.15 import-format parser robustness (sub-class: under-specified-face-record)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": "trimesh 4.12.2 silently discards the malformed `f 1 2` record with no exception and no warning — `trimesh.load()` returns a single well-formed triangle (`vertices.shape==(3,3)`, `faces.shape==(1,3)`, `faces==[[0,1,2]]`), and the truncated second face simply vanishes from the loaded mesh — verified 2026-07-17. Synonyms: \"OBJ face too few indices\", \"under-specified face record\", \"f-line fewer than 3 refs\", \"degenerate face silently dropped\". Provenance tier: bytes-only.",
+    "description": "A Wavefront OBJ face statement supplies fewer than three vertex references (`f 1 2`), so the record cannot form a triangle or any valid polygon. Distinct from Ip001/Ip006 (index out of range/underflow) — here every index is individually valid, the record is simply too short to be geometry.",
+    "expected_kernel_behavior": "reject or skip-with-diagnostic the under-specified face record; never emit a degenerate 2-vertex \"triangle\" or silently fabricate a third index.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "import-examples/12-15-import-formats/Ip017.obj",
+    "id": "Ip017",
+    "notes": "Cross-oracle: trimesh 4.12.2 silently discards the malformed `f 1 2` record with no exception and no warning — `trimesh.load()` returns a single well-formed triangle (`vertices.shape==(3,3)`, `faces.shape==(1,3)`, `faces==[[0,1,2]]`), and the truncated second face simply vanishes from the loaded mesh — verified 2026-07-17. Synonyms: \"OBJ face too few indices\", \"under-specified face record\", \"f-line fewer than 3 refs\", \"degenerate face silently dropped\". Provenance tier: bytes-only.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-only",
+    "reproducer": "four `v` lines followed by a valid `f 1 2 3` and a second, malformed `f 1 2` carrying only two indices.",
+    "section": "12.15",
+    "section_dir": "12-15-import-formats",
+    "see_also": [],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "Pattern-mined from mikedh/trimesh, `models/notenoughindices.obj` (`tests/test_obj.py`) (MIT — pattern only, no bytes copied)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "silent-loss"
+    ],
+    "tier3_assertions": [],
+    "title": "OBJ face record with fewer than three vertex references"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'f 1//1 2//2 3//1')"
+    ],
+    "category": "§12.15 import-format parser robustness (sub-class: attribute-channel-underrun)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": "trimesh 4.12.2 raises no exception and silently drops the file's declared normal data entirely, returning `vertex_normals==[[0,0,-1],[0,0,-1],[0,0,-1]]` for every vertex — matching the recomputed geometric `face_normals` (`[0,0,-1]`), not the file's declared `vn 0.0 0.0 1.0` — verified 2026-07-17 (confirmed against an all-valid-index control file, which correctly returns the declared `[0,0,1]` normal). Synonyms: \"OBJ vn index out of range\", \"normal channel underrun\", \"silent normal-channel drop\", \"geometric-normal fallback masks bad index\". Provenance tier: bytes-only.",
+    "description": "A face record's `vn` slot references a normal index beyond the declared `vn` count (`f 1//1 2//2 3//1` with only one `vn` in the file). Rather than raising or clamping just the offending reference, a loader that bounds-checks the referenced-normal array as a whole may respond to any one invalid index by discarding per-vertex normals for the entire mesh and silently substituting a recomputed geometric (flat, per-face) normal — even for the two vertex refs (`1` and `3`) whose `vn` index was perfectly valid.",
+    "expected_kernel_behavior": "bounds-check every `vn`/`vt` reference against the declared count of that channel individually; an out-of-range reference on one vertex should not silently discard valid per-vertex data supplied for the other vertices of the same face.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "import-examples/12-15-import-formats/Ip020.obj",
+    "id": "Ip020",
+    "notes": "Cross-oracle: trimesh 4.12.2 raises no exception and silently drops the file's declared normal data entirely, returning `vertex_normals==[[0,0,-1],[0,0,-1],[0,0,-1]]` for every vertex — matching the recomputed geometric `face_normals` (`[0,0,-1]`), not the file's declared `vn 0.0 0.0 1.0` — verified 2026-07-17 (confirmed against an all-valid-index control file, which correctly returns the declared `[0,0,1]` normal). Synonyms: \"OBJ vn index out of range\", \"normal channel underrun\", \"silent normal-channel drop\", \"geometric-normal fallback masks bad index\". Provenance tier: bytes-only.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-only",
+    "reproducer": "three `v` lines forming a triangle whose winding order gives a computed geometric normal of `(0,0,-1)`, one `vn 0.0 0.0 1.0` (the opposite direction, so declared-vs-computed are unambiguously distinguishable), and a face `f 1//1 2//2 3//1` where index `2` for `vn` is out of range (only one `vn` exists).",
+    "section": "12.15",
+    "section_dir": "12-15-import-formats",
+    "see_also": [],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "Pattern-mined from mikedh/trimesh, `models/singlevn.obj` (`tests/test_obj.py`) (MIT — pattern only, no bytes copied)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "silent-loss"
+    ],
+    "tier3_assertions": [],
+    "title": "OBJ vertex-normal index out of range silently discards the entire normal channel"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'nan 0.0 1.0')"
+    ],
+    "category": "§12.15 import-format parser robustness (sub-class: non-finite-attribute-channel)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": "trimesh 4.12.2 loads without error and silently clamps the NaN channel to 0 via an explicit step in `visual/color.py::to_rgba` (`colors[~np.isfinite(colors)] = 0.0`) before scaling to `uint8` — the third vertex's color decodes to `[0, 0, 255, 255]` (NaN silently became 0, not a diagnostic) — verified 2026-07-17. No exception, no warning; the deliberate clamp proves the class is real and must be handled explicitly, since a naive `float64.astype(uint8)` cast of NaN is undefined behavior in general. Synonyms: \"OBJ non-finite vertex color\", \"NaN in color channel\", \"poisoned attribute silently clamped\", \"non-finite attribute vs non-finite position\". Provenance tier: bytes-only.",
+    "description": "An OBJ extended vertex line (`v x y z r g b`) carries a finite position but a `NaN` in the trailing color triple. The geometry itself is fine; the attribute is poison. Distinct from the corpus's existing `Me*` `non_finite_coordinate` class, which covers only the position channel — a non-finite value in a non-position (color) attribute is unrepresented.",
+    "expected_kernel_behavior": "detect and reject or clamp non-finite attribute values with a diagnostic identifying the offending vertex/channel; a silent float→int cast of NaN is undefined/implementation-specific behavior and must not be relied upon.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "import-examples/12-15-import-formats/Ip021.obj",
+    "id": "Ip021",
+    "notes": "Cross-oracle: trimesh 4.12.2 loads without error and silently clamps the NaN channel to 0 via an explicit step in `visual/color.py::to_rgba` (`colors[~np.isfinite(colors)] = 0.0`) before scaling to `uint8` — the third vertex's color decodes to `[0, 0, 255, 255]` (NaN silently became 0, not a diagnostic) — verified 2026-07-17. No exception, no warning; the deliberate clamp proves the class is real and must be handled explicitly, since a naive `float64.astype(uint8)` cast of NaN is undefined behavior in general. Synonyms: \"OBJ non-finite vertex color\", \"NaN in color channel\", \"poisoned attribute silently clamped\", \"non-finite attribute vs non-finite position\". Provenance tier: bytes-only.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-only",
+    "reproducer": "three extended `v x y z r g b` lines, the third of which carries `nan` in its red-channel slot, followed by a triangular face referencing all three.",
+    "section": "12.15",
+    "section_dir": "12-15-import-formats",
+    "see_also": [],
+    "sender": "",
+    "severity": "P3",
+    "sources": [
+      "Pattern-mined from mikedh/trimesh, `models/nancolor.obj` (`tests/test_obj.py`) (MIT — pattern only, no bytes copied)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "Non-finite (NaN) value in a vertex COLOR channel is silently clamped to zero"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'endsolid bodyA')"
+    ],
+    "category": "§12.15 import-format parser robustness (sub-class: multi-body-container)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": "trimesh 4.12.2 correctly treats the file as a multi-body container — `trimesh.load()` returns a `Scene` with `geometry.keys()==['bodyA','bodyB']`, each a well-formed one-triangle mesh — verified 2026-07-17. Positive/reference result: trimesh's ASCII STL loader (`exchange/stl.py::load_stl_ascii`) explicitly scans for repeated `solid`/`endsolid` chunk pairs rather than stopping at the first `endsolid`, proving the multi-body case is a deliberate design decision a naive single-pass reader would get wrong. Synonyms: \"STL multi-solid file\", \"multiple solid blocks in one STL\", \"STL container truncated to first body\", \"ASCII STL scene of N solids\". Provenance tier: bytes-only. First STL-format fixture in the corpus.",
+    "description": "One ASCII STL file concatenates two independent `solid NAME … endsolid NAME` blocks back to back. STL is an informal, never-formally-standardized format usually read as single-solid; a strict reader that stops parsing after the first `endsolid` silently truncates the file to one body, discarding the second solid entirely with no diagnostic. First multi-body container class for a flat mesh format in this section, and the first STL-format fixture in the corpus.",
+    "expected_kernel_behavior": "treat the file as a scene of N named solids and load all of them; never silently stop after the first `endsolid` and discard the remainder of the file.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "import-examples/12-15-import-formats/Ip022.stl",
+    "id": "Ip022",
+    "notes": "Cross-oracle: trimesh 4.12.2 correctly treats the file as a multi-body container — `trimesh.load()` returns a `Scene` with `geometry.keys()==['bodyA','bodyB']`, each a well-formed one-triangle mesh — verified 2026-07-17. Positive/reference result: trimesh's ASCII STL loader (`exchange/stl.py::load_stl_ascii`) explicitly scans for repeated `solid`/`endsolid` chunk pairs rather than stopping at the first `endsolid`, proving the multi-body case is a deliberate design decision a naive single-pass reader would get wrong. Synonyms: \"STL multi-solid file\", \"multiple solid blocks in one STL\", \"STL container truncated to first body\", \"ASCII STL scene of N solids\". Provenance tier: bytes-only. First STL-format fixture in the corpus.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-only",
+    "reproducer": "a single `.stl` file containing two complete, well-formed `solid NAME … endsolid NAME` blocks, each with one triangle, back to back with no separator beyond the second `solid` keyword.",
+    "section": "12.15",
+    "section_dir": "12-15-import-formats",
+    "see_also": [],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "Pattern-mined from mikedh/trimesh, `models/multibody.stl` (`tests/test_stl.py`, asserts `len(s.geometry)==2`, keys `{bodyA,bodyB}`) (MIT — pattern only, no bytes copied)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "encoding"
+    ],
+    "tier3_assertions": [],
+    "title": "ASCII STL with multiple solid…endsolid bodies in one file"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'solid exported by dodgy-step-files')"
+    ],
+    "category": "§12.15 import-format parser robustness (sub-class: ascii-vs-binary-detection-trap)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": "trimesh 4.12.2 loads the file correctly as a single-triangle mesh (`vertices.shape==(3,3)`, `faces.shape==(1,3)`) despite the \"solid\"-prefixed header — verified 2026-07-17. Positive/reference result: `exchange/stl.py::load_stl` tries `load_stl_binary` first and only falls back to `load_stl_ascii` on a `HeaderError` (structural header-vs-filesize mismatch), so it is immune to the naive \"leading solid token\" heuristic that trips up simpler sniffers. Synonyms: \"binary STL solid header trap\", \"ASCII vs binary STL misdetection\", \"leading solid token false positive\", \"STL format-sniffing by structure not prefix\". Provenance tier: bytes-only. First binary-STL fixture in the corpus.",
+    "description": "A binary STL's free-text 80-byte header happens to begin with the literal word \"solid\" (many CAD/CAM exporters write a human-readable string like `solid NAME exported by TOOL` into the otherwise-arbitrary binary header). A content-sniffer that decides ASCII-vs-binary by checking whether the file's first bytes spell \"solid\" mis-routes this file to the ASCII parser, which then fails to make sense of the binary triangle payload (or aborts outright). Second STL-format fixture in the corpus; the first exercising the binary variant and its detection heuristic.",
+    "expected_kernel_behavior": "detect binary-vs-ASCII by structure (does `84 + 50*count` equal the file length?) rather than by sniffing a leading \"solid\" token; a leading \"solid\" byte sequence must never be sufficient evidence that a file is the ASCII variant.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "import-examples/12-15-import-formats/Ip023.stl",
+    "id": "Ip023",
+    "notes": "Cross-oracle: trimesh 4.12.2 loads the file correctly as a single-triangle mesh (`vertices.shape==(3,3)`, `faces.shape==(1,3)`) despite the \"solid\"-prefixed header — verified 2026-07-17. Positive/reference result: `exchange/stl.py::load_stl` tries `load_stl_binary` first and only falls back to `load_stl_ascii` on a `HeaderError` (structural header-vs-filesize mismatch), so it is immune to the naive \"leading solid token\" heuristic that trips up simpler sniffers. Synonyms: \"binary STL solid header trap\", \"ASCII vs binary STL misdetection\", \"leading solid token false positive\", \"STL format-sniffing by structure not prefix\". Provenance tier: bytes-only. First binary-STL fixture in the corpus.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-only",
+    "reproducer": "a well-formed binary STL (80-byte header + `uint32` triangle count + 50-byte triangle records) whose header text is deliberately set to `\"solid exported by dodgy-step-files binary STL generator tool v1\"` — a legal binary STL that happens to start with the ASCII bytes \"solid\".",
+    "section": "12.15",
+    "section_dir": "12-15-import-formats",
+    "see_also": [],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "Pattern-mined from mikedh/trimesh, `models/two_objects_mixed_case_names.stl` (`tests/test_stl.py`) + STL binary/ASCII-detection folklore (MIT — pattern only, no bytes copied)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "syntax"
+    ],
+    "tier3_assertions": [],
+    "title": "Binary STL whose 80-byte header begins with the ASCII text \"solid\""
+  },
+  {
+    "byte_assertions": [
+      "contains(b'3 1 0 # off count line comment')"
+    ],
+    "category": "§12.15 import-format parser robustness (sub-class: lexical-tokenization-desync)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": "trimesh 4.12.2 raises `ValueError: invalid literal for int() with base 10: '0.0'` from `exchange/off.py:52` (`faces = [line[1 : int(line[0]) + 1] for line in faces]`) — traced to `util.comment_strip`'s chunk-rejoin duplicating the \"3 1 0\" count line in its output, which shifts the vertex/face row slices by one position until a real vertex-coordinate row (\"0.0 1.0 0.0\") is misread as a face row and `int(\"0.0\")` fails — verified 2026-07-17 (confirmed by inspecting `comment_strip`'s intermediate output directly). Distinct from Ip003 (header count > body rows, an honest mismatch) — here the declared counts are correct and the desync is purely a side effect of comment placement. Synonyms: \"OFF comment on count line\", \"inline comment desyncs row offsets\", \"comment_strip duplication bug\", \"OFF lexical tokenization ambiguity\". Provenance tier: bytes-only.",
+    "description": "An OFF file's `V F E` count line carries a trailing `# comment` on the same physical line (`3 1 0 # off count line comment`). trimesh's own comment-stripping helper (`util.comment_strip`) has a self-inflicted bug on this exact construct: its chunk-rejoin logic double-emits the line preceding an inline comment, duplicating the count line in the stripped output. Every subsequent row extraction (`splits[1:vertex_count+1]` for vertices, `splits[vertex_count+1:...]` for faces) is computed from positional offsets keyed to `vertex_count`/`face_count`, so the phantom duplicate line shifts every following row by one position — a vertex row absorbs the duplicate header text as fake coordinates, and the face-row slice lands on a real vertex-coordinate row instead.",
+    "expected_kernel_behavior": "strip inline comments without altering line count/order; validate the declared V/F/E against rows actually present rather than trusting positional offsets blindly, and never let a comment's presence silently shift which physical line answers to which logical row.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "import-examples/12-15-import-formats/Ip024.off",
+    "id": "Ip024",
+    "notes": "Cross-oracle: trimesh 4.12.2 raises `ValueError: invalid literal for int() with base 10: '0.0'` from `exchange/off.py:52` (`faces = [line[1 : int(line[0]) + 1] for line in faces]`) — traced to `util.comment_strip`'s chunk-rejoin duplicating the \"3 1 0\" count line in its output, which shifts the vertex/face row slices by one position until a real vertex-coordinate row (\"0.0 1.0 0.0\") is misread as a face row and `int(\"0.0\")` fails — verified 2026-07-17 (confirmed by inspecting `comment_strip`'s intermediate output directly). Distinct from Ip003 (header count > body rows, an honest mismatch) — here the declared counts are correct and the desync is purely a side effect of comment placement. Synonyms: \"OFF comment on count line\", \"inline comment desyncs row offsets\", \"comment_strip duplication bug\", \"OFF lexical tokenization ambiguity\". Provenance tier: bytes-only.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-only",
+    "reproducer": "an OFF file with `OFF` on its own line, then a count line `3 1 0 # off count line comment` (an inline `#` comment trailing the counts on the same physical line), followed by 3 vertex rows and 1 face row.",
+    "section": "12.15",
+    "section_dir": "12-15-import-formats",
+    "see_also": [],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "Pattern-mined from mikedh/trimesh, `models/comments.off` + `whitespace.off` (`tests/test_off.py`) (MIT — pattern only, no bytes copied)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "OFF inline comment on the vertex/face count line desynchronizes every subsequent row"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'f 1 2 3')"
+    ],
+    "category": "§12.15 import-format parser robustness (sub-class: index-resolution-ordering)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": "trimesh 4.12.2 resolves the forward reference correctly — `trimesh.load()` returns `vertices.shape==(3,3)`, `faces==[[0,1,2]]`, exactly the intended triangle — verified 2026-07-17. Positive/reference result: trimesh's OBJ loader extracts all `v`/`vn`/`vt`/`f` records via a two-pass, regex-based approach (`_parse_vertices` runs over the whole text before face resolution) rather than a single streaming pass, so forward references are immune to the disorder Open3D's issue tracker reports; a naive streaming single-pass reader would fail or mis-bind on this exact construct. Synonyms: \"OBJ forward vertex reference\", \"face before vertex declaration\", \"vertex index disorder\", \"two-pass vs streaming OBJ resolution\". Provenance tier: bytes-only.",
+    "description": "A `f` statement appears in the file before the `v` records it references, relying on the loader resolving indices against the complete, final vertex table rather than an in-progress running list. A single-pass, streaming-style loader that resolves each face's indices against only the vertices seen so far cannot resolve a forward reference at all (index 1 doesn't exist yet when the `f` line is read) — the independent Open3D loader was observed to bind faces to the wrong vertices under this kind of ordering/disorder.",
+    "expected_kernel_behavior": "resolve every OBJ index against the final, complete 1-based global vertex table after a full pass over the file; forward references are legal OBJ and must resolve correctly regardless of physical line order.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "import-examples/12-15-import-formats/Ip025.obj",
+    "id": "Ip025",
+    "notes": "Cross-oracle: trimesh 4.12.2 resolves the forward reference correctly — `trimesh.load()` returns `vertices.shape==(3,3)`, `faces==[[0,1,2]]`, exactly the intended triangle — verified 2026-07-17. Positive/reference result: trimesh's OBJ loader extracts all `v`/`vn`/`vt`/`f` records via a two-pass, regex-based approach (`_parse_vertices` runs over the whole text before face resolution) rather than a single streaming pass, so forward references are immune to the disorder Open3D's issue tracker reports; a naive streaming single-pass reader would fail or mis-bind on this exact construct. Synonyms: \"OBJ forward vertex reference\", \"face before vertex declaration\", \"vertex index disorder\", \"two-pass vs streaming OBJ resolution\". Provenance tier: bytes-only.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-only",
+    "reproducer": "a face record `f 1 2 3` placed as the first content line, followed by the three `v` lines it references.",
+    "section": "12.15",
+    "section_dir": "12-15-import-formats",
+    "see_also": [],
+    "sender": "",
+    "severity": "P3",
+    "sources": [
+      "Pattern-mined from isl-org/Open3D issue #5582, \"Vertex Index disorder when reading from obj file\" (MIT — pattern only, no bytes copied)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "OBJ face record forward-referencing vertices declared later in the file"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'7 4 6 0 2 3 1 5')"
+    ],
+    "category": "§12.15 import-format parser robustness (sub-class: n-gon-fan-triangulation)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "An OFF file whose header `8 1 0` and body counts are exactly correct (8 vertex rows, 1 face row) — no declared-count-vs-body mismatch, unlike Ip003/Ip010 — defines a single well-formed 7-gon face `7 4 6 0 2 3 1 5`. The face is syntactically valid: all 7 referenced indices are in range and none repeat. vcglib's polygon→triangle fan-triangulation path (used by MeshLab's OFF importer) mishandles n>4 polygons on this input (ml#1163, `confirmed`). This is a pure differential: the file has no malformation an OFF-spec validator would flag.",
+    "expected_kernel_behavior": "fan-triangulate (or ear-clip) an arbitrary well-formed n-gon face robustly for any n, or reject with a diagnostic naming the face; never crash on a syntactically valid polygon record.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "import-examples/12-15-import-formats/Ip031.off",
+    "id": "Ip031",
+    "notes": "Live-verified 2026-07-17 with trimesh 4.12.2: loads cleanly, fan-triangulates the 7-gon from its first listed index (vertex 4) into 5 triangles `[[4,6,0],[4,0,2],[4,2,3],[4,3,1],[4,1,5]]`, drops the one unreferenced vertex (7 verts / 5 faces reported) — no exception. ml#1163 documents MeshLab's vcglib-based OFF importer crashing (`confirmed` label) on this same well-formed-n-gon pattern — a clean cross-oracle divergence on identical, spec-valid bytes. Synonyms: \"OFF n-gon fan triangulation crash\", \"polygon face k>4 crash\", \"well-formed OFF polygon crashes importer\", \"vcglib populateTriangles n-gon\". Provenance tier: bytes-only.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-only",
+    "reproducer": "OFF header `8 1 0` matching 8 coordinate rows and 1 face row exactly, with the face line `7 4 6 0 2 3 1 5` — a 7-sided polygon (k=7 followed by 7 valid, non-repeating vertex indices, one vertex of the 8 left unreferenced).",
+    "section": "12.15",
+    "section_dir": "12-15-import-formats",
+    "see_also": [],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "Pattern-mined from cnr-isti-vclab/meshlab#1163 (`confirmed`) (GPL-3.0 — pattern only, no bytes copied)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "crash"
+    ],
+    "tier3_assertions": [],
+    "title": "OFF well-formed n-gon face crashes fan-triangulation on an independent reader"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'property list uchar int neighbor_indices')"
+    ],
+    "category": "§12.15 import-format parser robustness (sub-class: unrecognized-list-typed-property)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "An ASCII PLY vertex element declares a custom, non-standard property that is *list-typed* rather than scalar: `property list uchar int neighbor_indices`, i.e. each vertex row carries its own count-prefixed integer list (here, 2 neighbor indices) in addition to `x y z`. The header is fully self-describing (count-type `uchar`, value-type `int`, declared per PLY spec) and every vertex row supplies exactly the count it declares. ml#1624 reports this construct — previously silently skipped by MeshLab — now over-reads or crashes, a regression from tolerant to fragile on a file the spec permits. Distinct from Ip009 (extra *scalar* fields) and Ip015 (zero-count element): this is a *list-typed* custom property on the vertex element, which a naive property-skipper (that assumes every unknown property is a fixed-width scalar) mishandles by advancing the read cursor by a wrong, fixed byte count.",
+    "expected_kernel_behavior": "skip unrecognized properties by consuming exactly their declared per-row structure (read the list's own count prefix and skip that many list elements), never assume unknown properties are fixed-width scalars.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "import-examples/12-15-import-formats/Ip032.ply",
+    "id": "Ip032",
+    "notes": "Live-verified 2026-07-17 with trimesh 4.12.2: loads cleanly, correctly skips the unrecognized `neighbor_indices` list property per vertex row and returns the intended 3 vertices / 1 face with correct coordinates — no exception, no corruption. ml#1624 documents MeshLab's PLY importer regressing from silent-ignore to over-read/crash on this same list-typed unknown-property pattern. Synonyms: \"PLY unknown list property crash\", \"custom per-vertex list field\", \"PLY property skip assumes scalar width\", \"non-standard vertex list property\". Provenance tier: bytes-only.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-only",
+    "reproducer": "an ASCII PLY with `element vertex 3`, `property float x/y/z`, then `property list uchar int neighbor_indices` before `end_header`; each of the 3 vertex rows carries `x y z <count> <count ints>` (here count=2), followed by a normal triangular face element.",
+    "section": "12.15",
+    "section_dir": "12-15-import-formats",
+    "see_also": [],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "Pattern-mined from cnr-isti-vclab/meshlab#1624 (GPL-3.0 — pattern only, no bytes copied)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "crash"
+    ],
+    "tier3_assertions": [],
+    "title": "PLY unknown per-vertex LIST property crashes an independent reader (formerly ignored)"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'\"mode\": 0')"
+    ],
+    "category": "§12.15 import-format parser robustness (sub-class: primitive-mode-mismatch)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A minimal, spec-valid glTF 2.0 document defines one mesh primitive with `\"mode\": 0` (POINTS) and only a `POSITION` accessor — no `indices`, as the glTF spec permits for point-cloud primitives (draw mode 0 renders each vertex as an independent point, no connectivity needed). ml#1387/#1484 report MeshLab's glTF importer feeding every primitive, regardless of declared `mode`, into a templated `populateTriangles<T>()` assembler that assumes triangle connectivity — producing a SEGV on a POINTS primitive with no index buffer to read triangles from. Distinct from the assimp-mined glTF candidates (Ip004/Ip007/Ip008/Ip011/Ip012, all attribute/accessor layout defects): this file has no accessor or buffer defect at all — every accessor is well-formed and in-bounds — the defect is purely that the primitive's declared draw `mode` is never branched on before triangle assembly.",
+    "expected_kernel_behavior": "branch on the primitive's declared `mode` before assembling triangle connectivity; render/import POINTS (and LINES/LINE_STRIP/etc.) primitives through a mode-appropriate path, or reject with a diagnostic if only triangle primitives are supported — never assume every primitive has triangle indices.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "import-examples/12-15-import-formats/Ip033.gltf",
+    "id": "Ip033",
+    "notes": "Live-verified 2026-07-17 with trimesh 4.12.2: loads cleanly as a `Scene` containing one `trimesh.points.PointCloud` with `vertices.shape=(3,3)` — trimesh correctly branches on `mode: 0` and never attempts triangle assembly. ml#1387 (`confirmed`) and ml#1484 document MeshLab's glTF importer crashing (SEGV) on this same well-formed POINTS-mode pattern by unconditionally routing every primitive through its triangle assembler. Synonyms: \"glTF POINTS mode primitive crash\", \"point cloud primitive routed to triangle assembler\", \"glTF mode 0 no indices SEGV\", \"primitive mode not branched before triangulation\". Provenance tier: bytes-only.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-only",
+    "reproducer": "a glTF JSON with one mesh, one primitive whose `attributes` is `{\"POSITION\": 0}` (no `\"indices\"` key) and `\"mode\": 0`, backed by a correctly-sized base64 data-URI buffer holding 3 well-formed VEC3/float32 positions.",
+    "section": "12.15",
+    "section_dir": "12-15-import-formats",
+    "see_also": [],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "Pattern-mined from cnr-isti-vclab/meshlab#1387 (`confirmed`), ml#1484 (GPL-3.0 — pattern only, no bytes copied)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "crash"
+    ],
+    "tier3_assertions": [],
+    "title": "glTF POINTS-mode primitive (no indices) routed through a triangle assembler"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'DRACO')"
+    ],
+    "category": "§12.15 import-format parser robustness (sub-class: draco-codec)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "The Edgebreaker connectivity header carries a `num_faces` varint that the decoder historically fed to `vector::reserve()` with no bound against the remaining buffer. A tiny (~80-byte) file can therefore claim billions of faces while supplying almost no symbol payload. A robust decoder must bound the declared count against the bytes actually remaining before it allocates.",
+    "expected_kernel_behavior": "Validate `num_faces` against the remaining buffer size before any reserve/allocation; reject with a clear diagnostic. Never size an allocation from an unvalidated stream count.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "import-examples/12-15-import-formats/Ip046.drc",
+    "id": "Ip046",
+    "notes": "DracoPy 2.0.0 result observed: `FileTypeException: Input mesh is not draco encoded`. The decode returns immediately with a generic reject — no OOM, no hang; the generic error string does not confirm which check fired (header-parse vs. the `num_faces` bound), only that this build does not allocate from the unvalidated count. Synonyms: \"count-driven allocation bomb\", \"codec-internal reserve() bomb\", \"unbounded num_faces\". Provenance tier: bytes-only.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-only",
+    "reproducer": "Encode the tetra base mesh; replace the single-byte `num_faces` varint at file offset 12 (value 4) with the 5-byte varint `FF FF FF FF 0F` (~4.29 billion). Body is otherwise untouched.",
+    "section": "12.15",
+    "section_dir": "12-15-import-formats",
+    "see_also": [],
+    "sender": "",
+    "severity": "P1",
+    "sources": [
+      "Pattern-mined from google/draco#1169 (Apache-2.0 — pattern only",
+      "bytes regenerated via DracoPy, not copied)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "crash"
+    ],
+    "tier3_assertions": [],
+    "title": "Draco connectivity `num_faces` count-driven decompression bomb"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'DRACO')"
+    ],
+    "category": "§12.15 import-format parser robustness (sub-class: draco-codec)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "The binary entropy-coded body is cut short after a valid header, so section/length fields still claim payload that is not present. A `DecoderBuffer::Peek`/`Decode` that does not check `remaining_size()` reads past the buffer tail. Unlike an ASCII EOF over-read there is no line/token structure to anchor recovery on.",
+    "expected_kernel_behavior": "Every `Peek`/`Decode` must bounds-check against the remaining buffer; a truncated stream must be rejected with a diagnostic, never read past its tail.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "import-examples/12-15-import-formats/Ip047.drc",
+    "id": "Ip047",
+    "notes": "DracoPy 2.0.0 result observed: `FileTypeException: Input mesh is not draco encoded`. Truncation at every length tried (11/20/40/55/78 of 79 bytes) rejected the same way — no crash. Synonyms: \"truncated codec bitstream\", \"buffer over-read at EOF\", \"short read past remaining_size\". Provenance tier: bytes-only.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-only",
+    "reproducer": "Encode the tetra base mesh (79 bytes) and keep only the first 40 bytes (header + partial connectivity body); the trailing symbol/attribute payload is dropped.",
+    "section": "12.15",
+    "section_dir": "12-15-import-formats",
+    "see_also": [],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "Pattern-mined from google/draco#1103 (Apache-2.0 — pattern only",
+      "bytes regenerated via DracoPy, not copied)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "crash"
+    ],
+    "tier3_assertions": [],
+    "title": "Draco truncated bitstream over-read"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'DRACO')"
+    ],
+    "category": "§12.15 import-format parser robustness (sub-class: draco-codec)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "The 11-byte Draco header's `encoder_method` byte (offset 8) selects the mesh connectivity codec; only 0 (sequential) and 1 (Edgebreaker) are defined. A value outside that set must be rejected before the decoder dispatches to a non-existent method.",
+    "expected_kernel_behavior": "Validate the method byte against the known enumeration; reject an unknown method with a clear diagnostic rather than dispatching on it.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "import-examples/12-15-import-formats/Ip048.drc",
+    "id": "Ip048",
+    "notes": "DracoPy 2.0.0 result observed: `FileTypeException: Input mesh is not draco encoded`. Synonyms: \"unknown codec method\", \"invalid encoder-method enum\", \"unsupported connectivity method\". Provenance tier: bytes-only.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-only",
+    "reproducer": "Encode the tetra base mesh (method byte = 1, Edgebreaker); set file offset 8 to `0x02` (undefined method). All other bytes untouched.",
+    "section": "12.15",
+    "section_dir": "12-15-import-formats",
+    "see_also": [],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "Pattern-mined from google/draco#1169 header-validation surface (Apache-2.0 — pattern only",
+      "bytes regenerated via DracoPy, not copied)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "Draco invalid encoder-method header byte"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'DRACO')"
+    ],
+    "category": "§12.15 import-format parser robustness (sub-class: draco-codec)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "The header's major/minor version bytes (offsets 5–6) gate which bitstream layout the decoder applies. A version the build does not support must be rejected up front; proceeding would parse later fields under the wrong layout assumptions.",
+    "expected_kernel_behavior": "Compare the declared version against the maximum supported version and reject anything higher with a clear diagnostic before decoding the body.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "import-examples/12-15-import-formats/Ip049.drc",
+    "id": "Ip049",
+    "notes": "DracoPy 2.0.0 result observed: `FileTypeException: Input mesh is not draco encoded`. Synonyms: \"unsupported version header\", \"future bitstream version\", \"version-gate bypass\". Provenance tier: bytes-only.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-only",
+    "reproducer": "Encode the tetra base mesh (version 2.2); set the major-version byte at offset 5 to `0xFF`. All other bytes untouched.",
+    "section": "12.15",
+    "section_dir": "12-15-import-formats",
+    "see_also": [],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "Pattern-mined from google/draco#1169 header-validation surface (Apache-2.0 — pattern only",
+      "bytes regenerated via DracoPy, not copied)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "syntax"
+    ],
+    "tier3_assertions": [],
+    "title": "Draco unsupported bitstream version"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'DRACO')"
+    ],
+    "category": "§12.15 import-format parser robustness (sub-class: draco-codec)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "The `encoder_method` byte is set to a VALID value (0, sequential) that does not match the actual Edgebreaker-encoded body. Unlike Ip048 (an out-of-range method), this passes the enum check, so the decoder applies the wrong-but-legal codec to the body. The danger class here is a silently-wrong result rather than an error: the decoder must cross-check the method against what the body actually contains.",
+    "expected_kernel_behavior": "Detect that the declared method cannot consistently decode the body and reject with a diagnostic; never emit a geometry-losing empty result without an error.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "import-examples/12-15-import-formats/Ip050.drc",
+    "id": "Ip050",
+    "notes": "DracoPy 2.0.0 result observed: decode SUCCEEDS with NO exception and returns a `DracoPointCloud` carrying no points (`points` is empty) and no faces — the entire mesh is silently discarded. This is the one fixture in the set whose malformation is NOT rejected: it decodes to an empty result with no diagnostic. Synonyms: \"method/body mismatch\", \"silent-empty decode\", \"connectivity silently dropped\". Provenance tier: bytes-only.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-only",
+    "reproducer": "Encode the tetra base mesh (method = 1, Edgebreaker); set file offset 8 to `0x00` (sequential — a valid method, wrong for this body). All other bytes untouched.",
+    "section": "12.15",
+    "section_dir": "12-15-import-formats",
+    "see_also": [],
+    "sender": "",
+    "severity": "P1",
+    "sources": [
+      "Pattern-mined from google/draco#1171 (empty/degenerate decode surface) (Apache-2.0 — pattern only",
+      "bytes regenerated via DracoPy, not copied)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "silent-loss"
+    ],
+    "tier3_assertions": [],
+    "title": "Draco encoder-method/body mismatch → silent-empty decode"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'DRACO')"
+    ],
+    "category": "§12.15 import-format parser robustness (sub-class: draco-codec)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "In the point-cloud (kd-tree attribute) path, the header carries a `num_points` count (uint32, little-endian, at offset 11) that drives attribute-buffer sizing. A count that disagrees with the encoded attribute payload — here an implausibly large value — must be cross-checked against the attribute geometry before decode.",
+    "expected_kernel_behavior": "Cross-check the declared point count against the attribute payload size before allocating/decoding; reject an inconsistent count with a diagnostic.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "import-examples/12-15-import-formats/Ip051.drc",
+    "id": "Ip051",
+    "notes": "DracoPy 2.0.0 result observed: `FileTypeException: Input mesh is not draco encoded`. Decode returns immediately with a generic reject — no OOM/hang; the error string does not confirm the point-count bound specifically fired, only that no allocation from the unvalidated count occurs. This is the point-cloud codec path, distinct from the mesh count-bomb Ip046. Synonyms: \"point-count/level mismatch\", \"kd-tree attribute count bomb\", \"unbounded num_points\". Provenance tier: bytes-only.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-only",
+    "reproducer": "Encode the 4-point base point cloud; set the `num_points` uint32 at offset 11 to `0xFFFFFFFF`. All other bytes untouched.",
+    "section": "12.15",
+    "section_dir": "12-15-import-formats",
+    "see_also": [],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "Pattern-mined from google/draco#1105 (Apache-2.0 — pattern only",
+      "bytes regenerated via DracoPy, not copied)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "crash"
+    ],
+    "tier3_assertions": [],
+    "title": "Draco point-cloud `num_points` count-driven bomb"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'DRACO')"
+    ],
+    "category": "§12.15 import-format parser robustness (sub-class: draco-codec)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "Each attribute descriptor declares a `num_components` byte that multiplies into the per-point stride and total attribute-buffer size. A value far larger than the true component count (3 for position) drives `count × component_size` size arithmetic that a robust decoder must range-check (and compute with a checked multiply) before allocating.",
+    "expected_kernel_behavior": "Reject implausible component counts; use checked multiplication for all attribute size arithmetic; never allocate or index from an unvalidated component count.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "import-examples/12-15-import-formats/Ip052.drc",
+    "id": "Ip052",
+    "notes": "DracoPy 2.0.0 result observed: `FileTypeException: Input mesh is not draco encoded`. Synonyms: \"attribute component-count overflow\", \"num_components size-math overflow\", \"unchecked stride multiply\". Provenance tier: bytes-only.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-only",
+    "reproducer": "Encode the 4-point base point cloud (position attribute `num_components` = 3 at offset 19); set offset 19 to `0xFF`. All other bytes untouched.",
+    "section": "12.15",
+    "section_dir": "12-15-import-formats",
+    "see_also": [],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "Pattern-mined from google/draco#1172 (Apache-2.0 — pattern only",
+      "bytes regenerated via DracoPy, not copied)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "spec-violation"
+    ],
+    "tier3_assertions": [],
+    "title": "Draco point-cloud attribute `num_components` overflow"
+  },
+  {
+    "byte_assertions": [
       "bytes_starts_with(b'\\xef\\xbb\\xbf')",
       "matches(rb'\\xef\\xbb\\xbf')"
     ],

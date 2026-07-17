@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1><span class="tag tag-topology">topology</span></h1>
 <p class="blurb">Shell / wire / face / edge / vertex topology defect.</p>
-<p class="meta">1605 entries</p>
+<p class="meta">1609 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Section</th><th>Expected validation</th></tr></thead><tbody>
@@ -63,6 +63,10 @@
 <tr><td><a href="../../12-15-import-formats/Ip010.html"><code>Ip010</code></a></td><td>OFF face names a vertex index ≥ declared vertex count</td><td><a href="../../12-15-import-formats/index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a></td><td><code></code></td></tr>
 <tr><td><a href="../../12-15-import-formats/Ip015.html"><code>Ip015</code></a></td><td>PLY zero-count face element alongside a populated vertex element (silent type change)</td><td><a href="../../12-15-import-formats/index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a></td><td><code></code></td></tr>
 <tr><td><a href="../../12-15-import-formats/Ip016.html"><code>Ip016</code></a></td><td>OFF face names a negative vertex index (unvalidated, wraps to the last vertex)</td><td><a href="../../12-15-import-formats/index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a></td><td><code></code></td></tr>
+<tr><td><a href="../../12-15-import-formats/Ip021.html"><code>Ip021</code></a></td><td>Non-finite (NaN) value in a vertex COLOR channel is silently clamped to zero</td><td><a href="../../12-15-import-formats/index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a></td><td><code></code></td></tr>
+<tr><td><a href="../../12-15-import-formats/Ip024.html"><code>Ip024</code></a></td><td>OFF inline comment on the vertex/face count line desynchronizes every subsequent row</td><td><a href="../../12-15-import-formats/index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a></td><td><code></code></td></tr>
+<tr><td><a href="../../12-15-import-formats/Ip025.html"><code>Ip025</code></a></td><td>OBJ face record forward-referencing vertices declared later in the file</td><td><a href="../../12-15-import-formats/index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a></td><td><code></code></td></tr>
+<tr><td><a href="../../12-15-import-formats/Ip048.html"><code>Ip048</code></a></td><td>Draco invalid encoder-method header byte</td><td><a href="../../12-15-import-formats/index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a></td><td><code></code></td></tr>
 <tr><td><a href="../../12-8-mixed/M003.html"><code>M003</code></a></td><td>Free-edge tessellated shell cannot use tessellated_connecting_edge</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-8-mixed/M004.html"><code>M004</code></a></td><td>Watertightness lost when each tessellated face has its own coordinates_list</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-8-mixed/M024.html"><code>M024</code></a></td><td>Mesh-to-BRep gaps at trim curves (non-watertight result)</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></td></tr>

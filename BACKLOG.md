@@ -155,7 +155,24 @@ loader we don't have (assimp/Open3D/tinygltf), or was tried-and-dropped above):*
 - [ ] **First FBX coverage** (deep-nesting #6501, PolygonVertexIndex #6635) — needs a minimal ASCII FBX
       that assimp/loaders will actually parse. Medium lift.
 - [ ] **First 3MF coverage** (triangle-ref #1128) — needs a ZIP/OPC container writer. Bigger lift.
-- [ ] **Draco `.drc` codec ≈ 8** — needs a binary `draco_encoder`-based writer; own sub-track.
+- [x] **Draco `.drc` codec** — DONE (Tier-1 wave, 2026-07-17): DracoPy 2.0.0 installed in `validation/.venv`
+      (encode base mesh → mutate one field → observe `DracoPy.decode`); 7 landed (Ip046–Ip052), first-ever
+      compressed-codec coverage. Ip050 = silent-empty-decode (the dangerous non-rejecting case). 3
+      codec-internal candidates (rANS #1102, Edgebreaker split-symbol #1162, sequential-int OOB #1202)
+      DEFERRED: DracoPy 2.0.0 funnels every interior-body mutation into one generic `FileTypeException`, so
+      no signal distinguishes "reached that path & mishandled" from "generic reject" — would need a Draco
+      build with granular decode errors or a lower-level harness.
+
+**§12.15 TIER-1 WAVE — LANDED 2026-07-17 (17 fixtures: Ip017/020–025, Ip031–033, Ip046–052).** trimesh
+4.12.2 + DracoPy 2.0.0 installed in `validation/.venv` for authoring-time verification (bytes-only tier;
+NOT run in CI). trimesh/Open3D → Ip017/020–025 (7; incl. Ip024 = a genuine trimesh `comment_strip` bug,
+first STL coverage Ip022/023, Ip025 cited-Open3D-failure). MeshLab → Ip031–033 (3 confirmed vcglib
+crashers). Draco → Ip046–052 (7, above). **Trimmed at integration:** Ip018 (backslash line-continuation) +
+Ip019 (face-like group name) DROPPED — valid input trimesh handles perfectly, no cited real-loader failure,
+and a prior §12.15 miner already dropped these exact patterns as "no observable defect" (fidelity
+consistency). **Deferred — 5 fTetWild volumetric candidates** (#12–16): valid mesh files whose defect is
+only visible to a winding-number/tetrahedralizer/CSG oracle → §12.14 `Me*`, needs the mesh-harness
+volumetric-oracle wiring (not yet built). See `audit/mining_meshlab_draco_ftetwild_2026-07.md` §fTetWild.
 - [ ] **PROPOSAL (maintainer decision): permanent §12.15 import oracle.** All 16 fixtures now verified
       with one-shot trimesh/pycollada scripts; a standing `_import_oracle.py` + pytest (loading each Ip*
       and asserting the recorded outcome) would make the section self-guarding like §12.14's mesh oracle.

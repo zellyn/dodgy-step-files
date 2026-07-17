@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ip021 — Non-finite (NaN) value in a vertex COLOR channel is silently clamped to zero</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <span class="sep">/</span> <span class="current">Ip021</span>
+</nav>
+<header class="title-bar">
+<h1>Ip021 <span class="sep">—</span> <span class="entry-title">Non-finite (NaN) value in a vertex COLOR channel is silently clamped to zero</span></h1>
+<p class="category">§12.15 import-format parser robustness (sub-class: non-finite-attribute-channel)</p>
+<p class="severity-badge severity-p3">P3 — cosmetic / metadata-only</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../import-examples/12-15-import-formats/Ip021.obj">View raw fixture (.obj)</a> <code class="path">import-examples/12-15-import-formats/Ip021.obj</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from mikedh/trimesh, `models/nancolor.obj` (`tests/test_obj.py`) (MIT — pattern only, no bytes copied).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An OBJ extended vertex line (`v x y z r g b`) carries a finite position but a `NaN` in the trailing color triple. The geometry itself is fine; the attribute is poison. Distinct from the corpus&#x27;s existing `Me*` `non_finite_coordinate` class, which covers only the position channel — a non-finite value in a non-position (color) attribute is unrepresented.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>three extended `v x y z r g b` lines, the third of which carries `nan` in its red-channel slot, followed by a triangular face referencing all three.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect and reject or clamp non-finite attribute values with a diagnostic identifying the offending vertex/channel; a silent float→int cast of NaN is undefined/implementation-specific behavior and must not be relied upon.</p></section>
+<section><h2>Notes</h2>
+<p>Cross-oracle: trimesh 4.12.2 loads without error and silently clamps the NaN channel to 0 via an explicit step in `visual/color.py::to_rgba` (`colors[~np.isfinite(colors)] = 0.0`) before scaling to `uint8` — the third vertex&#x27;s color decodes to `[0, 0, 255, 255]` (NaN silently became 0, not a diagnostic) — verified 2026-07-17. No exception, no warning; the deliberate clamp proves the class is real and must be handled explicitly, since a naive `float64.astype(uint8)` cast of NaN is undefined behavior in general. Synonyms: &quot;OBJ non-finite vertex color&quot;, &quot;NaN in color channel&quot;, &quot;poisoned attribute silently clamped&quot;, &quot;non-finite attribute vs non-finite position&quot;. Provenance tier: bytes-only.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;nan 0.0 1.0&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>v 0.0 0.0 0.0 1.0 0.0 0.0
+<span class="lineno">2</span>v 1.0 0.0 0.0 0.0 1.0 0.0
+<span class="lineno">3</span>v 0.0 1.0 0.0 <mark>nan 0.0 1.0</mark>
+<span class="lineno">4</span>f 1 2 3
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ip020.html">&larr; Ip020</a> <a class="up" href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <a class="next" href="Ip022.html">Ip022 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

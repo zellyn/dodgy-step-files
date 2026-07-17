@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ip024 — OFF inline comment on the vertex/face count line desynchronizes every subsequent row</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <span class="sep">/</span> <span class="current">Ip024</span>
+</nav>
+<header class="title-bar">
+<h1>Ip024 <span class="sep">—</span> <span class="entry-title">OFF inline comment on the vertex/face count line desynchronizes every subsequent row</span></h1>
+<p class="category">§12.15 import-format parser robustness (sub-class: lexical-tokenization-desync)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../import-examples/12-15-import-formats/Ip024.off">View raw fixture (.off)</a> <code class="path">import-examples/12-15-import-formats/Ip024.off</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from mikedh/trimesh, `models/comments.off` + `whitespace.off` (`tests/test_off.py`) (MIT — pattern only, no bytes copied).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An OFF file&#x27;s `V F E` count line carries a trailing `# comment` on the same physical line (`3 1 0 # off count line comment`). trimesh&#x27;s own comment-stripping helper (`util.comment_strip`) has a self-inflicted bug on this exact construct: its chunk-rejoin logic double-emits the line preceding an inline comment, duplicating the count line in the stripped output. Every subsequent row extraction (`splits[1:vertex_count+1]` for vertices, `splits[vertex_count+1:...]` for faces) is computed from positional offsets keyed to `vertex_count`/`face_count`, so the phantom duplicate line shifts every following row by one position — a vertex row absorbs the duplicate header text as fake coordinates, and the face-row slice lands on a real vertex-coordinate row instead.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>an OFF file with `OFF` on its own line, then a count line `3 1 0 # off count line comment` (an inline `#` comment trailing the counts on the same physical line), followed by 3 vertex rows and 1 face row.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>strip inline comments without altering line count/order; validate the declared V/F/E against rows actually present rather than trusting positional offsets blindly, and never let a comment&#x27;s presence silently shift which physical line answers to which logical row.</p></section>
+<section><h2>Notes</h2>
+<p>Cross-oracle: trimesh 4.12.2 raises `ValueError: invalid literal for int() with base 10: &#x27;0.0&#x27;` from `exchange/off.py:52` (`faces = [line[1 : int(line[0]) + 1] for line in faces]`) — traced to `util.comment_strip`&#x27;s chunk-rejoin duplicating the &quot;3 1 0&quot; count line in its output, which shifts the vertex/face row slices by one position until a real vertex-coordinate row (&quot;0.0 1.0 0.0&quot;) is misread as a face row and `int(&quot;0.0&quot;)` fails — verified 2026-07-17 (confirmed by inspecting `comment_strip`&#x27;s intermediate output directly). Distinct from Ip003 (header count &gt; body rows, an honest mismatch) — here the declared counts are correct and the desync is purely a side effect of comment placement. Synonyms: &quot;OFF comment on count line&quot;, &quot;inline comment desyncs row offsets&quot;, &quot;comment_strip duplication bug&quot;, &quot;OFF lexical tokenization ambiguity&quot;. Provenance tier: bytes-only.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;3 1 0 # off count line comment&#x27;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ip003.html">Ip003</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>OFF
+<span class="lineno">2</span><mark>3 1 0 # off count line comment</mark>
+<span class="lineno">3</span>0.0 0.0 0.0
+<span class="lineno">4</span>1.0 0.0 0.0
+<span class="lineno">5</span>0.0 1.0 0.0
+<span class="lineno">6</span>3 0 1 2
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ip023.html">&larr; Ip023</a> <a class="up" href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <a class="next" href="Ip025.html">Ip025 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

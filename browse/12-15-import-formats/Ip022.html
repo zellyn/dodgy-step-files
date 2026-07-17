@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ip022 — ASCII STL with multiple solid…endsolid bodies in one file</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <span class="sep">/</span> <span class="current">Ip022</span>
+</nav>
+<header class="title-bar">
+<h1>Ip022 <span class="sep">—</span> <span class="entry-title">ASCII STL with multiple solid…endsolid bodies in one file</span></h1>
+<p class="category">§12.15 import-format parser robustness (sub-class: multi-body-container)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-encoding" href="../by-tag/encoding/index.html">encoding</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../import-examples/12-15-import-formats/Ip022.stl">View raw fixture (.stl)</a> <code class="path">import-examples/12-15-import-formats/Ip022.stl</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from mikedh/trimesh, `models/multibody.stl` (`tests/test_stl.py`, asserts `len(s.geometry)==2`, keys `{bodyA,bodyB}`) (MIT — pattern only, no bytes copied).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>One ASCII STL file concatenates two independent `solid NAME … endsolid NAME` blocks back to back. STL is an informal, never-formally-standardized format usually read as single-solid; a strict reader that stops parsing after the first `endsolid` silently truncates the file to one body, discarding the second solid entirely with no diagnostic. First multi-body container class for a flat mesh format in this section, and the first STL-format fixture in the corpus.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a single `.stl` file containing two complete, well-formed `solid NAME … endsolid NAME` blocks, each with one triangle, back to back with no separator beyond the second `solid` keyword.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>treat the file as a scene of N named solids and load all of them; never silently stop after the first `endsolid` and discard the remainder of the file.</p></section>
+<section><h2>Notes</h2>
+<p>Cross-oracle: trimesh 4.12.2 correctly treats the file as a multi-body container — `trimesh.load()` returns a `Scene` with `geometry.keys()==[&#x27;bodyA&#x27;,&#x27;bodyB&#x27;]`, each a well-formed one-triangle mesh — verified 2026-07-17. Positive/reference result: trimesh&#x27;s ASCII STL loader (`exchange/stl.py::load_stl_ascii`) explicitly scans for repeated `solid`/`endsolid` chunk pairs rather than stopping at the first `endsolid`, proving the multi-body case is a deliberate design decision a naive single-pass reader would get wrong. Synonyms: &quot;STL multi-solid file&quot;, &quot;multiple solid blocks in one STL&quot;, &quot;STL container truncated to first body&quot;, &quot;ASCII STL scene of N solids&quot;. Provenance tier: bytes-only. First STL-format fixture in the corpus.</p></section>
+<section><h2>Expected validation</h2>
+<p><code></code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;endsolid bodyA&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>solid bodyA
+<span class="lineno">2</span>facet normal 0 0 1
+<span class="lineno">3</span>outer loop
+<span class="lineno">4</span>vertex 0 0 0
+<span class="lineno">5</span>vertex 1 0 0
+<span class="lineno">6</span>vertex 0 1 0
+<span class="lineno">7</span>endloop
+<span class="lineno">8</span>endfacet
+<span class="lineno">9</span><mark>endsolid bodyA</mark>
+<span class="lineno">10</span>solid bodyB
+<span class="lineno">11</span>facet normal 0 0 1
+<span class="lineno">12</span>outer loop
+<span class="lineno">13</span>vertex 2 0 0
+<span class="lineno">14</span>vertex 3 0 0
+<span class="lineno">15</span>vertex 2 1 0
+<span class="lineno">16</span>endloop
+<span class="lineno">17</span>endfacet
+<span class="lineno">18</span>endsolid bodyB
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ip021.html">&larr; Ip021</a> <a class="up" href="index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a> <a class="next" href="Ip023.html">Ip023 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>
