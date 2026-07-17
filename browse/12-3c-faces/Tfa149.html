@@ -33,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
 <section><h2>Notes</h2>
-<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed `CheckSplittingVertices` runs on the open wire and produces &quot;inconsistent verdicts&quot;; that checker is never invoked on an ordinary read. The genuine, verified behavior is that the reader silently accepts a non-closed `FACE_BOUND`, keeping its dangling edges with no diagnostic (contrast with Tfa117, where a zero-length edge causes the whole bound to be dropped instead). **See also**: Tfa117. Synonyms: &quot;open wire face bound loads silently&quot;, &quot;non-closed inner bound no diagnostic&quot;, &quot;dangling edges from unclosed path&quot;.</p></section>
+<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed splitting-vertices checking runs on the open wire and produces &quot;inconsistent verdicts&quot;; that checker is never invoked on an ordinary read. The genuine, verified behavior is that the reader silently accepts a non-closed `FACE_BOUND`, keeping its dangling edges with no diagnostic (contrast with Tfa117, where a zero-length edge causes the whole bound to be dropped instead). **See also**: Tfa117. Synonyms: &quot;open wire face bound loads silently&quot;, &quot;non-closed inner bound no diagnostic&quot;, &quot;dangling edges from unclosed path&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

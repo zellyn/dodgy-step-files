@@ -33,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
 <section><h2>Notes</h2>
-<p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixLoopWire&#x27;s outer/inner-loop assumption breaks when wires spatially cross; that method is never reached (crash occurs first), and the actual structural cause is an invalid non-closed 2-edge bound, not a crossing-loop scenario. **See also**: Tfa085, Tfa106, Tfa118 (same non-closed-bound crash family). Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;non-closed 2-edge inner bound crashes reader&quot;, &quot;invalid bound topology, not crossing-loop merge bug&quot;.</p></section>
+<p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixLoopWire&#x27;s outer/inner-loop assumption breaks when wires spatially cross; that method is never reached (crash occurs first), and the actual structural cause is an invalid non-closed 2-edge bound, not a crossing-loop scenario. **See also**: Tfa085, Tfa106, Tfa118 (same non-closed-bound crash family). Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;non-closed 2-edge inner bound crashes reader&quot;, &quot;invalid bound topology, not crossing-loop merge bug&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Cross-references</h2>

@@ -32,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
 <section><h2>Notes</h2>
-<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed away from `ShapeFix_Face::FixSplitFace` (never invoked; no split geometry exists) to the genuine, verified behavior — a dangling entity reference causes clean per-edge failure and bound-dropping. **See also**: Tfa252 (same fallback pattern, explicit-null trigger instead of dangling reference). Synonyms: &quot;undefined entity reference in edge geometry&quot;, &quot;dangling reference clean fail&quot;, &quot;unresolved reference bound dropped&quot;.</p></section>
+<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed away from face-splitting repair (never invoked; no split geometry exists) to the genuine, verified behavior — a dangling entity reference causes clean per-edge failure and bound-dropping. **See also**: Tfa252 (same fallback pattern, explicit-null trigger instead of dangling reference). Synonyms: &quot;undefined entity reference in edge geometry&quot;, &quot;dangling reference clean fail&quot;, &quot;unresolved reference bound dropped&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

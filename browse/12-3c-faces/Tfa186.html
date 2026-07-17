@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa186 — ADVANCED_FACE declared with two FACE_BOUND wires and no FACE_OUTER_BOUND is silently reinterpreted as two independent, valid faces — FixOrientation is never invoked</title>
+  <title>Tfa186 — ADVANCED_FACE declared with two FACE_BOUND wires and no FACE_OUTER_BOUND is silently reinterpreted as two independent, valid faces — orientation repair is never invoked</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa186</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa186 <span class="sep">—</span> <span class="entry-title">ADVANCED_FACE declared with two FACE_BOUND wires and no FACE_OUTER_BOUND is silently reinterpreted as two independent, valid faces — FixOrientation is never invoked</span></h1>
+<h1>Tfa186 <span class="sep">—</span> <span class="entry-title">ADVANCED_FACE declared with two FACE_BOUND wires and no FACE_OUTER_BOUND is silently reinterpreted as two independent, valid faces — orientation repair is never invoked</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
@@ -26,13 +26,13 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>ADVANCED_FACE declared with two FACE_BOUND wires and no FACE_OUTER_BOUND is silently reinterpreted as two independent, valid faces — FixOrientation is never invoked</p></section>
+<p>ADVANCED_FACE declared with two FACE_BOUND wires and no FACE_OUTER_BOUND is silently reinterpreted as two independent, valid faces — orientation repair is never invoked</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
 <section><h2>Notes</h2>
-<p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed `FixOrientation`&#x27;s containment-check logic exhibits &quot;undefined behavior&quot; when no outer wire exists; that method is never invoked, and the real, verified behavior is well-defined but silent: each orphan wire becomes its own valid face. Compare Tfa164 (also a bound-list ambiguity, but there the result is topologically INVALID; here it is valid, just inflated). Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;outer-bound-less face split into two faces&quot;, &quot;silent face-count inflation from ambiguous bound list&quot;.</p></section>
+<p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed orientation repair&#x27;s containment-check logic exhibits &quot;undefined behavior&quot; when no outer wire exists; that method is never invoked, and the real, verified behavior is well-defined but silent: each orphan wire becomes its own valid face. Compare Tfa164 (also a bound-list ambiguity, but there the result is topologically INVALID; here it is valid, just inflated). Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;outer-bound-less face split into two faces&quot;, &quot;silent face-count inflation from ambiguous bound list&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

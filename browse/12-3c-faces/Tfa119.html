@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa119 — Outer wire&#x27;s LINE curves use non-conformant Part21 syntax (point argument wrapped in a spurious aggregate) and fail to build; combined with a live inner wire, the reader crashes (SIGSEGV) before any CheckTwisted classification</title>
+  <title>Tfa119 — Outer wire&#x27;s LINE curves use non-conformant Part21 syntax (point argument wrapped in a spurious aggregate) and fail to build; combined with a live inner wire, the reader crashes (SIGSEGV) before any twisted-face checking classification</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa119</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa119 <span class="sep">—</span> <span class="entry-title">Outer wire&#x27;s LINE curves use non-conformant Part21 syntax (point argument wrapped in a spurious aggregate) and fail to build; combined with a live inner wire, the reader crashes (SIGSEGV) before any CheckTwisted classification</span></h1>
+<h1>Tfa119 <span class="sep">—</span> <span class="entry-title">Outer wire&#x27;s LINE curves use non-conformant Part21 syntax (point argument wrapped in a spurious aggregate) and fail to build; combined with a live inner wire, the reader crashes (SIGSEGV) before any twisted-face checking classification</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
@@ -27,13 +27,13 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Outer wire&#x27;s LINE curves use non-conformant Part21 syntax (point argument wrapped in a spurious aggregate) and fail to build; combined with a live inner wire, the reader crashes (SIGSEGV) before any CheckTwisted classification</p></section>
+<p>Outer wire&#x27;s LINE curves use non-conformant Part21 syntax (point argument wrapped in a spurious aggregate) and fail to build; combined with a live inner wire, the reader crashes (SIGSEGV) before any twisted-face checking classification</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
 <section><h2>Notes</h2>
-<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed `CheckTwisted`&#x27;s orientation logic doesn&#x27;t handle an opposite-winding inner wire; that method is never reached. Isolation test shows the outer wire&#x27;s malformed `LINE` syntax causes its edges to fail to build (0 edges) even without the inner wire; the SIGSEGV itself requires the inner wire&#x27;s presence but the precise failure mechanism connecting the two is not fully isolated in this pass (recorded honestly per `SEGFAULT_CHARACTERIZATION.md` convention). **See also**: Tfa118 (same malformed-`LINE`-syntax anomaly, different crash cause). Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14.</p></section>
+<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed twisted-face checking&#x27;s orientation logic doesn&#x27;t handle an opposite-winding inner wire; that method is never reached. Isolation test shows the outer wire&#x27;s malformed `LINE` syntax causes its edges to fail to build (0 edges) even without the inner wire; the SIGSEGV itself requires the inner wire&#x27;s presence but the precise failure mechanism connecting the two is not fully isolated in this pass (recorded honestly per `SEGFAULT_CHARACTERIZATION.md` convention). **See also**: Tfa118 (same malformed-`LINE`-syntax anomaly, different crash cause). Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Cross-references</h2>

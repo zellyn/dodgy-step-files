@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa164 — Two overlapping, boundary-touching &#x27;pin&#x27; inner wires on a PLANE face are silently split into two topologically INVALID faces (24 edges from 12 declared) — CheckPin is never invoked</title>
+  <title>Tfa164 — Two overlapping, boundary-touching &#x27;pin&#x27; inner wires on a PLANE face are silently split into two topologically INVALID faces (24 edges from 12 declared) — pin-face checking is never invoked</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa164</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa164 <span class="sep">—</span> <span class="entry-title">Two overlapping, boundary-touching &#x27;pin&#x27; inner wires on a PLANE face are silently split into two topologically INVALID faces (24 edges from 12 declared) — CheckPin is never invoked</span></h1>
+<h1>Tfa164 <span class="sep">—</span> <span class="entry-title">Two overlapping, boundary-touching &#x27;pin&#x27; inner wires on a PLANE face are silently split into two topologically INVALID faces (24 edges from 12 declared) — pin-face checking is never invoked</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
@@ -26,13 +26,13 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Two overlapping, boundary-touching &#x27;pin&#x27; inner wires on a PLANE face are silently split into two topologically INVALID faces (24 edges from 12 declared) — CheckPin is never invoked</p></section>
+<p>Two overlapping, boundary-touching &#x27;pin&#x27; inner wires on a PLANE face are silently split into two topologically INVALID faces (24 edges from 12 declared) — pin-face checking is never invoked</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
 <section><h2>Notes</h2>
-<p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed `ShapeAnalysis_CheckSmallFace::CheckPin`&#x27;s pole-grid iteration reports only the first of two pins and halts; that method is never invoked on an ordinary read. What the live oracle actually shows is more serious and different: the overlapping-wire declaration causes silent face-splitting into an INVALID (BRepCheck-failing) 2-face result with edge counts that don&#x27;t match the file&#x27;s own declared topology. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;overlapping inner wires split into invalid faces&quot;, &quot;self-overlapping pin wires edge inflation&quot;.</p></section>
+<p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed pin-face checking&#x27;s pole-grid iteration reports only the first of two pins and halts; that method is never invoked on an ordinary read. What the live oracle actually shows is more serious and different: the overlapping-wire declaration causes silent face-splitting into an INVALID (BRepCheck-failing) 2-face result with edge counts that don&#x27;t match the file&#x27;s own declared topology. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;overlapping inner wires split into invalid faces&quot;, &quot;self-overlapping pin wires edge inflation&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(38) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

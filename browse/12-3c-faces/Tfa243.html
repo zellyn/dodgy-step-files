@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa243 — TOROIDAL_SURFACE ADVANCED_FACE with a non-nested outer+inner bound pair (diagonally opposite parameter regions) is silently SPLIT into two separate torus faces — FixOrientation is never invoked</title>
+  <title>Tfa243 — TOROIDAL_SURFACE ADVANCED_FACE with a non-nested outer+inner bound pair (diagonally opposite parameter regions) is silently SPLIT into two separate torus faces — orientation repair is never invoked</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa243</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa243 <span class="sep">—</span> <span class="entry-title">TOROIDAL_SURFACE ADVANCED_FACE with a non-nested outer+inner bound pair (diagonally opposite parameter regions) is silently SPLIT into two separate torus faces — FixOrientation is never invoked</span></h1>
+<h1>Tfa243 <span class="sep">—</span> <span class="entry-title">TOROIDAL_SURFACE ADVANCED_FACE with a non-nested outer+inner bound pair (diagonally opposite parameter regions) is silently SPLIT into two separate torus faces — orientation repair is never invoked</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
@@ -26,13 +26,13 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>TOROIDAL_SURFACE ADVANCED_FACE with a non-nested outer+inner bound pair (diagonally opposite parameter regions) is silently SPLIT into two separate torus faces — FixOrientation is never invoked</p></section>
+<p>TOROIDAL_SURFACE ADVANCED_FACE with a non-nested outer+inner bound pair (diagonally opposite parameter regions) is silently SPLIT into two separate torus faces — orientation repair is never invoked</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
 <section><h2>Notes</h2>
-<p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed `FixOrientation` needs a diagonal (u AND v) periodic shift to correctly classify containment between diagonally-opposite wire boxes; live-oracle shows the real, more consequential behavior: the reader gives up on establishing containment and silently promotes the un-nestable inner wire into its own independent face (1 declared face → 2 actual torus faces, 3 faces total in the shape). Compare Tfa186 (same silent split-into-independent-faces pattern, there from a missing `FACE_OUTER_BOUND` rather than a non-nested bound pair). Also fixes a literal `em-dash` text-corruption artifact left in the original title/body by a prior markdown-conversion bug. This entry is part of a 5-fixture torus family (Tfa241–Tfa245, all sharing an `em-dash`-garbled title from a prior markdown-conversion mishap, now fixed) built around periodic-surface wire/bound placement; each was independently live-oracle-verified — the family does NOT behave uniformly (see siblings&#x27; Notes for the differing outcomes). Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;non-nested torus bound pair silently split&quot;, &quot;diagonal wire placement inflates face count&quot;.</p></section>
+<p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed orientation repair needs a diagonal (u AND v) periodic shift to correctly classify containment between diagonally-opposite wire boxes; live-oracle shows the real, more consequential behavior: the reader gives up on establishing containment and silently promotes the un-nestable inner wire into its own independent face (1 declared face → 2 actual torus faces, 3 faces total in the shape). Compare Tfa186 (same silent split-into-independent-faces pattern, there from a missing `FACE_OUTER_BOUND` rather than a non-nested bound pair). Also fixes a literal `em-dash` text-corruption artifact left in the original title/body by a prior markdown-conversion bug. This entry is part of a 5-fixture torus family (Tfa241–Tfa245, all sharing an `em-dash`-garbled title from a prior markdown-conversion mishap, now fixed) built around periodic-surface wire/bound placement; each was independently live-oracle-verified — the family does NOT behave uniformly (see siblings&#x27; Notes for the differing outcomes). Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;non-nested torus bound pair silently split&quot;, &quot;diagonal wire placement inflates face count&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

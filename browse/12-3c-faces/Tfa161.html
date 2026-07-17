@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa161 — Single-wire (outer-boundary-only) rectangular PLANE face loads intact; FixOrientation is never invoked on an ordinary read</title>
+  <title>Tfa161 — Single-wire (outer-boundary-only) rectangular PLANE face loads intact; orientation repair is never invoked on an ordinary read</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa161</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa161 <span class="sep">—</span> <span class="entry-title">Single-wire (outer-boundary-only) rectangular PLANE face loads intact; FixOrientation is never invoked on an ordinary read</span></h1>
+<h1>Tfa161 <span class="sep">—</span> <span class="entry-title">Single-wire (outer-boundary-only) rectangular PLANE face loads intact; orientation repair is never invoked on an ordinary read</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
@@ -26,18 +26,21 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Single-wire (outer-boundary-only) rectangular PLANE face loads intact; FixOrientation is never invoked on an ordinary read</p></section>
+<p>Single-wire (outer-boundary-only) rectangular PLANE face loads intact; orientation repair is never invoked on an ordinary read</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
 <section><h2>Notes</h2>
-<p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed `ShapeFix_Face::FixOrientation` &quot;short-circuits when comparing against non-existent inner wires, failing to validate self-orientation&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;single-wire face loads without inner-wire comparison&quot;.</p></section>
+<p>**See also**: Tfa236. Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed orientation repair &quot;short-circuits when comparing against non-existent inner wires, failing to validate self-orientation&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;single-wire face loads without inner-wire comparison&quot;.- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<p><code></code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>n_faces_total == 1</code></li>
 </ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tfa236.html">Tfa236</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
 </section>

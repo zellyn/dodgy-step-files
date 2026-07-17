@@ -32,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
 <section><h2>Notes</h2>
-<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed CheckSplittingVertices &quot;misses the boundary case&quot;; live-oracle byte inspection shows the inner wire&#x27;s vertex is literally the same entity as the outer wire&#x27;s vertex (not a distinct boundary-touching vertex), so the checker&#x27;s own skip-guard — not a boundary/interior distinction bug — is why it never fires. See Tfa249 for the genuine trigger (closes `tkshh-splitting-vertex-face`). Synonyms: &quot;shared vertex entity between outer and inner wire&quot;, &quot;reused endpoint T-vertex (non-firing)&quot;.</p></section>
+<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed splitting-vertices checking &quot;misses the boundary case&quot;; live-oracle byte inspection shows the inner wire&#x27;s vertex is literally the same entity as the outer wire&#x27;s vertex (not a distinct boundary-touching vertex), so the checker&#x27;s own skip-guard — not a boundary/interior distinction bug — is why it never fires. See Tfa249 for the genuine trigger (closes `tkshh-splitting-vertex-face`). Synonyms: &quot;shared vertex entity between outer and inner wire&quot;, &quot;reused endpoint T-vertex (non-firing)&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(46) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

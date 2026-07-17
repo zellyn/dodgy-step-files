@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa128 — Ordinary valid 5×5 square face with already-correct winding and normal; FixOrientation is never invoked (and its internal &#x27;myStatus&#x27; claim is not observable from STEP bytes at all)</title>
+  <title>Tfa128 — Ordinary valid 5×5 square face with already-correct winding and normal; orientation repair is never invoked (and its internal &#x27;myStatus&#x27; claim is not observable from STEP bytes at all)</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa128</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa128 <span class="sep">—</span> <span class="entry-title">Ordinary valid 5×5 square face with already-correct winding and normal; FixOrientation is never invoked (and its internal &#x27;myStatus&#x27; claim is not observable from STEP bytes at all)</span></h1>
+<h1>Tfa128 <span class="sep">—</span> <span class="entry-title">Ordinary valid 5×5 square face with already-correct winding and normal; orientation repair is never invoked (and its internal &#x27;myStatus&#x27; claim is not observable from STEP bytes at all)</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
@@ -26,13 +26,13 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Ordinary valid 5×5 square face with already-correct winding and normal; FixOrientation is never invoked (and its internal &#x27;myStatus&#x27; claim is not observable from STEP bytes at all)</p></section>
+<p>Ordinary valid 5×5 square face with already-correct winding and normal; orientation repair is never invoked (and its internal &#x27;myStatus&#x27; claim is not observable from STEP bytes at all)</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
 <section><h2>Notes</h2>
-<p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixOrientation marks an internal `myStatus` flag as &quot;fixed&quot; despite no actual change; that method is never invoked on an ordinary read, and even if it were, `myStatus` is a private API-internal member never observable from parsed geometry or STEP bytes — this claim could never have been verified by any fixture. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;already-correct square face loads as ordinary face&quot;, &quot;internal API status flag unobservable from STEP output&quot;.</p></section>
+<p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed orientation repair marks an internal `myStatus` flag as &quot;fixed&quot; despite no actual change; that method is never invoked on an ordinary read, and even if it were, `myStatus` is a private API-internal member never observable from parsed geometry or STEP bytes — this claim could never have been verified by any fixture. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;already-correct square face loads as ordinary face&quot;, &quot;internal API status flag unobservable from STEP output&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

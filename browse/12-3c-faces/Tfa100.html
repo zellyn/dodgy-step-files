@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa100 — Two 4-edge wires on a cylindrical face both cross the seam; loads intact with no coincidence handling attempted (FixWiresTwoCoincEdges never invoked on ordinary read)</title>
+  <title>Tfa100 — Two 4-edge wires on a cylindrical face both cross the seam; loads intact with no coincidence handling attempted (coincident-edge wire merging never invoked on ordinary read)</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa100</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa100 <span class="sep">—</span> <span class="entry-title">Two 4-edge wires on a cylindrical face both cross the seam; loads intact with no coincidence handling attempted (FixWiresTwoCoincEdges never invoked on ordinary read)</span></h1>
+<h1>Tfa100 <span class="sep">—</span> <span class="entry-title">Two 4-edge wires on a cylindrical face both cross the seam; loads intact with no coincidence handling attempted (coincident-edge wire merging never invoked on ordinary read)</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
@@ -26,13 +26,13 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Two 4-edge wires on a cylindrical face both cross the seam; loads intact with no coincidence handling attempted (FixWiresTwoCoincEdges never invoked on ordinary read)</p></section>
+<p>Two 4-edge wires on a cylindrical face both cross the seam; loads intact with no coincidence handling attempted (coincident-edge wire merging never invoked on ordinary read)</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
 <section><h2>Notes</h2>
-<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed `FixWiresTwoCoincEdges` &quot;misses the duplicate coincidence&quot;; that method is never invoked on an ordinary read, and both wires load intact with all 8 edges present (live-oracle per-face check). Part of a larger family of ~127 `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace`-titled Tfa entries sharing this same &quot;named method never actually invoked on ordinary read&quot; pattern — see `BACKLOG.md` Q14 for the full list and recommended remediation approach (mirrors this correction and the 18-fixture Part 1 correction this entry is part of, both closing `tkshh-splitting-vertex-face`-adjacent misnomers). Synonyms: &quot;two seam-crossing wires load without coincidence check&quot;, &quot;cylindrical face two wires cross same seam&quot;.</p></section>
+<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed coincident-edge wire merging &quot;misses the duplicate coincidence&quot;; that method is never invoked on an ordinary read, and both wires load intact with all 8 edges present (live-oracle per-face check). Part of a larger family of ~127 face-repair/small-face-check-titled Tfa entries sharing this same &quot;named method never actually invoked on ordinary read&quot; pattern — see `BACKLOG.md` Q14 for the full list and recommended remediation approach (mirrors this correction and the 18-fixture Part 1 correction this entry is part of, both closing `tkshh-splitting-vertex-face`-adjacent misnomers). Synonyms: &quot;two seam-crossing wires load without coincidence check&quot;, &quot;cylindrical face two wires cross same seam&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(22) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

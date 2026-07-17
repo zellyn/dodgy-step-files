@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa137 — Rectangular face with an inner rectangular hole crashes the reader (SIGSEGV) as soon as the extra bound wire is present; loads cleanly with only the outer wire — ShapeAnalysis_CheckSmallFace::CheckTwisted is never reached</title>
+  <title>Tfa137 — Rectangular face with an inner rectangular hole crashes the reader (SIGSEGV) as soon as the extra bound wire is present; loads cleanly with only the outer wire — twisted-face checking is never reached</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa137</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa137 <span class="sep">—</span> <span class="entry-title">Rectangular face with an inner rectangular hole crashes the reader (SIGSEGV) as soon as the extra bound wire is present; loads cleanly with only the outer wire — ShapeAnalysis_CheckSmallFace::CheckTwisted is never reached</span></h1>
+<h1>Tfa137 <span class="sep">—</span> <span class="entry-title">Rectangular face with an inner rectangular hole crashes the reader (SIGSEGV) as soon as the extra bound wire is present; loads cleanly with only the outer wire — twisted-face checking is never reached</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
@@ -27,13 +27,13 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Rectangular face with an inner rectangular hole crashes the reader (SIGSEGV) as soon as the extra bound wire is present; loads cleanly with only the outer wire — ShapeAnalysis_CheckSmallFace::CheckTwisted is never reached</p></section>
+<p>Rectangular face with an inner rectangular hole crashes the reader (SIGSEGV) as soon as the extra bound wire is present; loads cleanly with only the outer wire — twisted-face checking is never reached</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
 <section><h2>Notes</h2>
-<p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed ShapeAnalysis_CheckSmallFace::CheckTwisted classifies twist using only the outer wire&#x27;s winding, missing the hole&#x27;s counter-winding contribution; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;multi-bound face crashes reader, outer-alone loads clean&quot;, &quot;inner hole wire crashes reader, outer-alone loads clean&quot;.</p></section>
+<p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed twisted-face checking classifies twist using only the outer wire&#x27;s winding, missing the hole&#x27;s counter-winding contribution; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;multi-bound face crashes reader, outer-alone loads clean&quot;, &quot;inner hole wire crashes reader, outer-alone loads clean&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

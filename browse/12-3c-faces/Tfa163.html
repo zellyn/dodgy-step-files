@@ -32,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
 <section><h2>Notes</h2>
-<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed `FixSplitFace` &quot;produces duplicate faces instead of merging&quot;; live-oracle confirms `n_faces_total == 1` (matches this entry&#x27;s own pre-existing Tier-3 assertion, which already contradicted the prose). The genuine, verified behavior is that a zero-area, edge-coincident inner bound loads silently as inert extra topology on one face. Synonyms: &quot;zero-area bound coincident with outer edge&quot;, &quot;degenerate sliver loop on boundary loads silently&quot;, &quot;no duplicate face from coincident splitter&quot;.</p></section>
+<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed face-splitting repair &quot;produces duplicate faces instead of merging&quot;; live-oracle confirms `n_faces_total == 1` (matches this entry&#x27;s own pre-existing Tier-3 assertion, which already contradicted the prose). The genuine, verified behavior is that a zero-area, edge-coincident inner bound loads silently as inert extra topology on one face. Synonyms: &quot;zero-area bound coincident with outer edge&quot;, &quot;degenerate sliver loop on boundary loads silently&quot;, &quot;no duplicate face from coincident splitter&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

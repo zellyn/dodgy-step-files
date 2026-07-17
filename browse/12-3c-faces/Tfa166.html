@@ -32,14 +32,14 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
 <section><h2>Notes</h2>
-<p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed `ShapeFix_Face::FixSmallAreaWire` actively detects/fails-to-resolve a face-level defect; that method is never invoked at all, because the face never survives to face-translation in the first place (the GEOMETRIC_CURVE_SET/ADVANCED_FACE type mismatch drops it earlier, during representation-item dispatch). Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. **See also**: Tfa003, Tfa169 (unreachable/orphaned-entity family), Tfa252 (Sources cites the same GEOMETRIC_CURVE_SET dispatch mechanism for null-geometry edges). Synonyms: &quot;GEOMETRIC_CURVE_SET-hosted face never reaches area/orientation check&quot;, &quot;ADVANCED_FACE inside GEOMETRIC_CURVE_SET empty transfer&quot;, &quot;curve-set builder type mismatch drops face&quot;.</p></section>
+<p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed small-area-wire repair actively detects/fails-to-resolve a face-level defect; that method is never invoked at all, because the face never survives to face-translation in the first place (the GEOMETRIC_CURVE_SET/ADVANCED_FACE type mismatch drops it earlier, during representation-item dispatch). Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. **See also**: CURVE, GEOMETRIC, SET, Sources, Tfa003, Tfa160, Tfa167, Tfa168, Tfa169, Tfa170, Tfa252, cites, dispatch, edges, entity, family, for, geometry, mechanism, null, orphaned, same, the, unreachable. Synonyms: &quot;GEOMETRIC_CURVE_SET-hosted face never reaches area/orientation check&quot;, &quot;ADVANCED_FACE inside GEOMETRIC_CURVE_SET empty transfer&quot;, &quot;curve-set builder type mismatch drops face&quot;.- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<p><code></code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>shape_null == True</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
-<p><a href="Tfa003.html">Tfa003</a>, <a href="Tfa169.html">Tfa169</a>, <a href="Tfa252.html">Tfa252</a></p>
+<p><a href="Tfa003.html">Tfa003</a>, <a href="Tfa160.html">Tfa160</a>, <a href="Tfa167.html">Tfa167</a>, <a href="Tfa168.html">Tfa168</a>, <a href="Tfa169.html">Tfa169</a>, <a href="Tfa170.html">Tfa170</a>, <a href="Tfa252.html">Tfa252</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>

@@ -13,7 +13,7 @@
 </nav>
 <header class="title-bar">
 <h1>Tfa085 <span class="sep">—</span> <span class="entry-title">FACE_INNER_BOUND wrapping a single, non-closed edge crashes the reader (SIGSEGV) before any split-face logic can run</span></h1>
-<p class="category">§12.3c face-sliver-sewing (sub-class: invalid single-edge (non-closed) FACE_INNER_BOUND — reader crash, not FixSplitFace behavior)</p>
+<p class="category">§12.3c face-sliver-sewing (sub-class: invalid single-edge (non-closed) FACE_INNER_BOUND — reader crash, not face-splitting repair behavior)</p>
 <p class="tag-pills">
 <a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
@@ -35,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>reject the malformed bound with a clear per-entity diagnostic (a bound wire must be closed); never crash.</p></section>
 <section><h2>Notes</h2>
-<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — the original title/description claimed `ShapeFix_Face::FixSplitFace`&#x27;s binary-split loop silently misses zones beyond the first pair; that method is never invoked (the reader crashes first). Root cause isolated by removal-test to the non-closed single-edge `FACE_INNER_BOUND`s. Same crash class as Tfa118. Synonyms: &quot;single-edge inner bound crash&quot;, &quot;open wire face bound segfault&quot;, &quot;malformed splitter bound crashes reader&quot;.</p></section>
+<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — the original title/description claimed face-splitting repair&#x27;s binary-split loop silently misses zones beyond the first pair; that method is never invoked (the reader crashes first). Root cause isolated by removal-test to the non-closed single-edge `FACE_INNER_BOUND`s. Same crash class as Tfa118. Synonyms: &quot;single-edge inner bound crash&quot;, &quot;open wire face bound segfault&quot;, &quot;malformed splitter bound crashes reader&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Cross-references</h2>

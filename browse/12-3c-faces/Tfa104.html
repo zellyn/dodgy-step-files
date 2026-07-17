@@ -32,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
 <section><h2>Notes</h2>
-<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed a non-manifold vertex defeats `CheckSplittingVertices`&#x27;s 2-edge incidence assumption via 3 separate triangular faces; the actual bytes encode a single self-touching wire (one edge referenced twice within one `EDGE_LOOP`), a different and unrelated topological pattern. Synonyms: &quot;pinched face boundary&quot;, &quot;self-touching wire re-traverses an edge&quot;, &quot;bowtie face single wire&quot;, &quot;vertex shared by three edge curves in one loop&quot;.</p></section>
+<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed a non-manifold vertex defeats splitting-vertices checking&#x27;s 2-edge incidence assumption via 3 separate triangular faces; the actual bytes encode a single self-touching wire (one edge referenced twice within one `EDGE_LOOP`), a different and unrelated topological pattern. Synonyms: &quot;pinched face boundary&quot;, &quot;self-touching wire re-traverses an edge&quot;, &quot;bowtie face single wire&quot;, &quot;vertex shared by three edge curves in one loop&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

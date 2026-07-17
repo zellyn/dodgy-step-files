@@ -32,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
 <section><h2>Notes</h2>
-<p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixLoopWire&#x27;s nested-loop assumption breaks when the inner wire touches the outer wire; that method is never invoked on an ordinary read, so no repair (correct or incorrect) is ever attempted. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;inner wire touching outer wire loads intact&quot;, &quot;loop-merge repair never invoked on touching wires&quot;.</p></section>
+<p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixLoopWire&#x27;s nested-loop assumption breaks when the inner wire touches the outer wire; that method is never invoked on an ordinary read, so no repair (correct or incorrect) is ever attempted. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;inner wire touching outer wire loads intact&quot;, &quot;loop-merge repair never invoked on touching wires&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(35) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

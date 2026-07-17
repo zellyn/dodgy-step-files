@@ -32,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
 <section><h2>Notes</h2>
-<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed a `FixSplitFace` sequential-application bug (stale topology, unsynchronized dedup between two splits); that method is never invoked, and the &quot;splitters&quot; are non-closed single-edge bounds that cannot define a sub-face boundary under any implementation. **See also**: Tfa085, Tfa118, Tfa136 (same single-edge-bound family). Synonyms: &quot;non-closed splitter bounds don&#x27;t split&quot;, &quot;two open-wire inner bounds stay unsplit&quot;, &quot;crossing lines as invalid inner bounds&quot;.</p></section>
+<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed a face-splitting repair sequential-application bug (stale topology, unsynchronized dedup between two splits); that method is never invoked, and the &quot;splitters&quot; are non-closed single-edge bounds that cannot define a sub-face boundary under any implementation. **See also**: Tfa085, Tfa118, Tfa136 (same single-edge-bound family). Synonyms: &quot;non-closed splitter bounds don&#x27;t split&quot;, &quot;two open-wire inner bounds stay unsplit&quot;, &quot;crossing lines as invalid inner bounds&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
