@@ -16,7 +16,6 @@
 <p class="category">§12.7 PMI/GD&amp;T (sub-class: assembly / coordinate-system-link silent elision)</p>
 <p class="severity-badge severity-p1">P1 — silent data loss</p>
 <p class="tag-pills">
-<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
 <a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
 </p>
@@ -36,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>traverse `CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP` chains from `PRODUCT_DEFINITION_SHAPE` to the coordinate-system `AXIS2_PLACEMENT_3D`; expose the connection point via the assembly-data API; emit `W_COORD_SYS_CONN_PT_DROPPED` under V7.x if the entity is present but not accessible.</p></section>
 <section><h2>Notes</h2>
-<p>Expected-valid synthesis target: local OCCT yields shape(1) with no diagnostic; the connection-point silence is the defect, not a crash or rejection. B4 wave-5 DEF-Q. Synonyms: &quot;AP242 connection point silently dropped&quot;, &quot;CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP not traversed&quot;, &quot;coordinate system anchor missing assembly STEP&quot;, &quot;NEXT_ASSEMBLY_USAGE_OCCURRENCE connection point&quot;, &quot;OCCT V7 AP242 coordinate-system link absent&quot;.</p></section>
+<p>Expected-valid synthesis target: local OCCT yields shape(1) with no diagnostic; the connection-point silence is the defect, not an abort or rejection. B4 wave-5 DEF-Q. Synonyms: &quot;AP242 connection point silently dropped&quot;, &quot;CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP not traversed&quot;, &quot;coordinate system anchor missing assembly STEP&quot;, &quot;NEXT_ASSEMBLY_USAGE_OCCURRENCE connection point&quot;, &quot;OCCT V7 AP242 coordinate-system link absent&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

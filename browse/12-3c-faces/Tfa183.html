@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa183 — ShapeFix_Face.FixSplitFace splitter-extends-beyond-face</title>
+  <title>Tfa183 — Out-of-range crossing inner bound triggers genuine default wire-intersection healing, but yields a spurious zero-area extra face instead of a clean clip</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa183</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa183 <span class="sep">—</span> <span class="entry-title">ShapeFix_Face.FixSplitFace splitter-extends-beyond-face</span></h1>
+<h1>Tfa183 <span class="sep">—</span> <span class="entry-title">Out-of-range crossing inner bound triggers genuine default wire-intersection healing, but yields a spurious zero-area extra face instead of a clean clip</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
@@ -26,16 +26,21 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>ShapeFix_Face.FixSplitFace splitter-extends-beyond-face</p></section>
+<p>Out-of-range crossing inner bound triggers genuine default wire-intersection healing, but yields a spurious zero-area extra face instead of a clean clip</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Notes</h2>
+<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original attributed this to `ShapeFix_Face::FixSplitFace` &quot;clip-point determination&quot; failure. Live-oracle per-face area/vertex inspection shows real automatic wire-intersection healing DOES fire on this file (unlike the other 17 in this family, where no split-related healing runs at all): new vertices are inserted into the outer wire at the two boundary-crossing points, and a second, zero-area, out-of-range face is left over. Mechanism attribution corrected to wire-intersection handling; the specific defective outcome (spurious zero-area extra face rather than a clean clip) is the genuinely verified finding. **See also**: Tfa253 (`ShapeFix_IntersectionTool::FixIntersectingWires`, the same family of wire-crossing repair). Synonyms: &quot;extended splitter crosses boundary triggers wire-intersection repair&quot;, &quot;spurious zero-area face from out-of-range crossing bound&quot;, &quot;boundary-crossing splitter inserts new outer-wire vertices&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(22) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>load == &quot;ok&quot;</code></li>
 </ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tfa253.html">Tfa253</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
 </section>

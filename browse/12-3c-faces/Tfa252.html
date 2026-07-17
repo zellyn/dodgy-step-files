@@ -15,7 +15,6 @@
 <h1>Tfa252 <span class="sep">—</span> <span class="entry-title">EDGE_CURVE null edge_geometry ($) wired into a live, reachable face</span></h1>
 <p class="category">§12.3c faces (sub-class: `stp-missing-geometry-definition` GAP)</p>
 <p class="tag-pills">
-<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
 </p>
 </header>
@@ -34,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>detect the null `edge_geometry` reference and fail cleanly for that one edge (diagnostic logged); either drop just the malformed bound (this fixture&#x27;s observed OCCT behavior) or reject the whole face with a clear per-entity diagnostic — never crash and never silently fabricate a curve.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Xp008 (face-hosted null-geometry pattern, but unreachable — dead trailing entity), Tfa003 (GEOMETRIC_CURVE_SET-hosted, type-skipped before reaching this code path). Live-verified (this worktree&#x27;s OCP/OCCT 7.8.1, default import path, both heal-on/heal-off): shape(1)/shape(1), the one `ADVANCED_FACE` survives with its bound fully dropped — `n_edges_total==0`, `n_vertices_total==0` — and `face[0].area` comes back as an unbounded-surface sentinel (~8e100), OCCT&#x27;s signature for &quot;face_geometry present, bound list effectively empty&quot; (matches the natural-unbounded-face fallback, not a crash and not silent garbage). Synonyms: &quot;EDGE_CURVE null edge_geometry&quot;, &quot;missing geometry definition clean fail&quot;, &quot;TranslateEdge null curve&quot;, &quot;edge_geometry dollar sign null&quot;, &quot;reader per-entity clean fail on live face&quot;.</p></section>
+<p>**See also**: Xp008 (face-hosted null-geometry pattern, but unreachable — dead trailing entity), Tfa003 (GEOMETRIC_CURVE_SET-hosted, type-skipped before reaching this code path). Live-verified (this worktree&#x27;s OCP/OCCT 7.8.1, default import path, both heal-on/heal-off): shape(1)/shape(1), the one `ADVANCED_FACE` survives with its bound fully dropped — `n_edges_total==0`, `n_vertices_total==0` — and `face[0].area` comes back as an unbounded-surface sentinel (~8e100), OCCT&#x27;s signature for &quot;face_geometry present, bound list effectively empty&quot; (matches the natural-unbounded-face fallback — a clean per-entity fail, not silent garbage). Synonyms: &quot;EDGE_CURVE null edge_geometry&quot;, &quot;missing geometry definition clean fail&quot;, &quot;TranslateEdge null curve&quot;, &quot;edge_geometry dollar sign null&quot;, &quot;reader per-entity clean fail on live face&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

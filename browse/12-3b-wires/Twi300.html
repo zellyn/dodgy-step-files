@@ -16,7 +16,6 @@
 <p class="category">§12.3b wire-loop (sub-class: `stp-makeedge-validity-fallback`, PARTIAL, missing subvariant &quot;a projected point has an infinite curve parameter&quot;)</p>
 <p class="severity-badge severity-p3">P3 — cosmetic / metadata-only</p>
 <p class="tag-pills">
-<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
 </p>
 </header>
@@ -35,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>force-build the edge from curve/vertices/parameters despite the effectively-infinite trim parameter, rather than aborting the edge&#x27;s translation.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Twi299, Gs029. Live-verified (this worktree, OCP/OCCT 7.8.1): reads without crashing, `occt=shape(1)/shape(1)`, `brepcheck.valid=True`; the far edge&#x27;s length reads back as exactly `1e8`, confirming the enormous parameter was successfully absorbed into a genuine (if extreme-aspect-ratio) edge rather than causing the read to abort or the edge to be dropped. Synonyms: &quot;unbounded line trimmed far from origin&quot;, &quot;vertex enormously far along line direction&quot;, &quot;infinite curve parameter&quot;, &quot;extreme aspect ratio edge from unbounded curve&quot;, &quot;MakeEdge infinite parameter fallback&quot;. Provenance tier: bytes-sufficient.</p></section>
+<p>**See also**: Twi299, Gs029. Live-verified (this worktree, OCP/OCCT 7.8.1): reads to completion without aborting, `occt=shape(1)/shape(1)`, `brepcheck.valid=True`; the far edge&#x27;s length reads back as exactly `1e8`, confirming the enormous parameter was successfully absorbed into a genuine (if extreme-aspect-ratio) edge rather than causing the read to abort or the edge to be dropped. Synonyms: &quot;unbounded line trimmed far from origin&quot;, &quot;vertex enormously far along line direction&quot;, &quot;infinite curve parameter&quot;, &quot;extreme aspect ratio edge from unbounded curve&quot;, &quot;MakeEdge infinite parameter fallback&quot;. Provenance tier: bytes-sufficient.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></p></section>
 <section><h2>Closure intent</h2>

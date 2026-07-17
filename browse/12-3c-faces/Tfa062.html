@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa062 — Face crash during fix on invalid face — null inner wire</title>
+  <title>Tfa062 — Face silently accepted despite null/unresolvable inner-wire bound during face fix</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,9 +12,9 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa062</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa062 <span class="sep">—</span> <span class="entry-title">Face crash during fix on invalid face — null inner wire</span></h1>
+<h1>Tfa062 <span class="sep">—</span> <span class="entry-title">Face silently accepted despite null/unresolvable inner-wire bound during face fix</span></h1>
 <p class="category">§12.3c faces/sewing</p>
-<p class="severity-badge severity-p0">P0 — receiver crash / hang / OOM</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
 <p class="tag-pills">
 <a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
@@ -35,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>bounds list with null/missing entries must be rejected with diagnostic before any geometric computation; never dereference a null bound.</p></section>
 <section><h2>Notes</h2>
-<p>Cross-oracle: pure-Python Part-21 validator rejects (reject(E_UNRESOLVED_REFS)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation.</p></section>
+<p>Cross-oracle: pure-Python Part-21 validator rejects (reject(E_UNRESOLVED_REFS)); OCCT silently accepts and loads a shape. OCC auto-heals a spec-level violation.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Closure intent</h2>

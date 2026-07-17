@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>Ad077 <span class="sep">—</span> <span class="entry-title">Zero-length aggregates trigger `count-1` underflow / 4 GB loop walk (signed-integer attribute used as unsigned)</span></h1>
 <p class="category">§12.11 (sub-class: malformed-numeric / DoS)</p>
-<p class="severity-badge severity-p0">P0 — receiver crash / hang / OOM</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
 <p class="tag-pills">
 <a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
 <a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
@@ -34,13 +34,16 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Reject with diagnostic: pre-validate count &gt; 0 before computing `count-1`. Must not infinite loop or crash.</p></section>
 <section><h2>Notes</h2>
-<p>Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT crashes (`signal(11)`). The crash is on the kernel side; the file is spec-conformant Part-21.</p></section>
+<p>C; CVE-2024-23133. **See also**: Ad003. Live-verified (this worktree&#x27;s OCCT 7.8.1, heal-on and heal-off identical): the zero-length aggregate does NOT reproduce a CVE-2024-23133-style underflow/crash on this reader — the fixture loads cleanly as `shape(1)/shape(1)`. The CVE targets Autodesk&#x27;s ASMDATAX228A.dll specifically, not OCCT; this catalog entry documents the vulnerability class via a spec-conformant reproducer, not a claim that OCCT itself is vulnerable.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>matches(rb&#x27;\([^()]*\(\)\)&#x27;) or matches(rb&quot;CLOSED_SHELL\(&#x27;[^&#x27;]*&#x27;,\(\)\)&quot;)</code></li>
 <li><code>matches(rb&#x27;,\(\)&#x27;) or matches(rb&#x27;\(\)\)&#x27;)</code></li>
 </ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ad003.html">Ad003</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
 </section>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa169 — ShapeAnalysis_CheckSmallFace.CheckSplittingVertices vertex-shared-by-many</title>
+  <title>Tfa169 — ADVANCED_FACE with a 6-arm-star hub vertex is wrapped in a GEOMETRIC_CURVE_SET; the reader never builds a live face at all (shape comes back empty)</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa169</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa169 <span class="sep">—</span> <span class="entry-title">ShapeAnalysis_CheckSmallFace.CheckSplittingVertices vertex-shared-by-many</span></h1>
+<h1>Tfa169 <span class="sep">—</span> <span class="entry-title">ADVANCED_FACE with a 6-arm-star hub vertex is wrapped in a GEOMETRIC_CURVE_SET; the reader never builds a live face at all (shape comes back empty)</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
@@ -26,16 +26,21 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>ShapeAnalysis_CheckSmallFace.CheckSplittingVertices vertex-shared-by-many</p></section>
+<p>ADVANCED_FACE with a 6-arm-star hub vertex is wrapped in a GEOMETRIC_CURVE_SET; the reader never builds a live face at all (shape comes back empty)</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Notes</h2>
+<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed `CheckSplittingVertices`&#x27;s edge-angle comparison logic misbehaves on a &gt;5-edge hub vertex; that checker is never invoked because the face never survives translation (the `GEOMETRIC_CURVE_SET` wrapper is a type the builder dispatch skips). The `shape_null == True` / `occt=empty/empty` Expected-validation line below was already correct; only the mechanism attribution was wrong. **See also**: Tfa131, Tfa160 (same `GEOMETRIC_CURVE_SET`-orphaning pattern, cited in Tfa253). Synonyms: &quot;GEOMETRIC_CURVE_SET wrapped face never translates&quot;, &quot;orphaned face inside curve set yields empty shape&quot;, &quot;star hub vertex never reached by checker&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>shape_null == True</code></li>
 </ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tfa131.html">Tfa131</a>, <a href="Tfa160.html">Tfa160</a>, <a href="Tfa253.html">Tfa253</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
 </section>

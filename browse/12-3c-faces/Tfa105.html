@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa105 — ShapeFix_Face.FixSmallAreaWire seam-aware</title>
+  <title>Tfa105 — Tiny closed inner wire crossing a periodic cylindrical surface&#x27;s seam crashes the reader (SIGSEGV); FixSmallAreaWire is never reached</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa105</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa105 <span class="sep">—</span> <span class="entry-title">ShapeFix_Face.FixSmallAreaWire seam-aware</span></h1>
+<h1>Tfa105 <span class="sep">—</span> <span class="entry-title">Tiny closed inner wire crossing a periodic cylindrical surface&#x27;s seam crashes the reader (SIGSEGV); FixSmallAreaWire is never reached</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
@@ -27,13 +27,18 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>ShapeFix_Face.FixSmallAreaWire seam-aware</p></section>
+<p>Tiny closed inner wire crossing a periodic cylindrical surface&#x27;s seam crashes the reader (SIGSEGV); FixSmallAreaWire is never reached</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Notes</h2>
+<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed `FixSmallAreaWire`&#x27;s area calculation doesn&#x27;t account for seam wrapping; that method is never reached (crash occurs first). Root cause of the crash itself is NOT fully isolated in this pass (unlike Tfa085/Tfa106/Tfa118, both wires are validly closed) — recorded honestly as a hypothesis rather than a verified mechanism, per `SEGFAULT_CHARACTERIZATION.md` convention. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14, which also flags this crash&#x27;s root cause as needing further isolation. Synonyms: &quot;tiny wire crosses cylinder seam crashes reader&quot;, &quot;periodic surface seam-crossing wire segfault&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tfa085.html">Tfa085</a>, <a href="Tfa106.html">Tfa106</a>, <a href="Tfa118.html">Tfa118</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
 </section>

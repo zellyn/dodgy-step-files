@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa098 — ShapeFix_Face.FixSplitFace null-line</title>
+  <title>Tfa098 — EDGE_CURVE references an undefined entity number (dangling reference); reader drops the bound, face survives as unbounded surface</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa098</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa098 <span class="sep">—</span> <span class="entry-title">ShapeFix_Face.FixSplitFace null-line</span></h1>
+<h1>Tfa098 <span class="sep">—</span> <span class="entry-title">EDGE_CURVE references an undefined entity number (dangling reference); reader drops the bound, face survives as unbounded surface</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
@@ -26,16 +26,21 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>ShapeFix_Face.FixSplitFace null-line</p></section>
+<p>EDGE_CURVE references an undefined entity number (dangling reference); reader drops the bound, face survives as unbounded surface</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Notes</h2>
+<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed away from `ShapeFix_Face::FixSplitFace` (never invoked; no split geometry exists) to the genuine, verified behavior — a dangling entity reference causes clean per-edge failure and bound-dropping. **See also**: Tfa252 (same fallback pattern, explicit-null trigger instead of dangling reference). Synonyms: &quot;undefined entity reference in edge geometry&quot;, &quot;dangling reference clean fail&quot;, &quot;unresolved reference bound dropped&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>n_faces_total == 1</code></li>
 </ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tfa252.html">Tfa252</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
 </section>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa079 — CheckSplittingVertices vertex-on-edge midspan</title>
+  <title>Tfa079 — CLOSED_SHELL bottom face: outer edge pre-split at a vertex reused as an inner triangle&#x27;s apex (shared endpoint, not a T-junction)</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,8 +12,8 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa079</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa079 <span class="sep">—</span> <span class="entry-title">CheckSplittingVertices vertex-on-edge midspan</span></h1>
-<p class="category">§12.3c</p>
+<h1>Tfa079 <span class="sep">—</span> <span class="entry-title">CLOSED_SHELL bottom face: outer edge pre-split at a vertex reused as an inner triangle&#x27;s apex (shared endpoint, not a T-junction)</span></h1>
+<p class="category">§12.3c face-sliver-sewing (sub-class: redundant collinear vertex reused as inner-wire apex — CheckSplittingVertices shared-endpoint skip-guard case)</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
 </p>
@@ -23,19 +23,24 @@
 <a class="big-link" href="../../step-examples/12-3c-faces/Tfa079.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa079.stp</code>
 </section>
 <section><h2>Sources</h2><ul>
-<li>synthesized — no external source cited</li>
+<li>Background only (not exercised by this file): ShapeAnalysis_CheckSmallFace::CheckSplittingVertices. See Tfa249 for the genuine, live-verified trigger this file does not encode.</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>CheckSplittingVertices vertex-on-edge midspan</p></section>
+<p>`CLOSED_SHELL` 100x100x1mm box; the bottom face&#x27;s (z=0) outer wire is pre-split into two collinear `EDGE_CURVE`s at vertex (50,0,0), and that SAME `VERTEX_POINT` entity is reused verbatim as the apex of an inner `FACE_BOUND` triangle — live-oracle verified (validation/.venv, OCP/OCCT 7.8.1): the vertex is a genuine shared topological endpoint of three edges (both collinear halves of the outer edge, plus the triangle&#x27;s apex edges), exactly the case `CheckSplittingVertices`&#x27;s `V.IsSame(V1)||V.IsSame(V2)` skip-guard is written to ignore. The face loads with all 8 edges intact (per-face oracle check), no healing invoked.</p></section>
 <section><h2>Reproducer recipe</h2>
-<p></p></section>
+<p>`CLOSED_SHELL` box face whose outer boundary is pre-split at a vertex that is also reused as the shared endpoint of an inner wire&#x27;s edges — load via ordinary `STEPControl_Reader`.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>load the redundant collinear split and the shared inner-wire apex without complaint; both are valid (if inelegant) topology, not splitting-vertex configurations.</p></section>
+<section><h2>Notes</h2>
+<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original title/description claimed `CheckSplittingVertices` fires on a genuine T-junction; live-oracle verification shows the vertex is a reused, genuine shared endpoint (skip-guard case), not an independent touching vertex. See Tfa249 for the genuine trigger (closes `tkshh-splitting-vertex-face`). Synonyms: &quot;redundant vertex reused across outer and inner wire&quot;, &quot;shared-endpoint T-vertex (non-firing)&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(33) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>n_faces_total == 6</code></li>
 </ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tfa249.html">Tfa249</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
 </section>

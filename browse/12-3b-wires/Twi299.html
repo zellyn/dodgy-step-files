@@ -16,7 +16,6 @@
 <p class="category">§12.3b wire-loop (sub-class: `stp-makeedge-validity-fallback`, PARTIAL, missing subvariant &quot;point projection onto the 3D curve fails at all&quot;)</p>
 <p class="severity-badge severity-p3">P3 — cosmetic / metadata-only</p>
 <p class="tag-pills">
-<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
 </p>
 </header>
@@ -35,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>force-build the edge from the curve/vertex/parameter data anyway, logging the point-projection failure as a diagnostic rather than aborting the edge&#x27;s translation; widen the affected vertex&#x27;s tolerance to cover the real gap between the declared point and the curve it nominally bounds.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Twi086, Bo030, Gs029 (the class&#x27;s other subvariants). Live-verified (this worktree, OCP/OCCT 7.8.1): reads without crashing, `occt=shape(1)/shape(1)`, `brepcheck.valid=True`; edge[0]&#x27;s OWN tolerance stays default `1e-07`, but BOTH vertex tolerances are blown out to `1.000001` — essentially the circle&#x27;s radius — confirming `BRepLib_MakeEdge`&#x27;s fallback force-built the edge directly from curve+vertex+params rather than aborting, and the vertex-tolerance-update pass (`BRepLib::UpdateInnerTolerances`, Bo030&#x27;s own citation) had to widen the VERTEX tolerance to cover the true 1.0-unit gap between the declared off-curve vertex and the curve it nominally bounds — the same &quot;force-built anyway, tolerance absorbs the lie&quot; evidentiary pattern as Bo030, now for the point-projection-fails subvariant specifically. Synonyms: &quot;vertex at circle center&quot;, &quot;no unique nearest point on curve&quot;, &quot;ambiguous curve projection&quot;, &quot;point on axis of symmetry&quot;, &quot;MakeEdge point projection failure&quot;. Provenance tier: bytes-sufficient.</p></section>
+<p>**See also**: Twi086, Bo030, Gs029 (the class&#x27;s other subvariants). Live-verified (this worktree, OCP/OCCT 7.8.1): reads to completion without aborting, `occt=shape(1)/shape(1)`, `brepcheck.valid=True`; edge[0]&#x27;s OWN tolerance stays default `1e-07`, but BOTH vertex tolerances are blown out to `1.000001` — essentially the circle&#x27;s radius — confirming `BRepLib_MakeEdge`&#x27;s fallback force-built the edge directly from curve+vertex+params rather than aborting, and the vertex-tolerance-update pass (`BRepLib::UpdateInnerTolerances`, Bo030&#x27;s own citation) had to widen the VERTEX tolerance to cover the true 1.0-unit gap between the declared off-curve vertex and the curve it nominally bounds — the same &quot;force-built anyway, tolerance absorbs the lie&quot; evidentiary pattern as Bo030, now for the point-projection-fails subvariant specifically. Synonyms: &quot;vertex at circle center&quot;, &quot;no unique nearest point on curve&quot;, &quot;ambiguous curve projection&quot;, &quot;point on axis of symmetry&quot;, &quot;MakeEdge point projection failure&quot;. Provenance tier: bytes-sufficient.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Closure intent</h2>

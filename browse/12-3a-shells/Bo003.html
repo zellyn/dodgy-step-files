@@ -24,24 +24,28 @@
 <a class="big-link" href="../../step-examples/12-3a-shells/Bo003.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Bo003.stp</code>
 </section>
 <section><h2>Sources</h2><ul>
-<li>OCCT BRepCheck_Solid.cxx (InvalidImbricationOfShells code path) (uncovered class evidence)</li>
+<li>OCCT BRepCheck_Solid.cxx (`Minimum()`, nested-solid `IsOut()` classification, ~line 314 — the code path actually exercised, live-verified 2026-07-16)</li>
+<li>`BRepCheck_Solid::Blind()` (~line 221, the method that sets `InvalidImbricationOfShells`) is a no-op in this OCCT 7.8.1 build and is NOT exercised by this fixture</li>
 </ul></section>
 <section><h2>Sender</h2>
 <p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>A `BREP_WITH_VOIDS` carries two inner void shells where one void is fully enclosed by the other rather than disjoint. The kernel cannot construct a clean inside/outside classification because the void hierarchy is malformed: a region the inner void declares &quot;solid material&quot; the outer void declares &quot;empty space&quot;. Bug-reporter language: &quot;nested cavities&quot;, &quot;voids inside voids&quot;, &quot;shell inside another shell&quot;.</p></section>
+<p>A `BREP_WITH_VOIDS` carries two inner void shells where one void is fully enclosed by the other rather than disjoint. The kernel cannot construct a clean inside/outside classification because the void hierarchy is malformed: a region the inner void declares &quot;solid material&quot; the outer void declares &quot;empty space&quot;. Bug-reporter language: &quot;nested cavities&quot;, &quot;voids inside voids&quot;, &quot;shell inside another shell&quot;. **Live-verified OCCT 7.8.1 behavior (2026-07-16, this worktree&#x27;s OCP/OCCT, arity bug fixed — see Notes)**: this fixture does NOT raise the imbrication-of-shells validity status. The routine that would set that status is a no-op in this build; the real imbrication check (see Sources) only fires when the *same* face object is shared by two different shells within one solid — a different pattern than nested-but-disjoint void shells. What this fixture&#x27;s nested-void topology actually fires is the subshape-not-in-shape validity status, raised via the solid checker&#x27;s nested-solid point-classification path — confirmed live: the validity analyzer reports the shape invalid, and the solid&#x27;s own check result carries exactly one status, subshape-not-in-shape.</p></section>
 <section><h2>Reproducer recipe</h2>
-<p>`BREP_WITH_VOIDS` with `voids` referencing two `ORIENTED_CLOSED_SHELL` entries; the inner void&#x27;s bounding box is geometrically contained in the outer void&#x27;s bounding box.</p></section>
+<p>`BREP_WITH_VOIDS` with `voids` referencing two `ORIENTED_CLOSED_SHELL` entries; the inner void&#x27;s bounding box is geometrically contained in the outer void&#x27;s bounding box. `ORIENTED_CLOSED_SHELL` redeclares `cfs_faces` as DERIVE&#x27;d (inherited from `connected_face_set`), so its correct Part-21 attribute list is 4-wide: `(name, *, closed_shell_element, orientation)` — the `*` placeholder is required syntax, not optional.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Detect the imbricated-shells case before classifying point-in-solid queries; reject as malformed, or heal by coalescing nested voids into one and emit a warning.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;voids overlap&quot;, &quot;void hierarchy invalid&quot;, &quot;nested holes&quot;.</p></section>
+<p>Synonyms: &quot;voids overlap&quot;, &quot;void hierarchy invalid&quot;, &quot;nested holes&quot;. **Byte-history**: this fixture originally omitted the required `*` derived-attribute placeholder on both `ORIENTED_CLOSED_SHELL` instances (3-arg instead of the correct 4-arg EXPRESS form) — a 2-character arity bug that made the STEP reader&#x27;s transfer stage segfault (`signal(11)`) before any validity check ever ran. Corpus-wide grep confirmed Bo003 was the only shipped fixture with this pattern (all sibling `ORIENTED_CLOSED_SHELL` fixtures — Tsh015, Tsh067, Tsh102, Tsh240 — already carry the `*`). Fixed 2026-07-16 (see `fixture_sources/12-3a-shells/Bo003.py`); the arity fix is purely syntactic and does not change the fixture&#x27;s geometry. **See also**: Tsh067 (the class&#x27;s other, still-`detect_only` witness for `bc-invalid-imbrication-of-shells` — a void-protrusion variant, not literal shell-in-shell imbrication); `occt-coverage/exchange/problems.json` (`bc-invalid-imbrication-of-shells`, `bc-subshape-not-in-shape` — Bo003 is now live evidence for the latter, not the former); `BACKLOG.md` Q10/Q11 for the investigation trail that predicted this exact fix and outcome.</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(79) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>face[0].surface_type == &quot;plane&quot;</code></li>
 <li><code>face[5].surface_type == &quot;plane&quot;</code></li>
 </ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tsh067.html">Tsh067</a>, <a href="Tsh015.html">Tsh015</a>, <a href="Tsh102.html">Tsh102</a>, <a href="Tsh240.html">Tsh240</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
 </section>
@@ -49,7 +53,7 @@
 <details>
 <summary>Show fixture bytes</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Bo003: BREP_WITH_VOIDS with two ORIENTED_CLOSED_SHELL voids nested inside each other; inner 1x1x1 box fully enclosed by outer 3x3x3 box IS wired into shell/face topology; OCCT fires InvalidImbricationOfShells */
+<span class="lineno">2</span>/* Bo003: BREP_WITH_VOIDS with two ORIENTED_CLOSED_SHELL voids nested inside each other; inner 1x1x1 box fully enclosed by outer 3x3x3 box IS wired into shell/face topology; live-verified OCCT 7.8.1 fires BRepCheck_SubshapeNotInShape (nested-solid IsOut() classification in BRepCheck_Solid::Minimum), NOT InvalidImbricationOfShells -- BRepCheck_Solid::Blind() is a no-op in this build */
 <span class="lineno">3</span>HEADER;
 <span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Bo003&#x27;),&#x27;2;1&#x27;);
 <span class="lineno">5</span>FILE_NAME(&#x27;Bo003.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
@@ -469,8 +473,8 @@
 <span class="lineno">419</span>#410=ADVANCED_FACE(&#x27;&#x27;,(#409),#368,.T.);
 <span class="lineno">420</span>#411=CLOSED_SHELL(&#x27;void2&#x27;,(#375,#382,#389,#396,#403,#410));
 <span class="lineno">421</span>#412=MANIFOLD_SOLID_BREP(&#x27;outer_body&#x27;,#137);
-<span class="lineno">422</span>#413=ORIENTED_CLOSED_SHELL(&#x27;&#x27;,#274,.F.);
-<span class="lineno">423</span>#414=ORIENTED_CLOSED_SHELL(&#x27;&#x27;,#411,.F.);
+<span class="lineno">422</span>#413=ORIENTED_CLOSED_SHELL(&#x27;&#x27;,*,#274,.F.);
+<span class="lineno">423</span>#414=ORIENTED_CLOSED_SHELL(&#x27;&#x27;,*,#411,.F.);
 <span class="lineno">424</span>#415=BREP_WITH_VOIDS(&#x27;bo003_nested_voids&#x27;,#137,(#413,#414));
 <span class="lineno">425</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
 <span class="lineno">426</span>#9051=PRODUCT(&#x27;Bo003&#x27;,&#x27;Bo003&#x27;,&#x27;&#x27;,(#9050));

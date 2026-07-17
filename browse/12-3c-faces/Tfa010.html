@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa010 — Splitting vertex within face (vertex of one wire on edge of another)</title>
+  <title>Tfa010 — Straight boundary edge pre-split into two collinear EDGE_CURVEs at a shared vertex (not a T-junction); unrelated non-touching interior hole</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,8 +12,8 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa010</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa010 <span class="sep">—</span> <span class="entry-title">Splitting vertex within face (vertex of one wire on edge of another)</span></h1>
-<p class="category">§12.3c face-sliver-sewing</p>
+<h1>Tfa010 <span class="sep">—</span> <span class="entry-title">Straight boundary edge pre-split into two collinear EDGE_CURVEs at a shared vertex (not a T-junction); unrelated non-touching interior hole</span></h1>
+<p class="category">§12.3c face-sliver-sewing (sub-class: redundant collinear vertex on a straight edge — the CheckSplittingVertices shared-endpoint skip-guard case, not a genuine splitting-vertex trigger)</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
 </p>
@@ -23,17 +23,16 @@
 <a class="big-link" href="../../step-examples/12-3c-faces/Tfa010.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa010.stp</code>
 </section>
 <section><h2>Sources</h2><ul>
-<li>05-occt-shapefix F029 (ShapeAnalysis_CheckSmallFace::CheckSplittingVertices)</li>
-<li>09-healing-menus H106 (FaceSplitByVertices)</li>
+<li>Background only (not exercised by this file): ShapeAnalysis_CheckSmallFace::CheckSplittingVertices / ShapeFix_FixSmallFace::FixSplitFace. See Tfa249 for the genuine, live-verified trigger this file does not encode.</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A face contains a vertex sub-shape that lies on the interior of another wire&#x27;s edge, effectively bisecting the face. The face boundary&#x27;s regularity is broken; downstream Booleans see ambiguous adjacency.</p></section>
+<p>`ADVANCED_FACE` on a `PLANE`: the outer 5-edge wire&#x27;s bottom boundary is pre-split into two collinear `EDGE_CURVE`s (#14, #18) sharing a genuine topological endpoint `VERTEX_POINT` at (5,0,0) — live-oracle verified (validation/.venv, OCP/OCCT 7.8.1): the reader loads both edges unmerged and treats the shared vertex as an ordinary wire vertex, never as a splitting vertex (it IS a real endpoint of both adjacent edges, exactly the case `CheckSplittingVertices`&#x27;s `V.IsSame(V1)||V.IsSame(V2)` skip-guard is written to ignore). A second, independent `FACE_BOUND` rectangle at (5,0.5)-(7,2.5) sits entirely inside the face&#x27;s interior without touching any outer-wire edge or vertex — an ordinary, unrelated hole (despite this file&#x27;s own inline comment describing it as &quot;anchored at V&quot;).</p></section>
 <section><h2>Reproducer recipe</h2>
-<p>`ADVANCED_FACE` whose outer wire passes by a vertex `V`, and an inner wire (or another part of the outer wire) anchors a separate edge at `V` lying on the first wire&#x27;s edge curve.</p></section>
+<p>`ADVANCED_FACE` whose outer wire&#x27;s straight edge is pre-split into two collinear `EDGE_CURVE`s at a shared endpoint vertex; a separate, non-touching `FACE_BOUND` hole is present elsewhere on the same face.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal; split the face at the splitting vertex into two (or more) regular faces; alternatively flag and surface the defect to the user.</p></section>
+<p>load the redundant collinear split without complaint (two collinear `EDGE_CURVE`s sharing an endpoint is valid, if inelegant, topology); treat the unrelated inner hole as an ordinary bound. No splitting-vertex healing is applicable or required.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gs034. Synonyms: &quot;vertex sits on the middle of another edge&quot;, &quot;T-junction inside a face&quot;, &quot;wire vertex bisects another wire&#x27;s edge&quot;, &quot;face has interior vertex breaking adjacency&quot;, &quot;splitting vertex inside face boundary&quot;.</p></section>
+<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — the original title/category claimed this file triggers `CheckSplittingVertices`/`FaceSplitByVertices`; live-oracle verification shows the &quot;splitting&quot; vertex is a genuine shared `EDGE_CURVE` endpoint, exactly the case the checker&#x27;s skip-guard ignores (see Tfa249, closes `tkshh-splitting-vertex-face`). **See also**: Gs034, Tfa249. Synonyms: &quot;redundant vertex splits straight edge&quot;, &quot;collinear edge pair sharing endpoint&quot;, &quot;vertex sits on the middle of another edge (shared-endpoint, non-firing)&quot;, &quot;T-junction inside a face (skip-guard case)&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(28) ifc=schema_n/a</code></p></section>
 <section><h2>Closure intent</h2>
@@ -44,7 +43,7 @@
 <li><code>n_vertices_total &gt;= 8</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
-<p><a href="../12-2c-surfaces/Gs034.html">Gs034</a></p>
+<p><a href="../12-2c-surfaces/Gs034.html">Gs034</a>, <a href="Tfa249.html">Tfa249</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>

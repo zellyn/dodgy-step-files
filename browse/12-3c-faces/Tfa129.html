@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa129 — CheckSplittingVertices: T-vertex at B-spline midpoint</title>
+  <title>Tfa129 — Ordinary 4-vertex rectangular face with one edge replaced by an asymmetric-knot B-spline curve; no T-junction vertex exists in the bytes</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa129</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa129 <span class="sep">—</span> <span class="entry-title">CheckSplittingVertices: T-vertex at B-spline midpoint</span></h1>
+<h1>Tfa129 <span class="sep">—</span> <span class="entry-title">Ordinary 4-vertex rectangular face with one edge replaced by an asymmetric-knot B-spline curve; no T-junction vertex exists in the bytes</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
@@ -26,11 +26,13 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>CheckSplittingVertices: T-vertex at B-spline midpoint</p></section>
+<p>Ordinary 4-vertex rectangular face with one edge replaced by an asymmetric-knot B-spline curve; no T-junction vertex exists in the bytes</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Notes</h2>
+<p>Corrected 2026-07-16 (truth-in-labeling audit, Part 1 special case): the original title/description asserted a T-junction vertex at the B-spline&#x27;s exact 3D midpoint; verified absent from the bytes (only the 4 rectangle-corner vertices exist). Retitled to describe the genuine content (asymmetric-knot B-spline edge, no defect). Repair-vs-reclaim decision: reclaimed honestly rather than silently repaired, since a byte-level fix needs its own live-oracle-verified assertions; see `BACKLOG.md` entry added 2026-07-16. Synonyms: &quot;B-spline edge no T-junction&quot;, &quot;asymmetric knot vector single curved edge&quot;, &quot;no matching vertex entity&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

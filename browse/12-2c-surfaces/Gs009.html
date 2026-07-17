@@ -35,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal — re-fit/sub-set self-intersecting curves; remove overlap tails on split-at-seam wires; cap tolerance inflation when healing.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gp008, Tsh039, Twi010, Twi039, Twi040. Synonyms: &quot;self-intersecting EDGE_LOOP wire&quot;, &quot;figure-eight outer wire on planar face&quot;, &quot;non-simple polygon wire crosses itself&quot;, &quot;edge loop visits corners in wrong order&quot;, &quot;wire edges cross each other at interior point&quot;.</p></section>
+<p>**See also**: Gp008, Tsh039, Twi010, Twi039, Twi040, Twi286 (this class&#x27;s minimal isolated case, with the same &quot;reader silently splits the self-intersecting wire on import&quot; live finding). Synonyms: &quot;self-intersecting EDGE_LOOP wire&quot;, &quot;figure-eight outer wire on planar face&quot;, &quot;non-simple polygon wire crosses itself&quot;, &quot;edge loop visits corners in wrong order&quot;, &quot;wire edges cross each other at interior point&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
@@ -47,7 +47,7 @@
 <li><code>load == &quot;ok&quot;</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
-<p><a href="../12-2a-pcurves/Gp008.html">Gp008</a>, <a href="../12-3a-shells/Tsh039.html">Tsh039</a>, <a href="../12-3b-wires/Twi010.html">Twi010</a>, <a href="../12-3b-wires/Twi039.html">Twi039</a>, <a href="../12-3b-wires/Twi040.html">Twi040</a></p>
+<p><a href="../12-2a-pcurves/Gp008.html">Gp008</a>, <a href="../12-3a-shells/Tsh039.html">Tsh039</a>, <a href="../12-3b-wires/Twi010.html">Twi010</a>, <a href="../12-3b-wires/Twi039.html">Twi039</a>, <a href="../12-3b-wires/Twi040.html">Twi040</a>, <a href="../12-3b-wires/Twi286.html">Twi286</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>

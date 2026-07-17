@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa117 — ShapeAnalysis_CheckSmallFace.CheckSplittingVertices vertex-on-degenerate-edge</title>
+  <title>Tfa117 — A zero-length EDGE_CURVE in one face&#x27;s wire causes the reader to drop that face&#x27;s ENTIRE boundary (unbounded-surface fallback), not just the bad edge</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa117</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa117 <span class="sep">—</span> <span class="entry-title">ShapeAnalysis_CheckSmallFace.CheckSplittingVertices vertex-on-degenerate-edge</span></h1>
+<h1>Tfa117 <span class="sep">—</span> <span class="entry-title">A zero-length EDGE_CURVE in one face&#x27;s wire causes the reader to drop that face&#x27;s ENTIRE boundary (unbounded-surface fallback), not just the bad edge</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
@@ -26,16 +26,21 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>ShapeAnalysis_CheckSmallFace.CheckSplittingVertices vertex-on-degenerate-edge</p></section>
+<p>A zero-length EDGE_CURVE in one face&#x27;s wire causes the reader to drop that face&#x27;s ENTIRE boundary (unbounded-surface fallback), not just the bad edge</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Notes</h2>
+<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed `CheckSplittingVertices` &quot;cannot classify&quot; a T-vertex at the degenerate edge; that checker is never reached because the reader drops the whole face boundary before any splitting-vertex analysis could occur. Per-face oracle probe confirms `face[0].n_edges == 0`. **See also**: Tfa098, Tfa252 (same unbounded-surface fallback pattern). Synonyms: &quot;zero-length edge drops entire face boundary&quot;, &quot;degenerate edge causes whole-wire failure not partial skip&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>n_faces_total == 2</code></li>
 </ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tfa098.html">Tfa098</a>, <a href="Tfa252.html">Tfa252</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
 </section>

@@ -1762,3 +1762,97 @@ evidence rather than force-fit:
       deliverable shape than the rest of this packet (no catalog entry, no `step-examples/` file) —
       deferred as a maintainer decision on whether/how to fold it into the existing negative-control
       set rather than force a mismatched catalog entry into this packet.
+
+## Q13 — Truth-in-labeling audit 2026-07-16: two fixtures reclassified as "no defect currently encoded"
+
+Part of the 18-fixture FixSplitFace/CheckSplittingVertices misnomer correction (see Tfa249's catalog
+entry + `occt-coverage/tkshhealing/problems.json`'s `tkshh-splitting-vertex-face` notes). All 18
+titles/descriptions/Sources were corrected in place to describe genuine, live-oracle-verified
+behavior. Two of them, on close reading, don't demonstrate ANY defect as currently encoded — flagged
+here rather than silently repaired, since a byte-level fix needs its own fresh live-oracle-verified
+assertions (out of scope for a same-pass narrative-only correction):
+
+- [ ] **Tfa129** — bytes are an ordinary 4-vertex rectangular face with one edge replaced by a real,
+      but unremarkable, asymmetric-knot `B_SPLINE_CURVE_WITH_KNOTS` (degree 3, knots=[0.0,0.3,1.0]
+      mults=[4,1,4]). No second vertex exists anywhere in the file — the title's claimed T-junction
+      vertex at the B-spline's exact 3D midpoint is fictional. A genuine repair would add an
+      independent `VERTEX_POINT` near-but-not-exactly on the curve's true 3D spatial midpoint
+      (distinct from any parametric-midpoint-based point, mirroring Tfa249's 5e-8-offset technique)
+      so `ShapeAnalysis_CheckSmallFace::CheckSplittingVertices` has a genuine candidate to test —
+      requires new Byte/Tier-3 assertions and a live-oracle-verified Expected-validation line before
+      it could ship; not attempted here.
+- [ ] **Tfa210** — a plain `PLANE` face with two ordinary, closed, non-touching `FACE_BOUND` holes.
+      Live-oracle confirms `n_faces_total == 1` — completely mundane, valid multi-hole-face topology
+      that any correct kernel handles without special logic; there is no "disconnected wire" defect
+      here to detect. If the corpus wants a genuine disconnected/orphan-wire defect fixture in this
+      slot, it would need different bytes entirely (e.g., a wire that is neither a valid closed hole
+      nor touches the outer boundary in a way that produces a real ambiguity) — not attempted here.
+      (Tfa239, a NURBS-surface analog of the same "valid multi-hole face, not a defect" pattern, was
+      corrected narratively only since its Tier-3 assertions already independently justify its
+      corpus presence as a rational-B-spline-surface coverage fixture, not a healing-defect one.)
+
+## Q14 — Truth-in-labeling audit 2026-07-16, Part 2: ~117-entry ShapeFix_Face/ShapeAnalysis_CheckSmallFace misnomer family (Tfa071-Tfa245 range), confirmed pattern, NOT individually fixed
+
+While correcting the 18 known-misnamed `FixSplitFace`/`CheckSplittingVertices` fixtures (Tfa010 etc.,
+see the corrected catalog entries and this file's earlier note), a corpus-wide grep for titles citing
+other `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` methods (`FixSmallAreaWire`, `FixWiresTwoCoincEdges`,
+`CheckTwisted`, `CheckSpotFace`, `FixPeriodicDegenerated`, `FixOrientation`, `FixLoopWire`, `CheckPin`,
+`FixAddNaturalBound`, `CheckSmallArea`, etc.) turned up **127 additional `Tfa*` entries** in the same
+`step-examples/12-3c-faces/` section, all sharing the exact same generation-batch template and the exact
+same fabrication pattern already proven for the original 18:
+
+- Titles name a specific `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` method and assert it actively
+  misbehaves ("fails to detect", "misses", "doesn't handle", "produces X instead of Y", "misclassifies").
+- Several `Sources` lines cite an explicitly **unverified** line number (literally `~line TBD` in some,
+  e.g. Tfa113's original `ShapeFix_Face::FixOrientation (~line TBD)`).
+- `Expected validation` already shows either a clean `occt=shape(1)/shape(1)` load or `signal(11)` crash
+  — **neither of which is consistent with the claimed silent misclassification behavior** — because (per
+  Tfa249's own established finding) `ShapeFix_FixSmallFace`/`ShapeFix_Face`'s split/fix/check methods are
+  not called by that class's own default `Perform()` and are never invoked during an ordinary
+  `STEPControl_Reader` read at all.
+
+10 of the 127 were verified (live-oracle, validation/.venv OCP/OCCT 7.8.1) and corrected in this same
+session, in the same style as the original 18 — **Tfa100, Tfa105, Tfa106, Tfa112, Tfa113, Tfa114, Tfa115,
+Tfa116, Tfa119, Tfa127** — use these 10 corrected entries as the template for the remaining work. Evidence
+patterns found across the 10 (expected to recur across the other 117, but must be re-verified per fixture,
+not assumed):
+
+- **Clean-load / never-invoked** (majority pattern): the file loads exactly as its Tier-3/Expected-validation
+  lines already say; the named checker/fixer is simply never called; retitle to describe the genuine,
+  verified load behavior. (Tfa100, Tfa112, Tfa113, Tfa127.)
+- **Unbounded-surface fallback**: a degenerate/collapsed wire causes the reader to drop the ENTIRE bound
+  (0 edges), not just the offending sub-element — same family as Tfa098/Tfa117/Tfa252. (Tfa114, Tfa115.)
+- **Invalid single-edge (non-closed) FACE_INNER_BOUND crash**: same crash class as Tfa085/Tfa118 — verify
+  by isolation (remove the suspect bound, confirm the crash disappears). (Tfa106 confirmed; likely
+  candidates among the 117 wherever an `EDGE_LOOP` has exactly one member.)
+- **Crash with root cause NOT fully isolated**: some crash but with validly-closed wires and no obvious
+  single-edge-bound trigger (Tfa105, Tfa116, Tfa119) — record honestly per `SEGFAULT_CHARACTERIZATION.md`
+  convention ("hypothesized failure path") rather than guessing a specific mechanism without isolation
+  testing.
+
+**Remaining 117 IDs (NOT yet individually verified or corrected — grep-identified candidates only, per
+this project's own rule to never act on grep alone):**
+
+```
+Tfa071 Tfa074 Tfa076 Tfa077 Tfa078 Tfa080 Tfa081 Tfa082 Tfa083 Tfa086 Tfa087 Tfa088 Tfa089 Tfa091
+Tfa092 Tfa093 Tfa095 Tfa096 Tfa097 Tfa099 Tfa101 Tfa102 Tfa103 Tfa111 Tfa120 Tfa121 Tfa122 Tfa123
+Tfa124 Tfa125 Tfa126 Tfa128 Tfa130 Tfa131 Tfa132 Tfa133 Tfa135 Tfa137 Tfa138 Tfa139 Tfa140 Tfa141
+Tfa142 Tfa143 Tfa144 Tfa146 Tfa147 Tfa148 Tfa150 Tfa151 Tfa152 Tfa153 Tfa154 Tfa155 Tfa156 Tfa157
+Tfa158 Tfa159 Tfa160 Tfa161 Tfa162 Tfa164 Tfa165 Tfa166 Tfa167 Tfa168 Tfa170 Tfa171 Tfa172 Tfa174
+Tfa175 Tfa176 Tfa177 Tfa178 Tfa179 Tfa180 Tfa181 Tfa182 Tfa184 Tfa185 Tfa186 Tfa187 Tfa188 Tfa189
+Tfa190 Tfa191 Tfa192 Tfa193 Tfa194 Tfa195 Tfa199 Tfa201 Tfa202 Tfa204 Tfa205 Tfa206 Tfa207 Tfa208
+Tfa209 Tfa211 Tfa212 Tfa213 Tfa214 Tfa215 Tfa228 Tfa229 Tfa230 Tfa231 Tfa232 Tfa233 Tfa234 Tfa236
+Tfa241 Tfa242 Tfa243 Tfa244 Tfa245
+```
+
+- [ ] Note: Tfa131 and Tfa160 are independently cited in Tfa253's Sources as `GEOMETRIC_CURVE_SET`-hosted
+      (orphaned, unreachable — same pattern as Tfa169, corrected in Part 2 of this session). If confirmed
+      on inspection, these two are "honest reclaim to empty-shape" cases like Tfa169, not "clean load" or
+      "crash" cases.
+- [ ] Recommended approach for a future session: batch by claimed mechanism name (all `FixSmallAreaWire`-
+      titled entries together, etc.), run the per-face-edge-count oracle script (`n_faces`/`n_edges` per
+      face, crash-or-not) against each fixture first to bucket into the three patterns above, THEN write
+      corrected title/Category/Description/Sources/Notes per fixture in the established style — do not
+      batch-rewrite titles without per-fixture live-oracle verification.
+      This is a large campaign (117 fixtures) — likely deserving its own dedicated session(s), analogous
+      to the Wave-B/mesh-wave sessions in the maintainer's memory.

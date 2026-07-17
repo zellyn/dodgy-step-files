@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa149 — ShapeAnalysis_CheckSmallFace.CheckSplittingVertices wire-not-closed</title>
+  <title>Tfa149 — FACE_BOUND wire is not closed (4.5mm gap between its free ends); reader loads all 3 dangling edges with no closure check or diagnostic</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,9 +12,10 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa149</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa149 <span class="sep">—</span> <span class="entry-title">ShapeAnalysis_CheckSmallFace.CheckSplittingVertices wire-not-closed</span></h1>
+<h1>Tfa149 <span class="sep">—</span> <span class="entry-title">FACE_BOUND wire is not closed (4.5mm gap between its free ends); reader loads all 3 dangling edges with no closure check or diagnostic</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
 </p>
 </header>
@@ -26,16 +27,21 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>ShapeAnalysis_CheckSmallFace.CheckSplittingVertices wire-not-closed</p></section>
+<p>FACE_BOUND wire is not closed (4.5mm gap between its free ends); reader loads all 3 dangling edges with no closure check or diagnostic</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Notes</h2>
+<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed `CheckSplittingVertices` runs on the open wire and produces &quot;inconsistent verdicts&quot;; that checker is never invoked on an ordinary read. The genuine, verified behavior is that the reader silently accepts a non-closed `FACE_BOUND`, keeping its dangling edges with no diagnostic (contrast with Tfa117, where a zero-length edge causes the whole bound to be dropped instead). **See also**: Tfa117. Synonyms: &quot;open wire face bound loads silently&quot;, &quot;non-closed inner bound no diagnostic&quot;, &quot;dangling edges from unclosed path&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>load == &quot;ok&quot;</code></li>
 </ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tfa117.html">Tfa117</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
 </section>

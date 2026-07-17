@@ -10,22 +10,22 @@ Two views are shown. **All** counts every problem class found. **STEP-exercisabl
 
 | view | classes | COVERED | PARTIAL | GAP |
 |---|---:|---:|---:|---:|
-| **All classes** | **205** | 146 (71.2%) | 21 (10.2%) | 38 (18.5%) |
+| **All classes** | **205** | 149 (72.7%) | 18 (8.8%) | 38 (18.5%) |
 
 | view | classes | COVERED | PARTIAL | GAP |
 |---|---:|---:|---:|---:|
-| **STEP-exercisable classes** | **143** | 124 (86.7%) | 17 (11.9%) | 2 (1.4%) |
+| **STEP-exercisable classes** | **143** | 126 (88.1%) | 15 (10.5%) | 2 (1.4%) |
 
 ## Per sub-domain breakdown (all classes)
 
 | sub-domain | classes | COVERED | PARTIAL | GAP | detect-only | carve-out |
 |---|---:|---:|---:|---:|---:|---:|
-| `TKShHealing` | 60 | 55 | 4 | 1 | 0 |  |
-| `exchange/brepcheck` | 31 | 22 | 4 | 5 | 31 |  |
+| `TKShHealing` | 60 | 56 | 3 | 1 | 0 |  |
+| `exchange/brepcheck` | 31 | 23 | 3 | 5 | 31 |  |
 | `exchange/heal-sequence` | 20 | 19 | 1 | 0 | 0 |  |
 | `exchange/iges-reader` | 31 | 0 | 0 | 31 | 0 | yes |
 | `exchange/sewing` | 24 | 18 | 5 | 1 | 0 |  |
-| `exchange/step-reader` | 39 | 32 | 7 | 0 | 0 |  |
+| `exchange/step-reader` | 39 | 33 | 6 | 0 | 0 |  |
 
 ## Ranked GAP list (all domains)
 

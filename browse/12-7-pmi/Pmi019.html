@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>Pmi019 <span class="sep">—</span> <span class="entry-title">camera_model_d3 viewpoint not modeled per RP §9</span></h1>
 <p class="category">§12.7 (sub-class: saved-view)</p>
-<p class="severity-badge severity-p0">P0 — receiver crash / hang / OOM</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
 <p class="tag-pills">
 <a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
 <a class="tag tag-pmi" href="../by-tag/pmi/index.html">pmi</a>
@@ -34,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Warn and accept: emit a warning diagnostic; provide an option to repair viewpoints via Gram-Schmidt orthonormalization.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;camera_model_d3 viewpoint not modeled per RP §9&quot;, &quot;saved-view camera missing per recommended practice&quot;, &quot;camera viewpoint not encoded as required&quot;.</p></section>
+<p>Synonyms: &quot;camera_model_d3 viewpoint not modeled per RP §9&quot;, &quot;saved-view camera missing per recommended practice&quot;, &quot;camera viewpoint not encoded as required&quot;. Cross-oracle: OCCT itself loads this fixture cleanly (`shape(1)`, a minimal placeholder BREP); it is the independent gmsh oracle (also OCC-backed, different reader front-end) that crashes with signal(11) — OCCT proper does not.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

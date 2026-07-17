@@ -34,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>detect the self-intersection and either reject as malformed or split the boundary into simple loops with explicit inside/outside designation.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Twi-family wire self-intersection entries. Synonyms: &quot;CURVE_BOUNDED_SURFACE bowtie boundary&quot;, &quot;self-intersecting boundary on curve-bounded surface&quot;, &quot;boundary curves cross in parameter space&quot;, &quot;trim inside ambiguous due to figure-eight boundary&quot;, &quot;non-simple loop in CURVE_BOUNDED_SURFACE&quot;.</p></section>
+<p>**See also**: Twi-family wire self-intersection entries, Twi286 (same &quot;reader silently resolves the self-intersection on import&quot; finding for the wire-loop analogue). Synonyms: &quot;CURVE_BOUNDED_SURFACE bowtie boundary&quot;, &quot;self-intersecting boundary on curve-bounded surface&quot;, &quot;boundary curves cross in parameter space&quot;, &quot;trim inside ambiguous due to figure-eight boundary&quot;, &quot;non-simple loop in CURVE_BOUNDED_SURFACE&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
@@ -45,6 +45,9 @@
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>load == &quot;ok&quot;</code></li>
 </ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-3b-wires/Twi286.html">Twi286</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
 </section>

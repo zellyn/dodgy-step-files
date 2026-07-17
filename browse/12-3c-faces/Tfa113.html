@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa113 — ShapeFix_Face.FixOrientation 8-face polyhedron</title>
+  <title>Tfa113 — Cube with one deliberately reversed face loads with the reversal intact; the orientation-fixing pass is never invoked on an ordinary read</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa113</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa113 <span class="sep">—</span> <span class="entry-title">ShapeFix_Face.FixOrientation 8-face polyhedron</span></h1>
+<h1>Tfa113 <span class="sep">—</span> <span class="entry-title">Cube with one deliberately reversed face loads with the reversal intact; the orientation-fixing pass is never invoked on an ordinary read</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
@@ -26,11 +26,13 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>ShapeFix_Face.FixOrientation 8-face polyhedron</p></section>
+<p>Cube with one deliberately reversed face loads with the reversal intact; the orientation-fixing pass is never invoked on an ordinary read</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Notes</h2>
+<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed an &quot;8-face polyhedron&quot; and an orientation-fixer loop-termination bug (with an admittedly unverified &quot;~line TBD&quot; source citation); geometry is actually a real 6-face cube, and the named orientation fixer is never invoked on an ordinary read. Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;reversed cube face loads as-is&quot;, &quot;one face orientation flag preserved not auto-corrected&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

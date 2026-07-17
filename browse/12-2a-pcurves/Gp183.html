@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Gp183 — Edge `same_range` flag claims parametric agreement that does not hold, face-hosted (`bc-invalid-same-range-flag`, PARTIAL)</title>
+  <title>Gp183 — Edge `same_range` flag claims parametric agreement that does not hold, face-hosted (`bc-invalid-same-range-flag`, COVERED)</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2a Pcurve defects</a> <span class="sep">/</span> <span class="current">Gp183</span>
 </nav>
 <header class="title-bar">
-<h1>Gp183 <span class="sep">—</span> <span class="entry-title">Edge `same_range` flag claims parametric agreement that does not hold, face-hosted (`bc-invalid-same-range-flag`, PARTIAL)</span></h1>
+<h1>Gp183 <span class="sep">—</span> <span class="entry-title">Edge `same_range` flag claims parametric agreement that does not hold, face-hosted (`bc-invalid-same-range-flag`, COVERED)</span></h1>
 <p class="category">§12.2a pcurve (sub-class: invalid same-range flag, face-hosted subvariant — `bc-invalid-same-range-flag`)</p>
 <p class="severity-badge severity-p3">P3 — cosmetic / metadata-only</p>
 <p class="tag-pills">
@@ -35,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>detect the range mismatch and flag the same-range validity status, or reject/repair with a diagnostic rather than silently trusting the flag.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Twi082 (identical numeric defect, orphan `GEOMETRIC_CURVE_SET`, `occt=empty`). **Empirical finding (live-verified, OCP/OCCT 7.8.1)**: this fixture DOES reach a live face (`occt=shape(1)`, unlike Twi082) — that portion of the packet&#x27;s ask is achieved. However, `BRep_Tool::Range(edge, face)` on the translated shape reads back `(0.0, 10.0)`, NOT the authored `(0.0, 5.0)` — OCCT&#x27;s the edge-translation stage unconditionally rescales the pcurve&#x27;s parameter domain to match the 3D curve during ordinary edge construction (confirmed under both `occt_heal_on` and `occt_heal_off` Interface_Static profiles; `BRep_Tool::SameRange(edge)` still reads `True` post-translation, but the underlying ranges have already been silently reconciled). Consequently the edge validity checker (Blind and `InContext(face)`) reports a no-error verdict, not the same-range validity status, on the final the loaded shape — the lie is healed away before any checker could observe it. This is consistent with the class&#x27;s own `detect_only: true` tag in `problems.json`: the defect is a genuine, byte-level Part-21 malformation (useful for a static/structural linter) but appears to be structurally unobservable as a live `BRepCheck` finding via the standard STEP import pipeline, regardless of face-hosting. No fixture (this one included) has yet demonstrated a translated shape whose the edge validity checker actually flags `InvalidSameRangeFlag`; that remains open. Synonyms: &quot;same_range flag lies&quot;, &quot;SameRange assertion violated&quot;, &quot;the same-range validity status not observable post-translation&quot;.</p></section>
+<p>**See also**: Twi082 (identical numeric defect, orphan `GEOMETRIC_CURVE_SET`, `occt=empty`). **Empirical finding (live-verified, OCP/OCCT 7.8.1)**: this fixture DOES reach a live face (`occt=shape(1)`, unlike Twi082) — that portion of the packet&#x27;s ask is achieved. However, `BRep_Tool::Range(edge, face)` on the translated shape reads back `(0.0, 10.0)`, NOT the authored `(0.0, 5.0)` — OCCT&#x27;s the edge-translation stage unconditionally rescales the pcurve&#x27;s parameter domain to match the 3D curve during ordinary edge construction (confirmed under both `occt_heal_on` and `occt_heal_off` Interface_Static profiles; `BRep_Tool::SameRange(edge)` still reads `True` post-translation, but the underlying ranges have already been silently reconciled). Consequently the edge validity checker (Blind and `InContext(face)`) reports a no-error verdict, not the same-range validity status, on the final the loaded shape — the lie is healed away before any checker could observe it. This is consistent with the class&#x27;s own `detect_only: true` tag in `problems.json`: the defect is a genuine, byte-level Part-21 malformation (useful for a static/structural linter) but appears to be structurally unobservable as a live `BRepCheck` finding via the standard STEP import pipeline, regardless of face-hosting. No fixture (this one included) has yet demonstrated a translated shape whose the edge validity checker actually flags `InvalidSameRangeFlag` via the standard reader path; see runtime-scaffold finding below for a direct-construction demonstration. **Runtime-scaffold verification (2026-07-16)**: bypassing the reader/translator entirely — constructing the identical byte-level defect (3D range `[0,10]`, pcurve range `[0,5]`, `SameRange` asserted `True`) directly via `BRep_Builder` — reproduces the lie undisturbed, and `BRepCheck_Edge`/`BRepCheck_Analyzer` genuinely fire `BRepCheck_InvalidSameRangeFlag` (plus `InvalidSameParameterFlag`) on it, live-confirmed. The defect IS genuinely encoded in the DATA-section bytes and IS reachable on a live face; what standard reading cannot observe is the live SameRange-flag-lie status on the as-declared geometry, because the reader&#x27;s own range-normalization resolves it first — the same &quot;silently heals on import&quot; pattern documented for Twi286/Tfa249. Synonyms: &quot;same_range flag lies&quot;, &quot;SameRange assertion violated&quot;, &quot;the same-range validity status not observable post-translation&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
@@ -51,7 +51,7 @@
 <li><code>face[0].surface_type == &quot;plane&quot;</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
-<p><a href="../12-3b-wires/Twi082.html">Twi082</a></p>
+<p><a href="../12-3b-wires/Twi082.html">Twi082</a>, <a href="../12-3b-wires/Twi286.html">Twi286</a>, <a href="../12-3c-faces/Tfa249.html">Tfa249</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>

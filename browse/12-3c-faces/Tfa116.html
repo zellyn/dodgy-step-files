@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tfa116 — ShapeFix_Face.FixLoopWire concentric circles</title>
+  <title>Tfa116 — Three properly-closed 2-edge circular wires (outer + two concentric inner holes) crash the reader (SIGSEGV); FixLoopWire is never reached</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa116</span>
 </nav>
 <header class="title-bar">
-<h1>Tfa116 <span class="sep">—</span> <span class="entry-title">ShapeFix_Face.FixLoopWire concentric circles</span></h1>
+<h1>Tfa116 <span class="sep">—</span> <span class="entry-title">Three properly-closed 2-edge circular wires (outer + two concentric inner holes) crash the reader (SIGSEGV); FixLoopWire is never reached</span></h1>
 <p class="category">§12.3c</p>
 <p class="tag-pills">
 <a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
@@ -27,13 +27,18 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>ShapeFix_Face.FixLoopWire concentric circles</p></section>
+<p>Three properly-closed 2-edge circular wires (outer + two concentric inner holes) crash the reader (SIGSEGV); FixLoopWire is never reached</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Notes</h2>
+<p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed `FixLoopWire`&#x27;s merge logic collapses concentric circles into one doubled-up wire; that method is never reached (crash occurs first), and unlike Tfa085/Tfa106/Tfa118, all three wires here ARE validly closed — root cause of the crash is not fully isolated in this pass (recorded honestly per `SEGFAULT_CHARACTERIZATION.md` convention rather than guessed). Part of the ~127-entry `ShapeFix_Face`/`ShapeAnalysis_CheckSmallFace` misnomer family — see `BACKLOG.md` Q14, which flags this crash&#x27;s root cause as needing further isolation.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tfa085.html">Tfa085</a>, <a href="Tfa106.html">Tfa106</a>, <a href="Tfa118.html">Tfa118</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
 </section>

@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>A021 <span class="sep">—</span> <span class="entry-title">CDORSI WR1 violated by per-component styling in Saved View</span></h1>
 <p class="category">§12.6 (sub-class: CONTEXT_DEPENDENT_OVER_RIDING_STYLED_ITEM)</p>
-<p class="severity-badge severity-p0">P0 — receiver crash / hang / OOM</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
 <p class="tag-pills">
 <a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
 <a class="tag tag-assembly" href="../by-tag/assembly/index.html">assembly</a>
@@ -34,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Warn and accept this pattern despite the WR1 violation; do not reject.</p></section>
 <section><h2>Notes</h2>
-<p>Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT crashes (`signal(11)`). The crash is on the kernel side; the file is spec-conformant Part-21.</p></section>
+<p>Historical finding (validation/SEGFAULT_CHARACTERIZATION.md, captured before this fixture&#x27;s current bytes): kernel-level segfault observed on OCCT/gmsh load, hypothesized path STEPConstruct_Styles::LoadStyles SELECT downcast on heterogeneous style_context (mapped_item + representation_relationship together) plus empty draughting_model items. Live-verified (this worktree&#x27;s OCCT 7.8.1, heal-on and heal-off identical): no crash reproduces — the fixture loads cleanly as `shape(1)/shape(1)`. Synonyms: &quot;saved-view per-component styling violates CDORSI rule WR1&quot;, &quot;Saved View styled item rule WR1 broken&quot;, &quot;per-component color override illegal in Saved View context&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
