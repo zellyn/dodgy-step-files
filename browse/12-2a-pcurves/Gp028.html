@@ -32,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>detect that the wire crosses the seam and insert the seam edge automatically, or reject as malformed.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gp026. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Synonyms: &quot;wire crosses cylinder seam without seam edge&quot;, &quot;missing seam edge on periodic surface wire&quot;, &quot;pcurve range vs vertex angle disagree at seam crossing&quot;, &quot;cylinder face wire spans U=0/U=2π without explicit seam&quot;, &quot;open contour in UV from missing seam edge&quot;.</p></section>
+<p>**See also**: Gp026. **OCC behavior**: accepts and loads shape(1); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Synonyms: &quot;wire crosses cylinder seam without seam edge&quot;, &quot;missing seam edge on periodic surface wire&quot;, &quot;pcurve range vs vertex angle disagree at seam crossing&quot;, &quot;cylinder face wire spans U=0/U=2π without explicit seam&quot;, &quot;open contour in UV from missing seam edge&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

@@ -32,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>clamp the edge&#x27;s parameter range to the pcurve&#x27;s natural domain (when the discrepancy is small), or reject as malformed.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gs029. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Synonyms: &quot;edge parameter range exceeds pcurve domain&quot;, &quot;edge first/last parameters outside pcurve definition&quot;, &quot;pcurve evaluated past natural domain&quot;, &quot;edge trim parameters out of bounds for 2D curve&quot;, &quot;pcurve domain too short for declared edge range&quot;.</p></section>
+<p>**See also**: Gs029. **OCC behavior**: accepts and loads shape(1); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Synonyms: &quot;edge parameter range exceeds pcurve domain&quot;, &quot;edge first/last parameters outside pcurve definition&quot;, &quot;pcurve evaluated past natural domain&quot;, &quot;edge trim parameters out of bounds for 2D curve&quot;, &quot;pcurve domain too short for declared edge range&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

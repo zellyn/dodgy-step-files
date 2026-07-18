@@ -33,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>reconcile the parametric representation so the wire is connected in UV; snap pcurve endpoints to a common UV value, recompute one pcurve from the other, or reject as malformed if the gap exceeds the kernel&#x27;s working precision.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gp026, Twi003. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Synonyms: &quot;2D gap between consecutive edges in wire&quot;, &quot;pcurves disagree at shared vertex in UV&quot;, &quot;wire connected in 3D but open in UV&quot;, &quot;pcurve endpoint mismatch at shared vertex&quot;, &quot;edges share 3D vertex but pcurves diverge&quot;.</p></section>
+<p>**See also**: Gp026, Twi003. **OCC behavior**: accepts and loads shape(1); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Synonyms: &quot;2D gap between consecutive edges in wire&quot;, &quot;pcurves disagree at shared vertex in UV&quot;, &quot;wire connected in 3D but open in UV&quot;, &quot;pcurve endpoint mismatch at shared vertex&quot;, &quot;edges share 3D vertex but pcurves diverge&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

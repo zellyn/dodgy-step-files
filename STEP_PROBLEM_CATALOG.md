@@ -407,7 +407,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: contains(b'iso-10303-21;') or contains(b'EndSec;') or contains(b'End-Iso-10303-21;')
 - **Byte assertion**: matches(rb'[\x80-\xff]')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts under one heal mode and rejects under the other (no shape produced); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: produces an empty shape (silent loss); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Bytes ≥ 0x80 in comments or keywords are rewritten or rejected; the schema/file either fails to load entirely or loads with corrupted comment/keyword tokens.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=reject`
@@ -876,7 +876,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: contains(b'/* legacy */') or contains(b'/* ')
 - **Tier-3 assertion**: shape_null == True
 - **Notes**: Synonyms: "comment inside FILE_SCHEMA list", "vendor extension in schema name list", "whitespace in FILE_SCHEMA element", "FILE_SCHEMA with embedded comment", "schema-name list malformed".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: rejects with a clear error; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=reject`
@@ -1228,7 +1228,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: matches(rb'(?s)/\*[^*]+$')
 - **Byte assertion**: matches(rb'(?s)/\*[^*]*$')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: rejects with a clear error; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=reject`
@@ -1244,7 +1244,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: matches(rb"/\*[^*]*'[^*]*\*/")
 - **Byte assertion**: matches(rb"/\*[^*]*'")
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: rejects with a clear error; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=reject`
@@ -1428,7 +1428,7 @@ _Section summary: 82 entries._
 - **Description**: An `EDGE_CURVE` carries a `PCURVE` whose evaluation at its parameter endpoints does not match the edge's `VERTEX_POINT` 3D positions. Lifting the pcurve through the host surface (`CYLINDRICAL_SURFACE`, `PLANE`, etc.) lands at a different point than the edge's vertex coordinates. Typical pattern: 3D edge endpoints are at (10,0,0)–(10,0,5) on a cylinder of radius 10 (so the pcurve start should be at u=0,v=0), but the pcurve runs from (u=0,v=0) to (u=π/2,v=5); pcurve endpoints disagree with vertex 3D positions. Often produced when a foreign translator regenerated pcurves without coordinating with vertices, so the pcurve and the vertex disagree about where the edge starts.
 - **Reproducer recipe**: `EDGE_CURVE` whose `PCURVE` start/end points (lifted via the host surface) differ from `VERTEX_POINT` coordinates by more than vertex tolerance.
 - **Expected kernel behavior**: drop the bad pcurve and recompute it from the 3D curve, or reject as malformed. Keeping the pcurve without verification produces silent geometric corruption.
-- **Notes**: **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "pcurve endpoints don't match vertex coordinates", "2D parameter curve start/end disagrees with vertex 3D position", "lifted pcurve lands at wrong point", "edge vertices and pcurve disagree about endpoint location", "pcurve evaluation at endpoint differs from vertex_point".
+- **Notes**: **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "pcurve endpoints don't match vertex coordinates", "2D parameter curve start/end disagrees with vertex 3D position", "lifted pcurve lands at wrong point", "edge vertices and pcurve disagree about endpoint location", "pcurve evaluation at endpoint differs from vertex_point".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
@@ -1448,7 +1448,7 @@ _Section summary: 82 entries._
 - **Description**: Projecting a 3D curve through the singular pole of a sphere or apex of a cone produces an indeterminate UV path; the parametric domain has a degenerate row where the surface map becomes non-injective. Surface-surface intersection and face translation routines misbehave near these singularities, and any wire that touches the singular point lacks a definitive UV image.
 - **Reproducer recipe**: `CONICAL_SURFACE` with semi-angle 30°; an `ADVANCED_FACE` whose outer loop touches the cone apex (`vertex_point` at apex) without an explicit degenerate edge.
 - **Expected kernel behavior**: insert a degenerate edge bridging the singular row in UV (zero length in 3D); clamp or wrap parameter ranges in intersection/projection routines; or reject as malformed. Apex-singularity handling is distinct from seam-on-periodic handling.
-- **Notes**: **See also**: Twi021. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "pcurve at sphere pole has indeterminate UV", "wire touches cone apex without degenerate edge", "singular pole on sphere/cone breaks pcurve", "indeterminate UV at sphere pole", "face touches cone apex no degenerate edge inserted".
+- **Notes**: **See also**: Twi021. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "pcurve at sphere pole has indeterminate UV", "wire touches cone apex without degenerate edge", "singular pole on sphere/cone breaks pcurve", "indeterminate UV at sphere pole", "face touches cone apex no degenerate edge inserted".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
@@ -1466,7 +1466,7 @@ _Section summary: 82 entries._
 - **Description**: An edge declares a `[first, last]` parameter range that lies outside the natural domain of its pcurve, or the pcurve's active range does not match the 3D-curve range. The receiver evaluating the pcurve at the declared parameter values walks off the end of the curve definition.
 - **Reproducer recipe**: `EDGE_CURVE` with declared parameter `[0, 2.5]` whose pcurve's domain is `[0, 1]`, attached to an `ADVANCED_FACE` on a finite surface.
 - **Expected kernel behavior**: clamp the edge's parameter range to the pcurve's natural domain (when the discrepancy is small), or reject as malformed.
-- **Notes**: **See also**: Gs029. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "edge parameter range exceeds pcurve domain", "edge first/last parameters outside pcurve definition", "pcurve evaluated past natural domain", "edge trim parameters out of bounds for 2D curve", "pcurve domain too short for declared edge range".
+- **Notes**: **See also**: Gs029. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "edge parameter range exceeds pcurve domain", "edge first/last parameters outside pcurve definition", "pcurve evaluated past natural domain", "edge trim parameters out of bounds for 2D curve", "pcurve domain too short for declared edge range".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
@@ -1483,7 +1483,7 @@ _Section summary: 82 entries._
 - **Description**: A pcurve produced by projecting a 3D curve onto a host surface oscillates at high frequency along its domain; the projector lacks adaptive sampling and emits a 2D curve whose second derivative changes sign many times along the parametric span. A subsequent wire self-intersection check mis-detects the oscillations as crossings and corrupts wire topology.
 - **Reproducer recipe**: A 3D curve close to the boundary of a `B_SPLINE_SURFACE_WITH_KNOTS` whose projector lacks adaptive sampling; pcurve evaluation shows >10 zero-crossings of the second derivative.
 - **Expected kernel behavior**: refit the pcurve with smoothing before any self-intersection analysis, reject pcurves whose curvature exceeds a threshold, or use an intersection check that is robust against high-frequency noise.
-- **Notes**: **See also**: Gs009. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "pcurve oscillates wildly", "high-frequency noise on projected pcurve", "wire self-intersection check fooled by pcurve wiggles", "non-adaptive pcurve projector emits zigzag", "spurious self-intersections from oscillating 2D curve".
+- **Notes**: **See also**: Gs009. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "pcurve oscillates wildly", "high-frequency noise on projected pcurve", "wire self-intersection check fooled by pcurve wiggles", "non-adaptive pcurve projector emits zigzag", "spurious self-intersections from oscillating 2D curve".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
@@ -1521,7 +1521,7 @@ _Section summary: 82 entries._
 - **Description**: A `SEAM_CURVE` is required to carry two distinct pcurves (one for each side of the seam), but the sender wrote the same pcurve handle twice. The two banks of the seam cannot be disambiguated, and the wire fails to close around the periodic surface.
 - **Reproducer recipe**: `SEAM_CURVE('',#3d,(#pc, #pc),.PCURVE_S1.)` where both `associated_geometry` entries are the same `PCURVE`.
 - **Expected kernel behavior**: duplicate one pcurve and shift it by the surface period to recover the missing bank, or reject as malformed. Choice is kernel-design-dependent.
-- **Notes**: **See also**: Twi022. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: "seam edge has same pcurve in both slots", "seam_curve associated_geometry references one pcurve twice", "two banks of seam point at same 2D curve", "seam pcurve duplicated instead of period-shifted", "seam wire fails to close around cylinder".
+- **Notes**: **See also**: Twi022. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: "seam edge has same pcurve in both slots", "seam_curve associated_geometry references one pcurve twice", "two banks of seam point at same 2D curve", "seam pcurve duplicated instead of period-shifted", "seam wire fails to close around cylinder".
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
 - **Tier-3 assertion**: shape_null == False
@@ -1541,7 +1541,7 @@ _Section summary: 82 entries._
 - **Description**: A `SURFACE_CURVE` (typically a seam edge on a periodic surface) should carry two pcurves in its `associated_geometry` set, but the list contains a `PCURVE` followed by a `$` (null) entry; a null member inside a Part-21 SET attribute. On a true seam edge, the second pcurve is missing entirely; a translator must synthesize it from the present one by period-shifting, or the seam fails to register.
 - **Reproducer recipe**: `SEAM_CURVE('',#3d,(#pc1, $),.PCURVE_S1.)` on a cylindrical face.
 - **Expected kernel behavior**: heal; synthesize the missing pcurve as `pc1 ± period`.
-- **Notes**: **See also**: Twi022. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "seam edge on periodic surface missing one of its two parametric curves", "null pcurve in associated_geometry list", "seam_curve has dollar-sign for second pcurve", "missing pcurve entry on seam edge", "associated_geometry contains null parametric curve member", "seam pcurve list has $ placeholder".
+- **Notes**: **See also**: Twi022. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "seam edge on periodic surface missing one of its two parametric curves", "null pcurve in associated_geometry list", "seam_curve has dollar-sign for second pcurve", "missing pcurve entry on seam edge", "associated_geometry contains null parametric curve member", "seam pcurve list has $ placeholder".
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
 - **Tier-3 assertion**: shape_null == False
@@ -1562,7 +1562,7 @@ _Section summary: 82 entries._
 - **Description**: CATIA encodes a cylinder as two `FACE_SURFACE`s on the same nearly-closed (but non-periodic) `B_SPLINE_SURFACE_WITH_KNOTS`. The shared `EDGE_CURVE` stores two pcurves on the same B-spline surface — one starting at (u=0,v=0) and the other at (u=1,v=0) — like a seam edge, but the surface lacks declared periodicity. The two pcurves do not lift to the same 3D edge, so the `SURFACE_CURVE.master_representation` choice is ambiguous, generic seam handling misfires, and the translator must recognize the CATIA idiom of two-pcurves-on-one-near-closed-surface.
 - **Reproducer recipe**: Two `ADVANCED_FACE`s sharing an `EDGE_CURVE` whose `SURFACE_CURVE` contains two pcurves on a non-periodic BSpline surface whose endpoints touch within `Precision::Confusion()`.
 - **Expected kernel behavior**: heal; detect the near-periodic surface, treat it as periodic for the seam, and reconcile both pcurves.
-- **Notes**: **See also**: Gs005. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "CATIA cylinder as near-closed B-spline surface", "two pcurves on non-periodic surface acting like seam", "near-closed BSpline surface treated as cylinder", "CATIA like-seam idiom on B-spline", "shared edge with two pcurves on non-periodic surface".
+- **Notes**: **See also**: Gs005. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "CATIA cylinder as near-closed B-spline surface", "two pcurves on non-periodic surface acting like seam", "near-closed BSpline surface treated as cylinder", "CATIA like-seam idiom on B-spline", "shared edge with two pcurves on non-periodic surface".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 2
@@ -1588,7 +1588,7 @@ _Section summary: 82 entries._
 - **Description**: One `PCURVE` is referenced by multiple distinct `EDGE_CURVE` instances. Trimming one edge then ends up trimming all neighbors that share the pcurve, corrupting topology.
 - **Reproducer recipe**: Two `EDGE_CURVE`s whose `SURFACE_CURVE.associated_geometry` lists point at the same `PCURVE` instance.
 - **Expected kernel behavior**: heal; when a pcurve is referenced by >1 edge, deep-copy it before applying per-edge trim.
-- **Notes**: **See also**: Gs031. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "same pcurve referenced by multiple edges", "shared pcurve aliased across edges", "trimming one edge corrupts neighbours' pcurves", "PCURVE instance referenced more than once", "SYRKO shared-pcurve aliasing".
+- **Notes**: **See also**: Gs031. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "same pcurve referenced by multiple edges", "shared pcurve aliased across edges", "trimming one edge corrupts neighbours' pcurves", "PCURVE instance referenced more than once", "SYRKO shared-pcurve aliasing".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
@@ -1611,7 +1611,7 @@ _Section summary: 82 entries._
 - **Description**: When the translator clips a `PCURVE` to the parameter range of its hosting `EDGE_CURVE`, the trim operation fails (e.g. range outside pcurve domain, or 3D-curve range maps to a U-band where pcurve is undefined). Edge construction aborts.
 - **Reproducer recipe**: `EDGE_CURVE` whose 3D-curve `[first,last]` corresponds to U=`[5,7]` of host surface, but the pcurve is defined only on U=`[0,2π]`.
 - **Expected kernel behavior**: heal; wrap parameters via period; if the surface is not periodic, reject the edge with diagnostic.
-- **Notes**: **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: "trimming of 2D curve failed", "pcurve clip to edge range fails", "edge construction aborts on pcurve trim", "2D-curve trim outside pcurve domain", "edge construction fails clipping pcurve".
+- **Notes**: **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: "trimming of 2D curve failed", "pcurve clip to edge range fails", "edge construction aborts on pcurve trim", "2D-curve trim outside pcurve domain", "edge construction fails clipping pcurve".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
@@ -1631,7 +1631,7 @@ _Section summary: 82 entries._
 - **Description**: A pcurve is expressed in a shifted or transformed UV coordinate frame relative to the host surface's natural UV. For example, a `PCURVE` `LINE` on a planar face starts at (u=10,v=5) while the 3D edge runs from (0,0,0) to (1,0,0); the pcurve is offset into a UV region that does not contain the lift of the 3D curve. Common output of IGES BRep mode, where pcurves arrive in a translated/rotated frame relative to the host surface's natural UV. Without re-baselining, the pcurve evaluates to wrong UV positions and vertex tolerances bloat to compensate.
 - **Reproducer recipe**: Round-trip a face through IGES BRep mode and re-import; the resulting pcurve has its origin offset from the host surface's UV origin.
 - **Expected kernel behavior**: heal; detect the IGES-style frame and re-express pcurves in the host surface's native UV.
-- **Notes**: **See also**: Gp031. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "pcurve in shifted UV frame", "IGES BRep pcurve in translated UV origin", "pcurve UV offset relative to host surface", "pcurve coordinates in alien frame", "pcurve rotated/translated relative to surface UV".
+- **Notes**: **See also**: Gp031. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "pcurve in shifted UV frame", "IGES BRep pcurve in translated UV origin", "pcurve UV offset relative to host surface", "pcurve coordinates in alien frame", "pcurve rotated/translated relative to surface UV".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
@@ -1648,7 +1648,7 @@ _Section summary: 82 entries._
 - **Description**: Converting a periodic surface (cylinder, torus) into an explicit `B_SPLINE_SURFACE_WITH_KNOTS` yields a non-periodic NURBS whose parametric domain does not exactly match the original. Pcurves whose endpoints landed cleanly on the period boundary end up with small gaps at the wrap-around: typically two pcurves on the same 3D edge end up nearly coincident (e.g. one at u=0 and the other at u=0.999, within 0.001 in U) but not identical; nearly-duplicate pcurves on the same edge straddling the converted seam.
 - **Reproducer recipe**: Apply a periodic-surface-to-NURBS conversion to a face on a `CYLINDRICAL_SURFACE`; check pcurve endpoints' UV against the new BSpline surface's UV bounds.
 - **Expected kernel behavior**: adjust pcurve domain to match the converted surface (segmenting where needed) so the wraparound gap is bridged, or reject the converted result as a fidelity loss.
-- **Notes**: **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "nearly-duplicate pcurves at converted seam", "small UV gap after periodic-to-NURBS conversion", "pcurve gap near wraparound", "two pcurves on same edge after BSpline conversion", "periodic surface converted to NURBS leaves seam pcurve mismatch".
+- **Notes**: **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "nearly-duplicate pcurves at converted seam", "small UV gap after periodic-to-NURBS conversion", "pcurve gap near wraparound", "two pcurves on same edge after BSpline conversion", "periodic surface converted to NURBS leaves seam pcurve mismatch".
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 - **Tier-3 assertion**: shape_null == False
@@ -1677,7 +1677,7 @@ _Section summary: 82 entries._
 - **Description**: Two consecutive edges of a wire have pcurve endpoints that disagree in (u,v) on the host surface beyond tolerance, even though their 3D endpoints coincide. The topology is fine in 3D — both edges share the same `VERTEX_POINT` — but the pcurves evaluated at that vertex land at different UV positions. Distinct from a 3D gap, where the 3D endpoints themselves diverge; here only the parameter-space representation is broken.
 - **Reproducer recipe**: Two `EDGE_CURVE`s sharing a `VERTEX_POINT` whose pcurve evaluations on the same host surface differ by `(ΔU,ΔV) > 1e-3` despite identical 3D endpoints.
 - **Expected kernel behavior**: reconcile the parametric representation so the wire is connected in UV; snap pcurve endpoints to a common UV value, recompute one pcurve from the other, or reject as malformed if the gap exceeds the kernel's working precision.
-- **Notes**: **See also**: Gp026, Twi003. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "2D gap between consecutive edges in wire", "pcurves disagree at shared vertex in UV", "wire connected in 3D but open in UV", "pcurve endpoint mismatch at shared vertex", "edges share 3D vertex but pcurves diverge".
+- **Notes**: **See also**: Gp026, Twi003. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "2D gap between consecutive edges in wire", "pcurves disagree at shared vertex in UV", "wire connected in 3D but open in UV", "pcurve endpoint mismatch at shared vertex", "edges share 3D vertex but pcurves diverge".
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
@@ -1695,7 +1695,7 @@ _Section summary: 82 entries._
 - **Description**: For one edge, the 3D-curve evaluation and the pcurve lifted through the host surface land at different points along part of the edge; the two representations of the same edge disagree about where the edge actually is, by more than the edge's tolerance. Common shapes: pcurve `LINE` whose `DIRECTION` ratios are slightly skewed from the canonical axis (e.g. (0.99875,0.04994) instead of (1,0)) or whose `VECTOR` magnitude is off unit (e.g. 1.0012 instead of 1.0), so the lifted pcurve diverges from the 3D `LINE` along the edge. Senders that store both pcurve and 3D curve but recompute one from the other independently introduce this divergence.
 - **Reproducer recipe**: `EDGE_CURVE` with both 3D `LINE` and `PCURVE` whose evaluated points diverge by >1e-3 mm on a face whose declared tolerance is 1e-6.
 - **Expected kernel behavior**: recompute the pcurve from the 3D curve by projection (or vice versa), inflate edge tolerance to absorb the divergence, or reject as malformed. Recomputing the curve preserves precision; tolerance inflation degrades it.
-- **Notes**: **See also**: Gp022. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "3D curve and pcurve disagree about edge location", "pcurve LINE direction off-axis or non-unit magnitude", "lifted pcurve diverges from 3D curve mid-edge", "skewed pcurve direction ratios", "pcurve and 3D curve describe different paths".
+- **Notes**: **See also**: Gp022. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "3D curve and pcurve disagree about edge location", "pcurve LINE direction off-axis or non-unit magnitude", "lifted pcurve diverges from 3D curve mid-edge", "skewed pcurve direction ratios", "pcurve and 3D curve describe different paths".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
@@ -1714,7 +1714,7 @@ _Section summary: 82 entries._
 - **Description**: An `EDGE_CURVE` declares the same-parameter invariant (the `.T.` `same_sense` flag, plus an implicit assertion that 3D curve and pcurve share parameterisation), but evaluating both at the same parameter value yields points that diverge beyond the edge's tolerance. Common shape: pcurve is a degree-2 `B_SPLINE_CURVE_WITH_KNOTS` whose middle control point is offset (e.g. control points (0,0)/(0.8,0)/(1.0,0) with uniform endpoint-multiplicity knots), so its parameterisation collapses near the end while the 3D `LINE` is uniformly parameterised. The two curves describe the same edge geometrically but each at its own pace along the edge. Typical cause: the pcurve was reprojected at non-uniform sampling without rebasing parameter.
 - **Reproducer recipe**: Build an edge, reproject its pcurve at non-uniform spacing without re-parameterizing; topology checker reports tolerance growth.
 - **Expected kernel behavior**: re-parameterise one curve so the same parameter value yields the same point on both, drop the same-parameter assertion and inflate edge tolerance to absorb the divergence, or reject as malformed. Choice is kernel-design-dependent.
-- **Notes**: **See also**: Gp021, Gp027. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "SameParameter flag set but parameterisations differ", "edge claims same-parameter but pcurve and 3D curve diverge", "non-uniform pcurve parameterisation breaks same-parameter invariant", "tolerance growth from same-parameter violation", "B-spline pcurve middle pole offset breaks parameter sync".
+- **Notes**: **See also**: Gp021, Gp027. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "SameParameter flag set but parameterisations differ", "edge claims same-parameter but pcurve and 3D curve diverge", "non-uniform pcurve parameterisation breaks same-parameter invariant", "tolerance growth from same-parameter violation", "B-spline pcurve middle pole offset breaks parameter sync".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
@@ -1759,7 +1759,7 @@ _Section summary: 82 entries._
 - **Description**: STEP files contain no pcurves natively; on Rhino export, pcurves are computed against the host surface. After scaling the 3D model by 1000, pcurve evaluation error scales by 1000 too, producing validation messages like "Distance from end of trim to 3D edge is 0.05 (edge tol = 0.0001)".
 - **Reproducer recipe**: Open a small STEP file (mm tolerance 0.0001), scale by ×1000, export STEP with "export parameter space curves" enabled.
 - **Expected kernel behavior**: heal; refit pcurves after scale, recompute pcurves at export, or scale `edge_tolerance` consistently.
-- **Notes**: **See also**: Gn032. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "pcurve error scales with non-uniform 3D scale", "scale by 1000 inflates pcurve deviation", "Rhino scale breaks pcurve trim accuracy", "edge tolerance not rescaled with model scale", "distance from end of trim to 3D edge exceeds tolerance after scale".
+- **Notes**: **See also**: Gn032. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "pcurve error scales with non-uniform 3D scale", "scale by 1000 inflates pcurve deviation", "Rhino scale breaks pcurve trim accuracy", "edge tolerance not rescaled with model scale", "distance from end of trim to 3D edge exceeds tolerance after scale".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
@@ -1780,7 +1780,7 @@ _Section summary: 82 entries._
 - **Description**: In a face's parametric (UV) domain, the outer `EDGE_LOOP`'s start and end vertices do not coincide within face tolerance, so the contour does not partition the plane (Jordan-curve failure). Typical pattern: face on a `CYLINDRICAL_SURFACE` whose seam edges each carry pcurves referenced via separate `DEFINITIONAL_REPRESENTATION`s that do not align; a gap remains at the u=2π vs u=0 seam between consecutive `ORIENTED_EDGE`s. Caused by missed seam edges on periodic surfaces, or by corrupt pcurves with gaps.
 - **Reproducer recipe**: Face on a cylinder, omit the seam edge so the outer wire is open in UV; renderers fall back to isolines instead of triangulating.
 - **Expected kernel behavior**: connect the wire endpoints via period-shifting / vertex-merging / seam-insertion as appropriate, or reject as malformed when the gap exceeds the working tolerance budget.
-- **Notes**: **See also**: Gp020, Gp028, Gs012, Twi020. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "edge_loop not closed in UV", "Jordan curve violation across periodic seam", "outer wire fails to close in parametric domain", "renderer falls back to isolines instead of triangulating", "face contour open across cylinder seam".
+- **Notes**: **See also**: Gp020, Gp028, Gs012, Twi020. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "edge_loop not closed in UV", "Jordan curve violation across periodic seam", "outer wire fails to close in parametric domain", "renderer falls back to isolines instead of triangulating", "face contour open across cylinder seam".
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
@@ -1825,7 +1825,7 @@ _Section summary: 82 entries._
 - **Description**: A wire bounding a face on a periodic `CYLINDRICAL_SURFACE` (or torus, etc.) traverses the U=0 / U=2π seam, but the input does not include the seam edge that would carry the wire from one side of the seam to the other. Typical signature: pcurve `LINE` trim range (e.g. starts at u=5.5 with length 1.28) corresponds to a different angular interval on the cylinder than the 3D vertex positions imply (vertex angles around -0.78 rad and +0.50 rad), so pcurve and 3D-vertex angular positions disagree. Downstream shell composition sees an open contour in UV even though the wire is closed in 3D.
 - **Reproducer recipe**: STEP face where an outer wire of a cylindrical face crosses the U=0/U=2π seam direction without an explicit seam edge.
 - **Expected kernel behavior**: detect that the wire crosses the seam and insert the seam edge automatically, or reject as malformed.
-- **Notes**: **See also**: Gp026. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "wire crosses cylinder seam without seam edge", "missing seam edge on periodic surface wire", "pcurve range vs vertex angle disagree at seam crossing", "cylinder face wire spans U=0/U=2π without explicit seam", "open contour in UV from missing seam edge".
+- **Notes**: **See also**: Gp026. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "wire crosses cylinder seam without seam edge", "missing seam edge on periodic surface wire", "pcurve range vs vertex angle disagree at seam crossing", "cylinder face wire spans U=0/U=2π without explicit seam", "open contour in UV from missing seam edge".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
@@ -1844,7 +1844,7 @@ _Section summary: 82 entries._
 - **Description**: After a period-shift pass on a revolved face's wire, the wire endpoints land in an inconsistent parameter band — some pcurve endpoints in `[0,2π]`, others in `[2π,4π]` — even though all should sit in a single period band. The inconsistency blocks subsequent triangulation, which expects a single coherent parameter window.
 - **Reproducer recipe**: Face on a `SURFACE_OF_REVOLUTION` whose pcurves require shifting by 2π; run the period-shift pass; attempt to mesh.
 - **Expected kernel behavior**: a period-shift pass must produce a self-consistent UV band for all wire endpoints, or refuse the shift when no consistent band exists. A post-condition check on the band coverage catches the inconsistency.
-- **Notes**: **See also**: Gs019. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "period-shift fix leaves wire across multiple bands", "wire endpoints in inconsistent UV bands after period adjust", "triangulation blocked by mixed-band pcurves", "revolved face period shift fails to converge", "pcurve endpoints scattered across periods after healing".
+- **Notes**: **See also**: Gs019. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "period-shift fix leaves wire across multiple bands", "wire endpoints in inconsistent UV bands after period adjust", "triangulation blocked by mixed-band pcurves", "revolved face period shift fails to converge", "pcurve endpoints scattered across periods after healing".
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Tier-3 assertion**: edge[0].curve_type == "circle"
 - **Tier-3 assertion**: edge[0].analytic.radius == 2.0
@@ -1863,7 +1863,7 @@ _Section summary: 82 entries._
 - **Description**: PRO/E exports (identifiable by `originating_system` 'PRO/Engineer …' in `FILE_NAME`) contain pcurves with sharp bends, typically authored as degree-1 `B_SPLINE_CURVE_WITH_KNOTS` in `.POLYLINE_FORM.` with vendor-specific interior knot multiplicities. These vendor-shaped B-spline pcurves must be protected from generic intersection-fix routines that would otherwise corrupt them. A specialized "bend-pcurve" pass holds the pcurve fixed while neighbors are adjusted.
 - **Reproducer recipe**: PRO/E STEP file with a face whose pcurve has a sharp bend; run generic ShapeFix wire intersection healing; observe pcurve corruption.
 - **Expected kernel behavior**: heal; recognize PRO/E sender and route bent pcurves through the protective branch.
-- **Notes**: **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "PRO/E polyline-form pcurve gets corrupted by intersection healer", "bent B-spline pcurve from PRO/Engineer", "pcurve sharp bend killed by generic ShapeFix", "polyline pcurve degree-1 with vendor multiplicities", "wire intersection fix damages PRO/E pcurve".
+- **Notes**: **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "PRO/E polyline-form pcurve gets corrupted by intersection healer", "bent B-spline pcurve from PRO/Engineer", "pcurve sharp bend killed by generic ShapeFix", "polyline pcurve degree-1 with vendor multiplicities", "wire intersection fix damages PRO/E pcurve".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
@@ -1886,7 +1886,7 @@ _Section summary: 82 entries._
 - **Description**: After an IGES BRep round-trip (or other translator path), a cylindrical face appears with two distinct but identically-defined `CYLINDRICAL_SURFACE` instances (e.g. `#20` and `#21`) where each `ADVANCED_FACE` uses one copy; analytic identity is lost. A single 3D edge then has two pcurves on these supposedly-same surfaces; duplicate surface definitions and aliased pcurves create confusion, and pcurves stored against the second copy disagree with those against the first even though geometrically identical.
 - **Reproducer recipe**: Cylindrical face → IGES BRep → re-import; check that all faces of the cylinder share the same `Geom_CylindricalSurface` handle.
 - **Expected kernel behavior**: heal; canonicalize duplicate analytic surfaces post-IGES; re-bind pcurves to the canonical surface.
-- **Notes**: **See also**: Gn023, Gp016. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "duplicate CYLINDRICAL_SURFACE instances after IGES BRep round-trip", "cylinder analytic identity lost", "two copies of same cylindrical surface", "duplicate analytic surfaces after IGES round-trip", "pcurves on supposedly-same cylinder disagree".
+- **Notes**: **See also**: Gn023, Gp016. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "duplicate CYLINDRICAL_SURFACE instances after IGES BRep round-trip", "cylinder analytic identity lost", "two copies of same cylindrical surface", "duplicate analytic surfaces after IGES round-trip", "pcurves on supposedly-same cylinder disagree".
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
@@ -2028,7 +2028,7 @@ _Section summary: 82 entries._
 - **Description**: BSpline curves whose interior knot multiplicities equal their degree introduce true C0 joins (slope discontinuities). Downstream tools requiring at least C1 fail.
 - **Reproducer recipe**: `B_SPLINE_CURVE_WITH_KNOTS` of degree 3 with an interior knot of multiplicity 3, producing a sharp tangent break.
 - **Expected kernel behavior**: heal; split the curve at C0 points so each piece is at least C1; emit each piece as its own `EDGE_CURVE` with shared vertices.
-- **Notes**: **See also**: Gs025. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "C0 join in B-spline curve needs split", "BSpline curve has slope discontinuity", "split BSpline at interior knot multiplicity equal to degree", "downstream tool needs C1 continuity", "tangent break inside B-spline curve".
+- **Notes**: **See also**: Gs025. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "C0 join in B-spline curve needs split", "BSpline curve has slope discontinuity", "split BSpline at interior knot multiplicity equal to degree", "downstream tool needs C1 continuity", "tangent break inside B-spline curve".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
@@ -2064,7 +2064,7 @@ _Section summary: 82 entries._
 - **Description**: A surface stored as a rational `B_SPLINE_SURFACE_WITH_KNOTS` is mathematically a `SURFACE_OF_REVOLUTION`. Common shape: a 3×9 control net rational B-spline standing in for a cylinder/torus revolved 360° (with the canonical sqrt(2)/2 weight pattern of an exact-circle NURBS); exact analytic shape encoded via NURBS. Recognition matters for CAM and unfolding workflows.
 - **Reproducer recipe**: BSpline surface produced by sampling a true revolution (axis + profile), with control net showing the rotational symmetry.
 - **Expected kernel behavior**: heal; detect rotational symmetry in the control net within tolerance; replace with `SURFACE_OF_REVOLUTION` carrying the recovered axis and profile curve.
-- **Notes**: **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "rational B-spline surface is actually surface of revolution", "exact-circle NURBS sqrt(2)/2 weight pattern", "BSpline 360-degree sweep should be SURFACE_OF_REVOLUTION", "cylinder/torus stored as rational BSpline net", "rotational symmetry hidden in NURBS control net".
+- **Notes**: **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "rational B-spline surface is actually surface of revolution", "exact-circle NURBS sqrt(2)/2 weight pattern", "BSpline 360-degree sweep should be SURFACE_OF_REVOLUTION", "cylinder/torus stored as rational BSpline net", "rotational symmetry hidden in NURBS control net".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 0
@@ -2077,7 +2077,7 @@ _Section summary: 82 entries._
 - **Description**: Writing a `SURFACE_OF_REVOLUTION` built on an `ELLIPSE` to STEP and reading back yields a `TRIMMED_CURVE` wrapping a degree-2 rational `B_SPLINE_CURVE_WITH_KNOTS` ellipse-equivalent instead of the original analytic `ELLIPSE`, plus drift in the revolved-axis `DIRECTION` away from unit norm (e.g. (0.99999999875, 0.00005, 0.0)). Analytic identity lost.
 - **Reproducer recipe**: `SURFACE_OF_REVOLUTION` whose basis curve is an `ELLIPSE`; round-trip through STEP.
 - **Expected kernel behavior**: heal; preserve analytic basis curve (no Trimmed wrapper); reset orthonormal X/Y axes within 1e-6.
-- **Notes**: **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "ELLIPSE basis curve becomes TRIMMED_CURVE on round-trip", "surface_of_revolution loses analytic ellipse basis", "non-unit axis direction after BSpline round-trip", "rational B-spline approximation of ellipse replaces analytic curve", "ellipse swept basis turns into NURBS after STEP read-back".
+- **Notes**: **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "ELLIPSE basis curve becomes TRIMMED_CURVE on round-trip", "surface_of_revolution loses analytic ellipse basis", "non-unit axis direction after BSpline round-trip", "rational B-spline approximation of ellipse replaces analytic curve", "ellipse swept basis turns into NURBS after STEP read-back".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
@@ -2131,7 +2131,7 @@ _Section summary: 82 entries._
 - **Description**: A face that started as analytic is exported as a `B_SPLINE_SURFACE_WITH_KNOTS` because the source kernel/exporter doesn't preserve the analytic form. Affects feature recognition, Booleans, mass properties.
 - **Reproducer recipe**: A cylinder of radius 25.0 mm exported as a `B_SPLINE_SURFACE_WITH_KNOTS` of degree (2,1) with rational weights; no `CYLINDRICAL_SURFACE` anywhere in the file.
 - **Expected kernel behavior**: heal by analytic recovery (Spatial "Geometry Simplification" / OCCT canonical recognition).
-- **Notes**: **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "spline approximation of analytic primitive", "cylinder exported as B-spline by sender", "analytic surface lost via NURBS export", "kernel emits B-spline instead of preserving cylinder", "geometry simplification needed to recover analytics".
+- **Notes**: **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "spline approximation of analytic primitive", "cylinder exported as B-spline by sender", "analytic surface lost via NURBS export", "kernel emits B-spline instead of preserving cylinder", "geometry simplification needed to recover analytics".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 0
@@ -2176,7 +2176,7 @@ _Section summary: 82 entries._
 - **Description**: A 3D curve (typically `B_SPLINE_CURVE_WITH_KNOTS`) crosses itself within the edge's parameter range, or a `COMPOSITE_CURVE` segment doubles back. Common shape: a degree-3 B-spline whose first and last control points are both at the same point (e.g. both (0,0,0)) with a clamped knot vector; a closed figure-eight whose `EDGE_CURVE` has start/end vertices coincident at that same point. Common output of poorly-trimmed offset surfaces or translator re-fitting.
 - **Reproducer recipe**: `B_SPLINE_CURVE_WITH_KNOTS` of degree 3 with a control polygon that produces a figure-eight inside `[u_first, u_last]`; reference from an `EDGE_CURVE`.
 - **Expected kernel behavior**: heal by re-fitting / sub-setting; reject if the edge cannot be split cleanly; check parameter monotonicity under reprojection.
-- **Notes**: **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: "B-spline curve self-intersects", "figure-eight B-spline edge with coincident first/last poles", "BSpline edge crosses itself", "self-loop in 3D B-spline curve", "EDGE_CURVE B-spline forms figure eight".
+- **Notes**: **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: "B-spline curve self-intersects", "figure-eight B-spline edge with coincident first/last poles", "BSpline edge crosses itself", "self-loop in 3D B-spline curve", "EDGE_CURVE B-spline forms figure eight".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_faces_total == 1
@@ -2298,7 +2298,7 @@ End of file.
 - **Byte assertion**: contains(b'2.0,3.0')
 - **Byte assertion**: contains(b'VERTEX_LOOP(')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
@@ -6434,7 +6434,7 @@ _Section summary: 84 entries._
 - **Description**: When the same component appears multiple times under an assembly with different placements, the writer either (a) emits only one instance (Inventor V027), (b) emits all instances at the same coordinate (CATIA V28), or (c) collapses many `MAPPED_ITEM` references of the same product into one; losing distinct transforms. Frequently caused by sharing a single `AXIS2_PLACEMENT_3D` rather than giving each instance its own.
 - **Reproducer recipe**: Build an assembly with N siblings instancing the same `PRODUCT_DEFINITION` via N `NEXT_ASSEMBLY_USAGE_OCCURRENCE` rows; for each, attach a distinct `MAPPED_ITEM` whose `mapping_target` is a unique `AXIS2_PLACEMENT_3D`. Verify the writer emits N distinct placements, not a single shared one.
 - **Expected kernel behavior**: heal/accept; every NAUO instance must carry its own placement; readers must not deduplicate placements by reference equality.
-- **Notes**: One of the two "CATIA bug" canonical patterns referenced in the task description. **See also**: Pf013. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "duplicate part instances merged into one on export", "multiple component copies show up at the same coordinate", "writer drops repeated subassembly placements", "N copies of same component become one in STEP", "MAPPED_ITEM placements deduplicated by mistake".
+- **Notes**: One of the two "CATIA bug" canonical patterns referenced in the task description. **See also**: Pf013. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "duplicate part instances merged into one on export", "multiple component copies show up at the same coordinate", "writer drops repeated subassembly placements", "N copies of same component become one in STEP", "MAPPED_ITEM placements deduplicated by mistake".
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') == 3
 - **Byte assertion**: count_entity_def(b'MAPPED_ITEM') == 3
 - **Byte assertion**: contains(b"AXIS2_PLACEMENT_3D('SHARED_PLACEMENT'")
@@ -6471,7 +6471,7 @@ _Section summary: 84 entries._
 - **Description**: A `NEXT_ASSEMBLY_USAGE_OCCURRENCE` references a `PRODUCT_DEFINITION` whose `SHAPE_DEFINITION_REPRESENTATION` is empty (no faces, no axes), or whose `MANIFOLD_SURFACE_SHAPE_REPRESENTATION` is degenerate. Common after suppressed components, "Reference vs Convert" mismatches, or configuration filters that produced nothing.
 - **Reproducer recipe**: NAUO referencing a PD whose SDR points to an empty `MANIFOLD_SURFACE_SHAPE_REPRESENTATION`.
 - **Expected kernel behavior**: accept; warn loudly; LOTAR-archive systems must reject; per-product status must be reported (not aggregated success).
-- **Notes**: **See also**: A004, A037. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "assembly node has no geometry", "PRODUCT_DEFINITION with empty SHAPE_DEFINITION_REPRESENTATION", "phantom subassembly with nothing inside", "empty product node breaks import", "assembly tree has stub branches with no parts".
+- **Notes**: **See also**: A004, A037. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "assembly node has no geometry", "PRODUCT_DEFINITION with empty SHAPE_DEFINITION_REPRESENTATION", "phantom subassembly with nothing inside", "empty product node breaks import", "assembly tree has stub branches with no parts".
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') == 1
 - **Byte assertion**: contains(b'MANIFOLD_SURFACE_SHAPE_REPRESENTATION')
 - **Byte assertion**: contains(b'PHANTOM_INSTANCE')
@@ -6547,7 +6547,7 @@ _Section summary: 84 entries._
 - **Description**: SRR with swapped axis-placements where one is shared between assembly and component representation causes wrong assembly transform. Variant: SRR's `rep_2` is itself an SRR (reference-to-reference). Variant: ITEM_DEFINED_TRANSFORMATION's source/target axes exchanged. NAUO direction conflicts with SRR direction; receiver must pick one.
 - **Reproducer recipe**: SRR whose rep_1 and rep_2 axes share one `AXIS2_PLACEMENT_3D` in both representations; or SRR whose rep_2 is another SRR.
 - **Expected kernel behavior**: detect swap pattern and recover the correct transform; resolve transitively; cap recursion depth; let NAUO direction win when SRR contradicts.
-- **Notes**: **See also**: A006. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "axis placement swapped between subassembly and parent", "rep_1 and rep_2 mixed up in SHAPE_REPRESENTATION_RELATIONSHIP", "component oriented incorrectly after import", "transform applied to wrong frame on round-trip", "subassembly axes flipped vs designed".
+- **Notes**: **See also**: A006. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "axis placement swapped between subassembly and parent", "rep_1 and rep_2 mixed up in SHAPE_REPRESENTATION_RELATIONSHIP", "component oriented incorrectly after import", "transform applied to wrong frame on round-trip", "subassembly axes flipped vs designed".
 - **Byte assertion**: contains(b'ITEM_DEFINED_TRANSFORMATION')
 - **Byte assertion**: contains(b'swapped')
 - **Tier-3 assertion**: shape_null == False
@@ -6563,7 +6563,7 @@ _Section summary: 84 entries._
 - **Description**: AP242e2 changed `representation_relationship.rep_1`/`rep_2` and `product_definition_relationship.related`/`relating` from direct references to SELECT types. Code doing direct dot-access (`pdr->related()->product()`) crashes against an Ed.2 file whose related is a SELECT case wrapping a `product_definition_occurrence`.
 - **Reproducer recipe**: AP242e2 file using new SELECT form; load with AP203/AP242e1 reader.
 - **Expected kernel behavior**: heal; accept both forms via `stix_get_related_pdef`-style helper; never assume direct.
-- **Notes**: Validation observed: silent-empty rather than crash. Kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "AP242 Ed.2 product_definition_relationship SELECT widened", "writer uses Ed.1 SELECT and reader expects Ed.2", "schema-mismatch on related/relating types", "product_definition_relationship references rejected by older importers".
+- **Notes**: Validation observed: silent-empty rather than crash. Kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "AP242 Ed.2 product_definition_relationship SELECT widened", "writer uses Ed.1 SELECT and reader expects Ed.2", "schema-mismatch on related/relating types", "product_definition_relationship references rejected by older importers".
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Tier-3 assertion**: shape_null == False
@@ -6579,7 +6579,7 @@ _Section summary: 84 entries._
 - **Description**: Schema requires NAUO children to be `PRODUCT_DEFINITION`, but some files supply `PRODUCT_DEFINITION_SHAPE`. Schema-strict reader rejects.
 - **Reproducer recipe**: `#5 = NEXT_ASSEMBLY_USAGE_OCCURRENCE(.. #PDS_id ..)` where `#PDS_id` is a PDS, not a PD.
 - **Expected kernel behavior**: heal — accept PDS child; resolve PDS → PD silently.
-- **Notes**: **See also**: A034. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "NAUO target points to PRODUCT_DEFINITION_SHAPE not PRODUCT_DEFINITION", "assembly link uses wrong entity type", "schema rule broken for component reference", "STEP reader confused by NAUO->PDS chain".
+- **Notes**: **See also**: A034. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "NAUO target points to PRODUCT_DEFINITION_SHAPE not PRODUCT_DEFINITION", "assembly link uses wrong entity type", "schema rule broken for component reference", "STEP reader confused by NAUO->PDS chain".
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') == 1
 - **Byte assertion**: contains(b"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','BAD'")
 - **Tier-3 assertion**: shape_null == False
@@ -6633,7 +6633,7 @@ _Section summary: 84 entries._
 - **Description**: External-file-assignment whose target path resolves to the main file under translation; reader loops forever. Or cyclic `#A=(B(..) C(#A))` complex entity referencing itself; semantic resolver follows `#A → #A` ad infinitum.
 - **Reproducer recipe**: `APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT` to same `.step` file path; or `#1=(NAMED_UNIT(*) SI_UNIT(..) DERIVED_UNIT_ELEMENT(#1, 1.0))`.
 - **Expected kernel behavior**: detect identity by canonical path; skip self-reference; Tarjan-style cycle detection during reference resolution; reject with E_REFERENCE_CYCLE.
-- **Notes**: **See also**: Pf010, Ad052, M060. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "external reference points back to itself", "cyclic file dependency in assembly", "STEP file references its own product", "external-anchor loop crashes reader".
+- **Notes**: **See also**: Pf010, Ad052, M060. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "external reference points back to itself", "cyclic file dependency in assembly", "STEP file references its own product", "external-anchor loop crashes reader".
 - **Byte assertion**: contains(b'APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT')
 - **Byte assertion**: contains(b'self_ref')
 - **Tier-3 assertion**: shape_null == False
@@ -6649,7 +6649,7 @@ _Section summary: 84 entries._
 - **Description**: `APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT` paths don't exist; OCCT silently fails resolution but Transfer() returns success. AP242 supports referencing geometric elements (face, edge) in a separate Part 21 file via External Element Reference / DDP linking. When the package is repacked or split, the references break.
 - **Reproducer recipe**: STEP assembly whose `APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT` paths don't exist on disk; or a DDP archive where `assembly.stp` references face #47 in `part_3.stp`; rename `part_3.stp`.
 - **Expected kernel behavior**: try alternate paths from `DOCUMENT_FILE`; report failure honestly; archive-stable requires DDP integrity check; reject if cross-file refs do not resolve.
-- **Notes**: **See also**: M008, Pmi065. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "STEP reader returns success even when external file missing", "no error when referenced subassembly file is absent", "silent partial-load on missing externals", "reader treats missing referenced file as OK".
+- **Notes**: **See also**: M008, Pmi065. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "STEP reader returns success even when external file missing", "no error when referenced subassembly file is absent", "silent partial-load on missing externals", "reader treats missing referenced file as OK".
 - **Byte assertion**: contains(b'APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT')
 - **Byte assertion**: contains(b'part_3.stp')
 - **Tier-3 assertion**: shape_null == False
@@ -6798,7 +6798,7 @@ _Section summary: 84 entries._
 - **Description**: A `MAPPED_ITEM`'s target `AXIS2_PLACEMENT_3D` uses `DIRECTION` axes that form a left-handed (mirrored) frame; for example Z=(0,0,1) and X=(-1,0,0), so the implicit Y=Z×X=(0,-1,0) gives a negative-determinant placement. Shape locations containing scale or mirror are sources of invalid STEP/IGES output: the mirrored instance is exported with a copy whose orientation is silently corrected, flipping handedness. When "Export parameter space curves" is enabled and the block instance has negative-determinant transform, surfaces import with reversed normals.
 - **Reproducer recipe**: Shape with `gp_Trsf` containing scale or mirror; export. Or Rhino model with block instance scaled `(-1,1,1)` exported with pcurves on.
 - **Expected kernel behavior**: bake the scale/mirror into geometry changes before STEP write (purging the negative-determinant placement) rather than emitting it as a transform STEP cannot losslessly carry; preserve handedness by flipping face normals coherently; flip pcurve orientation when emitting from a mirrored instance. Or reject the input as un-exportable.
-- **Notes**: **See also**: A017, Pmi068, Tsh033. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "MAPPED_ITEM transform has negative determinant", "left-handed frame in component placement", "mirrored axis placement in MAPPED_ITEM", "improper rotation on assembly transform".
+- **Notes**: **See also**: A017, Pmi068, Tsh033. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "MAPPED_ITEM transform has negative determinant", "left-handed frame in component placement", "mirrored axis placement in MAPPED_ITEM", "improper rotation on assembly transform".
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Byte assertion**: contains(b'MIRROR')
 - **Tier-3 assertion**: shape_null == False
@@ -7177,7 +7177,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Reproducer recipe**: STEP `SWEPT_SURFACE` whose directrix is a parametric helix with constant pitch and several turns.
 - **Expected kernel behavior**: Smooth tessellation matching producer.
 - **Notes**: **See also**: Pf014. Synonyms: "helical sweep tessellation garbled at seam", "thread mesh broken at start/end", "helix tessellator produces bad facets at seam", "screw thread visualizer artifacts at seam". Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'PCURVE')
@@ -8105,7 +8105,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'LENGTH_UNIT')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: emits a diagnostic but produces an empty result; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: emits a diagnostic but loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -10530,7 +10530,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "tessellation dropped on write", "STEP writer drops triangulation", "pretessellated faces silently lost", "TESSELLATED_FACE not exported", "tessellation gating flag unset". **See also**: M056.
 - **Byte assertion**: contains(b'TRIANGULATED_FACE')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
@@ -10549,7 +10549,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'no_pnval')
 - **Byte assertion**: contains(b"TRIANGULATED_FACE('no_pnval','',(#100),(),(),(),'',$)")
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
@@ -10623,7 +10623,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'COMPOSITE_CURVE')
 - **Byte assertion**: contains(b'TRAJECTORY')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
@@ -10653,7 +10653,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'TRAJECTORY')
 - **Byte assertion**: count_entity_def(b'GEOMETRIC_REPRESENTATION_ITEM') >= 1
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
@@ -11259,7 +11259,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'TRAJECTORY')
 - **Byte assertion**: contains(b'COMPOSITE_CURVE_SEGMENT')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
@@ -13065,7 +13065,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'DOCUMENT_FILE')
 - **Byte assertion**: contains(b"'M060.stp'")
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
+- **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
@@ -13489,7 +13489,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Reproducer recipe**: A `LINE` evaluated at densely-sampled points; request a B-spline approximation through these points within tolerance below the kernel's working precision.
 - **Expected kernel behavior**: Return the partial result with the achieved residual reported; or reject.
 - **Fixture kind**: receiver-behavior
-- **Notes**: Synonyms: "fit didn't converge". Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
+- **Notes**: Synonyms: "fit didn't converge". Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: contains(b'LINE(')
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 5
 - **Tier-3 assertion**: load == "ok"
@@ -13508,7 +13508,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'SPHERICAL_SURFACE(')
 - **Byte assertion**: count_entity_def(b'SPHERICAL_SURFACE') == 1
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Geometric-utility computation (intersection, projection, extrema) returns a wrong or NULL result; downstream operations that depend on it propagate the wrong value into the loaded geometry.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
@@ -13521,7 +13521,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: A `B_SPLINE_CURVE_WITH_KNOTS` declares `closed = .T.` and the first/last control points coincide, but the start and end tangents differ in sign; meaning the curve closes positionally but the tangent has a sharp reversal at the closure point (a cusp). Bug-reporter language: "closed B-spline has cusp", "closure tangent reversed", "C0 closure but no C1".
 - **Reproducer recipe**: A degree-3 B-spline with knot vector `(0,0,0,0,1,1,1,1)` and control points (1,0,0), (0,1,0), (-1,0,0), (0,-1,0), (1,0,0). Marked closed; tangents at start vs end are perpendicular but the file claims smooth closure.
 - **Expected kernel behavior**: Reject the smooth-closure claim; or open the curve at the cusp.
-- **Notes**: Bug-reporter synonyms: "B-spline cusp at closure", "tangent jump at periodicity". Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: "B-spline cusp at closure", "tangent jump at periodicity", "closed B-spline has reversed end-tangent", "closure tangent reversed", "C0 closure but no C1 on closed BSpline".
+- **Notes**: Bug-reporter synonyms: "B-spline cusp at closure", "tangent jump at periodicity". Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: "B-spline cusp at closure", "tangent jump at periodicity", "closed B-spline has reversed end-tangent", "closure tangent reversed", "C0 closure but no C1 on closed BSpline".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS(')
 - **Byte assertion**: contains(b'.T.,.F.')
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') == 5
@@ -13665,7 +13665,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: A `COMPOSITE_CURVE_SEGMENT` trims its `parent_curve` at infinite (or near-infinite, e.g. `1.0E40`) `PARAMETER_VALUE` literals. Downstream meshers cannot evaluate an unbounded trim; translators historically marked such wires `myInfiniteSegment` and unwrapped them to a compound of bounded edges.
 - **Reproducer recipe**: `PARAMETER_VALUE(-1.0E40)` and `PARAMETER_VALUE(1.0E40)` used as the start/end of a `TRIMMED_CURVE` referenced from a composite curve segment.
 - **Expected kernel behavior**: materialize the segment as a compound of bounded edges (or reject with a precise diagnostic); never accept an unbounded trim downstream.
-- **Notes**: **See also**: Gs035, Gs054. **OCC behavior**: accepts with ERR diagnostic (empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog's stated invariant. Synonyms: "composite curve segment with infinite trim parameters", "PARAMETER_VALUE 1.0E40 on composite curve segment", "unbounded trim on TRIMMED_CURVE", "myInfiniteSegment unwrap to bounded edges", "near-infinite parameter literals in composite curve trim".
+- **Notes**: **See also**: Gs035, Gs054. **OCC behavior**: accepts and loads shape(1); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog's stated invariant. Synonyms: "composite curve segment with infinite trim parameters", "PARAMETER_VALUE 1.0E40 on composite curve segment", "unbounded trim on TRIMMED_CURVE", "myInfiniteSegment unwrap to bounded edges", "near-infinite parameter literals in composite curve trim".
 - **Byte assertion**: contains(b'PARAMETER_VALUE(-1.0E40)')
 - **Byte assertion**: contains(b'PARAMETER_VALUE(1.0E40)')
 - **Byte assertion**: contains(b'COMPOSITE_CURVE_SEGMENT(')
@@ -13771,7 +13771,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected kernel behavior**: ISO 10303-21 mandates `.` as decimal
  separator; reader must interpret literally regardless of locale; emit
  warning when ambiguous comma-separated decimal is detected.
-- **Notes**: **See also**: Le023. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: catalog wants a warning to surface; OCC accepts without any diagnostic.
+- **Notes**: **See also**: Le023. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: catalog wants a warning to surface; OCC accepts without any diagnostic.
 - **Byte assertion**: matches(rb"CARTESIAN_POINT\([^;]*,\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+")
 - **Byte assertion**: count(b',') >= 5 and matches(rb'\(\d+,\d+,\d+,\d+,\d+,\d+\)')
 - **Tier-3 assertion**: load == "ok"
@@ -13808,7 +13808,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Reproducer recipe**: invoke reader with empty filename `""` or null path.
 - **Expected kernel behavior**: reader rejects empty / null filenames at
  entry; never crash on bad arguments.
-- **Notes**: **See also**: Ad082. Provenance tier: runtime-only; there is no `.stp` to author; the defect is triggered by an empty or null path passed to the reader API, which fails before any file content is read. Demonstrating this requires invoking the reader with bad arguments, not a fixture file. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
+- **Notes**: **See also**: Ad082. Provenance tier: runtime-only; there is no `.stp` to author; the defect is triggered by an empty or null path passed to the reader API, which fails before any file content is read. Demonstrating this requires invoking the reader with bad arguments, not a fixture file. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: contains(b'ISO-10303-21')
 - **Byte assertion**: contains(b'END-ISO-10303-21')
 - **Tier-3 assertion**: load == "ok"
@@ -14013,7 +14013,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: 3MF and IFCZIP are STEP-adjacent container formats: a ZIP archive whose entries include a Part-21 body (or an XML-encoded equivalent) plus auxiliary metadata. A maliciously-crafted ZIP archive carries one entry whose compressed bytes are tiny but whose uncompressed bytes claim gigabytes; the textbook ZIP bomb (`42.zip`-style nested archives, or a single highly-redundant entry). A receiver that extracts entries to a tempdir before parsing exhausts disk; one that decompresses to memory exhausts RAM. Distinct from Ad105 (archive-header lie): in this entry, the ZIP entry actually decompresses to the claimed size. Bug-reporter language: "3MF bomb", "IFCZIP decompression OOM", "ZIP entry blows up CAD loader".
 - **Reproducer recipe**: a 3MF file (ZIP archive) containing a single entry `3D/3dmodel.model` whose compressed-vs-uncompressed ratio is 1:5000; the entry is valid 3MF XML when decompressed but ~2 GB long. Cannot be embodied as a Part-21 fixture; the defect lives in the ZIP wrapper.
 - **Expected kernel behavior**: cap the per-entry decompression budget and abort with a precise diagnostic when exceeded; cap the per-archive total budget; refuse archives with implausible entry-count / total-size combinations; treat the container layer as adversarial.
-- **Notes**: Companion to Ad110 (gzip wrapper) — different container, same defect class. Distinct from Ad105 (archive *header* lies; this entry's bomb actually decompresses). **See also**: Ad027, Ad105, Ad110, Ad112, Pf030. Provenance tier: cross-file-state — bytes alone (a Part-21 body) cannot demonstrate this defect; the bomb is in the ZIP wrapper. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
+- **Notes**: Companion to Ad110 (gzip wrapper) — different container, same defect class. Distinct from Ad105 (archive *header* lies; this entry's bomb actually decompresses). **See also**: Ad027, Ad105, Ad110, Ad112, Pf030. Provenance tier: cross-file-state — bytes alone (a Part-21 body) cannot demonstrate this defect; the bomb is in the ZIP wrapper. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: contains(b'3MF') or contains(b'IFCZIP') or contains(b'ZIP')
 - **Byte assertion**: contains(b'bomb') or contains(b'ratio')
 - **Tier-3 assertion**: load == "ok"
@@ -14027,7 +14027,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: A receiver that auto-detects gzip framing (magic `1F 8B`) and decompresses transparently before tokenising will, on input that is gzip-of-gzip-of-..-of-Part-21, recurse into each layer. With N stacked layers of trivially-compressible content, the receiver allocates a buffer per layer; if recursion is implemented by recursive function calls the call-stack overflows. The aggregate decompression ratio is the product of per-layer ratios; 8 layers at 1:100 each yields 1:10^16. Distinct from Ad110 (single-layer ratio bomb): this entry attacks the layering depth, not the per-layer ratio. Bug-reporter language: "nested gzip in STEP", "recursive .stpz unwrap", "stack overflow on stpz-of-stpz".
 - **Reproducer recipe**: a Part-21 body wrapped in 8 successive gzip layers (each layer's input is the previous layer's gzip output); compressed final size is a few KB, decompressed final size is 100 MB+, and unwrapping requires 8 sequential gunzip passes.
 - **Expected kernel behavior**: cap the gzip-layer recursion depth at 1 (or a small bounded N) with a precise diagnostic when exceeded; refuse files whose decompressed body still has the gzip magic at offset 0; treat the wrapper layer as adversarial.
-- **Notes**: Companion to Ad110 (single-layer ratio bomb); orthogonal axis (depth, not ratio). **See also**: Ad027, Ad105, Ad110, Ad111, Pf030. Provenance tier: cross-file-state; bytes alone (a Part-21 body) cannot demonstrate this defect; the bomb is in the stack of gzip wrappers. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
+- **Notes**: Companion to Ad110 (single-layer ratio bomb); orthogonal axis (depth, not ratio). **See also**: Ad027, Ad105, Ad110, Ad111, Pf030. Provenance tier: cross-file-state; bytes alone (a Part-21 body) cannot demonstrate this defect; the bomb is in the stack of gzip wrappers. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: contains(b'gzip') or contains(b'nested') or contains(b'recursive')
 - **Byte assertion**: contains(b'.stpz') or contains(b'recursion') or contains(b'depth')
 - **Tier-3 assertion**: load == "ok"
@@ -14166,7 +14166,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Description**: The `.stpz` and `.stpx` extensions denote ZIP / gzip-archive variants of STEP transfer. A maliciously-crafted archive can claim gigabytes of uncompressed payload from a few kilobytes of input — the standard ZIP-bomb / gzip-bomb pattern. A receiver that decompresses into memory before parsing exhausts RAM or swap. The defect is at the archive-wrapper layer, not in the STEP bytes. Bug-reporter language: "STEP archive bomb", "stpz allocates gigs", "decompression OOM on STEP". Provenance tier: cross-file-state — bytes alone (a STEP body) cannot demonstrate this; the demonstration is in the archive wrapper plus the receiver's decompression policy.
 - **Reproducer recipe**: a ZIP archive whose entry header advertises uncompressed size of 10 GB but whose compressed bytes are tiny (highly-compressible repeated bytes); the entry contains a 100-character STEP body. Cannot be embodied as a Part-21 fixture; the defect lives in the archive layer.
 - **Expected kernel behavior**: cap the per-archive-entry decompression budget (size, time); refuse to load when the budget is exceeded with a precise diagnostic; treat the archive layer as adversarial.
-- **Notes**: First entry exercising the .stpz / .stpx archive wrapper as an attack surface. **See also**: Ad104. Provenance tier: cross-file-state; bytes alone cannot demonstrate this defect; the bomb lives in the archive header, not the embedded STEP body. The static `.stp` fixture encodes only the embedded body; the receiver-side amplification requires an actual archive wrapper. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
+- **Notes**: First entry exercising the .stpz / .stpx archive wrapper as an attack surface. **See also**: Ad104. Provenance tier: cross-file-state; bytes alone cannot demonstrate this defect; the bomb lives in the archive header, not the embedded STEP body. The static `.stp` fixture encodes only the embedded body; the receiver-side amplification requires an actual archive wrapper. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: contains(b'ISO-10303-21')
 - **Byte assertion**: contains(b'END-ISO-10303-21')
 - **Tier-3 assertion**: load == "ok"
@@ -14276,7 +14276,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "AP203 schema declared but uses AP242 entities", "schema-version vs entity-vocabulary disagreement", "AP203 tag with AP242 arity", "FILE_SCHEMA mismatch with DATA". **See also**: A030, Lh019.
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
@@ -14550,7 +14550,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'COMPLEX_TRIANGULATED_FACE')
 - **Byte assertion**: contains(b'((0,(1,2,3,4)))')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
@@ -14566,7 +14566,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'TRIANGULATED_FACE')
 - **Byte assertion**: contains(b'COLOUR_RGB')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
@@ -15794,7 +15794,7 @@ _Section summary: 41 entries._
 - **Description**: A schema-driven binder pre-allocates from an input count without sign / upper-bound checks; `count - 1` underflows when count is zero. Common attack shape: a `B_SPLINE_CURVE_WITH_KNOTS` declared with negative degree (e.g. -1) and negative knot multiplicities, or a `B_SPLINE_SURFACE_WITH_KNOTS` declared with zero degrees and empty knot / multiplicity lists where the schema requires positives.
 - **Reproducer recipe**: aggregate whose declared count is `-1` (sign-extends to `0xFFFFFFFF`) or `0` followed by code expecting ≥1.
 - **Expected kernel behavior**: validate against schema bounds before allocation; reject with `E_AGGREGATE_BOUNDS`.
-- **Notes**: C; CWE-191 sign-confusion repeatedly cited in Spatial/ODA/Autodesk advisories. **See also**: Ad015, Ad077. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
+- **Notes**: C; CWE-191 sign-confusion repeatedly cited in Spatial/ODA/Autodesk advisories. **See also**: Ad015, Ad077. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: matches(rb'BSPLINE_(?:CURVE|SURFACE)_WITH_KNOTS\([^;]*,\s*-?(?:0|1)') or matches(rb'BSPLINE_CURVE_WITH_KNOTS\([^;]*,\s*-1')
 - **Byte assertion**: matches(rb'BSPLINE_(?:CURVE|SURFACE)_WITH_KNOTS')
 - **Tier-3 assertion**: load == "ok"
@@ -16076,7 +16076,7 @@ _Section summary: 41 entries._
 - **Description**: Schema requires non-empty list; producer emits `()`. Reader's iterator-step crashes on empty.
 - **Reproducer recipe**: `#1=EDGE_LOOP('',());` referenced from `FACE_BOUND`.
 - **Expected kernel behavior**: defensive iterator guard; reject malformed entity; continue translation.
-- **Notes**: **See also**: Ad043. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
+- **Notes**: **See also**: Ad043. **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: matches(rb"EDGE_LOOP\('[^']*',\(\)\)")
 - **Byte assertion**: contains(b'EDGE_LOOP')
 - **Tier-3 assertion**: load == "ok"
@@ -16277,7 +16277,7 @@ _Section summary: 41 entries._
 - **Description**: A shape whose entity definition order forces forward references; for example a `FACE_OUTER_BOUND` (#21) references an `EDGE_LOOP` (#22) that itself references an `ORIENTED_EDGE` (#200) defined later in the file. The ASCII reader handles such forward references cleanly, but the binary BREP reader throws an unhandled indexed-map lookup-failure exception on the same canonical content. The two serialisations do not maintain parity.
 - **Reproducer recipe**: shapes attached to issue; load through both readers and observe one accepts, the other throws.
 - **Expected kernel behavior**: ASCII and binary serialisations of the same shape data must produce identical results; both accept or both reject. Throwing in one and accepting in the other is a parser-parity bug.
-- **Notes**: **See also**: Ad043. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
+- **Notes**: **See also**: Ad043. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: matches(rb'(?s)#21=FACE_OUTER_BOUND[^;]+#22[^;]+;.*#22=EDGE_LOOP[^;]+#200') or matches(rb'(?s)EDGE_LOOP[^;]*#200')
 - **Byte assertion**: contains(b'EDGE_LOOP') and contains(b'ORIENTED_EDGE') and contains(b'#200')
 - **Tier-3 assertion**: load == "ok"
@@ -17648,7 +17648,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: Heal and accept, or reject with E_DUPLICATE_ID / E_BAD_CROSS_REF diagnostic: multi-DATA policy normalizes the section choice, duplicate-ID resolution coerces / repairs IDs, cross-section-ref handling resolves references. Each independent.
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: emits a diagnostic but produces an empty result; outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: emits a diagnostic but loads shape(1); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -17770,7 +17770,7 @@ _Section summary: 41 entries._
 - **Description**: One fixture combines three topology defects across the BREP_WITH_VOIDS / shared-shell / tessellated-topology axes. (1) A `BREP_WITH_VOIDS` carries an inner shell that pokes through the outer shell along Z. (2) The outer shell is referenced from a second `MANIFOLD_SOLID_BREP` in the same SHAPE_REPRESENTATION (shell aliasing). (3) A parallel `TESSELLATED_SHELL_REPRESENTATION` carries faces that mix shell-level and per-face COORDINATES_LIST without consistent connectivity. Receivers diverge on which defect to surface first. Bug-reporter language: "STEP file fails three ways at once", "void escapes part AND shell shared AND tessellated mismatch".
 - **Reproducer recipe**: outer cube CLOSED_SHELL `#100` of 10×10×10 mm; inner pin CLOSED_SHELL `#101` of 2×2×15 mm centred on cube centre (pokes ±2.5 mm); BREP_WITH_VOIDS `#200` referencing `#100` and `#101`; a second MANIFOLD_SOLID_BREP `#201` referencing the same outer shell `#100`; alongside, a TESSELLATED_SHELL_REPRESENTATION `#300` with mixed shell-level and per-face node lists.
 - **Expected kernel behavior**: each defect surfaced independently; the order of diagnostics is documented; the kernel does not silently accept any one defect because the others are louder.
-- **Notes**: **See also**: Tsh065, Tsh066, Tsh067. **OCC behavior**: accepts with ERR diagnostic (empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog's stated invariant.
+- **Notes**: **See also**: Tsh065, Tsh066, Tsh067. **OCC behavior**: accepts and loads shape(1); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog's stated invariant.
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
 - **Tier-3 assertion**: load == "ok"
@@ -18840,7 +18840,7 @@ _Section summary: 41 entries._
 - **Description**: A `MANIFOLD_SOLID_BREP` (or `BREP_WITH_VOIDS`) references a `CLOSED_SHELL` whose face list is empty. The "solid" therefore has no boundary at all; there is no surface to act as the inside/outside divider. Producers occasionally emit this when an upstream filter strips every face of a body but leaves the wrapper entities intact.
 - **Reproducer recipe**: A `MANIFOLD_SOLID_BREP` whose `outer` attribute references a `CLOSED_SHELL` with `cfs_faces=()`.
 - **Expected kernel behavior**: Detect the empty-shell case before any topological reasoning is attempted; reject the solid as malformed, or unwind the solid wrapper and report nothing was loaded.
-- **Notes**: Synonyms: "empty shell", "shell has no faces", "solid with zero faces". **See also**: Bo002. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
+- **Notes**: Synonyms: "empty shell", "shell has no faces", "solid with zero faces". **See also**: Bo002. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: matches(rb'CLOSED_SHELL\s*\(\s*\x27[^\x27]*\x27\s*,\s*\(\s*\)\s*\)')
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 0
@@ -18947,7 +18947,7 @@ _Section summary: 41 entries._
 - **Description**: A `VERTEX_POINT` listed as an endpoint of an `EDGE_CURVE` is not actually walked-to from the edge's geometry: the edge's start/end parameter evaluation yields a different point. The vertex was attached at the wrong topological level by the producer. Bug-reporter language: "vertex doesn't match edge", "stray vertex on edge", "topology references a sub-shape not in the parent".
 - **Reproducer recipe**: An `EDGE_CURVE` with `edge_start = #V1` and `edge_end = #V2`, where `#V1` is a vertex at coordinates that don't lie on the edge's `edge_geometry` line/curve.
 - **Expected kernel behavior**: Reject the edge, or replace the bad vertex with a vertex synthesized from curve evaluation.
-- **Notes**: Distinct from "tolerance disagreement" (the gap here is geometric, not numeric). **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "vertex doesn't match edge", "stray vertex on edge", "topology references a sub-shape not in the parent", "vertex coordinates don't lie on curve", "wrong topological level for sub-shape".
+- **Notes**: Distinct from "tolerance disagreement" (the gap here is geometric, not numeric). **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "vertex doesn't match edge", "stray vertex on edge", "topology references a sub-shape not in the parent", "vertex coordinates don't lie on curve", "wrong topological level for sub-shape".
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'VERTEX_POINT')
 - **Byte assertion**: contains(b'LINE')
@@ -19015,7 +19015,7 @@ _Section summary: 41 entries._
 - **Description**: A triangulated face (AP242 ed.2 `TRIANGULATED_FACE`) declares per-node normals, and at a smooth-edge node shared with the neighbour face, the two face's per-node normals point in noticeably different directions. Bug-reporter language: "vertex normals don't match across edge", "normal inconsistency", "lighting seam in tessellation".
 - **Reproducer recipe**: Two adjacent `TRIANGULATED_FACE`s sharing a node `#N`; face A reports normal (0,0,1) at that node, face B reports (0.7,0,0.7).
 - **Expected kernel behavior**: Average normals across smooth edges, or recompute from surface gradients.
-- **Notes**: Shows up as visible shading seams in renderers. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "vertex normals don't match across edge", "normal inconsistency", "lighting seam in tessellation", "per-vertex normal mismatch on shared node", "triangulation has shading discontinuity".
+- **Notes**: Shows up as visible shading seams in renderers. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "vertex normals don't match across edge", "normal inconsistency", "lighting seam in tessellation", "per-vertex normal mismatch on shared node", "triangulation has shading discontinuity".
 - **Byte assertion**: contains(b'COMPLEX_TRIANGULATED_FACE')
 - **Byte assertion**: contains(b'COORDINATES_LIST')
 - **Byte assertion**: declared_schema == b'AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'
@@ -19679,7 +19679,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: emits a diagnostic but produces an empty result; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: emits a diagnostic but loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
@@ -19703,7 +19703,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'FACE_INNER_BOUND')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
@@ -19770,7 +19770,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Tsh001, Gs034. Synonyms: "revolved part imports inside out", "sphere normals point inward after import", "VRML export shows reversed normals", "revolution direction convention mismatch", "revolved face orientation backwards".
 - **Byte assertion**: contains(b'SURFACE_OF_REVOLUTION')
 - **Byte assertion**: contains(b'CIRCLE')
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
@@ -22056,7 +22056,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: A `COMPOSITE_CURVE` lists multiple segments that are intended to form a single continuous curve. Segment N's last 3D point sits at a distance of several millimetres from segment N+1's first 3D point; far beyond any reasonable connectivity tolerance. The composite curve is not actually connected; treating it as one curve produces invalid downstream geometry.
 - **Reproducer recipe**: Two LINE-based EDGE_CURVEs whose vertices are at `(5,0,0)` and `(5.005,0,0)` respectively. Both edges share a wire but the kernel must report a 5e-3 disconnect.
 - **Expected kernel behavior**: report the connectivity defect with the offending segment indices and 3D gap; either bridge the segments by inserting a connecting curve, snap endpoints, or refuse to treat the aggregate as a single curve.
-- **Notes**: Similar defect class to `Twi-` wire connectivity but at the curve-aggregate level. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: "composite curve segments don't meet", "gap between consecutive composite curve segments", "composite_curve has disconnected segments", "segment N+1 starts far from segment N's end", "composite curve connectivity check fails".
+- **Notes**: Similar defect class to `Twi-` wire connectivity but at the curve-aggregate level. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: "composite curve segments don't meet", "gap between consecutive composite curve segments", "composite_curve has disconnected segments", "segment N+1 starts far from segment N's end", "composite curve connectivity check fails".
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_faces_total == 1
@@ -22069,7 +22069,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: An edge on an analytic surface (cylinder, cone, sphere, torus, plane) carries a 3D space curve but no 2D pcurve. To trim the surface, the kernel must project the 3D curve into UV. Some senders never emit pcurves, expecting the consumer to compute them; the projection must remain same-parameter and may resolve to an analytic 2D primitive (line in UV) where the geometry permits.
 - **Reproducer recipe**: A vertical EDGE_CURVE on a CYLINDRICAL_SURFACE running from `(R,0,0)` to `(R,0,h)` with only a 3D LINE representation, no SURFACE_CURVE pcurve.
 - **Expected kernel behavior**: synthesize the missing pcurve via projection, validate same-parameter consistency afterwards, and emit an analytic 2D line where the underlying surface admits one (e.g., on cylinders, spheres). Alternatively, refuse the edge and require a sender that supplies pcurves.
-- **Notes**: Distinct from a *bad* pcurve (Twi-class). Also see Gp019 (edge without pcurve). **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: "edge has no parametric curve", "pcurve absent on face edge", "tessellator fails on edge with no UV curve", "kernel must project 3D curve onto surface", "edge without 2D representation needs synthesis".
+- **Notes**: Distinct from a *bad* pcurve (Twi-class). Also see Gp019 (edge without pcurve). **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: "edge has no parametric curve", "pcurve absent on face edge", "tessellator fails on edge with no UV curve", "kernel must project 3D curve onto surface", "edge without 2D representation needs synthesis".
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_faces_total == 1
@@ -22224,7 +22224,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Description**: A `B_SPLINE_SURFACE_WITH_KNOTS` V knot vector violates the non-decreasing invariant by containing a strictly descending pair (e.g. `(0.0, 0.6, 0.4, 1.0)`; 0.6 then 0.4). A compliant reader must reject the surface with a diagnostic naming the offending index.
 - **Reproducer recipe**: `B_SPLINE_SURFACE_WITH_KNOTS` whose `v_knots` array contains a value strictly less than the prior value.
 - **Expected kernel behavior**: reject the surface with a diagnostic naming the offending index; never silently accept.
-- **Notes**: **See also**: Gn001, Gn003. **OCC behavior**: accepts with ERR diagnostic (empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog's stated invariant. Synonyms: "B-spline knots non-monotonic", "V knot vector strictly descending", "BSpline surface knot vector not non-decreasing", "knots violate non-decreasing invariant", "knot value smaller than prior in BSpline surface".
+- **Notes**: **See also**: Gn001, Gn003. **OCC behavior**: accepts and loads shape(1); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog's stated invariant. Synonyms: "B-spline knots non-monotonic", "V knot vector strictly descending", "BSpline surface knot vector not non-decreasing", "knots violate non-decreasing invariant", "knot value smaller than prior in BSpline surface".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 0
@@ -23668,7 +23668,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: matches(rb'(?s)#10\s*=\s*CARTESIAN_POINT.*#10\s*=\s*CARTESIAN_POINT')
 - **Byte assertion**: count(b'#10=') >= 2
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts under one mode and emits a diagnostic under the other (no shape produced); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: produces an empty shape (silent loss); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: The two entities sharing an instance number race for the back-references; the resulting model attaches each cross-reference to whichever the resolver picks (often last-wins), so structurally identical files load with different topology.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`

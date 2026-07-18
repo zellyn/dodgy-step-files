@@ -34,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal by re-fitting / sub-setting; reject if the edge cannot be split cleanly; check parameter monotonicity under reprojection.</p></section>
 <section><h2>Notes</h2>
-<p>**OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: &quot;B-spline curve self-intersects&quot;, &quot;figure-eight B-spline edge with coincident first/last poles&quot;, &quot;BSpline edge crosses itself&quot;, &quot;self-loop in 3D B-spline curve&quot;, &quot;EDGE_CURVE B-spline forms figure eight&quot;.</p></section>
+<p>**OCC behavior**: accepts and loads shape(1); outside catalog&#x27;s allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: &quot;B-spline curve self-intersects&quot;, &quot;figure-eight B-spline edge with coincident first/last poles&quot;, &quot;BSpline edge crosses itself&quot;, &quot;self-loop in 3D B-spline curve&quot;, &quot;EDGE_CURVE B-spline forms figure eight&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

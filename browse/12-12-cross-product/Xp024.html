@@ -33,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>each defect surfaced independently; the order of diagnostics is documented; the kernel does not silently accept any one defect because the others are louder.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Tsh065, Tsh066, Tsh067. **OCC behavior**: accepts with ERR diagnostic (empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog&#x27;s stated invariant.</p></section>
+<p>**See also**: Tsh065, Tsh066, Tsh067. **OCC behavior**: accepts and loads shape(1); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog&#x27;s stated invariant.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

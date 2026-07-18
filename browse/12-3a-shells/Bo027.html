@@ -34,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Average normals across smooth edges, or recompute from surface gradients.</p></section>
 <section><h2>Notes</h2>
-<p>Shows up as visible shading seams in renderers. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;vertex normals don&#x27;t match across edge&quot;, &quot;normal inconsistency&quot;, &quot;lighting seam in tessellation&quot;, &quot;per-vertex normal mismatch on shared node&quot;, &quot;triangulation has shading discontinuity&quot;.</p></section>
+<p>Shows up as visible shading seams in renderers. **OCC behavior**: accepts and loads shape(1); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;vertex normals don&#x27;t match across edge&quot;, &quot;normal inconsistency&quot;, &quot;lighting seam in tessellation&quot;, &quot;per-vertex normal mismatch on shared node&quot;, &quot;triangulation has shading discontinuity&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

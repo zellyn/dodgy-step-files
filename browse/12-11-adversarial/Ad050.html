@@ -16,7 +16,6 @@
 <p class="category">§12.11 (sub-class: schema-validation / null-deref)</p>
 <p class="tag-pills">
 <a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
-<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
 </p>
 </header>
@@ -37,7 +36,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>defensive iterator guard; reject malformed entity; continue translation.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Ad043. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
+<p>**See also**: Ad043. **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

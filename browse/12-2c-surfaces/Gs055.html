@@ -33,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>materialize the segment as a compound of bounded edges (or reject with a precise diagnostic); never accept an unbounded trim downstream.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gs035, Gs054. **OCC behavior**: accepts with ERR diagnostic (empty result); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog&#x27;s stated invariant. Synonyms: &quot;composite curve segment with infinite trim parameters&quot;, &quot;PARAMETER_VALUE 1.0E40 on composite curve segment&quot;, &quot;unbounded trim on TRIMMED_CURVE&quot;, &quot;myInfiniteSegment unwrap to bounded edges&quot;, &quot;near-infinite parameter literals in composite curve trim&quot;.</p></section>
+<p>**See also**: Gs035, Gs054. **OCC behavior**: accepts and loads shape(1); catalog disallows silent-accept. Kernel-bug witnessed: receivers enforcing the spec must reject (or surface a diagnostic); silent acceptance defeats the catalog&#x27;s stated invariant. Synonyms: &quot;composite curve segment with infinite trim parameters&quot;, &quot;PARAMETER_VALUE 1.0E40 on composite curve segment&quot;, &quot;unbounded trim on TRIMMED_CURVE&quot;, &quot;myInfiniteSegment unwrap to bounded edges&quot;, &quot;near-infinite parameter literals in composite curve trim&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

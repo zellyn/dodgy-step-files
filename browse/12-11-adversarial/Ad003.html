@@ -35,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>validate against schema bounds before allocation; reject with `E_AGGREGATE_BOUNDS`.</p></section>
 <section><h2>Notes</h2>
-<p>C; CWE-191 sign-confusion repeatedly cited in Spatial/ODA/Autodesk advisories. **See also**: Ad015, Ad077. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
+<p>C; CWE-191 sign-confusion repeatedly cited in Spatial/ODA/Autodesk advisories. **See also**: Ad015, Ad077. **OCC behavior**: accepts and loads shape(1); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

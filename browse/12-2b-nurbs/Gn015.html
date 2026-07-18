@@ -32,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal; detect rotational symmetry in the control net within tolerance; replace with `SURFACE_OF_REVOLUTION` carrying the recovered axis and profile curve.</p></section>
 <section><h2>Notes</h2>
-<p>**OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;rational B-spline surface is actually surface of revolution&quot;, &quot;exact-circle NURBS sqrt(2)/2 weight pattern&quot;, &quot;BSpline 360-degree sweep should be SURFACE_OF_REVOLUTION&quot;, &quot;cylinder/torus stored as rational BSpline net&quot;, &quot;rotational symmetry hidden in NURBS control net&quot;.</p></section>
+<p>**OCC behavior**: accepts and loads shape(1); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;rational B-spline surface is actually surface of revolution&quot;, &quot;exact-circle NURBS sqrt(2)/2 weight pattern&quot;, &quot;BSpline 360-degree sweep should be SURFACE_OF_REVOLUTION&quot;, &quot;cylinder/torus stored as rational BSpline net&quot;, &quot;rotational symmetry hidden in NURBS control net&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

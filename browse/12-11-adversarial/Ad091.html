@@ -32,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>ISO 10303-21 mandates `.` as decimal separator; reader must interpret literally regardless of locale; emit warning when ambiguous comma-separated decimal is detected.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Le023. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({warn-and-proceed}). Kernel-bug witnessed: catalog wants a warning to surface; OCC accepts without any diagnostic.</p></section>
+<p>**See also**: Le023. **OCC behavior**: accepts and loads shape(1); outside catalog&#x27;s allowed set ({warn-and-proceed}). Kernel-bug witnessed: catalog wants a warning to surface; OCC accepts without any diagnostic.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

@@ -34,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>drop the bad pcurve and recompute it from the 3D curve, or reject as malformed. Keeping the pcurve without verification produces silent geometric corruption.</p></section>
 <section><h2>Notes</h2>
-<p>**OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Synonyms: &quot;pcurve endpoints don&#x27;t match vertex coordinates&quot;, &quot;2D parameter curve start/end disagrees with vertex 3D position&quot;, &quot;lifted pcurve lands at wrong point&quot;, &quot;edge vertices and pcurve disagree about endpoint location&quot;, &quot;pcurve evaluation at endpoint differs from vertex_point&quot;.</p></section>
+<p>**OCC behavior**: accepts and loads shape(1); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Synonyms: &quot;pcurve endpoints don&#x27;t match vertex coordinates&quot;, &quot;2D parameter curve start/end disagrees with vertex 3D position&quot;, &quot;lifted pcurve lands at wrong point&quot;, &quot;edge vertices and pcurve disagree about endpoint location&quot;, &quot;pcurve evaluation at endpoint differs from vertex_point&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

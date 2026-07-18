@@ -35,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>re-parameterise one curve so the same parameter value yields the same point on both, drop the same-parameter assertion and inflate edge tolerance to absorb the divergence, or reject as malformed. Choice is kernel-design-dependent.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gp021, Gp027. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Synonyms: &quot;SameParameter flag set but parameterisations differ&quot;, &quot;edge claims same-parameter but pcurve and 3D curve diverge&quot;, &quot;non-uniform pcurve parameterisation breaks same-parameter invariant&quot;, &quot;tolerance growth from same-parameter violation&quot;, &quot;B-spline pcurve middle pole offset breaks parameter sync&quot;.</p></section>
+<p>**See also**: Gp021, Gp027. **OCC behavior**: accepts and loads shape(1); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Synonyms: &quot;SameParameter flag set but parameterisations differ&quot;, &quot;edge claims same-parameter but pcurve and 3D curve diverge&quot;, &quot;non-uniform pcurve parameterisation breaks same-parameter invariant&quot;, &quot;tolerance growth from same-parameter violation&quot;, &quot;B-spline pcurve middle pole offset breaks parameter sync&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

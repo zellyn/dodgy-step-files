@@ -35,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal; preserve analytic basis curve (no Trimmed wrapper); reset orthonormal X/Y axes within 1e-6.</p></section>
 <section><h2>Notes</h2>
-<p>**OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;ELLIPSE basis curve becomes TRIMMED_CURVE on round-trip&quot;, &quot;surface_of_revolution loses analytic ellipse basis&quot;, &quot;non-unit axis direction after BSpline round-trip&quot;, &quot;rational B-spline approximation of ellipse replaces analytic curve&quot;, &quot;ellipse swept basis turns into NURBS after STEP read-back&quot;.</p></section>
+<p>**OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;ELLIPSE basis curve becomes TRIMMED_CURVE on round-trip&quot;, &quot;surface_of_revolution loses analytic ellipse basis&quot;, &quot;non-unit axis direction after BSpline round-trip&quot;, &quot;rational B-spline approximation of ellipse replaces analytic curve&quot;, &quot;ellipse swept basis turns into NURBS after STEP read-back&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

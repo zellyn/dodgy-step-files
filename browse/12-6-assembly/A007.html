@@ -32,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>detect swap pattern and recover the correct transform; resolve transitively; cap recursion depth; let NAUO direction win when SRR contradicts.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: A006. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;axis placement swapped between subassembly and parent&quot;, &quot;rep_1 and rep_2 mixed up in SHAPE_REPRESENTATION_RELATIONSHIP&quot;, &quot;component oriented incorrectly after import&quot;, &quot;transform applied to wrong frame on round-trip&quot;, &quot;subassembly axes flipped vs designed&quot;.</p></section>
+<p>**See also**: A006. **OCC behavior**: accepts and loads shape(1); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;axis placement swapped between subassembly and parent&quot;, &quot;rep_1 and rep_2 mixed up in SHAPE_REPRESENTATION_RELATIONSHIP&quot;, &quot;component oriented incorrectly after import&quot;, &quot;transform applied to wrong frame on round-trip&quot;, &quot;subassembly axes flipped vs designed&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
