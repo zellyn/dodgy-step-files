@@ -1,5 +1,5 @@
 ISO-10303-21;
-/* Pf006: perforated sheet: one ADVANCED_FACE with outer rect bound + 12 circular FACE_BOUND holes; wire self-intersection checker paid O(N²) per face; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
+/* Pf006: perforated sheet: one ADVANCED_FACE with outer rect bound + 12 circular FACE_BOUND holes; wire self-intersection checker paid O(N²) per face; the defect entity is emitted but sits unreachable from the shape-rep root (product chain roots a GEOMETRIC_CURVE_SET stub), so OCC loads only a 1-vertex stub (shape(1)); byte-present but oracle-invisible to the load-time shape-count oracles */
 HEADER;
 FILE_DESCRIPTION(('Pf006'),'2;1');
 FILE_NAME('Pf006.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');

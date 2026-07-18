@@ -52,7 +52,7 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Pmi054: <mark>ANNOTATION_CURVE_OCCURRENCE</mark> references a <mark>B_SPLINE_CURVE_WITH_KNOTS</mark> as its basis curve; the AP242 RP restricts annotation leader/basis curves to the allowed set {line, circle, polyline}; using an unsupported basis curve type is non-conformant; receivers must warn and coerce to best-effort render; must not crash on the rendering path; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">2</span>/* Pmi054: <mark>ANNOTATION_CURVE_OCCURRENCE</mark> references a <mark>B_SPLINE_CURVE_WITH_KNOTS</mark> as its basis curve; the AP242 RP restricts annotation leader/basis curves to the allowed set {line, circle, polyline}; using an unsupported basis curve type is non-conformant; receivers must warn and coerce to best-effort render; must not crash on the rendering path; the defect is a presentation/PMI property the shape-count oracles cannot observe, and here it also sits unreachable from the shape-rep root (product chain roots a GEOMETRIC_CURVE_SET stub), so OCC loads only a 1-vertex stub (shape(1)); byte-present but oracle-invisible to the load-time shape-count oracles */
 <span class="lineno">3</span>HEADER;
 <span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Pmi054&#x27;),&#x27;2;1&#x27;);
 <span class="lineno">5</span>FILE_NAME(&#x27;Pmi054.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);

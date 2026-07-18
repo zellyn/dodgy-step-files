@@ -23,7 +23,7 @@ f = StepFile(
         "wire with simultaneous reorder-need + 3D/2D mismatch + self-intersecting "
         "micro-loop: each ShapeFix pass exposes a new defect; without iteration cap "
         "the healer loops indefinitely; "
-        "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty"
+        "the defect entity is emitted but sits unreachable from the shape-rep root (product chain roots a GEOMETRIC_CURVE_SET stub), so OCC loads only a 1-vertex stub (shape(1)); byte-present but oracle-invisible to the load-time shape-count oracles"
     ),
 )
 

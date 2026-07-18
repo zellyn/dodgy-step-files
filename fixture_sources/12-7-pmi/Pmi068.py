@@ -24,12 +24,12 @@ f = StepFile(
     defect=(
         "ANNOTATION_PLANE uses AXIS2_PLACEMENT_3D whose axis (0,0,-1) and "
         "ref_direction (1,0,0) produce a left-handed (negative-determinant) "
-        "frame; OCCT silently right-handizes this frame on import without "
-        "emitting a diagnostic, flipping the annotation plane normal so GD&T "
-        "text faces the wrong direction; receivers must preserve handedness or "
+        "frame; were this frame reachable and silently right-handized on import, "
+        "the annotation plane normal would flip so GD&T text faces the wrong "
+        "direction; receivers must preserve handedness or "
         "coherently flip face normals and must never silently right-handize "
         "annotation planes; "
-        "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty"
+        "the defect is a presentation/PMI property the shape-count oracles cannot observe, and here it also sits unreachable from the shape-rep root (product chain roots a GEOMETRIC_CURVE_SET stub), so OCC loads only a 1-vertex stub (shape(1)); byte-present but oracle-invisible to the load-time shape-count oracles"
     ),
 )
 

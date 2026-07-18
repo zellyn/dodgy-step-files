@@ -22,7 +22,7 @@ f = StepFile(
     defect=(
         "dense VERTEX_POINT/EDGE_CURVE/ADVANCED_FACE web; "
         "forward-reference pattern causes O(N²) writer reference-resolution; "
-        "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty"
+        "the defect entity is emitted but sits unreachable from the shape-rep root (product chain roots a GEOMETRIC_CURVE_SET stub), so OCC loads only a 1-vertex stub (shape(1)); byte-present but oracle-invisible to the load-time shape-count oracles"
     ),
 )
 

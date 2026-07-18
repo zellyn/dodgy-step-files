@@ -30,7 +30,7 @@ f = StepFile(
         "5 large ADVANCED_FACEs (50×50 units) in CLOSED_SHELL + "
         "MANIFOLD_SOLID_BREP; recursive mesher overruns 1MB TBB worker "
         "stack on large-face input; "
-        "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty"
+        "the defect entity is emitted but sits unreachable from the shape-rep root (product chain roots a GEOMETRIC_CURVE_SET stub), so OCC loads only a 1-vertex stub (shape(1)); byte-present but oracle-invisible to the load-time shape-count oracles"
     ),
 )
 

@@ -110004,7 +110004,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-7-pmi/Pmi068.stp",
     "id": "Pmi068",
-    "notes": "**See also**: A024. **OCC behavior**: silently right-handizes the left-handed annotation plane frame on import without diagnostic, flipping the annotation normal; kernel mishandling; the catalog above forbids silent right-handization. Synonyms: \"annotation_plane orientation flipped on import\", \"PMI plane mirror determinant\", \"GD&T text faces wrong way\", \"annotation reads backward on import\".",
+    "notes": "**See also**: A024. **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1) gmsh=shape(1). OCC loads a 1-vertex stub; the left-handed annotation-plane frame sits unreachable from the shape-rep root and is in any case a presentation property the shape-count oracles cannot observe, so it is byte-present but not demonstrable by the load-time shape-count oracles. Synonyms: \"annotation_plane orientation flipped on import\", \"PMI plane mirror determinant\", \"GD&T text faces wrong way\", \"annotation reads backward on import\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",

@@ -1,5 +1,5 @@
 ISO-10303-21;
-/* Pf007: one ADVANCED_FACE with outer rect bound + 15 circular FACE_BOUNDs; eager UV-bounds wire-walk on surface-type query costs O(N) per call; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
+/* Pf007: one ADVANCED_FACE with outer rect bound + 15 circular FACE_BOUNDs; eager UV-bounds wire-walk on surface-type query costs O(N) per call; the defect entity is emitted but sits unreachable from the shape-rep root (product chain roots a GEOMETRIC_CURVE_SET stub), so OCC loads only a 1-vertex stub (shape(1)); byte-present but oracle-invisible to the load-time shape-count oracles */
 HEADER;
 FILE_DESCRIPTION(('Pf007'),'2;1');
 FILE_NAME('Pf007.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');

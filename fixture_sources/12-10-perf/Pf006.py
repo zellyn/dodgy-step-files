@@ -25,7 +25,7 @@ f = StepFile(
         "perforated sheet: one ADVANCED_FACE with outer rect bound + "
         "12 circular FACE_BOUND holes; wire self-intersection checker "
         "paid O(N²) per face; "
-        "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty"
+        "the defect entity is emitted but sits unreachable from the shape-rep root (product chain roots a GEOMETRIC_CURVE_SET stub), so OCC loads only a 1-vertex stub (shape(1)); byte-present but oracle-invisible to the load-time shape-count oracles"
     ),
 )
 

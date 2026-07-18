@@ -56,7 +56,7 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* P019: Every face styled with SURFACE_STYLE_RENDERING_WITH_PROPERTIES transparency=1.0 (fully transparent, i.e. invisible); <mark>COLOUR_RGB</mark> gives an apparent fill colour but transparency overrides it; viewer honouring transparency renders all geometry as invisible wireframe; receiver must warn &#x27;all-transparent file improbable&#x27; and default to 0; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">2</span>/* P019: Every face styled with SURFACE_STYLE_RENDERING_WITH_PROPERTIES transparency=1.0 (fully transparent, i.e. invisible); <mark>COLOUR_RGB</mark> gives an apparent fill colour but transparency overrides it; viewer honouring transparency renders all geometry as invisible wireframe; receiver must warn &#x27;all-transparent file improbable&#x27; and default to 0; the defect is a presentation/PMI property the shape-count oracles cannot observe, and here it also sits unreachable from the shape-rep root (product chain roots a GEOMETRIC_CURVE_SET stub), so OCC loads only a 1-vertex stub (shape(1)); byte-present but oracle-invisible to the load-time shape-count oracles */
 <span class="lineno">3</span>HEADER;
 <span class="lineno">4</span>FILE_DESCRIPTION((&#x27;P019&#x27;),&#x27;2;1&#x27;);
 <span class="lineno">5</span>FILE_NAME(&#x27;P019.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);

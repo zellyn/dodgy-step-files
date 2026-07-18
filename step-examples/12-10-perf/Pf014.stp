@@ -1,5 +1,5 @@
 ISO-10303-21;
-/* Pf014: helix on CYLINDRICAL_SURFACE exported as huge B-spline pcurve instead of analytic 2D LINE; thousands of poles/knots; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
+/* Pf014: helix on CYLINDRICAL_SURFACE exported as huge B-spline pcurve instead of analytic 2D LINE; thousands of poles/knots; the defect entity is emitted but sits unreachable from the shape-rep root (product chain roots a GEOMETRIC_CURVE_SET stub), so OCC loads only a 1-vertex stub (shape(1)); byte-present but oracle-invisible to the load-time shape-count oracles */
 HEADER;
 FILE_DESCRIPTION(('Pf014'),'2;1');
 FILE_NAME('Pf014.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');

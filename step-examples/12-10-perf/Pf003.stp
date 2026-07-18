@@ -1,5 +1,5 @@
 ISO-10303-21;
-/* Pf003: forward-reference DATA section: ADVANCED_FACE/EDGE_LOOP topology emitted before EDGE_CURVE/VERTEX_POINT/CARTESIAN_POINT geometry; forces multi-pass resolver in single-threaded reader; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
+/* Pf003: forward-reference DATA section: ADVANCED_FACE/EDGE_LOOP topology emitted before EDGE_CURVE/VERTEX_POINT/CARTESIAN_POINT geometry; forces multi-pass resolver in single-threaded reader; the defect entity is emitted but sits unreachable from the shape-rep root (product chain roots a GEOMETRIC_CURVE_SET stub), so OCC loads only a 1-vertex stub (shape(1)); byte-present but oracle-invisible to the load-time shape-count oracles */
 HEADER;
 FILE_DESCRIPTION(('Pf003'),'2;1');
 FILE_NAME('Pf003.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');

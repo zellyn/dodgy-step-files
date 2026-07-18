@@ -24,7 +24,7 @@ f = StepFile(
         "ADVANCED_FACE with outer rectangular FACE_OUTER_BOUND + internal "
         "VERTEX_LOOP FACE_BOUND (.U.) at centre: ShapeAnalysis::OuterWire() "
         "spins indefinitely iterating over sub-shapes including the vertex bound; "
-        "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty"
+        "the defect entity is emitted but sits unreachable from the shape-rep root (product chain roots a GEOMETRIC_CURVE_SET stub), so OCC loads only a 1-vertex stub (shape(1)); byte-present but oracle-invisible to the load-time shape-count oracles"
     ),
 )
 

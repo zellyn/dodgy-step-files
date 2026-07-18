@@ -1,5 +1,5 @@
 ISO-10303-21;
-/* Pf024: EDGE_LOOP with crossed diagonals forming X-shape: A→C, B→D, A→B, C→D; intersection-healing split-index range check missing; healer infinite-loops on out-of-range split index; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
+/* Pf024: EDGE_LOOP with crossed diagonals forming X-shape: A→C, B→D, A→B, C→D; intersection-healing split-index range check missing; healer infinite-loops on out-of-range split index; the defect entity is emitted but sits unreachable from the shape-rep root (product chain roots a GEOMETRIC_CURVE_SET stub), so OCC loads only a 1-vertex stub (shape(1)); byte-present but oracle-invisible to the load-time shape-count oracles */
 HEADER;
 FILE_DESCRIPTION(('Pf024'),'2;1');
 FILE_NAME('Pf024.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');

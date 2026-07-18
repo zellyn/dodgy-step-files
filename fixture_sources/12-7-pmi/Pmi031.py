@@ -23,7 +23,7 @@ f = StepFile(
         "PROJECTED_ZONE_DEFINITION.projection_end references a CYLINDRICAL_SURFACE "
         "instead of a plane; spec requires the end face to be planar; receivers must "
         "warn and accept, or reject with E_MISSING_PLANE diagnostic; "
-        "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty"
+        "the defect is a presentation/PMI property the shape-count oracles cannot observe, and here it also sits unreachable from the shape-rep root (product chain roots a GEOMETRIC_CURVE_SET stub), so OCC loads only a 1-vertex stub (shape(1)); byte-present but oracle-invisible to the load-time shape-count oracles"
     ),
 )
 

@@ -24,7 +24,7 @@ f = StepFile(
         "EDGE_LOOP with crossed diagonals forming X-shape: A→C, B→D, A→B, C→D; "
         "intersection-healing split-index range check missing; healer infinite-loops "
         "on out-of-range split index; "
-        "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty"
+        "the defect entity is emitted but sits unreachable from the shape-rep root (product chain roots a GEOMETRIC_CURVE_SET stub), so OCC loads only a 1-vertex stub (shape(1)); byte-present but oracle-invisible to the load-time shape-count oracles"
     ),
 )
 

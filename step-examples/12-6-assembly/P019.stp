@@ -1,5 +1,5 @@
 ISO-10303-21;
-/* P019: Every face styled with SURFACE_STYLE_RENDERING_WITH_PROPERTIES transparency=1.0 (fully transparent, i.e. invisible); COLOUR_RGB gives an apparent fill colour but transparency overrides it; viewer honouring transparency renders all geometry as invisible wireframe; receiver must warn 'all-transparent file improbable' and default to 0; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
+/* P019: Every face styled with SURFACE_STYLE_RENDERING_WITH_PROPERTIES transparency=1.0 (fully transparent, i.e. invisible); COLOUR_RGB gives an apparent fill colour but transparency overrides it; viewer honouring transparency renders all geometry as invisible wireframe; receiver must warn 'all-transparent file improbable' and default to 0; the defect is a presentation/PMI property the shape-count oracles cannot observe, and here it also sits unreachable from the shape-rep root (product chain roots a GEOMETRIC_CURVE_SET stub), so OCC loads only a 1-vertex stub (shape(1)); byte-present but oracle-invisible to the load-time shape-count oracles */
 HEADER;
 FILE_DESCRIPTION(('P019'),'2;1');
 FILE_NAME('P019.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');

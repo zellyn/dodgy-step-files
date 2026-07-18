@@ -1,5 +1,5 @@
 ISO-10303-21;
-/* P026: GEOMETRIC_REPRESENTATION_CONTEXT declares LENGTH_UNIT(SI MILLI METRE) but CARTESIAN_POINT coordinates are pre-scaled x1000 (e.g. 10000.0 for 10 mm); process-state contamination: gmsh Geometry.OCCTargetUnit=M mutated global OCCT unit; subsequent FreeCAD STEP export inherited that global and scaled all coords x1000; kernel must coerce per-call context without inheriting global state; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
+/* P026: GEOMETRIC_REPRESENTATION_CONTEXT declares LENGTH_UNIT(SI MILLI METRE) but CARTESIAN_POINT coordinates are pre-scaled x1000 (e.g. 10000.0 for 10 mm); process-state contamination: gmsh Geometry.OCCTargetUnit=M mutated global OCCT unit; subsequent FreeCAD STEP export inherited that global and scaled all coords x1000; kernel must coerce per-call context without inheriting global state; the defect entity is emitted but sits unreachable from the shape-rep root (product chain roots a GEOMETRIC_CURVE_SET stub), so OCC loads only a 1-vertex stub (shape(1)); byte-present but oracle-invisible to the load-time shape-count oracles */
 HEADER;
 FILE_DESCRIPTION(('P026'),'2;1');
 FILE_NAME('P026.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');

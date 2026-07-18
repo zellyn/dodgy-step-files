@@ -7335,6 +7335,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### P019 — Default-emitted full transparency renders objects invisible
+- **Status**: honest reclassification (2026-07-18) — the defect is byte-present but sits unreachable from the shape-rep root, so OCC loads only a 1-vertex stub (`shape(1)`); it is oracle-invisible at load and does NOT demonstrate a repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.8 appearance
 - **Source**: FreeCAD #18569, #18575
 - **Sender**: FreeCAD 0.21.x, VariCAD, Fusion (re-export round-trip)
@@ -7346,7 +7347,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'COLOUR_RGB')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1) gmsh=shape(1). OCC loads a 1-vertex stub; the defect is a PMI/presentation property the shape-count oracles cannot observe (regardless of reachability). The defect is byte-present but not demonstrable by the load-time shape-count oracles.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -7435,6 +7436,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### P026 — `LENGTH_UNIT(.MILLI., .METRE.)` context but `CARTESIAN_POINT` coordinates pre-scaled ×1000 (global OCCT unit setting contaminated across in-process clients)
+- **Status**: honest reclassification (2026-07-18) — the defect is byte-present but sits unreachable from the shape-rep root, so OCC loads only a 1-vertex stub (`shape(1)`); it is oracle-invisible at load and does NOT demonstrate a repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.5 units / global state (process-level)
 - **Source**: FreeCAD #18980
 - **Sender**: FreeCAD ↔ gmsh interop
@@ -7446,7 +7448,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: matches(rb'CARTESIAN_POINT[^;]*1000[0-9]')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1) gmsh=shape(1). OCC loads a 1-vertex stub; the defect entity is byte-present but sits unreachable from the shape-rep root, so OCC silently accepts with NO distinguishing signal vs a clean file. The defect is byte-present but not demonstrable by the load-time shape-count oracles.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8487,6 +8489,7 @@ _Section summary: 106 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi014 — annotation_plane: plane vs planar_box ambiguity
+- **Status**: honest reclassification (2026-07-18) — the defect is byte-present but sits unreachable from the shape-rep root, so OCC loads only a 1-vertex stub (`shape(1)`); it is oracle-invisible at load and does NOT demonstrate a repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.7 (sub-class: annotation-plane)
 - **Sources**: 02-caxif (PMI v4.1 §9.1)
 - **Description**: An `annotation_plane` may be defined either by an unbounded `plane` or by a `planar_box` (axis placement + sizes). Receivers that support only one form lose the bounded-rectangle hint or fail to import unbounded annotation planes.
@@ -8497,12 +8500,13 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'PLANE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1) gmsh=shape(1). OCC loads a 1-vertex stub; the defect is a PMI/presentation property the shape-count oracles cannot observe (regardless of reachability). The defect is byte-present but not demonstrable by the load-time shape-count oracles.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi015 — Annotation geometry must be in plane PARALLEL to annotation_plane (small offset)
+- **Status**: honest reclassification (2026-07-18) — the defect is byte-present but sits unreachable from the shape-rep root, so OCC loads only a 1-vertex stub (`shape(1)`); it is oracle-invisible at load and does NOT demonstrate a repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.7 (sub-class: annotation-plane)
 - **Sources**: 02-caxif (PMI v4.1 §9.1)
 - **Description**: CAD systems offset annotation geometry slightly above the underlying `annotation_plane`. RP says elements must lie in a plane *parallel* to the `annotation_plane`, not necessarily on it. Strict-on-plane checks reject valid files.
@@ -8513,7 +8517,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'POLYLINE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1) gmsh=shape(1). OCC loads a 1-vertex stub; the defect is a PMI/presentation property the shape-count oracles cannot observe (regardless of reachability). The defect is byte-present but not demonstrable by the load-time shape-count oracles.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8736,6 +8740,7 @@ _Section summary: 106 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi031 — Projected zone projection_end is not a plane
+- **Status**: honest reclassification (2026-07-18) — the defect is byte-present but sits unreachable from the shape-rep root, so OCC loads only a 1-vertex stub (`shape(1)`); it is oracle-invisible at load and does NOT demonstrate a repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.7 (sub-class: tolerance-zone)
 - **Sources**: 06-nist-sfa (S047)
 - **Description**: `projected_zone_definition.projection_end` references a non-plane geometry.
@@ -8747,7 +8752,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'POSITION_TOLERANCE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1) gmsh=shape(1). OCC loads a 1-vertex stub; the defect is a PMI/presentation property the shape-count oracles cannot observe (regardless of reachability). The defect is byte-present but not demonstrable by the load-time shape-count oracles.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -9011,6 +9016,7 @@ _Section summary: 106 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi054 — basis_curve for leader/annotation not on allowed list
+- **Status**: honest reclassification (2026-07-18) — the defect is byte-present but sits unreachable from the shape-rep root, so OCC loads only a 1-vertex stub (`shape(1)`); it is oracle-invisible at load and does NOT demonstrate a repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.7 (sub-class: semantic-vs-graphic)
 - **Sources**: 06-nist-sfa (S066)
 - **Description**: Annotation `polyline` / `trimmed_curve` references a basis curve not on the allowed list (lines, circles, polylines).
@@ -9022,7 +9028,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'PRESENTATION_STYLE_ASSIGNMENT')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1) gmsh=shape(1). OCC loads a 1-vertex stub; the defect is a PMI/presentation property the shape-count oracles cannot observe (regardless of reachability). The defect is byte-present but not demonstrable by the load-time shape-count oracles.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -9216,12 +9222,13 @@ _Section summary: 106 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi068 — Annotation_plane orientation flipped on import (mirror determinant)
+- **Status**: honest reclassification (2026-07-18) — the defect is byte-present but sits unreachable from the shape-rep root, so OCC loads only a 1-vertex stub (`shape(1)`); it is oracle-invisible at load and does NOT demonstrate a repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.7 (sub-class: annotation-plane)
 - **Sources**: 11-translator-vendors (W039 SDHE-22078)
 - **Description**: An `annotation_plane` whose underlying `axis2_placement_3d` carries a left-handed (mirrored, negative-determinant) frame is exported with the orientation silently corrected to right-handed, flipping the normal direction. Annotations then read back facing the wrong way.
 - **Reproducer recipe**: `annotation_plane` with `axis2_placement_3d` whose `axis` and `ref_direction` produce a left-handed frame.
 - **Expected kernel behavior**: Preserve handedness; flip face normals coherently to maintain solidness; do not silently right-handize annotation planes.
-- **Notes**: **See also**: A024. **OCC behavior**: silently right-handizes the left-handed annotation plane frame on import without diagnostic, flipping the annotation normal; kernel mishandling; the catalog above forbids silent right-handization. Synonyms: "annotation_plane orientation flipped on import", "PMI plane mirror determinant", "GD&T text faces wrong way", "annotation reads backward on import".
+- **Notes**: **See also**: A024. **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1) gmsh=shape(1). OCC loads a 1-vertex stub; the left-handed annotation-plane frame sits unreachable from the shape-rep root and is in any case a presentation property the shape-count oracles cannot observe, so it is byte-present but not demonstrable by the load-time shape-count oracles. Synonyms: "annotation_plane orientation flipped on import", "PMI plane mirror determinant", "GD&T text faces wrong way", "annotation reads backward on import".
 - **Byte assertion**: contains(b'CARTESIAN_TRANSFORMATION_OPERATOR_3D')
 - **Byte assertion**: contains(b'ITEM_DEFINED_TRANSFORMATION')
 - **Byte assertion**: count_entity_def(b'PLANE') == 2
@@ -15130,6 +15137,7 @@ _Section summary: 28 entries._
  OCCT #417 documents an analogous one-shell case in OCCT.
 
 ### Pf002 — Quadratic-cost STEP write on dense forward-reference `VERTEX_POINT` / `EDGE_CURVE` / `ADVANCED_FACE` web (200k-entity scale)
+- **Status**: honest reclassification (2026-07-18) — the defect is byte-present but sits unreachable from the shape-rep root, so OCC loads only a 1-vertex stub (`shape(1)`); it is oracle-invisible at load and does NOT demonstrate a repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.10 (sub-class: file-size / writer scalability)
 - **Sources**: 18-other-issues.md I046 (pythonocc-core #660)
 - **Sender**: IFC pipeline (FZK Haus IfcStair) → OCCT writer
@@ -15145,7 +15153,7 @@ _Section summary: 28 entries._
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 8
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1) gmsh=shape(1). OCC loads a 1-vertex stub; the defect entity is byte-present but sits unreachable from the shape-rep root, so OCC silently accepts with NO distinguishing signal vs a clean file. The defect is byte-present but not demonstrable by the load-time shape-count oracles.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -15153,6 +15161,7 @@ _Section summary: 28 entries._
  amortized O(N) writer with indexed reference resolution.
 
 ### Pf003 — 50-second read on a 20 MB STEP: forward-reference DATA section forces multi-pass resolution (single-threaded)
+- **Status**: honest reclassification (2026-07-18) — the defect is byte-present but sits unreachable from the shape-rep root, so OCC loads only a 1-vertex stub (`shape(1)`); it is oracle-invisible at load and does NOT demonstrate a repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.10 (sub-class: file-size / reader scalability)
 - **Sources**: 18-other-issues.md I047 (pythonocc-core #1244)
 - **Description**: A nominally small (20 MB) STEP takes ~50 s to read; the
@@ -15166,7 +15175,7 @@ _Section summary: 28 entries._
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1) gmsh=shape(1). OCC loads a 1-vertex stub; the defect entity is byte-present but sits unreachable from the shape-rep root, so OCC silently accepts with NO distinguishing signal vs a clean file. The defect is byte-present but not demonstrable by the load-time shape-count oracles.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -15192,6 +15201,7 @@ _Section summary: 28 entries._
  amortized O(N log N).
 
 ### Pf006 — Quadratic self-intersection check dominates STEP read on perforated sheets
+- **Status**: honest reclassification (2026-07-18) — the defect is byte-present but sits unreachable from the shape-rep root, so OCC loads only a 1-vertex stub (`shape(1)`); it is oracle-invisible at load and does NOT demonstrate a repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.10 (sub-class: dependency-depth / multi-pass-healing)
 - **Sources**: 13-quaoar.md B002
 - **Description**: ~90 % of STEP read time on sheet-metal parts with
@@ -15205,13 +15215,14 @@ _Section summary: 28 entries._
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 10
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads a non-null shape, `shape_null == False`, on this scaled-down reproducer); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: this reproducer's small hole count doesn't itself demonstrate the quadratic slowdown, only that a shape loads without diagnosing the pathological self-intersection-check cost; receivers enforcing the spec must heal (skip the check by default) or reject at scale.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1) gmsh=shape(1). OCC loads a 1-vertex stub; the defect entity is byte-present but sits unreachable from the shape-rep root, so OCC silently accepts with NO distinguishing signal vs a clean file. The defect is byte-present but not demonstrable by the load-time shape-count oracles.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
  closed wires of analytic curves; opt-in slow path.
 
 ### Pf007 — `ADVANCED_FACE` with many circular inner `FACE_BOUND` holes triggers eager UV-bounds wire-walk on every type-only surface query
+- **Status**: honest reclassification (2026-07-18) — the defect is byte-present but sits unreachable from the shape-rep root, so OCC loads only a 1-vertex stub (`shape(1)`); it is oracle-invisible at load and does NOT demonstrate a repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.10 (sub-class: dependency-depth)
 - **Sources**: 13-quaoar.md B003
 - **Description**: Querying the supporting surface of a face eagerly walks every
@@ -15226,7 +15237,7 @@ _Section summary: 28 entries._
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 8
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1) gmsh=shape(1). OCC loads a 1-vertex stub; the defect entity is byte-present but sits unreachable from the shape-rep root, so OCC silently accepts with NO distinguishing signal vs a clean file. The defect is byte-present but not demonstrable by the load-time shape-count oracles.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -15257,6 +15268,7 @@ _Section summary: 28 entries._
  with explicit stack; reject early with clear diagnostic if depth > N.
 
 ### Pf009 — Stack overflow when meshing with TBB pool from STEP import
+- **Status**: honest reclassification (2026-07-18) — the defect is byte-present but sits unreachable from the shape-rep root, so OCC loads only a 1-vertex stub (`shape(1)`); it is oracle-invisible at load and does NOT demonstrate a repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.10 (sub-class: dependency-depth)
 - **Sources**: 18-other-issues.md I064 (OCCT #688)
 - **Description**: Enabling parallel meshing with the default thread pool causes per-thread stack overflows on real STEP imports; TBB worker stacks default to 1 MB, the recursive mesher overruns them on large faces, the thread pool catches the overflow but loses partial output. Configuring 8 MB worker stacks works but degrades throughput.
@@ -15268,7 +15280,7 @@ _Section summary: 28 entries._
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1) gmsh=shape(1). OCC loads a 1-vertex stub; the defect entity is byte-present but sits unreachable from the shape-rep root, so OCC silently accepts with NO distinguishing signal vs a clean file. The defect is byte-present but not demonstrable by the load-time shape-count oracles.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -15354,6 +15366,7 @@ _Section summary: 28 entries._
  with diagnostic.
 
 ### Pf014 — Long helix exported as huge B-spline (millions of poles)
+- **Status**: honest reclassification (2026-07-18) — the defect is byte-present but sits unreachable from the shape-rep root, so OCC loads only a 1-vertex stub (`shape(1)`); it is oracle-invisible at load and does NOT demonstrate a repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.10 (sub-class: long-curve)
 - **Sources**: 08-occt-gitlog.md G073 (OCCT 02fd709; Mantis 0026930);
  03-occt-tests.md R027 (bug26943); 18-other-issues.md I066
@@ -15370,7 +15383,7 @@ _Section summary: 28 entries._
 - **Notes**: **See also**: P008, P009.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 32
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1) gmsh=shape(1). OCC loads a 1-vertex stub; the defect entity is byte-present but sits unreachable from the shape-rep root, so OCC silently accepts with NO distinguishing signal vs a clean file. The defect is byte-present but not demonstrable by the load-time shape-count oracles.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -15507,6 +15520,7 @@ _Section summary: 28 entries._
  forward.
 
 ### Pf021 — Floating / non-deterministic crash in shape healing on near-apex `CONICAL_SURFACE` edge
+- **Status**: honest reclassification (2026-07-18) — the defect is byte-present but sits unreachable from the shape-rep root, so OCC loads only a 1-vertex stub (`shape(1)`); it is oracle-invisible at load and does NOT demonstrate a repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.10 (sub-class: multi-pass-healing / non-deterministic)
 - **Sources**: 11-translator-vendors.md W049 (CAD Exchanger CHANGES v3.24.8)
 - **Description**: Healing pipeline crashes intermittently on the same
@@ -15526,7 +15540,7 @@ _Section summary: 28 entries._
 - **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_REAL_NO_DOT)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 3
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1) gmsh=shape(1). OCC loads a 1-vertex stub; the defect entity is byte-present but sits unreachable from the shape-rep root, so OCC silently accepts with NO distinguishing signal vs a clean file. The defect is byte-present but not demonstrable by the load-time shape-count oracles.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -15558,6 +15572,7 @@ _Section summary: 28 entries._
  Draw should expose `newmodel` to clear transient state.
 
 ### Pf023 — Iterative ShapeFix exposes new defect every pass (unbounded)
+- **Status**: honest reclassification (2026-07-18) — the defect is byte-present but sits unreachable from the shape-rep root, so OCC loads only a 1-vertex stub (`shape(1)`); it is oracle-invisible at load and does NOT demonstrate a repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.10 (sub-class: multi-pass-healing)
 - **Sources**: 08-occt-gitlog.md G104 (Mantis 0021317);
  09-healing-menus.md (CADfix multi-pass); 11-translator-vendors.md W015
@@ -15575,7 +15590,7 @@ _Section summary: 28 entries._
 - **Notes**: **See also**: N041. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 6
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1), `load == "ok"`, on this scaled-down reproducer); outside catalog's allowed set ({reject}). Kernel-bug witnessed: this reproducer demonstrates the structural multi-defect pattern, not the unbounded-iteration resource exhaustion itself; receivers enforcing the spec must reject with an iteration-limit diagnostic rather than accept silently.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1) gmsh=shape(1). OCC loads a 1-vertex stub; the defect entity is byte-present but sits unreachable from the shape-rep root, so OCC silently accepts with NO distinguishing signal vs a clean file. The defect is byte-present but not demonstrable by the load-time shape-count oracles.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -15583,6 +15598,7 @@ _Section summary: 28 entries._
  fast.
 
 ### Pf024 — Self-intersection-healing tool enters infinite loop on `EDGE_LOOP` with crossed diagonals (out-of-range split index)
+- **Status**: honest reclassification (2026-07-18) — the defect is byte-present but sits unreachable from the shape-rep root, so OCC loads only a 1-vertex stub (`shape(1)`); it is oracle-invisible at load and does NOT demonstrate a repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.10 (sub-class: multi-pass-healing)
 - **Sources**: 08-occt-gitlog.md G077 (Mantis 0029695; OCCT ea1114e)
 - **Description**: Intersection-healing algorithm could infinite-loop on
@@ -15596,12 +15612,13 @@ _Section summary: 28 entries._
 - **Notes**: Validation observed: this is a deliberately scaled-down representative; the structural pattern is present but the production-scale resource exhaustion / catastrophic timing is not exercised at fixture size. To trigger the documented kernel-crash, multiply the entity-replication factor by ~10^N as noted in the reproducer recipe. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 5
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1), `load == "ok"`, on this scaled-down reproducer); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: this reproducer demonstrates the structural crossed-diagonal pattern, not the production-scale infinite loop itself (see Notes); receivers enforcing the spec must heal or reject rather than accept silently.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1) gmsh=shape(1). OCC loads a 1-vertex stub; the defect entity is byte-present but sits unreachable from the shape-rep root, so OCC silently accepts with NO distinguishing signal vs a clean file. The defect is byte-present but not demonstrable by the load-time shape-count oracles.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pf025 — `ADVANCED_FACE` with internal-vertex `VERTEX_LOOP` `FACE_BOUND` (`.U.`) causes outer-wire-detection infinite loop (IFC-derived)
+- **Status**: honest reclassification (2026-07-18) — the defect is byte-present but sits unreachable from the shape-rep root, so OCC loads only a 1-vertex stub (`shape(1)`); it is oracle-invisible at load and does NOT demonstrate a repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.10 (sub-class: multi-pass-healing)
 - **Sources**: 08-occt-gitlog.md G069, G102 (Mantis 0031144 / 0031926)
 - **Sender**: IFC → STEP path
@@ -15612,7 +15629,7 @@ _Section summary: 28 entries._
 - **Notes**: Validation observed: this is a deliberately scaled-down representative; the structural pattern is present but the production-scale resource exhaustion / catastrophic timing is not exercised at fixture size. To trigger the documented kernel-crash, multiply the entity-replication factor by ~10^N as noted in the reproducer recipe. **See also**: Twi041. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 5
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1) gmsh=shape(1). OCC loads a 1-vertex stub; the defect entity is byte-present but sits unreachable from the shape-rep root, so OCC silently accepts with NO distinguishing signal vs a clean file. The defect is byte-present but not demonstrable by the load-time shape-count oracles.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`

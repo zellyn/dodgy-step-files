@@ -31,7 +31,7 @@ f = StepFile(
         "process-state contamination: gmsh Geometry.OCCTargetUnit=M mutated global OCCT unit; "
         "subsequent FreeCAD STEP export inherited that global and scaled all coords x1000; "
         "kernel must coerce per-call context without inheriting global state; "
-        "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty"
+        "the defect entity is emitted but sits unreachable from the shape-rep root (product chain roots a GEOMETRIC_CURVE_SET stub), so OCC loads only a 1-vertex stub (shape(1)); byte-present but oracle-invisible to the load-time shape-count oracles"
     ),
     schema="AP242",
 )

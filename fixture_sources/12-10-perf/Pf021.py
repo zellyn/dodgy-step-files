@@ -26,7 +26,7 @@ f = StepFile(
         "CONICAL_SURFACE with near-apex EDGE_CURVE: apex vertex at Z=0, "
         "adjacent vertex at Z=1e-12 (near-zero edge); singular projection in "
         "healing produces FP exception / uninitialised-memory read; "
-        "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty"
+        "the defect entity is emitted but sits unreachable from the shape-rep root (product chain roots a GEOMETRIC_CURVE_SET stub), so OCC loads only a 1-vertex stub (shape(1)); byte-present but oracle-invisible to the load-time shape-count oracles"
     ),
 )
 
