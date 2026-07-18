@@ -42186,7 +42186,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-1c-syntax/Ls054.stp",
     "id": "Ls054",
-    "notes": "**See also**: Ls013. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture. Synonyms: \"empty subsuper instance\", \"complex entity with no records\", \"keyword-less empty parens instance\", \"zero-record combined entity\", \"STEP empty complex #1=()\". Provenance tier: bytes-only. Expected validation is provisional (best-guess) pending oracle rebaseline — the live occt/gmsh oracle is not run here (platform divergence); nightly CI reconciles.",
+    "notes": "**See also**: Ls013. **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a `GEOMETRIC_SET` referencing a `CARTESIAN_POINT`, which has no shape-representation root and OCC transfers to no shape even when well-formed (confirmed by a matching well-formed control — loads empty); the declared Part-21 syntax defect cannot manifest as lost geometry (base and clean both empty). Toy/placeholder topology, not a defect-driven data-loss; not a proven kernel bug. Synonyms: \"empty subsuper instance\", \"complex entity with no records\", \"keyword-less empty parens instance\", \"zero-record combined entity\", \"STEP empty complex #1=()\". Provenance tier: bytes-only. Expected validation is provisional (best-guess) pending oracle rebaseline — the live occt/gmsh oracle is not run here (platform divergence); nightly CI reconciles.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-only",
@@ -42204,7 +42204,6 @@
     ],
     "structural_assertions": [],
     "taxonomy": [
-      "silent-loss",
       "spec-violation",
       "syntax"
     ],
@@ -42271,7 +42270,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-1c-syntax/Ls056.stp",
     "id": "Ls056",
-    "notes": "**See also**: Ls055. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture. Synonyms: \"nested comment illusion\", \"comments do not nest\", \"stray */\", \"leaked entity from comment\", \"unmatched comment closer\", \"double */ after entity\". Provenance tier: bytes-only. Expected validation is provisional (best-guess) pending oracle rebaseline — the live occt/gmsh oracle is not run here (platform divergence); nightly CI reconciles.",
+    "notes": "**See also**: Ls055. **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is loose `DIRECTION`s and a leaked `CARTESIAN_POINT`, which has no shape-representation root and OCC transfers to no shape even when well-formed (confirmed by a matching well-formed control — loads empty); the declared Part-21 syntax defect cannot manifest as lost geometry (base and clean both empty). Toy/placeholder topology, not a defect-driven data-loss; not a proven kernel bug. Synonyms: \"nested comment illusion\", \"comments do not nest\", \"stray */\", \"leaked entity from comment\", \"unmatched comment closer\", \"double */ after entity\". Provenance tier: bytes-only. Expected validation is provisional (best-guess) pending oracle rebaseline — the live occt/gmsh oracle is not run here (platform divergence); nightly CI reconciles.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-only",
@@ -42289,7 +42288,6 @@
     ],
     "structural_assertions": [],
     "taxonomy": [
-      "silent-loss",
       "spec-violation",
       "syntax"
     ],

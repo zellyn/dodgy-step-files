@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1><span class="tag tag-silent-loss">silent-loss</span></h1>
 <p class="blurb">Data silently dropped without a diagnostic (faces, colors, labels, geometry).</p>
-<p class="meta">131 entries</p>
+<p class="meta">129 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Section</th><th>Expected validation</th></tr></thead><tbody>
@@ -86,9 +86,7 @@
 <tr><td><a href="../../12-1c-syntax/Ls048.html"><code>Ls048</code></a></td><td>Complex / multiple-inheritance entity record: ancestor leaf omitted</td><td><a href="../../12-1c-syntax/index.html">§12.1c Part-21 grammar</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-1c-syntax/Ls052.html"><code>Ls052</code></a></td><td>Instance ID just past `UINT64_MAX` wraps to a low-numbered ID</td><td><a href="../../12-1c-syntax/index.html">§12.1c Part-21 grammar</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-1c-syntax/Ls053.html"><code>Ls053</code></a></td><td>REAL literal in an INTEGER-typed slot (`3.0` where `3` is required)</td><td><a href="../../12-1c-syntax/index.html">§12.1c Part-21 grammar</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
-<tr><td><a href="../../12-1c-syntax/Ls054.html"><code>Ls054</code></a></td><td>Empty complex (subsuper) instance `#1=();` (zero constituent records)</td><td><a href="../../12-1c-syntax/index.html">§12.1c Part-21 grammar</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-1c-syntax/Ls055.html"><code>Ls055</code></a></td><td>Unterminated block comment (no closing `*/`) swallows the file tail</td><td><a href="../../12-1c-syntax/index.html">§12.1c Part-21 grammar</a></td><td><code>occt=reject/reject gmsh=reject ifc=schema_n/a</code></td></tr>
-<tr><td><a href="../../12-1c-syntax/Ls056.html"><code>Ls056</code></a></td><td>Non-nesting comment illusion; inner opener leaves a stray closer</td><td><a href="../../12-1c-syntax/index.html">§12.1c Part-21 grammar</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-8-mixed/M022.html"><code>M022</code></a></td><td>STL-derived tessellated_solid / triangulated_face ignored by importers</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-8-mixed/M048.html"><code>M048</code></a></td><td>Material / appearance / physical attributes silently dropped on STEP export</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=empty/empty gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-8-mixed/M051.html"><code>M051</code></a></td><td>Bare GEOMETRIC_SET / GEOMETRIC_CURVE_SET with non-geometric children or mesh-as-surfaces</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>

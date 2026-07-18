@@ -16,7 +16,6 @@
 <p class="category">§12.1c comment framing</p>
 <p class="severity-badge severity-p1">P1 — silent data loss</p>
 <p class="tag-pills">
-<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
 <a class="tag tag-syntax" href="../by-tag/syntax/index.html">syntax</a>
 </p>
@@ -36,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Treat comments as non-nesting per the spec and reject the stray `*/`; document the non-nesting rule clearly so authors do not rely on nested-comment behavior.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Ls055. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture. Synonyms: &quot;nested comment illusion&quot;, &quot;comments do not nest&quot;, &quot;stray */&quot;, &quot;leaked entity from comment&quot;, &quot;unmatched comment closer&quot;, &quot;double */ after entity&quot;. Provenance tier: bytes-only. Expected validation is provisional (best-guess) pending oracle rebaseline — the live occt/gmsh oracle is not run here (platform divergence); nightly CI reconciles.</p></section>
+<p>**See also**: Ls055. **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is loose `DIRECTION`s and a leaked `CARTESIAN_POINT`, which has no shape-representation root and OCC transfers to no shape even when well-formed (confirmed by a matching well-formed control — loads empty); the declared Part-21 syntax defect cannot manifest as lost geometry (base and clean both empty). Toy/placeholder topology, not a defect-driven data-loss; not a proven kernel bug. Synonyms: &quot;nested comment illusion&quot;, &quot;comments do not nest&quot;, &quot;stray */&quot;, &quot;leaked entity from comment&quot;, &quot;unmatched comment closer&quot;, &quot;double */ after entity&quot;. Provenance tier: bytes-only. Expected validation is provisional (best-guess) pending oracle rebaseline — the live occt/gmsh oracle is not run here (platform divergence); nightly CI reconciles.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>

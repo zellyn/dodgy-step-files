@@ -579,6 +579,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=reject`
 
 ### Lh005 — FILE_DESCRIPTION/FILE_NAME/FILE_SCHEMA arity mismatch (extra or missing attributes)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared header / instance-numbering defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1b header/numbering
 - **Sources**: 07-stepcode-ifcopenshell T012, 16-iso-spec N054
 - **Description**: FILE_NAME requires 7 attributes; FILE_DESCRIPTION 2; FILE_SCHEMA 1 (a list). Real-world failures: extra attribute appended to FILE_NAME, empty parameter lists where attributes are required, FILE_SCHEMA written with a single string in place of a list of strings.
@@ -587,7 +588,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Lh004. Synonyms: "FILE_NAME wrong number of attributes", "FILE_SCHEMA arity mismatch", "FILE_DESCRIPTION extra attribute", "header record with too few parameters", "FILE_SCHEMA single string instead of list".
 - **Byte assertion**: matches(rb'FILE_NAME\([^;]*\);')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared header / instance-numbering defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -620,6 +621,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Lh008 — Duplicate `FILE_SCHEMA` records with conflicting schema names
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared header / instance-numbering defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1b header/numbering
 - **Sources**: 12-adversarial A023
 - **Description**: Two separate `FILE_SCHEMA` lines in HEADER. Last-write-wins vs. first-write-wins behavior diverges across implementations, leading to silent schema mis-binding.
@@ -628,12 +630,13 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Lh006. Synonyms: "duplicate FILE_SCHEMA records", "two FILE_SCHEMA lines in HEADER", "conflicting schema names in header", "second FILE_SCHEMA overrides first", "schema declared twice with different names".
 - **Byte assertion**: count(b'FILE_SCHEMA') >= 2
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared header / instance-numbering defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Cross-references that depend on the duplicated/illegal instance number resolve to the wrong entity (or to NULL); affected sub-trees attach to incorrect parents and the resulting BRep contains dangling or mis-typed references.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Lh009 — Blank, mis-cased, or unrecognized schema name
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared header / instance-numbering defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1b header/numbering
 - **Sources**: 06-nist-sfa S011, 16-iso-spec N026
 - **Description**: FILE_SCHEMA value is `''`, mixed-case (`'AutomotiveDesign'`), uses a non-canonical long form (e.g. `_MIM` instead of `_MIM_LF`), names an internal vendor schema, or comma-separates multiple schemas inside one string instead of using a LIST.
@@ -643,7 +646,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: matches(rb"FILE_SCHEMA\(\(\s*'AUTOMOTIVE_DESIGN_MIM(?!_LF)'")
 - **Byte assertion**: contains(b'AUTOMOTIVE_DESIGN_MIM')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared header / instance-numbering defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -692,6 +695,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Lh013 — Non-deterministic / build-time timestamp pollution
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared header / instance-numbering defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1b header/numbering
 - **Sources**: 18-other-issues I069
 - **Sender**: build123d export_step (also CadQuery #1396)
@@ -703,7 +707,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Byte assertion**: contains(b'HEADER;')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared header / instance-numbering defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -724,6 +728,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Lh016 — Edition-3 extra header entities (`FILE_INFO`, `FILE_POPULATION`, `SECTION_LANGUAGE`, …)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared header / instance-numbering defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1b header/numbering
 - **Sources**: 07-stepcode-ifcopenshell T013
 - **Description**: Edition 3 allows additional header entities beyond the required three (`FILE_POPULATION`, `SECTION_LANGUAGE`, implementation-private entries). Strict Edition-1/2 readers reject any header entity beyond the canonical three; tolerant Edition-3 readers must accept them.
@@ -731,13 +736,14 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected kernel behavior**: accept any number of extra header entities under Edition 3; warn for unknown names; reject under strict Edition-2.
 - **Byte assertion**: contains(b'FILE_POPULATION') or contains(b'SECTION_LANGUAGE') or contains(b'FILE_INFO')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared header / instance-numbering defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Notes**: Synonyms: "FILE_POPULATION header record", "Edition 3 extra header entities", "SECTION_LANGUAGE in HEADER", "Ed.2 reader rejects FILE_INFO", "Edition 3 header beyond required three".
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Lh017 — User-defined entity name with `!` prefix in DATA section
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared header / instance-numbering defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1b header/numbering
 - **Sources**: 07-stepcode-ifcopenshell T014
 - **Description**: ISO 10303-21 §11 reserves names beginning with `!` for user-defined entities. Schema-driven readers whose keyword regex is `[A-Z][0-9A-Z_]*` reject them outright instead of treating them as opaque user types.
@@ -748,7 +754,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: matches(rb'#\d+\s*=\s*!')
 - **Byte assertion**: matches(rb'#\d+\s*=\s*!\w+\(')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared header / instance-numbering defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -769,6 +775,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Lh019 — FILE_SCHEMA names a schema that disagrees with entity types in DATA
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared header / instance-numbering defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1b header/numbering
 - **Sources**: 07-stepcode-ifcopenshell T033, 11-translator-vendors W046, 17-standards-bodies M029
 - **Description**: HEADER claims one schema (e.g. `IFC4`, `AUTOMOTIVE_DESIGN`/AP214, `AP242_…` Ed.2) but DATA uses entity names that exist only in another schema or another edition (e.g. `IFC2X3_PROJECT` in an IFC4 file; `ROUND_HOLE` in an AP214 file; post-Ed.3 hole-feature entities under an Ed.2 header).
@@ -779,7 +786,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: matches(rb"FILE_SCHEMA\(\('IFC4'\)\)")
 - **Byte assertion**: contains(b'IFC2X3') and contains(b'IFC4')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared header / instance-numbering defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=accept(0)`
@@ -798,6 +805,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Lh023 — Whitespace, tab, or comment between `#` and digits of an instance ID
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared header / instance-numbering defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1b header/numbering
 - **Sources**: 07-stepcode-ifcopenshell T018, 16-iso-spec N030
 - **Description**: stepcode tolerates `# 12 = ENT(..)` and even `# /*c*/ 12 = ENT(..)`; the IfcOpenShell Lark grammar rejects whitespace between `#` and digits. ISO 10303-21 §5.6 declares `#NNN` a single token, so spaces inside it are non-conformant. Treating tab as a separator inside an identifier produces silent corruption (`#1<TAB>2` becomes `#12`).
@@ -807,12 +815,13 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: matches(rb'#\s+\d+\s*=') or matches(rb'#/\*[^*]*\*/\d') or matches(rb'#\d+\t\d')
 - **Byte assertion**: matches(rb'#\s+\d') or matches(rb'#/\*')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared header / instance-numbering defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Lh024 — Reuse of `#NNN` across different DATA sections (Ed.3 multi-section)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared header / instance-numbering defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1b header/numbering
 - **Sources**: 07-stepcode-ifcopenshell T029, 16-iso-spec N041, 16-iso-spec N042
 - **Description**: Edition 3 allows multiple `DATA;…ENDSEC;` sections, each with its own `#NNN` namespace; cross-section references use `@section_name#N` syntax. Tools targeting Edition 1 either fail at the second `DATA;` or silently flatten namespaces, causing collisions when `#10` appears in both sections.
@@ -822,12 +831,13 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: count(b'DATA;') + count(b"DATA('") >= 2
 - **Byte assertion**: count(b'DATA') >= 2
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared header / instance-numbering defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Lh025 — Mixing `#NNN` (entity) and `@NNN` (value) namespaces (Ed.3)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared header / instance-numbering defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1b header/numbering
 - **Sources**: 16-iso-spec N035
 - **Description**: Edition 3 introduces `@NNN` value-instance identifiers (e.g. `@1=POSITIVE_LENGTH_MEASURE(..)`) alongside `#NNN` entity-instance identifiers. The two integer namespaces are disjoint: `#1` and `@1` are distinct instances. Files that put a `@NNN` value-instance reference where a `#NNN` entity-instance reference is required (or vice versa), or that use the `@`-prefix syntax in plain Edition-2 contexts, break readers that collapse the two namespaces into one map and silently merge unrelated objects.
@@ -837,7 +847,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: matches(rb'@\d+\s*=')
 - **Byte assertion**: matches(rb'@1\s*=')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared header / instance-numbering defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -857,6 +867,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=schema_n/a`
 
 ### Lh027 — Malformed entity ID inside an ANCHOR entry (non-numeric `#`)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared header / instance-numbering defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1b header/numbering
 - **Sources**: 06-nist-sfa S016
 - **Description**: ANCHOR entries reference `#NNN` form; entries using non-numeric tokens after `#` (e.g. `<#42@x>='product';`) violate the grammar.
@@ -866,12 +877,13 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: contains(b'#42@x') or matches(rb'#\d+@[a-zA-Z]')
 - **Byte assertion**: contains(b'#42@x')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared header / instance-numbering defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Lh028 — Forward reference inside ANCHOR section to undefined data instance
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared header / instance-numbering defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1b header/numbering
 - **Sources**: 16-iso-spec N036
 - **Description**: ANCHOR may reference data instances, but every `#NNN` it names must eventually resolve in some DATA section of the same file. Generators emit anchors for instances that were filtered out of the DATA section.
@@ -882,7 +894,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: contains(b'ANCHOR;')
 - **Byte assertion**: matches(rb'<[^>]+>=#100;')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared header / instance-numbering defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -904,6 +916,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=reject`
 
 ### Lh030 — Lower-case `name` field values where Recommended-Practices keywords are defined
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared header / instance-numbering defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1b header/numbering
 - **Sources**: 06-nist-sfa S070
 - **Description**: Several Recommended Practices specify lower-case keyword strings as canonical attribute values (e.g. `'composite'` on `geometric_tolerance_relationship`). Producers that emit these in mixed or upper case break receivers that string-compare strictly.
@@ -913,7 +926,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: contains(b"GEOMETRIC_TOLERANCE_RELATIONSHIP('Composite'")
 - **Byte assertion**: contains(b"'Composite'")
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared header / instance-numbering defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -936,6 +949,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Lh032 — Constant reference (`#NAME`/`@NAME`) used where instance reference required
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared header / instance-numbering defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1b header/numbering
 - **Sources**: 16-iso-spec N053
 - **Description**: ISO 10303-21 distinguishes `#NAME`/`@NAME` (uppercase identifier, refers to a schema-defined constant) from `#NNN`/`@NNN` (refers to an instance). Tools occasionally emit `#PI` thinking it is a literal alias when the schema defines no such constant, producing an unresolved-reference error.
@@ -945,7 +959,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: matches(rb'#[A-Z][A-Z_]*\b')
 - **Byte assertion**: matches(rb'#PI\b')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared header / instance-numbering defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -963,6 +977,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ls002 — REAL literal with no digit before the decimal point
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a loose `LINE` over `CARTESIAN_POINT`s with no wire/face/shell, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared Part-21 syntax defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1c numeric-literal grammar
 - **Sources**: N016
 - **Description**: Grammar requires at least one digit before the dot. `.5` is not legal; `0.5` is. C/Python `%g` formatters frequently emit bare `.5`.
@@ -972,7 +987,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: matches(rb"\(\s*\.\d")
 - **Byte assertion**: contains(b'.5') and matches(rb'\(\.\d')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a loose `LINE` over `CARTESIAN_POINT`s with no wire/face/shell; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared Part-21 syntax defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -993,6 +1008,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ls004 — Fortran-style `D` exponent (`1.0D5`)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a loose `LINE` over `CARTESIAN_POINT`s with no wire/face/shell, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared Part-21 syntax defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1c numeric-literal grammar
 - **Sources**: T023
 - **Description**: Some legacy Fortran-fronted exporters (older I-DEAS, CADAM converters) emit `1.0D5` instead of `1.0E5`. ISO 10303-21 only allows `E`/`e`.
@@ -1002,7 +1018,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: matches(rb'\d[Dd][+-]?\d')
 - **Byte assertion**: contains(b'1.0D5') or contains(b'1.5D-3')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a loose `LINE` over `CARTESIAN_POINT`s with no wire/face/shell; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared Part-21 syntax defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -1022,6 +1038,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ls006 — Numeric literal with embedded underscore digit-grouping
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a loose `LINE` over `CARTESIAN_POINT`s with no wire/face/shell, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared Part-21 syntax defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1c numeric-literal grammar
 - **Sources**: T045
 - **Description**: Modern languages tolerate `1_000_000`. Some in-house exporters borrow this and emit `IFCREAL(1_000.0)`. ISO 10303-21 disallows underscores in numerics.
@@ -1031,12 +1048,13 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: matches(rb'\d_\d')
 - **Byte assertion**: count(b'_') >= 2 or matches(rb'\d_\d{3}')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a loose `LINE` over `CARTESIAN_POINT`s with no wire/face/shell; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared Part-21 syntax defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ls008 — Float literal with extreme exponent / non-finite real
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a loose `LINE` over `CARTESIAN_POINT`s with no wire/face/shell, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared Part-21 syntax defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1c numeric-literal grammar
 - **Sources**: A014
 - **Description**: `1.0E+999999` parsed via `strtod` yields `inf`; `NaN` results from malformed inputs. Geometry pipelines that compare via `<`/`>` then violate sort invariants in STL containers.
@@ -1046,7 +1064,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: contains(b'1.0E+999999') or contains(b'1.0E-999999')
 - **Byte assertion**: count(b'E+999999') + count(b'E-999999') >= 1
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a loose `LINE` over `CARTESIAN_POINT`s with no wire/face/shell; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared Part-21 syntax defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -1097,6 +1115,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ls014 — Untyped (`*`) attribute used where derived not declared / `$` confused with `*`
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is loose `CARTESIAN_POINT`s and a `POLYLINE`, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared Part-21 syntax defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1c parameter tokens
 - **Sources**: T024, Q087, N022, N046
 - **Description**: `*` denotes derived/inherited attribute; `$` denotes null OPTIONAL value. Generators substitute one for the other. Inside aggregate elements only `$` is permitted as a "no value" placeholder; `*` is an attribute-level marker only. Some senders also emit a value for a derived slot instead of `*`.
@@ -1106,12 +1125,13 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: matches(rb',\s*\*\s*[,)]')
 - **Byte assertion**: count(b'*') >= 2
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is loose `CARTESIAN_POINT`s and a `POLYLINE`; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared Part-21 syntax defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ls015 — Missing comma between attribute values
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is loose `CARTESIAN_POINT`/`DIRECTION`/`AXIS2_PLACEMENT_3D` primitives, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared Part-21 syntax defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1c punctuation
 - **Sources**: S006
 - **Description**: A list of attributes lacks a comma separator. SFA reports `"Expecting ',', found _3DV instead."`
@@ -1120,7 +1140,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: matches(rb"'[xp]'\s*\(")
 - **Byte assertion**: matches(rb"'\w'\s+\(")
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is loose `CARTESIAN_POINT`/`DIRECTION`/`AXIS2_PLACEMENT_3D` primitives; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared Part-21 syntax defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Notes**: Synonyms: "missing comma between STEP attributes", "Expecting comma found _3DV", "STEP attribute separator dropped", "two attributes adjacent without comma", "comma-less attribute list".
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
@@ -1140,6 +1160,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ls017 — Trailing comma at end of aggregate
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is loose `CARTESIAN_POINT`s, a `POLYLINE`, and an `AXIS2_PLACEMENT_3D`, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared Part-21 syntax defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1c punctuation
 - **Sources**: A017, N051
 - **Description**: Aggregates do not permit trailing commas. JS/Python-influenced generators emit `(1.,2.,3.,)`. Recursive-descent grammars that accept it append a default-constructed element, mismatching schema-declared count.
@@ -1149,12 +1170,13 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: matches(rb',\s*\)')
 - **Byte assertion**: count(b',)') >= 1
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is loose `CARTESIAN_POINT`s, a `POLYLINE`, and an `AXIS2_PLACEMENT_3D`; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared Part-21 syntax defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ls018 — Two consecutive semicolons (`;;`) after instance
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is loose `CARTESIAN_POINT`/`DIRECTION`/`AXIS2_PLACEMENT_3D` primitives, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared Part-21 syntax defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1c punctuation
 - **Sources**: T019, A018
 - **Description**: Trailing extra `;` confuses parsers expecting another `#` definition or `ENDSEC`. Second `;` may be tokenized as start of an empty entity, leading to NULL entity-class lookup.
@@ -1165,12 +1187,13 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: contains(b';;')
 - **Byte assertion**: count(b';;') >= 2
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is loose `CARTESIAN_POINT`/`DIRECTION`/`AXIS2_PLACEMENT_3D` primitives; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared Part-21 syntax defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ls019 — Missing closing `)` of an aggregate (paren imbalance)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is loose `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared Part-21 syntax defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1c punctuation
 - **Sources**: T043, N050
 - **Description**: A truncated coordinate list like `((1.,2.,3.),(4.,5.,6.)` (one `)` short) causes scanners to walk past the `;` of the next instance. Common when nested aggregates contain empty inner lists (`(())` vs `()`).
@@ -1181,7 +1204,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: matches(rb'IFCPOLYLINE\(\(#\d+,#\d+,#\d+\);')
 - **Byte assertion**: matches(rb'\(#\d+,#\d+,#\d+\);')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is loose `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared Part-21 syntax defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -1301,6 +1324,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ls033 — Whitespace handling: tab/CR/LF/FF as token separators or ignored chars
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is loose `CARTESIAN_POINT`/`DIRECTION`/`VECTOR` primitives, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared Part-21 syntax defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1c whitespace
 - **Sources**: T031, T032, T037, N030, N031
 - **Description**: ISO 10303-21 §5.2 says LF, CR, TAB, FF are ignored characters; §5.6 says only SPACE, comments, and print directives separate tokens. Strict reading: `#1\t=\tCARTESIAN_POINT(..)` after tab-removal becomes `#1=CARTESIAN_POINT(..)`, but `#1<TAB>2` would become `#12`. Real-world parsers tolerate any ASCII whitespace as a separator. Defects: split keyword `FILE _SCHEMA`, internal whitespace inside `#NNN` references, files with `\r`-only line endings, `\f` between attributes, long-line wrapping inside an instance.
@@ -1310,12 +1334,13 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: matches(rb'#\s+\d') or matches(rb'\t')
 - **Byte assertion**: matches(rb'#\s+\d')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is loose `CARTESIAN_POINT`/`DIRECTION`/`VECTOR` primitives; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared Part-21 syntax defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ls034 — Enumeration value missing dotted delimiters or with bad casing
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is loose `CARTESIAN_POINT`/`DIRECTION` primitives, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared Part-21 syntax defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1c enumeration token form
 - **Sources**: T035, N021
 - **Description**: ISO 10303-21 enum literals are `.IDENT.` where IDENT is an EXPRESS-conformant identifier (uppercase letters and digits only). Defects: missing closing dot, lower-case body, digit-leading body, quoted body (`."LEFT".`), missing leading dot.
@@ -1325,7 +1350,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: contains(b'.LENGTHUNIT,') or contains(b'.true.') or contains(b'(TRUE)') or contains(b'."LEFT".')
 - **Byte assertion**: matches(rb'\.[a-z]+\.|\bTRUE\b|\bLEFT\.')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is loose `CARTESIAN_POINT`/`DIRECTION` primitives; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared Part-21 syntax defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -1361,6 +1386,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ls038 — Instance ID `#0` (must be positive non-zero)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a loose `LINE` over `CARTESIAN_POINT`s with no wire/face/shell, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared Part-21 syntax defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1c instance-namespace
 - **Sources**: T016, T017, A022
 - **Description**: ISO 10303-21 requires positive non-zero instance IDs. `#0` is invalid.
@@ -1369,7 +1395,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Lh023, Ls051, Ls052. Synonyms: "instance ID #0 invalid", "STEP entity numbered zero", "zero instance ID rejected", "#0 as definition or reference", "non-positive STEP instance ID".
 - **Byte assertion**: contains(b'#0=')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a loose `LINE` over `CARTESIAN_POINT`s with no wire/face/shell; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared Part-21 syntax defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -1390,6 +1416,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ls044 — String concatenation across consecutive literals (not allowed)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is loose `CARTESIAN_POINT`/`DIRECTION`/`VECTOR` primitives, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared Part-21 syntax defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1c string-quoting (impacts grammar shape)
 - **Sources**: N055
 - **Description**: Unlike C, Part 21 does not concatenate adjacent string literals. `'foo' 'bar'` is two strings, not one. Generators that line-wrap long strings by writing two consecutive literals corrupt the data when the position expects exactly one STRING.
@@ -1399,7 +1426,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: matches(rb"'[^']+'\s+'[^']+'")
 - **Byte assertion**: matches(rb"'[^']{2,}'\s+'")
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is loose `CARTESIAN_POINT`/`DIRECTION`/`VECTOR` primitives; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared Part-21 syntax defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -5989,6 +6016,7 @@ _Section summary: 31 entries._
 ---
 
 ### U002 — Onshape always emits METRE; NX rescales as if mm (1000× too small)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared units defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.5 (sub-class: wrong-declaration / producer-side fixed unit)
 - **Sources**: 10-vendor-kbs.md V002 (forum.onshape.com discussion 762 importing-files-siemens-nx)
 - **Sender**: Onshape STEP writer
@@ -6000,7 +6028,7 @@ _Section summary: 31 entries._
 - **Byte assertion**: matches(rb'SI_UNIT\(\$\s*,\s*\.METRE\.\)')
 - **Byte assertion**: count(b'.METRE.') >= 1
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared units defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -6008,6 +6036,7 @@ _Section summary: 31 entries._
 ---
 
 ### U003 — Onshape inch workspace exports metric STEP (inch-shaped coordinates in mm `LENGTH_UNIT` context)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared units defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.5 (sub-class: wrong-declaration / producer-side display-unit drop)
 - **Sources**: 10-vendor-kbs.md V003 (forum.onshape.com discussion 6658)
 - **Sender**: Onshape (workspace inches)
@@ -6019,7 +6048,7 @@ _Section summary: 31 entries._
 - **Byte assertion**: contains(b'SI_UNIT(.MILLI.,.METRE.)') or contains(b'SI_UNIT(.MILLI., .METRE.)')
 - **Byte assertion**: matches(rb'25\.4|63\.5')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared units defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -6027,6 +6056,7 @@ _Section summary: 31 entries._
 ---
 
 ### U004 — Inventor STEP export switches angle unit from DEGREE to RADIAN, breaks doc preference on round-trip
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared units defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.5 (sub-class: wrong-declaration / plane-angle radians vs degrees)
 - **Sources**: 10-vendor-kbs.md V004 (knowledge.autodesk.com Importing-step-file-into-Inventor-2018-does-not-honor-Document-Units-Setting-for-Angle)
 - **Sender**: Autodesk Inventor 2018+
@@ -6038,7 +6068,7 @@ _Section summary: 31 entries._
 - **Byte assertion**: contains(b'.RADIAN.')
 - **Byte assertion**: count(b'.RADIAN.') >= 1
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared units defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -6062,6 +6092,7 @@ _Section summary: 31 entries._
 ---
 
 ### U006 — PrePoMax double-applies inch→mm scaling on inch STEP (25.4× too large)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared units defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.5 (sub-class: inch-conversion / receiver-side double scaling)
 - **Sources**: 10-vendor-kbs.md V006 (prepomax.discourse.group t/step-geometry-with-inch-units-imports-at-wrong-scale/183)
 - **Sender**: SolidWorks (inch units)
@@ -6073,7 +6104,7 @@ _Section summary: 31 entries._
 - **Byte assertion**: contains(b"CONVERSION_BASED_UNIT('INCH'")
 - **Byte assertion**: contains(b'25.4') or matches(rb'LENGTH_MEASURE\(25\.4\)')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared units defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -6119,6 +6150,7 @@ _Section summary: 31 entries._
 ---
 
 ### U014 — `LENGTH_UNIT` is bare `SI_UNIT(METRE)` but coordinates are mm-sized (`STEP Export` ignores `write.units` since OCCT 7.8 regression)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared units defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.5 (sub-class: global-state / writer)
 - **Sources**: 18-other-issues.md I015 (OCCT issue #354); 04-occt-translation.md Q083 (`write.step.unit` parameter incorrect)
 - **Sender**: OCCT `STEPControl_Writer`
@@ -6129,7 +6161,7 @@ _Section summary: 31 entries._
 - **Byte assertion**: matches(rb'SI_UNIT\(\s*\$\s*,\s*\.METRE\.\)') or contains(b'SI_UNIT($,.METRE.)')
 - **Byte assertion**: contains(b'.METRE.')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared units defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -6155,6 +6187,7 @@ _Section summary: 31 entries._
 ---
 
 ### U016 — Duplicate `CONVERSION_BASED_UNIT` 'INCH' instances (factor 25.4) cause invalid cross-references in dimension export
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared units defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.5 (sub-class: inch-conversion / dimension export)
 - **Sources**: 08-occt-gitlog.md G054 (OCCT 5290fb1; Mantis 0030362)
 - **Description**: Writing dimensions in inches produces STEP files with invalid cross-references between dimension entities. Common signature: two separate `CONVERSION_BASED_UNIT('INCH', ..)` instances (different `#NNN` ids) both defined with the same conversion factor 25.4, with different `LENGTH_MEASURE_WITH_UNIT` records pointing at one or the other; duplicate unit definitions reused inconsistently across multiple measures.
@@ -6164,7 +6197,7 @@ _Section summary: 31 entries._
 - **Byte assertion**: count(b"CONVERSION_BASED_UNIT('INCH'") >= 2
 - **Byte assertion**: count(b"'INCH'") >= 2
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared units defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -6190,6 +6223,7 @@ _Section summary: 31 entries._
 ---
 
 ### U020 — Validation properties (mass / area / volume) emitted with units mismatched to GRC
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared units defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.5 (sub-class: mixed-unit / validation)
 - **Sources**: 08-occt-gitlog.md G101; 06-nist-sfa.md S033 (sfa-valprop.tcl:351,942 — missing `unit_component`)
 - **Description**: Validation properties (volume, surface area, centroid) emitted with measure units that don't match the model's `GEOMETRIC_REPRESENTATION_CONTEXT`; or with no `unit_component` at all.
@@ -6199,7 +6233,7 @@ _Section summary: 31 entries._
 - **Byte assertion**: contains(b'MEASURE_REPRESENTATION_ITEM')
 - **Tier-3 assertion**: shape_null == True
 - **Notes**: Synonyms: "validation properties units mismatch GRC", "mass area volume in different unit than geometry", "MEASURE_REPRESENTATION_ITEM no unit_component", "STEP validation property unit drift", "validation property unit not consistent".
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared units defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -6207,6 +6241,7 @@ _Section summary: 31 entries._
 ---
 
 ### U021 — KILO prefix REQUIRED on `mass_unit` referenced from a derived SI unit (Newton)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared units defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.5 (sub-class: dimensional-exponents / mass prefix)
 - **Sources**: 02-caxif.md "KILO prefix on mass_unit" (UDA v1.8 Annex C.4.1); 06-nist-sfa.md S030 (sfa-valprop.tcl:631)
 - **Description**: Newton is `[kg·m·s⁻²]`. Each `si_unit` referenced by `derived_unit_element` for a derived SI unit must NOT carry a prefix, except when the referenced si_unit is a `mass_unit`, which MUST carry `.KILO.`. Forgetting the prefix makes Newton numerically equivalent to gram·m·s⁻², off by 1000. For SI mass overall, only `kilogram` (prefix `kilo` on base `gram`) is allowed.
@@ -6216,7 +6251,7 @@ _Section summary: 31 entries._
 - **Byte assertion**: contains(b'DERIVED_UNIT_ELEMENT')
 - **Byte assertion**: contains(b'force_unit') or contains(b'FORCE_UNIT') or contains(b'mass_unit') or contains(b'MASS_UNIT')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared units defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -6241,6 +6276,7 @@ _Section summary: 31 entries._
 ---
 
 ### U023 — Conversion factor for `'INCH'` is wrong / omitted
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared units defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.5 (sub-class: inch-conversion / value)
 - **Sources**: 02-caxif.md "Conversion-based unit value mismatch" (UDA v1.8 Annex C, §7.3)
 - **Description**: A `CONVERSION_BASED_UNIT('INCH',..)` must reference a `LENGTH_MEASURE_WITH_UNIT(LENGTH_MEASURE(25.4), <millimeter>)`. Writers that emit a wrong factor (e.g. `2.54E1` against a model whose values are mm; or `25.4` against a metre-based reference) or omit the conversion entirely break unit interpretation.
@@ -6250,7 +6286,7 @@ _Section summary: 31 entries._
 - **Byte assertion**: matches(rb'LENGTH_MEASURE\(2\.54[Ee]?\d*\)') or matches(rb'LENGTH_MEASURE\(2\.54\)')
 - **Byte assertion**: contains(b'2.54') or contains(b'2.54E1')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared units defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -6258,6 +6294,7 @@ _Section summary: 31 entries._
 ---
 
 ### U024 — `dimensional_exponents` inconsistent with declared unit
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared units defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.5 (sub-class: dimensional-exponents)
 - **Sources**: 06-nist-sfa.md S031 (sfa-valprop.tcl:649,654,672,679)
 - **Description**: A `CONVERSION_BASED_UNIT` declares `dimensional_exponents` that don't match the physical quantity it claims to represent; e.g. mass-exponent 0 on a mass unit; length-exponent != −3 for density.
@@ -6266,7 +6303,7 @@ _Section summary: 31 entries._
 - **Byte assertion**: contains(b'DIMENSIONAL_EXPONENTS(0.0,0.0,0.0,0.0,0.0,0.0,0.0)') or matches(rb'DIMENSIONAL_EXPONENTS\(0(?:\.0)?(?:,\s*0(?:\.0)?){6}\)')
 - **Byte assertion**: contains(b"'POUND'") or contains(b'DIMENSIONAL_EXPONENTS')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared units defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Notes**: Synonyms: "dimensional_exponents wrong for unit", "POUND with all-zero exponents", "DIMENSIONAL_EXPONENTS inconsistent with name", "STEP unit exponents mass-zero", "exponents don't match unit type".
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
@@ -6275,6 +6312,7 @@ _Section summary: 31 entries._
 ---
 
 ### U025 — Reader API reports wrong primary length unit on multi-context files
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared units defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.5 (sub-class: global-state / API)
 - **Sources**: 03-occt-tests.md R054 (bug23567 — `stepfileunits` returned wrong primary unit)
 - **Description**: The reader API entry point that returns the file's length unit reports a unit different from the one the receiver actually applied to coordinates during transfer. Downstream tools that read the reported unit and apply scaling produce wrong geometry; coordinates end up scaled inconsistently with the unit label.
@@ -6284,7 +6322,7 @@ _Section summary: 31 entries._
 - **Byte assertion**: count(b'LENGTH_UNIT()') >= 2
 - **Byte assertion**: count(b'LENGTH_UNIT') >= 2
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared units defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -6307,6 +6345,7 @@ _Section summary: 31 entries._
 ---
 
 ### U028 — Two `GEOMETRIC_REPRESENTATION_CONTEXT` instances with different `LENGTH_UNIT` (mm BRep vs metre PMI/CGR)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared units defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.5 (sub-class: mixed-unit / multiple unit contexts)
 - **Sources**: 02-caxif.md "shape_representation/draughting_model/CGR must share the same geometric_representation_context" (PMI v4.1 §9.4.2; Supplemental Geometry §5.4); 17-standards-bodies.md M020 (PrePoMax forum; OCCT default-mm vs CONVERSION_BASED chain)
 - **Description**: A single STEP file carries two `GEOMETRIC_REPRESENTATION_CONTEXT` instances with different `LENGTH_UNIT`s — for example one named 'mm_brep' in millimetres and another 'm_pmi' in metres — where a `SHAPE_REPRESENTATION` (B-rep) uses the mm context and a `CONSTRUCTIVE_GEOMETRY_REPRESENTATION` (CGR) or `DRAUGHTING_MODEL` (PMI) uses the metre context. Part shape, supplemental geometry CGR, and PMI draughting models are required to share the same context; when they don't, units / uncertainty / coordinate space differ between sub-representations. Receivers see Cartesian points apparently in mixed scale; OCCT-based readers default to mm and silently mis-scale the non-mm ones.
@@ -6316,7 +6355,7 @@ _Section summary: 31 entries._
 - **Byte assertion**: contains(b'.MILLI.') and matches(rb'SI_UNIT\(\$\s*,\s*\.METRE\.\)')
 - **Byte assertion**: count_entity_def(b'GEOMETRIC_REPRESENTATION_CONTEXT') >= 2 or count(b'GEOMETRIC_REPRESENTATION_CONTEXT') >= 2
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared units defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -6324,6 +6363,7 @@ _Section summary: 31 entries._
 ---
 
 ### U031 — `CONVERSION_BASED_UNIT('DEG',#9)` / DEG vs RADIAN encoding via complex entity
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared units defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.5 (sub-class: wrong-declaration / plane-angle encoding)
 - **Sources**: 07-stepcode-ifcopenshell.md T025 (complex entity `( CONVERSION_BASED_UNIT('DEG',#9) NAMED_UNIT(*) PLANE_ANGLE_UNIT() )`); ISO 10303-21 Ed.3 §12.2.5
 - **Description**: Plane-angle units are typically encoded as a complex entity combining `CONVERSION_BASED_UNIT('DEG',#refToRadianMeasure)`, `NAMED_UNIT(*)`, and `PLANE_ANGLE_UNIT()`. Defects: members in non-alphabetical order; conversion factor wrong (not `pi/180`); name spelled `'DEGREES'` / `'deg'`; missing `PLANE_ANGLE_UNIT()` member entirely so kernel mistakes it for length.
@@ -6333,7 +6373,7 @@ _Section summary: 31 entries._
 - **Byte assertion**: contains(b"CONVERSION_BASED_UNIT('DEG'") or contains(b'PLANE_ANGLE_UNIT')
 - **Byte assertion**: matches(rb"CONVERSION_BASED_UNIT\('DEG'")
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared units defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -6363,6 +6403,7 @@ _Section summary: 31 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### U034 — Mile-to-millimetre conversion factor mis-applied on export
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared units defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.5 units
 - **Sources**: OCCT MANTIS#0026951 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: An exporter is asked to write a part whose internal unit
@@ -6376,12 +6417,13 @@ _Section summary: 31 entries._
 - **Byte assertion**: contains(b'1609.344')
 - **Byte assertion**: contains(b"CONVERSION_BASED_UNIT('MILE'")
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared units defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### U035 — Exporting ellipse with non-mm unit corrupts geometry
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared units defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.5 units
 - **Sources**: OCCT MANTIS#0023597 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A document with `LENGTH_UNIT = INCH` containing an ellipse
@@ -6395,12 +6437,13 @@ _Section summary: 31 entries._
 - **Notes**: **See also**: U034. Synonyms: "ellipse semi-axes in mm but STEP declares inch", "ellipse exports with mismatched unit", "STEP ellipse re-import 25.4x off", "non-mm unit corrupts ellipse export", "ELLIPSE coords wrong unit".
 - **Byte assertion**: contains(b'ELLIPSE')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared units defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### U036 — `BinXCAF` does not preserve length unit
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared units defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.5 units
 - **Sources**: OCCT MANTIS#0031382 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A document carrying a non-default length unit (e.g.,
@@ -6414,12 +6457,13 @@ _Section summary: 31 entries._
 - **Byte assertion**: contains(b"CONVERSION_BASED_UNIT('INCH'")
 - **Byte assertion**: contains(b'25.4') or contains(b'INCH')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared units defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### U037 — `RescaleGeometry` does not rescale triangulations
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared units defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.5 units
 - **Sources**: OCCT MANTIS#0033100 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A part with both B-rep and triangulated representation is
@@ -6435,12 +6479,13 @@ _Section summary: 31 entries._
 - **Byte assertion**: contains(b'TRIANGULATED_FACE')
 - **Byte assertion**: contains(b'INCH')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared units defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### U038 — STEP read produces unexpectedly enormous scaling on parts (MAPPED_ITEM target uses MM while source REPRESENTATION_MAP context uses METRE: cross-context unit composition error)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared units defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.5 units
 - **Sources**: OCCT MANTIS#0033101; OCCT MANTIS#0032239 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A STEP file declares millimetres, but an internal
@@ -6456,7 +6501,7 @@ _Section summary: 31 entries._
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Byte assertion**: contains(b'.MILLI.') and contains(b'.METRE.')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared units defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -6478,6 +6523,7 @@ _Section summary: 31 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### U040 — Pressure unit `Pa` built from a derived-unit chain (`kg / (m * s^2)`)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared units defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.5 (sub-class: derived-unit composition)
 - **Sources**: 16-iso-spec ISO 10303-41 §DERIVED_UNIT + §DERIVED_UNIT_ELEMENT; bug-reporter language: "STEP pressure unit garbled", "Pa unit not recognised"
 - **Sender**: deduced — exporters that emit pressure as a fully-decomposed SI derived unit rather than a CONVERSION_BASED_UNIT('Pa',..) shorthand
@@ -6487,7 +6533,7 @@ _Section summary: 31 entries._
 - **Notes**: First entry exercising multi-element DERIVED_UNIT composition. **See also**: U021, U026, U041. Synonyms: "STEP pressure Pa garbled", "Pa unit not recognised from derived chain", "DERIVED_UNIT pressure 1000x wrong", "validation pressure derived unit", "Pa from kg.m^-1.s^-2 not bound".- **Byte assertion**: contains(b'DERIVED_UNIT_ELEMENT') and contains(b'DERIVED_UNIT(')
 - **Byte assertion**: count(b'DERIVED_UNIT_ELEMENT') >= 3
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared units defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -6507,6 +6553,7 @@ _Section summary: 31 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### U042 — Specific-heat-capacity unit `J/(kg·K)` built from a derived-unit chain (`m^2 / (s^2 * K)`)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared units defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.5 (sub-class: derived-unit composition)
 - **Sources**: 16-iso-spec ISO 10303-41 §DERIVED_UNIT + §THERMODYNAMIC_TEMPERATURE_UNIT; bug-reporter language: "STEP specific heat unit garbled"
 - **Sender**: deduced — thermal-simulation export pipelines that emit material thermal properties via DERIVED_UNIT chains
@@ -6517,7 +6564,7 @@ _Section summary: 31 entries._
 - **Byte assertion**: contains(b'DERIVED_UNIT_ELEMENT') and contains(b'DERIVED_UNIT(')
 - **Byte assertion**: contains(b'THERMODYNAMIC_TEMPERATURE_UNIT')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared units defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -13607,6 +13654,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ls050 — Boolean attribute given long-form `.UNKNOWN.`
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is an orphan `EDGE_CURVE` over `VERTEX_POINT`s that is not enclosed in any wire/face/shell, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared Part-21 syntax defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1c enumeration token form
 - **Sources**: Q053, G028
 - **Description**: `EDGE_CURVE.same_sense` is a BOOLEAN (`.T.`/`.F.`). Passing `.UNKNOWN.` (the long-form LOGICAL three-state value) is structurally identical to `.U.` but uses the long token, exercising readers that special-case `.U.` while accepting `.UNKNOWN.` through a different parser path.
@@ -13615,7 +13663,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: Ad044, Ls034, Ls035, Ls049. Synonyms: "STEP boolean given .UNKNOWN.", "long-form UNKNOWN at BOOLEAN slot", "LOGICAL UNKNOWN long form", "STEP same_sense .UNKNOWN.", "three-state value at BOOLEAN attribute". Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
 - **Byte assertion**: contains(b'.UNKNOWN.')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is an orphan `EDGE_CURVE` over `VERTEX_POINT`s that is not enclosed in any wire/face/shell; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared Part-21 syntax defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -13661,12 +13709,13 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ls054 — Empty complex (subsuper) instance `#1=();` (zero constituent records)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a `GEOMETRIC_SET` referencing a `CARTESIAN_POINT`, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared Part-21 syntax defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1c parameter syntax
 - **Sources**: Pattern-mined from ricosjp/ruststep data.rs::subsuper_record (`many0` allows empty) (Apache-2.0/MIT — pattern only, no bytes copied); ISO 10303-21 §11 (combined/complex entity instances)
 - **Description**: A complex (subsuper / combined-entity) instance is written as a parenthesized list of simple records, e.g. `#1=(A(...)B(...))`. A `many0`-style parser accepts an EMPTY list `()`, i.e. a complex instance with ZERO constituent records. A complex instance must combine at least one (really at least two) simple records; the empty form is meaningless. Distinct from Ls013 (`PRODUCT()` — keyword present, no attributes): here there is no keyword at all, just `()`. The empty complex `#1` is reachable (referenced as a GEOMETRIC_SET item), so a parser must process it rather than skip dead code.
 - **Reproducer recipe**: `#1=(); #2=CARTESIAN_POINT('p',(0.,0.,0.)); #3=GEOMETRIC_SET('gs',(#1,#2));` — `#1` is an empty complex instance referenced by `#3`.
 - **Expected kernel behavior**: Reject the empty complex instance; the lexer may accept `()` as a zero-record list, but the semantic layer must reject "0 constituent records, expected >=1".
-- **Notes**: **See also**: Ls013. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture. Synonyms: "empty subsuper instance", "complex entity with no records", "keyword-less empty parens instance", "zero-record combined entity", "STEP empty complex #1=()". Provenance tier: bytes-only. Expected validation is provisional (best-guess) pending oracle rebaseline — the live occt/gmsh oracle is not run here (platform divergence); nightly CI reconciles.
+- **Notes**: **See also**: Ls013. **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a `GEOMETRIC_SET` referencing a `CARTESIAN_POINT`, which has no shape-representation root and OCC transfers to no shape even when well-formed (confirmed by a matching well-formed control — loads empty); the declared Part-21 syntax defect cannot manifest as lost geometry (base and clean both empty). Toy/placeholder topology, not a defect-driven data-loss; not a proven kernel bug. Synonyms: "empty subsuper instance", "complex entity with no records", "keyword-less empty parens instance", "zero-record combined entity", "STEP empty complex #1=()". Provenance tier: bytes-only. Expected validation is provisional (best-guess) pending oracle rebaseline — the live occt/gmsh oracle is not run here (platform divergence); nightly CI reconciles.
 - **Byte assertion**: contains(b'#1=();')
 - **Byte assertion**: matches(rb'#\d+=\(\)\s*;')
 - **Tier-3 assertion**: shape_null == True
@@ -13689,12 +13738,13 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=schema_n/a`
 
 ### Ls056 — Non-nesting comment illusion; inner opener leaves a stray closer
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is loose `DIRECTION`s and a leaked `CARTESIAN_POINT`, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared Part-21 syntax defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1c comment framing
 - **Sources**: Pattern-mined from ricosjp/ruststep combinator.rs::comment (non-nesting) (Apache-2.0/MIT — pattern only, no bytes copied); ISO 10303-21 §6.3 (comment syntax)
 - **Description**: ISO 10303-21 §6.3 block comments do NOT nest. In `/* a /* b */ tail */` the comment closes at the FIRST `*/`, so the inner `/*` is not an opener — it is comment text. Whatever follows the first closer is live token stream, and the final `*/` is a stray, unmatched closer (a lexical error). An author who tries to comment out an entity but nests a second opener inside will have that entity LEAK back into the parse: here `#2=CARTESIAN_POINT('leaked',...)` re-enters the token stream and a stray `*/` trails it.
 - **Reproducer recipe**: `/* a /* b */ #2=CARTESIAN_POINT('leaked',(0.,0.,0.)); */` — comment = `/* a /* b */`; the CARTESIAN_POINT leaks; the trailing `*/` is stray.
 - **Expected kernel behavior**: Treat comments as non-nesting per the spec and reject the stray `*/`; document the non-nesting rule clearly so authors do not rely on nested-comment behavior.
-- **Notes**: **See also**: Ls055. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture. Synonyms: "nested comment illusion", "comments do not nest", "stray */", "leaked entity from comment", "unmatched comment closer", "double */ after entity". Provenance tier: bytes-only. Expected validation is provisional (best-guess) pending oracle rebaseline — the live occt/gmsh oracle is not run here (platform divergence); nightly CI reconciles.
+- **Notes**: **See also**: Ls055. **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is loose `DIRECTION`s and a leaked `CARTESIAN_POINT`, which has no shape-representation root and OCC transfers to no shape even when well-formed (confirmed by a matching well-formed control — loads empty); the declared Part-21 syntax defect cannot manifest as lost geometry (base and clean both empty). Toy/placeholder topology, not a defect-driven data-loss; not a proven kernel bug. Synonyms: "nested comment illusion", "comments do not nest", "stray */", "leaked entity from comment", "unmatched comment closer", "double */ after entity". Provenance tier: bytes-only. Expected validation is provisional (best-guess) pending oracle rebaseline — the live occt/gmsh oracle is not run here (platform divergence); nightly CI reconciles.
 - **Byte assertion**: contains(b'/* a /* b */')
 - **Byte assertion**: matches(rb";\s*\*/")
 - **Byte assertion**: matches(rb"CARTESIAN_POINT\('leaked'")
@@ -18737,6 +18787,7 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=schema_n/a`
 
 ### Lh034 — REFERENCE section pointing at unresolvable external anchor
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared header / instance-numbering defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1b header/numbering (sub-class: REFERENCE)
 - **Sources**: 16-iso-spec ISO 10303-21 Ed.3 §8 (REFERENCE / ANCHOR cross-file linking)
 - **Description**: Edition-3 ANCHOR / REFERENCE / SIGNATURE sections support cross-file linking. A REFERENCE entry names an external instance via a URI plus `#anchor_name`; the other end (a separate file) must publish that anchor in its ANCHOR section. When the receiver imports a file with REFERENCE to an unresolvable target (companion file missing, anchor name misspelt, URI scheme unsupported), the kernel must decide whether to defer-load, fail-load, or substitute a placeholder.
@@ -18747,12 +18798,13 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'REFERENCE;') and (contains(b'companion-file.stp#missing_anchor') or contains(b'no-such-file.stp#also_missing'))
 - **Byte assertion**: contains(b'companion-file.stp') or contains(b'companion.stp') or contains(b'no-such-file.stp')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared header / instance-numbering defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Lh035 — ANCHOR section publishing the same anchor name twice
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared header / instance-numbering defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1b header/numbering (sub-class: ANCHOR)
 - **Sources**: 16-iso-spec ISO 10303-21 Ed.3 §8 (ANCHOR mapping name→instance)
 - **Description**: Edition-3 ANCHOR sections publish a mapping from anchor-name (a string) to instance handle. The spec is silent on whether duplicate names are permitted; a strict implementation rejects, a lenient one takes first-wins or last-wins (divergent across implementations). A REFERENCE in another file pointing at the duplicated name resolves nondeterministically.
@@ -18762,7 +18814,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'ANCHOR;')
 - **Byte assertion**: matches(rb'(?s)<origin>=#10;.*<origin>=#11;')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared header / instance-numbering defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -18839,6 +18891,7 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Lh041 — REFERENCE section with mixed URI schemes including unsupported schemes
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared header / instance-numbering defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.1b header/numbering (sub-class: REFERENCE)
 - **Sources**: 16-iso-spec ISO 10303-21 Ed.3 §8 (URI in REFERENCE)
 - **Description**: Edition-3 REFERENCE entries carry URIs to external resources. The spec does not constrain the URI scheme. Receivers implement `file://` and possibly `http(s)://`; uncommon schemes (`urn:`, `ftp:`, custom org-specific) are typically unsupported. A REFERENCE section mixing several schemes — some supported, some not — tests the consistency of the decision.
@@ -18850,7 +18903,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'urn:') or contains(b'plmlink:')
 - **Byte assertion**: contains(b'file:') or contains(b'https://')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared header / instance-numbering defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -23799,6 +23852,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 
 ### Wr001 — Trailing whitespace on every record line
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared writer-cosmetic defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.13 writer-pathology (sub-class: whitespace/line-ending)
 - **Sources**: prostep ivip CAx-IF round-trip reports; FreeCAD #4231 "STEP exporter pads lines with spaces"; bug-reporter language: "diff between exports is all whitespace"
 - **Sender**: Older FreeCAD STEP writer (pre-0.20) and some Pro/E export filters
@@ -23809,12 +23863,13 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: matches(rb' +\n')
 - **Byte assertion**: count(b' \n') >= 5
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared writer-cosmetic defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P3
 - **Model impact**: The bytes round-trip through the parser identically and the in-memory model is unchanged; the cost is purely cosmetic at the byte level (diff noise, line-anchored regex confusion).
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Wr002 — Mixed CRLF and LF line endings within one file
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared writer-cosmetic defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.13 writer-pathology (sub-class: whitespace/line-ending)
 - **Sources**: OCCT bug forum "STEP file from Windows looks corrupt on Linux"; CAx-IF interop notes 2018; bug-reporter language: "weird line endings"
 - **Sender**: Windows-hosted writers that build the HEADER block in-memory (CRLF) and append the DATA block from a streamed buffer (LF), or vice versa
@@ -23824,12 +23879,13 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: **See also**: Wr042. Cousin of Le028 but emitted by writer rather than introduced by transit.- **Byte assertion**: contains(b'\r\n') and contains(b'\n') Provenance tier: writer-side (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count(b'\r') >= 1
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared writer-cosmetic defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P3
 - **Model impact**: Mixed line endings parse identically and the in-memory model is unchanged; line-counting in diagnostics may report wrong line numbers because terminator parity is inconsistent.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Wr003 — Final `END-ISO-10303-21;` without trailing newline
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared writer-cosmetic defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.13 writer-pathology (sub-class: whitespace/line-ending)
 - **Sources**: prostep ivip CAx-IF; OCCT forum "concatenating two STEP files produces unparseable result"
 - **Sender**: Older Siemens NX export and several in-house writers
@@ -23840,12 +23896,13 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: bytes_ends_with(b'END-ISO-10303-21;')
 - **Byte assertion**: not bytes_ends_with(b'\n')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared writer-cosmetic defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P3
 - **Model impact**: The file body parses identically and the in-memory model is unchanged; concatenation with another file leaves two `ISO-10303-21;` markers on one line, which a sloppy magic-line scanner may then mishandle.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Wr004 — Tab characters used for line continuation indentation inconsistently
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared writer-cosmetic defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.13 writer-pathology (sub-class: whitespace/line-ending)
 - **Sources**: KiCad MCAD exporter issue tracker; bug-reporter language: "diff is unreadable"
 - **Sender**: KiCad PCB-to-STEP exporter and a few homegrown writers
@@ -23856,12 +23913,13 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: matches(rb'\n\t') and matches(rb'\n ')
 - **Byte assertion**: contains(b'\t')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared writer-cosmetic defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P3
 - **Model impact**: Bytes round-trip identically into the same in-memory model; only line/column reporting in tooling that assumes space indentation may be off.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Wr005 — Floating-point format inconsistency within one file
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared writer-cosmetic defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.13 writer-pathology (sub-class: numeric formatting)
 - **Sources**: OCCT MANTIS#0028xxx-class; FreeCAD forum "round-trip changes every coordinate"; bug-reporter language: "every number formatted differently" (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Sender**: Multi-source writer pipelines that compose entities from different subsystems (e.g. older Pro/E, multi-pass NX export)
@@ -23872,12 +23930,13 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: contains(b'1.0E-7') and contains(b'1e-07') and (contains(b'0.0000001') or contains(b'1.0e-007'))
 - **Byte assertion**: count(b'1') + count(b'e') + count(b'E') >= 5
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: emits a diagnostic but produces an empty result; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared writer-cosmetic defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P3
 - **Model impact**: All values parse identically into the same coordinates; downstream consumers that hash REAL streams for change-detection see false differences even though the geometry is byte-equivalent.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Wr006 — Floating-point precision degradation on round-trip
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared writer-cosmetic defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.13 writer-pathology (sub-class: numeric formatting)
 - **Sources**: OCCT forum "coordinate 1.5 became 1.4999999999998"; bug-reporter language: "round-trip lost precision"
 - **Sender**: Writers that store coordinates in single-precision (float32) internally but emit double-precision strings, or use printf("%.15g") on values that were 1.5 represented as 1.4999999999998 due to prior arithmetic
@@ -23888,7 +23947,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: matches(rb'\d\.\d{12,}')
 - **Byte assertion**: matches(rb'\.999999')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared writer-cosmetic defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P2
 - **Model impact**: Repeated round-trips erode trailing-digit precision on coordinates and tolerances; the loaded geometry drifts from the original by an amount that grows monotonically with each export pass.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -23908,6 +23967,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Wr008 — Excessive trailing zeros in numeric output
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared writer-cosmetic defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.13 writer-pathology (sub-class: numeric formatting)
 - **Sources**: prostep ivip "exchange file size grew 3× without geometry change"; bug-reporter language: "STEP file is huge for what it contains"
 - **Sender**: Writers using `printf("%.20f", ..)` or `printf("%.17g", ..)` indiscriminately on every coordinate
@@ -23918,7 +23978,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: matches(rb'\d\.0{15,}')
 - **Byte assertion**: matches(rb'\.0{14,}')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared writer-cosmetic defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P3
 - **Model impact**: All values parse to the same numbers and the model is unchanged; downstream byte-level diff/hash tooling sees noise even though the geometry is identical.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -23938,6 +23998,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Wr010 — Re-emitted `*` (overridden) where schema does not allow it
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared writer-cosmetic defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.13 writer-pathology (sub-class: optional-parameter abuse)
 - **Sources**: OCCT forum "writer emitted asterisk in CARTESIAN_POINT coords"; bug-reporter language: "asterisk in geometry"
 - **Sender**: Buggy writers that mis-handle the inheritance-override mechanism for complex (subtype) entities and apply it to non-inherited attributes
@@ -23948,7 +24009,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: matches(rb'CARTESIAN_POINT\([^;]*,\(\*\s*,')
 - **Byte assertion**: matches(rb'\(\*,')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared writer-cosmetic defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The `*` placeholder loads as an unresolved override; the carrying complex-entity records partial state that downstream operations dereference into wrong values.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -23968,6 +24029,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Wr012 — Random `#N` numbering with no monotonic structure
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared writer-cosmetic defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.13 writer-pathology (sub-class: instance numbering)
 - **Sources**: OCCT forum "STEP file has random instance numbers"; bug-reporter language: "instance numbers jump around"
 - **Sender**: Writers that allocate instance numbers from a hashed pool keyed on entity-identity rather than emit-order; observed in some Java-based exporters
@@ -23978,12 +24040,13 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: matches(rb'(?s)#1=.*#1000=.*#5=')
 - **Byte assertion**: count(b'#') >= 6
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared writer-cosmetic defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P3
 - **Model impact**: Random `#N` numbering parses identically into the same in-memory model; downstream byte-hash comparators see false differences across re-exports of structurally identical content.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Wr013 — Forward references where sequential numbering was expected
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared writer-cosmetic defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.13 writer-pathology (sub-class: instance numbering)
 - **Sources**: OCCT bug "kernel chokes on forward refs"; bug-reporter language: "ref to undefined #N", "forward declaration"
 - **Sender**: Writers that emit entities in topological-construction order without a topological sort; observed in some open-source exporters
@@ -23994,12 +24057,13 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: matches(rb'(?s)#1=AXIS2_PLACEMENT_3D[^;]+#5[^;]+;.*#5=CARTESIAN_POINT')
 - **Byte assertion**: matches(rb'(?s)#1=[^;]+#5')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared writer-cosmetic defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P3
 - **Model impact**: Single-pass parsers fail at the forward reference and abort the load; two-pass parsers resolve correctly and the in-memory model is identical.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Wr014 — Sparse instance numbering with huge gaps
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared writer-cosmetic defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.13 writer-pathology (sub-class: instance numbering)
 - **Sources**: OCCT forum "instance numbers run to 10 million for 50 entities"; bug-reporter language: "huge instance numbers", "memory blows up loading STEP"
 - **Sender**: Writers that hash entity identity to a wide integer space and use the hash as the instance number directly
@@ -24010,12 +24074,13 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: matches(rb'#\d{7,}=')
 - **Byte assertion**: matches(rb'#\d{6,}=')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared writer-cosmetic defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P3
 - **Model impact**: Sparse instance numbering parses identically; receivers that index `#N` into a flat array (instead of a hash table) over-allocate and may OOM on the load buffer even though the entity count is small.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Wr015 — Duplicate `#N` instance numbers in the same DATA section
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared writer-cosmetic defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.13 writer-pathology (sub-class: instance numbering)
 - **Sources**: OCCT MANTIS#0028xxx-class; bug-reporter language: "duplicate instance number", "two entities with same #N" (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Sender**: Writers with broken counter logic when emitting multi-section or multi-pass files (collision between sections or passes)
@@ -24026,7 +24091,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: matches(rb'(?s)#10\s*=\s*CARTESIAN_POINT.*#10\s*=\s*CARTESIAN_POINT')
 - **Byte assertion**: count(b'#10=') >= 2
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: produces an empty shape (silent loss); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared writer-cosmetic defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P2
 - **Model impact**: The two entities sharing an instance number race for the back-references; the resulting model attaches each cross-reference to whichever the resolver picks (often last-wins), so structurally identical files load with different topology.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -24192,6 +24257,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Wr026 — Vendor-specific FILE_DESCRIPTION strings that downstream readers special-case
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared writer-cosmetic defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.13 writer-pathology (sub-class: header / vendor metadata)
 - **Sources**: OCCT `STEPCAFControl_Reader` source; CAx-IF interop "vendor sniffing"; bug-reporter language: "STEP from vendor X behaves weirdly"
 - **Sender**: Writers that include vendor-version strings in `FILE_DESCRIPTION.description` such that downstream readers branch on them
@@ -24201,7 +24267,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Sender-attribution in `FILE_DESCRIPTION` is a long-standing interop hazard. Bytes alone are insufficient to demonstrate this defect;. Tagged provenance_tier: writer-side.
 - **Byte assertion**: contains(b'CAD-System-X')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared writer-cosmetic defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Vendor-specific FILE_DESCRIPTION strings load as opaque metadata; receivers that key behavior on these strings (e.g., bug-compat heuristics) match against the wrong producer signature.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -24223,6 +24289,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Wr028 — `FILE_NAME.author` and `originating_system` fields blank or auto-filled with placeholder
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared writer-cosmetic defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.13 writer-pathology (sub-class: header / vendor metadata)
 - **Sources**: prostep ivip CAx-IF; bug-reporter language: "STEP file has no provenance"
 - **Sender**: Writers that do not capture user identity / origin and emit empty strings
@@ -24232,7 +24299,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Audit-trail loss but no functional consequence. Provenance tier: writer-side (Q5 full-corpus 2026-07-01).
 - **Byte assertion**: matches(rb"(?s)FILE_NAME\([^;]*\(''\)[^;]*'','',''")
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared writer-cosmetic defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: FILE_NAME author and originating-system fields load as empty/placeholder strings; provenance tracking that depends on these fields silently fails.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -24329,6 +24396,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Wr035 — Coordinate scale-factor applied twice (model 1000× larger or smaller than expected)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared writer-cosmetic defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.13 writer-pathology (sub-class: unit / coordinate)
 - **Sources**: OCCT MANTIS#0030xxx-class; bug-reporter language: "model 1000× too small / too large" (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Sender**: Writers with bugs in unit-conversion: applying the m-to-mm factor in both the coordinate transform and the unit declaration
@@ -24339,7 +24407,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: matches(rb'CARTESIAN_POINT\([^;]*1000(?:\.0)?,1000') or contains(b'1000.0,1000.0,1000.0')
 - **Byte assertion**: matches(rb'1000') and contains(b'.MILLI.')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared writer-cosmetic defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Numeric coordinates load at 1000× the producer's intended magnitude; the loaded shape has the right topology at the wrong scale.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -24379,6 +24447,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Wr038 — Re-emitted file uses entity-numbering pattern that breaks round-trip equivalence
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared writer-cosmetic defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.13 writer-pathology (sub-class: instance numbering)
 - **Sources**: prostep ivip CAx-IF round-trip equality test; bug-reporter language: "round-trip changes file even when geometry unchanged"
 - **Sender**: Writers that insert a timestamp or random suffix into entity numbering
@@ -24389,12 +24458,13 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: matches(rb'(?s)#42.*#17.*#99.*#1=') or matches(rb'#\d+=APPLICATION_CONTEXT')
 - **Byte assertion**: count(b'#') >= 5
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared writer-cosmetic defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P3
 - **Model impact**: Renumbered entities load to identical in-memory model but byte-level equivalence is lost; round-trip diff/hash tooling reports the file as changed.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Wr039 — Re-export re-orders attributes within complex (subtype-stack) records
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared writer-cosmetic defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.13 writer-pathology (sub-class: instance numbering / canonical form)
 - **Sources**: OCCT forum "complex entity attribute order changed"; bug-reporter language: "round-trip reorders attributes in compound entity"
 - **Sender**: Writers that build complex records by iterating an unordered set of supertype names
@@ -24405,7 +24475,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: matches(rb'\(\s*SI_UNIT\([^)]+\)\s+NAMED_UNIT\(\*\)\s+LENGTH_UNIT\(\)\s*\)')
 - **Byte assertion**: matches(rb'\(\s*SI_UNIT\(')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared writer-cosmetic defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P3
 - **Model impact**: Subtype-stack re-ordering does not change the in-memory model; downstream byte-hash comparators see the file as different even though the loaded entity is identical.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -24447,6 +24517,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Wr042 — Inconsistent end-of-record terminator: `;\n` and `;\r\n` mixed in same file
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s, which has no shape-representation root and OCC transfers to no shape even when well-formed; the declared writer-cosmetic defect does not create or destroy a buildable shape, so the silent-empty is not defect-driven; base and clean (defect repaired) both load empty. Not a proven kernel bug.
 - **Category**: §12.13 writer-pathology (sub-class: whitespace/line-ending)
 - **Sources**: bug-reporter language: "STEP file mixed newlines per record", "writer outputs CRLF then LF inconsistently"
 - **Sender**: Multi-pass writers where one pass appends records via a buffered text stream (LF) and a separate pass appends records via a Windows-line-ending logger (CRLF), interleaved within the same DATA section
@@ -24457,7 +24528,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: contains(b';\r\n') and contains(b';\n')
 - **Byte assertion**: count(b'\r\n') >= 1 and count(b'\n') >= 5
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared writer-cosmetic defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P3
 - **Model impact**: Mixed line terminators parse identically; line-counting in diagnostics may report wrong line numbers because terminator parity is inconsistent.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
