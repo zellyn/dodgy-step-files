@@ -32,3 +32,6 @@ rust/Cargo.lock
 # Local validator caches (regeneratable)
 # These are written by the validator pipeline at runtime; not committed.
 # Users running validate2 will regenerate them under /tmp/.
+
+# Claude Code worktrees/scratchpad (never commit)
+.claude/
