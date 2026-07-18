@@ -50,7 +50,7 @@ to the machine-verified `Expected validation` line — so it drifts. Two problem
 **(A) DONE 2026-07-18 (033a4392):** 73 prose contradictions corrected & live-verified (51 empty→shape, 17
 empty→signal SIGSEGV-understatements, 3 empty→reject, 2 shape→empty). 11 "signal→shape" were false flags
 (the crash word refers to a separate gmsh/mesh oracle or a historical non-reproducing segfault noted as
-such — accurate provenance, left intact). **2 NEW genuine bugs found, NOT yet fixed → [ ] Xp006, Xp017**
+such — accurate provenance, left intact). **2 NEW genuine bugs — FIXED 2026-07-18 (6cff2292) → [x] Xp006, Xp017**
 (§12.12): prose claims a dual-mode "silently accepts under one / diagnostic under the other (no shape)"
 but live oracle shows BOTH heal modes load a real shape(1) — the dual-mode framing is false, needs a
 rewrite (not a minimal outcome swap).
@@ -67,6 +67,14 @@ agents, integrate per batch. **PILOT: the ~29 Gp pcurve fixtures** (highest-conf
 Gp193 already proved OCC recomputes pcurves) to validate the method + measure the overclaim rate before
 scaling. Full list = the 358 `occt=shape` + allowed∌{accept,warn} entries (regenerate with the scratchpad
 detector). This is a multi-session campaign.
+**(B) PROGRESS:** Batch 1 Gp pcurves = 29/29 overclaim (100%, 02e63927). Batch 2 Gs surfaces = **27/40
+overclaim (67.5%)** — a genuine MIX, 8 SOUND preserved (self-cross→face-split, sliver-at-tol, validity-flip)
++ 5 ambiguous flagged/left-sound (Gs040/043/053 shipped-magnitude-too-mild; Gs044 non-perturbable branch;
+Gs198 reader-limitation). Method now validated on 2 very different classes; BRepCheck-validity discriminator
+is essential. ~289 remaining (A/Tsh/M/Pmi/Xp/Pf/Ad/…). **Follow-up flags:** Gs049 (generic interior-knot
+reader limitation, not the claimed C0 break — reclassified, cf Gs198); Gs006 (baked-in U-knot/control-net
+count mismatch, never builds a face); the 5 too-mild-magnitude Gs fixtures (defect class real, as-shipped
+value oracle-invisible — a maintainer could strengthen the magnitude instead of reclassifying).
 
 ## Fidelity — orphaned-defect-carrier fixes (IN PROGRESS 2026-07-17)
 

@@ -2290,6 +2290,7 @@ _Section summary: 82 entries._
 
 End of file.
 ### Gs001 — TOROIDAL_SURFACE with negative MajorRadius (SolidWorks/Pro-E orientation marker)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(+50)/huge(-50000) all give identical shape-counts (v8 e4 f1) and BRepCheck invalid under heal_on and heal_off; invalidity is toy-topology-driven (the corrected positive torus is equally invalid), so shape(1) does not witness the negative-radius defect.
 - **Category**: §12.2c surface-degeneracy
 - **Sources**: R001, Q012, Q058, G004, W019, J010
 - **Sender**: SolidWorks 2014 (and earlier), Pro/E Wildfire 5.0
@@ -2301,7 +2302,7 @@ End of file.
 - **Byte assertion**: contains(b'TOROIDAL_SURFACE(')
 - **Byte assertion**: contains(b'-50.0,10.0')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the built torus face is BRepCheck-invalid because of the fixture's minimal toy topology (straight-LINE edges approximating the torus, no closed shell), not the negative major_radius — a sign-corrected positive-radius torus (clean) is equally invalid. Perturbing the sign from clean (+50) to grossly exaggerated (-50000) leaves shape-counts and BRepCheck validity unchanged (heal_on and heal_off); the shape-count oracle cannot witness the negative-radius sign as a kernel bug.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Tier-3 assertion**: face[0].surface_type == "torus"
@@ -2327,6 +2328,7 @@ End of file.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ### Gs005 — Surface periodicity not declared but actually closed
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(rows made non-coincident)/huge(more rows collapsed) all give identical shape-counts (v8 e4 f1) and valid=True; the undeclared-closure condition is oracle-invisible, so shape(1) does not witness a kernel bug.
 - **Category**: §12.2c surface-degeneracy
 - **Sources**: F069, Q018, G108
 - **Sender**: ProSTEP UG ug_exhaust-A.stp #18360 (U-closed BSpline)
@@ -2339,12 +2341,13 @@ End of file.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "bspline"
 - **Tier-3 assertion**: face[0].bspline.is_u_periodic == True
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the undeclared geometric closure of the control net (u_closed=.F. while first/last rows coincide) has no effect on OCC's built face. Making the rows genuinely non-coincident (clean) or collapsing additional rows (huge) leaves shape-counts and BRepCheck validity unchanged (heal_on and heal_off); the shape-count oracle cannot witness the periodicity-flag mismatch as a kernel bug.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Gs006 — Surface singularities (degenerate poles) not in declared form
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(pole row spread)/huge(more rows collapsed) all load an empty shell (f0, invalid); the face-drop is caused by a baked-in U-knot/control-net count mismatch, not the pole degeneracy, so shape(1) [empty shell] does not witness the declared defect.
 - **Category**: §12.2c surface-degeneracy
 - **Sources**: F070, W018, K010
 - **Sender**: PRO/E PRO9234, PRO18206, PRO7226
@@ -2356,12 +2359,13 @@ End of file.
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS(')
 - **Byte assertion**: count(b'(0.0,0.0,10.0)') >= 3
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) as an empty shell with 0 faces; OCC never builds the surface because the B-spline's U multiplicities (3,2,3) require 5 control rows for degree 2 but only 4 are declared — a knot/control-net mismatch independent of the degenerate-pole point values. Spreading the collapsed pole row (clean) or collapsing more rows (huge) still yields 0 faces; the shape-count oracle cannot witness the declared degenerate-pole defect.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs007 — Pcurve U coordinate outside canonical [0, 2π) seam range on `CYLINDRICAL_SURFACE` (whole wire off by period)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(U to canonical)/huge(U x10) all give identical shape-counts (v8 e4 f1) and valid=True; OCC rebuilds pcurves from the 3D curves, so the period offset is oracle-invisible.
 - **Category**: §12.2c surface-degeneracy
 - **Sources**: F010, F072, F082, R082
 - **Sender**: ProSTEP UG ug_exhaust-A.stp #284920
@@ -2372,7 +2376,7 @@ End of file.
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'12.5663706144')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); OCC recomputes each edge's pcurve from its 3D curve on transfer (SameParameter), so the declared 4π period-shift of the wire's U parameterization does not survive into the built shape. Re-basing the shifted U into the canonical band (clean) or scaling it x10 (huge) leaves shape-counts and BRepCheck validity unchanged (heal_on and heal_off); shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
@@ -2468,13 +2472,14 @@ End of file.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 
 ### Gs015 — Sliver face (high aspect ratio, two long edges within tolerance)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base(1e-5) and clean(100.0) give identical shape-counts (v8 e4 f1) and valid=True; the declared sliver magnitude sits well above OCC tolerance and is oracle-invisible (contrast Gs014, whose 1e-7 magnitude does perturb the oracle and remains SOUND).
 - **Category**: §12.2c surface-degeneracy
 - **Sources**: W004, L004, X006, H105
 - **Description**: Face whose two long bounding edges lie within tolerance of each other so face has near-zero area but non-trivial perimeter. Often produced by surface-surface intersection with grazing angles, by Boolean intersection of nearly-tangent surfaces, or by trimming. Distinguished from zero-area in that the perimeter is non-trivial.
 - **Reproducer recipe**: Two surfaces meeting at near-tangency; trim with intersection curves so resulting face is bounded by two long edges and two infinitesimal end-edges.
 - **Expected kernel behavior**: heal; replace short edges with `tolerant_vertex`, then collapse the sliver face into a `tolerant_edge`. Reject if collapse would violate manifold-ness.
 - **Notes**: **See also**: Tfa008, Tfa014. Synonyms: "sliver face high aspect ratio", "two long edges within tolerance", "near-zero area face with long perimeter", "grazing-angle intersection produces sliver", "nearly-tangent surface intersection face".
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); at the fixture's declared short-side magnitude (1.0E-5, ~100x OCC's 1e-7 precision) the sliver is resolved as an ordinary 4-vertex rectangle indistinguishable from a healthy face — widening the short side (clean) leaves the built shape identical, and only an unrealistic 1e-18 exaggeration (far beyond the catalog's reproducer) collapses vertices. The declared-magnitude defect is oracle-invisible; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Byte assertion**: contains(b'1.0E-5')
 - **Byte assertion**: contains(b'(250.0,0.0,0.0)')
@@ -2484,13 +2489,14 @@ End of file.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Gs018 — Mismatched orientation of 3D curve and pcurve
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(sense aligned)/huge(second edge also reversed) all give identical shape-counts (v8 e4 f1) and valid=True; OCC rebuilds pcurves from the 3D curves, so the orientation mismatch is oracle-invisible.
 - **Category**: §12.2c surface-degeneracy
 - **Sources**: F008
 - **Description**: An edge's 3D curve and 2D pcurve trace the edge in opposite parameter directions; sampling 3D curve at parameter t and pcurve at the same t lands at opposite ends of the edge. If left uncorrected, projecting between 3D and UV returns wrong-side parameters and downstream geometry queries return reversed answers.
 - **Reproducer recipe**: `EDGE_CURVE` with 3D curve from t=0 to t=1; surface curve with pcurve traced as 1→0 in surface parameter; both linked to same `EDGE_CURVE`.
 - **Expected kernel behavior**: detect the direction mismatch and reverse the pcurve sense to align with the 3D curve, or reject as malformed.
 - **Notes**: **See also**: Tsh033. Synonyms: "3D curve and pcurve trace edge in opposite directions", "pcurve direction reversed relative to 3D curve", "FixReversed2d direction mismatch", "pcurve and 3D curve disagree about parameter direction", "edge sense mismatch between 2D and 3D".
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); with one pcurve per edge (PCURVE_S1) OCC recomputes the pcurve sense from the 3D curve, so the declared 3D-curve/pcurve orientation mismatch does not survive. Aligning the pcurve sense (clean) or breaking a second edge's pcurve too (huge) leaves shape-counts and BRepCheck validity unchanged; the shape-count oracle cannot witness the mismatch as a kernel bug.
 - **Severity**: P1
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'SURFACE_CURVE(')
@@ -2502,6 +2508,7 @@ End of file.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Gs019 — Pcurves shifted by integer period on closed surface
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base(+2π)/clean(canonical)/huge(+4π) all give identical shape-counts and valid=True; the per-edge period shift is oracle-invisible (mirrors Gs007).
 - **Category**: §12.2c surface-degeneracy
 - **Sources**: F010
 - **Sender**: ProSTEP UG ug_exhaust-A.stp #284920 (also see Gs007)
@@ -2509,7 +2516,7 @@ End of file.
 - **Reproducer recipe**: Cylinder face wire with three consecutive edges whose pcurves are at U+0, U+2π, U+0 — middle edge shifted by one period.
 - **Expected kernel behavior**: re-shift each pcurve to land in a single coherent period band that matches its neighbours, preserving 3D consistency, or reject as malformed.
 - **Notes**: **See also**: Gn031, Gp023, Gp029. Synonyms: "pcurves shifted by integer period on closed surface", "FixShifted period mismatch", "per-edge pcurve period offset varies", "wire UV image broken into multiple period bands", "individual pcurves in different period bands".
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); OCC recomputes pcurves from the 3D curves, so the declared per-edge +2π period shift does not survive. Removing the shift (clean) or raising it to +4π (huge) leaves shape-counts and BRepCheck validity unchanged; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'6.2831853072')
@@ -2521,6 +2528,7 @@ End of file.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 
 ### Gs021 — Line displaced from true position (FPX Expert PCB)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base(0.5 offset)/clean(0.0)/huge(500) all give identical shape-counts (v8 e4 f1) and valid=True; edge geometry is driven by the vertices, so the line displacement is oracle-invisible.
 - **Category**: §12.2c surface-degeneracy
 - **Sources**: G001, Q011, W012
 - **Sender**: FPX Expert 2013 (PCB design system)
@@ -2528,7 +2536,7 @@ End of file.
 - **Reproducer recipe**: `VERTEX_POINT(A=(0,0,0))`, `VERTEX_POINT(B=(10,0,0))`, `EDGE_CURVE` referring to `LINE(pnt=(0,0,0.5), dir=(1,0,0))` — line is parallel to AB but offset by 0.5.
 - **Expected kernel behavior**: heal-to-vertices; replace the line so it passes through both vertices, preserving original direction.
 - **Notes**: **See also**: N023. Synonyms: "line displaced from true position", "LINE pnt offset from vertex points", "edge line direction correct but offset", "FPX Expert PCB displaced line", "line parallel-displaced from edge endpoints".
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); OCC builds the edge from its VERTEX_POINT positions (reprojecting the curve onto them), not from the stored LINE origin, so the declared 0.5-unit parallel displacement does not survive. Snapping the origin to the vertices (clean) or exaggerating it to 500 units (huge) leaves shape-counts and BRepCheck validity unchanged; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Byte assertion**: contains(b'(0.0,0.0,0.5)')
 - **Byte assertion**: contains(b'(10.0,0.0,0.0)')
@@ -2538,6 +2546,7 @@ End of file.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Gs024 — Round-trip planar face becomes trimmed B-spline (degree-1 NURBS)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(literal PLANE)/huge(warped non-planar bspline) all give identical shape-counts (v8 e4 f1) and valid=True; the plane-as-bspline representation is oracle-invisible.
 - **Category**: §12.2c surface-degeneracy
 - **Sources**: J003, W015, X025, L042, F076
 - **Sender**: Rhino 7, SolidWorks 2025
@@ -2545,7 +2554,7 @@ End of file.
 - **Reproducer recipe**: STEP cylinder of radius 25.0 mm exported as `B_SPLINE_SURFACE_WITH_KNOTS` of degree (2,1) with rational weights; no `CYLINDRICAL_SURFACE` anywhere in file.
 - **Expected kernel behavior**: heal by analytic recovery; fit candidate primitive within tolerance, replace; reject canonicalization if recovered surface deviates beyond user-supplied tolerance.
 - **Notes**: **See also**: Gn014. Synonyms: "round-trip planar face becomes trimmed B-spline", "PLANE exported as degree-1 NURBS", "untrimmed plane returns as trimmed B-spline surface", "Rhino round-trip flattens plane into NURBS", "planar surface lost to BSpline degree (1,1) form".
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); whether the planar face is carried as a degree-(1,1) B-spline or a literal PLANE is a representational choice the shape-count/validity oracle is blind to. Swapping the surface to a literal PLANE (clean) or warping a control point so the surface is genuinely non-planar and inconsistent with its own boundary (huge) leaves shape-counts and BRepCheck validity unchanged; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS(')
 - **Byte assertion**: count_entity_def(b'PLANE') == 0
@@ -2590,6 +2599,7 @@ End of file.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ### Gs028 — Pseudo-seam edge: `SURFACE_CURVE` claims `PCURVE_S1_AND_S2` but lists same pcurve twice
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base(#46,#46)/clean(single pcurve)/huge(u_closed=.T.) all give identical shape-counts (v8 e4 f1) and valid=True; the duplicated-pcurve pseudo-seam is oracle-invisible.
 - **Category**: §12.2c surface-degeneracy
 - **Sources**: F066
 - **Sender**: bm4_al_eye.stp #53710
@@ -2597,7 +2607,7 @@ End of file.
 - **Reproducer recipe**: Two faces on same non-periodic BSpline surface that happen to share a long curve along U=const, where the U-range does not wrap.
 - **Expected kernel behavior**: heal; verify periodicity flag and parametric distance before treating as seam; do not insert seam-degenerate edge.
 - **Notes**: Synonyms: "pseudo-seam edge surface_curve has same pcurve twice", "looks like seam but surface not periodic", "PCURVE_S1_AND_S2 with duplicate pcurve reference", "seam-like edge on non-periodic BSpline surface", "false seam from coincidental shared edge".
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the face is built from the 3D LINE and, being a single ADVANCED_FACE, the pseudo-seam is never shared by two faces, so whether the SURFACE_CURVE's pcurve list holds one or two (even identical) entries has no effect. De-duplicating the slot to a single PCURVE_S1 (clean) or falsely marking the surface periodic (huge) leaves shape-counts and BRepCheck validity unchanged; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Byte assertion**: contains(b'.PCURVE_S1_AND_S2.')
 - **Byte assertion**: contains(b'(#46,#46)')
@@ -2609,6 +2619,7 @@ End of file.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Gs029 — Curve with last < first parameter range
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base(2π,0)/clean(0,2π)/huge(62.83,0) all give identical shape-counts (v8 e4 f1) and valid=True; the reversed trim range is oracle-invisible.
 - **Category**: §12.2c surface-degeneracy
 - **Sources**: F071
 - **Sender**: PRO/E PRO7747 #4875, PRO7656 #33334
@@ -2616,7 +2627,7 @@ End of file.
 - **Reproducer recipe**: `TRIMMED_CURVE` over a unit-radius `CIRCLE` with `trim_1=PARAMETER_VALUE(2π)`, `trim_2=PARAMETER_VALUE(0)` and `sense_agreement=.T.`.
 - **Expected kernel behavior**: heal; clamp/wrap parameter values into natural domain; if `last < first`, swap or wrap modulo period.
 - **Notes**: **See also**: Gp007. Synonyms: "curve last parameter less than first", "trimmed_curve has reversed parameter range", "EDGE_CURVE first/last out of natural domain", "trim_2 less than trim_1 on circle", "PARAMETER_VALUE last smaller than first".
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the edge's 3D geometry is driven by its vertices, not the TRIMMED_CURVE's parameter range, so OCC normalizes the last<first range without visible effect. Swapping to first<last (clean) or pushing the range 10x out of the curve's natural domain (huge) leaves shape-counts and BRepCheck validity unchanged; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Byte assertion**: contains(b'TRIMMED_CURVE(')
 - **Byte assertion**: contains(b'PARAMETER_VALUE(6.2831853071795864)')
@@ -2626,13 +2637,14 @@ End of file.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Gs030 — Edge geometry inconsistent with adjacent faces' actual intersection
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base(10.5 off)/clean(10.0 on)/huge(1000 off) all give identical shape-counts (v8 e4 f1) and valid=True; the stale edge curve is oracle-invisible.
 - **Category**: §12.2c surface-degeneracy
 - **Sources**: B025, W013
 - **Description**: After local edits (face translation, blend suppression, partial defeaturing) an edge's stored 3D curve no longer matches the geometric intersection of its two host faces. Edge survives as topology but its curve is stale, leading to large tolerances or visible cracks. TransMagic's "edges for the geometry do not match the surfaces that they are edges for"; also applies to translator output where edges deviate from cylinder/cone surfaces beyond tolerance.
 - **Reproducer recipe**: `ADVANCED_FACE` on `CYLINDRICAL_SURFACE` of radius 10 mm whose `EDGE_CURVE` is a `LINE` 0.5 mm radially off the cylinder.
 - **Expected kernel behavior**: heal; `rebuild-edge` re-intersects host faces and rebuilds vertices; reproject curve onto surface, or replace with surface intersection.
 - **Notes**: **See also**: Tsh042, N024. Synonyms: "edge geometry inconsistent with adjacent faces actual intersection", "edges for the geometry do not match the surfaces", "stale edge curve after face translation", "edge deviates from cylinder beyond tolerance", "edge curve doesn lie on host surface intersection".
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); OCC reconciles the edge against its vertices and host surface, not the stored 3D LINE, so an edge whose curve lies off the cylinder does not survive. Snapping the line onto the radius-10 cylinder (clean) or moving it to radius 1000 (huge) leaves shape-counts and BRepCheck validity unchanged; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'(10.5,0.0,0.0)')
@@ -2674,13 +2686,14 @@ End of file.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs033 — Trim curves on `TOROIDAL_SURFACE` / NURBS produce jagged tessellation borders (`TRIMMED_CURVE` on `ELLIPSE` pcurve)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(circular ellipse)/huge(flat ellipse) all give identical shape-counts (v8 e4 f1) and valid=True; the trim-curve tessellation defect is invisible to this oracle by construction.
 - **Category**: §12.2c surface-degeneracy
 - **Sources**: Y020
 - **Description**: Trim curves on `TOROIDAL_SURFACE` and NURBS surfaces produce sharp, chaotic border meshes while the interior of the patch is regular. Typical signature: a pcurve on a `TOROIDAL_SURFACE` is a `TRIMMED_CURVE` over an `ELLIPSE` in (u,v) parametric space. Tessellator falls back to coarse parametric sampling on the trim curve while the rest of the patch uses chordal-error sampling. Affects tube.stp and similar trimmed `TOROIDAL_SURFACE` / bicubic NURBS faces with `TRIMMED_CURVE` defined via `PCURVE`.
 - **Reproducer recipe**: STEP `TOROIDAL_SURFACE` or bicubic NURBS face plus `TRIMMED_CURVE` defined via `PCURVE`; tessellate with default size factor.
 - **Expected kernel behavior**: heal; apply chordal-error refinement to trim curves consistently with surface refinement.
 - **Notes**: Synonyms: "trim curves on torus produce jagged tessellation borders", "TRIMMED_CURVE on ELLIPSE pcurve", "border mesh chaotic on TOROIDAL_SURFACE", "tessellator falls back to coarse parametric sampling on trim", "tube.stp jagged trim curve mesh".
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the edge's 3D curve is an independent LINE, and the TRIMMED_CURVE-on-ELLIPSE pcurve only feeds a tessellation-quality path that the shape-count/BRepCheck oracle does not sample. Making the ellipse circular (clean) or extremely flat (huge) leaves shape-counts and BRepCheck validity unchanged; shape(1) does not witness the declared jagged-tessellation bug (a mesh-quality, not topology, defect).
 - **Severity**: P1
 - **Byte assertion**: contains(b'TOROIDAL_SURFACE(')
 - **Byte assertion**: contains(b'TRIMMED_CURVE(')
@@ -2724,13 +2737,14 @@ End of file.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Gs036 — Negative-radius / zero-magnitude direction or vector
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base(zero dir)/clean(valid dir)/huge(both zeroed) all give identical shape-counts (v8 e4 f1) and valid=True; OCC defaults the frame, so the degenerate direction is oracle-invisible.
 - **Category**: §12.2c surface-degeneracy
 - **Sources**: Q056, Q057, S020, S021, W020
 - **Description**: `DIRECTION` with all-zero direction_ratios (S020); `VECTOR` with zero magnitude (Q057); `axis2_placement_3d` whose `axis` and `ref_direction` are colinear so an orthonormal frame cannot be constructed (S021); `PLANE` whose ref direction is parallel to its normal (W020, degenerate plane causes import crashes).
 - **Reproducer recipe**: `DIRECTION('',(0.,0.,0.))` referenced by `AXIS2_PLACEMENT_3D`; or axis `(0,0,1)` and ref_direction `(0,0,1)`.
 - **Expected kernel behavior**: reject the surface/placement; healers may project ref_direction onto plane normal or substitute global Z/X; never crash.
 - **Notes**: **See also**: Gn010, Gs001, Gs032. Synonyms: "negative-radius zero-magnitude direction or vector", "DIRECTION with all-zero direction_ratios", "zero-magnitude VECTOR", "axis and ref_direction colinear cannot form orthonormal frame", "PLANE ref direction parallel to normal".
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); OCC's reader substitutes a usable orthonormal frame when a placement DIRECTION is zero-magnitude, so the declared degenerate direction does not survive. Supplying a valid ref_direction (clean) or zeroing both axis and ref_direction (huge) leaves shape-counts and BRepCheck validity unchanged; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Byte assertion**: contains(b'DIRECTION(\'\',(0.0,0.0,0.0))')
 - **Byte assertion**: count(b'DIRECTION(\'\',(0.0,0.0,1.0))') >= 2
@@ -2739,6 +2753,7 @@ End of file.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Gs037 — Offset of a surface-of-linear-extrusion fails iso-curve evaluation
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base(2.0)/clean(0.01)/huge(5000) all give identical shape-counts (v8 e4 f1) and valid=True; the iso-curve-evaluation defect is not exercised by this oracle.
 - **Category**: §12.2c surface-degeneracy
 - **Sources**: G065, G106, R038
 - **Description**: A face's supporting surface is built as a finite offset of a surface-of-linear-extrusion (an extruded curve, then offset by a constant distance along its normal). Evaluating an iso-curve (a row of constant U or V) on that composite surface throws an exception in some receivers, because the iso-evaluation logic does not descend through the offset/extrusion wrappers down to the basis curve.
@@ -2748,19 +2763,20 @@ End of file.
 - **Byte assertion**: contains(b'OFFSET_SURFACE(')
 - **Byte assertion**: contains(b'SURFACE_OF_LINEAR_EXTRUSION(')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the face's edges are authored at fixed 3D coordinates and the OFFSET_SURFACE-over-SURFACE_OF_LINEAR_EXTRUSION iso-curve evaluation this fixture targets is never exercised by shape building/BRepCheck at fixture scale. Shrinking the offset to 0.01 (clean) or raising it to 5000 (huge) leaves shape-counts and BRepCheck validity unchanged; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Gs038 — Pcurve U/V parameter has large jump near periodic boundary on BSpline
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base(0.99)/clean(0.5)/huge(0.999) all give identical shape-counts (v8 e4 f1) and valid=True; the near-period pcurve jump is oracle-invisible.
 - **Category**: §12.2c surface-degeneracy
 - **Sources**: G074, G108
 - **Description**: 2D points along a projected pcurve sometimes have a huge jump (>0.95 of UV range) on BSpline surface when 3D points are close; surface near-periodicity not recognized. Self-touching closed BSpline surface where 2D pcurve crosses near the wrap-around boundary.
 - **Reproducer recipe**: Self-touching BSpline surface with pcurve crossing the near-period; sample pcurve at uniform parameter and observe UV jump > 0.95 of period.
 - **Expected kernel behavior**: heal — detect jump; insert additional point; adjust by inferred period.
 - **Notes**: **See also**: Gn033. Synonyms: "pcurve U/V parameter has large jump near periodic boundary on BSpline", "huge jump in pcurve at near-period seam", "near-periodicity not recognized produces UV spike", "self-touching BSpline surface pcurve straddles wraparound", "2D pcurve crosses near-period boundary uncaught".
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the edge's 3D geometry is carried by an independent LINE and OCC recomputes the pcurve, so a near-period UV jump in the stored pcurve does not survive. Moving the pcurve point mid-domain (clean) or pushing it closer to the boundary (huge) leaves shape-counts and BRepCheck validity unchanged; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS(')
 - **Byte assertion**: contains(b'(0.99,0.5)')
@@ -13574,6 +13590,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 ---
 
 ### Gs050 — Toroidal surface stored incorrectly: major / minor swapped
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base(0.5,5.0)/clean(5.0,0.5)/huge(0.5,5000) all remain BRepCheck-invalid under heal_on and heal_off; invalidity is toy-topology-driven (the corrected torus is equally invalid), so shape(1) does not witness the swap defect.
 - **Category**: §12.2c surfaces
 - **Sources**: OCCT MANTIS#0032922; OCCT MANTIS#0032556 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A `TOROIDAL_SURFACE` is emitted with `major_radius` and
@@ -13588,7 +13605,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
  is the lemon/apple geometry); flag as suspicious for healers; reject if
  strict.
 - **Notes**: **See also**: Gs002. Synonyms: "toroidal surface major/minor radii swapped", "torus stored with reversed radius proportions", "thin donut becomes apple/lemon from swapped radii", "TOROIDAL_SURFACE radius order inverted", "producer wrote major and minor radius in wrong order".
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the built torus face is BRepCheck-invalid because of the fixture's straight-LINE edge approximations (toy topology) — the radius-corrected (5.0,0.5) torus (clean) is equally invalid — not because of the minor>=major swap. Perturbing the radii from clean to grossly exaggerated changes the vertex counts (geometry-driven) but never flips validity, and clean stays invalid; the shape-count oracle cannot witness the swap as a rejectable kernel bug.
 - **Severity**: P1
 - **Byte assertion**: contains(b'TOROIDAL_SURFACE(')
 - **Byte assertion**: contains(b'0.5,5.0')
@@ -13600,6 +13617,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Gs051 — Sphere/cylinder cut produces wrong pcurves on second seam
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base(U=π)/clean(U=0)/huge(U=300) all give identical shape-counts (v14 e7 f1) and valid=True; the second-seam pcurve offset is oracle-invisible.
 - **Category**: §12.2c surfaces
 - **Sources**: OCCT MANTIS#0022535 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A sphere is cut by a cylinder; the cut introduces a new
@@ -13616,7 +13634,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'3.141592653589793')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the affected seam edge is a degenerate zero-length edge (same start/end vertex) whose pcurve start-U offset has no effect on the built shape. Re-basing U to 0 (clean) or to 300 (huge) leaves shape-counts and BRepCheck validity unchanged; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Tier-3 assertion**: face[0].surface_type == "sphere"
@@ -13624,6 +13642,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a`
 
 ### Gs052 — Surface of revolution with offset basis curve breaks on export
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base(0.1)/clean(0.01)/huge(100) all give identical shape-counts (v8 e4 f1) and valid=True; the offset-associativity defect is invisible to this oracle by construction.
 - **Category**: §12.2c surfaces
 - **Sources**: OCCT MANTIS#0023771 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A surface of revolution whose basis curve is itself an
@@ -13640,7 +13659,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'OFFSET_CURVE_3D(')
 - **Byte assertion**: contains(b'SURFACE_OF_REVOLUTION(')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the offset distance of the OFFSET_CURVE_3D basis has no effect on the built revolved shape across four orders of magnitude. Shrinking it to 0.01 (clean) or raising it to 100 (huge) leaves shape-counts and BRepCheck validity unchanged; shape(1) does not witness the declared loss-of-offset-associativity bug (an export/round-trip associativity defect this shape-count oracle is not designed to detect).
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -18672,6 +18691,7 @@ _Section summary: 41 entries._
 ## §12.2c — Surface-degeneracy / AP242 surface subtypes
 
 ### Gs041 — `RECTANGULAR_COMPOSITE_SURFACE` with non-uniform patch grid
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(0.0,0.5)/huge(0.0,0.001) all load an empty shell (f0, invalid); the '(0.0,0.3)' marker is a decorative orphan and the composite-surface face never builds, so shape(1) [empty shell] does not witness the defect.
 - **Category**: §12.2c surface-degeneracy (sub-class: composite surface)
 - **Sources**: 16-iso-spec ISO 10303-42 §RECTANGULAR_COMPOSITE_SURFACE
 - **Description**: A RECTANGULAR_COMPOSITE_SURFACE is parameterised as an MxN grid of SURFACE_PATCH children. The U parameter spans across all M patches; V across all N. The spec permits non-uniform parameter intervals (one patch occupies U=0.0.7, the next U=0.7.1.0). Many receivers assume uniform spacing and either pass through with the wrong global parameterisation or trip an internal assertion.
@@ -18682,19 +18702,20 @@ _Section summary: 41 entries._
 - **Byte assertion**: count_entity_def(b'SURFACE_PATCH') == 2
 - **Byte assertion**: contains(b'(0.0,0.3)')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) as an empty shell with 0 faces; the ADVANCED_FACE on RECTANGULAR_COMPOSITE_SURFACE never builds a face, and the CARTESIAN_POINT carrying the '(0.0,0.3)' non-uniform-interval marker is an unreferenced orphan (SURFACE_PATCH has no numeric per-patch interval field). Making the marker uniform (clean) or extreme (huge) still yields 0 faces; the shape-count oracle cannot witness the declared non-uniform-grid defect.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs042 — `CURVE_BOUNDED_SURFACE` with self-intersecting (bowtie) boundary
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(simple loop)/huge(doubled boundary) all load an empty shell (f0, invalid); the bowtie boundary is an unreachable orphan, so shape(1) [empty shell] does not witness the defect.
 - **Category**: §12.2c surface-degeneracy (sub-class: curve-bounded surface)
 - **Sources**: 16-iso-spec ISO 10303-42 §CURVE_BOUNDED_SURFACE
 - **Description**: A CURVE_BOUNDED_SURFACE is a (basis surface, set of boundary curves) where boundary curves are pcurves on the basis. The spec requires the boundary to be a non-self-intersecting loop in parameter space. Producers occasionally emit a boundary whose two segments cross at an interior point (figure-eight / bowtie), yielding two regions where the trim "inside" is ambiguous.
 - **Reproducer recipe**: CURVE_BOUNDED_SURFACE whose basis is a plane and whose boundary is a four-segment COMPOSITE_CURVE forming a self-intersecting bowtie (corners (0,0),(1,1),(1,0),(0,1) connected in that order).
 - **Expected kernel behavior**: detect the self-intersection and either reject as malformed or split the boundary into simple loops with explicit inside/outside designation.
 - **Notes**: **See also**: Twi-family wire self-intersection entries, Twi286 (same "reader silently resolves the self-intersection on import" finding for the wire-loop analogue). Synonyms: "CURVE_BOUNDED_SURFACE bowtie boundary", "self-intersecting boundary on curve-bounded surface", "boundary curves cross in parameter space", "trim inside ambiguous due to figure-eight boundary", "non-simple loop in CURVE_BOUNDED_SURFACE".
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1), `load == "ok"`); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: the self-intersecting bowtie boundary is silently tolerated with no diagnostic distinguishing the ambiguous trim region; receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) as an empty shell with 0 faces; the self-intersecting BOUNDARY_CURVE is referenced only by the CURVE_BOUNDED_SURFACE and never wired into the ADVANCED_FACE OCC actually builds (whose trim is an ordinary non-crossing square), and OCC builds 0 faces regardless. Straightening the boundary to a simple loop (clean) or duplicating it (huge) still yields 0 faces; the shape-count oracle cannot witness the bowtie boundary.
 - **Severity**: P1
 - **Byte assertion**: contains(b'CURVE_BOUNDED_SURFACE(')
 - **Byte assertion**: contains(b'BOUNDARY_CURVE(')
@@ -18772,13 +18793,14 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 
 ### Gs047 — `BLENDED_EDGE_SURFACE` with mismatched fillet radii at a shared vertex
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base(1.0/2.0)/clean(1.0/1.0)/huge(1.0/200) all load an empty shell (f0, invalid); BLENDED_EDGE_SURFACE is unsupported and dropped, so shape(1) [empty shell] does not witness the defect.
 - **Category**: §12.2c surface-degeneracy (sub-class: AP242 fillet surface)
 - **Sources**: 16-iso-spec AP242 §BLENDED_EDGE_SURFACE
 - **Description**: AP242 introduces BLENDED_EDGE_SURFACE to represent an edge fillet between two adjacent faces. The blend's radius (or radius profile) is one of the entity's defining attributes. A producer that supports variable-radius fillets but exports through a constant-radius schema may emit two BLENDED_EDGE_SURFACE instances for adjacent edges with mismatched radii at their shared vertex; the receiver sees a 0-thickness gap where they meet.
 - **Reproducer recipe**: two CYLINDRICAL_SURFACE blends meeting at the origin: blend A radius 1.0, blend B radius 2.0. At the shared vertex the two fillet surfaces cannot meet smoothly.
 - **Expected kernel behavior**: reconcile the radii by transitioning between them through a third spherical / variable-radius patch, or reject as inconsistent.
 - **Notes**: First entry exercising AP242 BLENDED_EDGE_SURFACE. Synonyms: "BLENDED_EDGE_SURFACE mismatched fillet radii at shared vertex", "two AP242 fillets meet with different radii", "0-thickness gap where blends meet", "blend A radius 1 blend B radius 2 conflict", "constant-radius export of variable-radius fillet creates discontinuity".
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) as an empty shell with 0 faces; OCC does not support BLENDED_EDGE_SURFACE and silently drops both blend faces regardless of their radii. Making the two radii equal (clean) or widening the mismatch to 200 (huge) still yields 0 faces; the shape-count oracle cannot witness the mismatched-radii defect.
 - **Severity**: P1
 - **Byte assertion**: count_entity_def(b'BLENDED_EDGE_SURFACE') == 2
 - **Byte assertion**: contains(b"BLENDED_EDGE_SURFACE('blendA_radius_1',#25,1.0)")
@@ -18788,13 +18810,14 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs048 — `OFFSET_CURVE_2D` with sign of `ref_distance` flipping mid composite-curve chain
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base(+1/-1)/clean(+1/+1)/huge(+1/-100) all give identical shape-counts (f1, v0 e0) and valid=True; the OFFSET_CURVE_2D chain is unreachable, so the sign flip is oracle-invisible.
 - **Category**: §12.2c surface-degeneracy (sub-class: offset curve)
 - **Sources**: 16-iso-spec ISO 10303-42 §OFFSET_CURVE_2D
 - **Description**: ISO 10303-42 OFFSET_CURVE_2D carries ref_distance (a signed real where sign determines side). When a producer chains OFFSET_CURVE_2D segments around a composite curve and switches sign mid-chain (perhaps to "fix" inside/outside on a concave region), the resulting offset is non-continuous: successive segments do not meet at a shared point.
 - **Reproducer recipe**: COMPOSITE_CURVE of two POLYLINE segments wrapped in OFFSET_CURVE_2D each, with `ref_distance` = +1.0 on the first and `-1.0` on the second.
 - **Expected kernel behavior**: detect the C0 discontinuity at the chain junction and either reject or insert a connecting segment (line, arc) bridging the gap.
 - **Notes**: **See also**: Gs043. Synonyms: "OFFSET_CURVE_2D ref_distance sign flips mid composite chain", "C0 discontinuity at composite curve junction from offset sign change", "offset side switches mid-chain", "successive offset segments don meet", "ref_distance +1 then -1 on adjacent segments".
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) with a face but no reachable wire (v0 e0); the COMPOSITE_CURVE/OFFSET_CURVE_2D chain is never consulted in the built face, so the declared mid-chain sign flip does not survive. Making the signs match (clean) or exaggerating the opposite sign to -100 (huge) leaves shape-counts and BRepCheck validity unchanged; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Byte assertion**: count_entity_def(b'OFFSET_CURVE_2D') == 2
 - **Byte assertion**: contains(b"OFFSET_CURVE_2D('off1',#20,1.0,.T.)")
@@ -18806,13 +18829,14 @@ _Section summary: 41 entries._
 ---
 
 ### Gs049 — B-spline surface has C0 isoparametric line that triggers split-on-import
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(poles made collinear, knot retained)/huge(break exaggerated) all load an empty shell (f0, invalid); the face-drop is a generic interior-knot reader limitation (any interior knot fails; removing it restores f1), not the C0-specific break, so shape(1) [empty shell] does not witness the declared mechanism (cf. Gs198).
 - **Category**: §12.2c surfaces (sub-class: continuity)
 - **Sources**: OCCT `ShapeUpgrade_SplitSurface::Perform` (`ShapeUpgrade_SplitSurface.hxx:78`)
 - **Description**: A B_SPLINE_SURFACE_WITH_KNOTS has a knot in U (or V) whose multiplicity equals the degree, creating a C0 isoparametric line. Faces on this surface present a kink across the entire isoline; meshing/Boolean tools that assume C1+ produce wrong tangent normals. Some receivers split such surfaces at the C0 line into two sub-surfaces with single-piece continuity.
 - **Reproducer recipe**: A face on a degree-2 B-spline surface whose U knot vector is `(0,0,0, 0.5,0.5,0.5, 1,1,1)`; the face itself is a simple square.
 - **Expected kernel behavior**: detect C0 isoparametric lines and either split the surface (and propagate splits to bound faces and edges) or report the discontinuity. Splitting must keep edge/wire/face topology consistent.
 - **Notes**: Surface-side analogue of Gp033. Synonyms: "B-spline surface C0 isoparametric line triggers split", "knot multiplicity equals degree creates C0 isoline", "BSpline surface kink across entire isoline", "split surface at C0 isoline propagates to face/edge topology", "ShapeUpgrade_SplitSurface needed for C0 isoparametric line".
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) as an empty shell with 0 faces; OCC's STEP-to-Geom_BSplineSurface translator fails ('Surface has not been created') on any interior U knot in this ADVANCED_FACE topology, not specifically on the C0 full-multiplicity break — making the poles collinear/smooth while keeping the interior knot (clean) still yields 0 faces, and only removing the interior knot entirely restores a face. Exaggerating the pole break (huge) also yields 0 faces; the shape-count oracle cannot distinguish the declared C0-split defect from a benign interior knot.
 - **Severity**: P1
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS(')
 - **Byte assertion**: contains(b'(3,3,3)')
@@ -27685,6 +27709,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gs056 — `SURFACE_OF_REVOLUTION` of an ellipse around its own centre produces a degenerate surface
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(axis off-centre)/huge(eccentricity exaggerated) all give identical shape-counts (v8 e4 f1) and BRepCheck invalid; invalidity is toy-topology-driven (the off-centre variant is equally invalid), so shape(1) does not witness the defect.
 - **Category**: §12.2c surface / curve degeneracies (sub-class: revolution of conic)
 - **Sources**: OCCT MANTIS#0027722; bug-reporter language: "STEP error for ellipse revol shape", "revolution of ellipse fails on import", "degenerate surface from ellipse-of-revolution". (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Sender**: Modellers that emit `SURFACE_OF_REVOLUTION` whose generatrix is an `ELLIPSE` and whose axis passes through the ellipse centre.
@@ -27695,12 +27720,13 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **Byte assertion**: contains(b'SURFACE_OF_REVOLUTION')
 - **Byte assertion**: contains(b'ELLIPSE')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads shape(1); the built face is BRepCheck-invalid because of the fixture's straight-LINE edge approximations (toy topology), not the axis-through-centre degeneracy — moving the axis off-centre (clean) leaves the face equally invalid. Perturbing the construction from clean to grossly exaggerated eccentricity (huge) changes neither shape-counts nor validity; the shape-count oracle cannot witness the axis-through-centre defect.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a`
 
 ### Gs057 — `RECTANGULAR_COMPOSITE_SURFACE` LoadONBrep stub (BRL-CAD step-g)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(1 patch)/huge(10 patches) all load an empty shell (f0, invalid); the composite-surface face is dropped wholesale, so shape(1) [empty shell] does not witness the defect.
 - **Category**: §12.2c (sub-class: composite quilt unimplemented)
 - **Sources**: BRL-CAD `src/conv/step/step-g/RectangularCompositeSurface.cpp` `Load` parses the segments grid into SurfacePatch objects, but `LoadONBrep` is a stub printing `"::LoadONBrep(..) not implemented for <entity>"`; bug-reporter language: "RECTANGULAR_COMPOSITE_SURFACE drops face on import", "step-g composite quilt unsupported", "patchwork quilt silently lost".
 - **Sender**: Producers that emit a quilt of analytically-defined patches (typical of CATIA's "Surface" workbench output and of legacy AP203 files from CAD systems whose internal representation is patch-based rather than NURBS-based).
@@ -27711,12 +27737,13 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **Byte assertion**: contains(b'RECTANGULAR_COMPOSITE_SURFACE')
 - **Byte assertion**: contains(b'SURFACE_PATCH')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads shape(1) as an empty shell with 0 faces; OCC does not support RECTANGULAR_COMPOSITE_SURFACE as face geometry and drops the face regardless of the patch grid. Reducing to a single patch (clean) or expanding to a 10-patch grid (huge) still yields 0 faces; the shape-count oracle cannot witness the declared unimplemented-dispatch defect.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gs058 — `SURFACE_PATCH` `transition_code` / `u_sense` / `v_sense` parsed but ignored (BRL-CAD step-g)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(.CONTINUOUS.)/huge(.DISCONTINUOUS.) all load an empty shell (f0, invalid); the composite-surface face is dropped, so shape(1) [empty shell] does not witness the defect.
 - **Category**: §12.2c surface / curve degeneracies (sub-class: patch continuity metadata lost)
 - **Sources**: BRL-CAD `src/conv/step/step-g/SurfacePatch.cpp` `Load` reads `u_transition`, `v_transition` (Transition_code enum: `DISCONTINUOUS` / `CONTINUOUS` / `CONT_SAME_GRADIENT` / `CONT_SAME_GRADIENT_SAME_CURVATURE`) and `u_sense` / `v_sense` BOOLEANs into class members; `LoadONBrep` is a stub printing `"not implemented"` and returning false; bug-reporter language: "SURFACE_PATCH transition_code dropped on import", "C2 continuity hint lost by step-g", "u_sense / v_sense booleans not applied".
 - **Sender**: Producers that compose a quilt of patches with explicit continuity guarantees — CATIA Class A surface tools, ICEM Surf, and legacy aero/automotive translators all emit `CONT_SAME_GRADIENT_SAME_CURVATURE` to declare C2 continuity at patch boundaries.
@@ -27727,7 +27754,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 - **Byte assertion**: contains(b'SURFACE_PATCH')
 - **Byte assertion**: contains(b'CONT_SAME_GRADIENT_SAME_CURVATURE')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads shape(1) as an empty shell with 0 faces; OCC drops the RECTANGULAR_COMPOSITE_SURFACE/SURFACE_PATCH wholesale, so the transition_code value can never affect the built shape. Changing the transition to .CONTINUOUS. (clean) or to .DISCONTINUOUS. with flipped senses (huge) still yields 0 faces; the shape-count oracle cannot witness the parsed-but-ignored transition-code defect.
 - **Severity**: P1
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
