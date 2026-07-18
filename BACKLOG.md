@@ -22,6 +22,26 @@ Conventions:
   a quality concern. The only requirement: if we defer expansion work, log the
   deferred items here so they aren't forgotten. (User invariant 2026-06-19.)
 
+## Fidelity — orphaned-defect-carrier fixes (IN PROGRESS 2026-07-17)
+
+Five fixtures were confirmed (2026-07-06 audit, [[feedback_orphaned_defect_carrier]]) to carry their
+defect entity in an UNREFERENCED curve set, so they load an inert 1-vertex stub and never demonstrate
+their claim. All are builder-generated (`fixture_sources/<sec>/<ID>.py`) — edit the `.py` and regenerate
+with `_fixture_source_check --fix`, never hand-edit the `.stp` (round-trip check reds the fast lane).
+
+- [x] **Gn002** — DONE + CI-green (dfad4f92). Spec violation (NbWeights≠NbControlPoints): wired both
+      malformed rational entities into a `GEOMETRIC_SET`; OCC transfer THROWS on the mismatch → empty
+      (deterministic), vs well-formed control → edge+face. `occt=shape(1)`→`occt=empty/empty gmsh=empty`.
+- [ ] **Gn007, Gn008** — geometric-QUALITY (under-sampled helix / near-cusp). Wiring proven INSUFFICIENT
+      (shape-counts byte-identical under pole perturbation). Fix = RECLASSIFY honestly (retitle + honest
+      Notes that OCC accepts silently / quality defect is oracle-invisible), like Tfa129/Tfa210.
+- [ ] **P014, P022** — bad pcurve V-drift / helical seam degeneracy. Live-test individually: a bad
+      surface/pcurve wired into a real face MAY change face count or reject (visible) unlike a pure
+      quality defect → wire-vs-reclassify decided per live result.
+
+(Tfa129, Tfa210 were on the original list but are ALREADY honestly reclaimed by the 2026-07-16
+truth-in-labeling audit — no action needed.)
+
 ## Active initiatives
 
 ### B5 — New-source mining (2026-07 survey) — IN PROGRESS
