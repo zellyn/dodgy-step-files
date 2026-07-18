@@ -34,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Detect the empty-shell case before any topological reasoning is attempted; reject the solid as malformed, or unwind the solid wrapper and report nothing was loaded.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;empty shell&quot;, &quot;shell has no faces&quot;, &quot;solid with zero faces&quot;. **See also**: Bo002. **OCC behavior**: accepts and loads shape(1); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
+<p>Synonyms: &quot;empty shell&quot;, &quot;shell has no faces&quot;, &quot;solid with zero faces&quot;. **See also**: Bo002. **OCC behavior**: accepts and loads shape(1) — a `CLOSED_SHELL` with 0 faces (heal_on ≡ heal_off: v0/e0/f0/shell1) — instead of rejecting the boundary-less solid; outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant; the acceptance is oracle-visible as occt=shape(1) diverging from gmsh=empty. Structural note: this defect is binary/verbatim — the shell&#x27;s face list is empty by construction, so there is no clean/huge perturbation axis (a shell either has faces or it does not); the fixture carries the malformed structure directly rather than a tunable magnitude.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
