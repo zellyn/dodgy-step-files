@@ -67,4 +67,4 @@ face  = f._emit_raw(
 )
 shell = f._emit_raw(f"OPEN_SHELL('gb003_shell',(#{face.eid}))")
 sbsm  = f.shell_based_surface_model([])
-f.add_product_chain(sbsm)
+f.add_product_chain(sbsm, uncertainty_literal="LENGTH_MEASURE(1.0E-7)")  # bare typed real, not enum-wrapped (scaffolding-artifact fix)

@@ -100,6 +100,8 @@ def _format_arg(a: Any) -> str:
         return a.ref()
     if isinstance(a, Enum):
         return f".{a.value}."
+    if isinstance(a, Raw):
+        return a.text
     if isinstance(a, (list, tuple)):
         return f"({','.join(_format_arg(x) for x in a)})"
     if isinstance(a, str):
@@ -126,6 +128,19 @@ class Enum:
 
     def __repr__(self) -> str:
         return f".{self.value}."
+
+
+@dataclass
+class Raw:
+    """An inline Part-21 literal emitted verbatim — no quoting, no enum dots.
+
+    Used for a *typed value* that occupies a SELECT slot, e.g. the
+    ``measure_value`` of an ``UNCERTAINTY_MEASURE_WITH_UNIT``, which must be
+    written as a bare typed real ``LENGTH_MEASURE(1.0E-7)`` — NOT as an
+    enumeration ``.LENGTH_MEASURE(1.0E-7).`` (the enum-dot form is a Part-21
+    syntax error that OCCT reports as "Incorrect Syntax" before recovering).
+    """
+    text: str
 
 
 @dataclass
@@ -519,7 +534,8 @@ class StepFile:
     def add_product_chain(self, model_entity: Entity | list[Entity], *,
                           product_id: str | None = None,
                           mode: str = "surface_shape",
-                          uncertainty: float = 1.0E-7) -> Entity:
+                          uncertainty: float = 1.0E-7,
+                          uncertainty_literal: str | None = None) -> Entity:
         """Add the canonical PRODUCT/PRODUCT_DEFINITION chain at fixed IDs
         #9000-#9023 referencing ``model_entity`` (usually a
         SHELL_BASED_SURFACE_MODEL or MANIFOLD_SOLID_BREP).
@@ -574,9 +590,20 @@ class StepFile:
             "(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT())"
         )
         unc_literal = f"LENGTH_MEASURE({uncertainty:.6E})" if uncertainty != 1.0E-7 else "LENGTH_MEASURE(1.0E-7)"
+        # ``measure_value`` is a SELECT slot: the correct Part-21 form is a bare
+        # typed real ``LENGTH_MEASURE(...)``. The historical default wraps it in
+        # enum dots (``.LENGTH_MEASURE(...).``) — a syntax error OCCT reports as
+        # "Incorrect Syntax" before recovering. Kept as the default for byte
+        # compatibility across the corpus; fixtures that must be free of the
+        # spurious parse error pass ``uncertainty_literal`` to opt into the
+        # well-formed bare-typed-real form.
+        if uncertainty_literal is not None:
+            unc_arg: Any = Raw(uncertainty_literal)
+        else:
+            unc_arg = Enum_(unc_literal)
         uncertainty_ent = self._emit(
             "UNCERTAINTY_MEASURE_WITH_UNIT",
-            Enum_(unc_literal),
+            unc_arg,
             length_unit, "distance_accuracy_value", "", name="_no_name",
         )
         geom_ctx = self._emit_raw(

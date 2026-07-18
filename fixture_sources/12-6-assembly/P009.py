@@ -134,7 +134,7 @@ gcs = f._emit_raw(
     f"GEOMETRIC_CURVE_SET('',"
     f"(#{helix_curve.eid},#{surface_curve.eid},#{swept_surf.eid}))"
 )
-f.add_product_chain(gcs)
+f.add_product_chain(gcs, uncertainty_literal="LENGTH_MEASURE(1.0E-7)")  # bare typed real, not enum-wrapped (scaffolding-artifact fix)
 
 # NAUO scaffolding for §12.6 assembly-presence lint.
 sub_pdc = f._emit_raw("PRODUCT_CONTEXT('sub',#9000,'mechanical')")

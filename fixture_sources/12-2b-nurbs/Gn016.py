@@ -180,4 +180,4 @@ loop = f.edge_loop([
 face  = f.advanced_face([f.face_outer_bound(loop)], surf)
 shell = f.open_shell([face])
 sbsm  = f.shell_based_surface_model([shell])
-f.add_product_chain(sbsm)
+f.add_product_chain(sbsm, uncertainty_literal="LENGTH_MEASURE(1.0E-7)")  # bare typed real, not enum-wrapped (scaffolding-artifact fix)

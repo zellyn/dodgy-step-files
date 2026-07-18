@@ -71,4 +71,4 @@ tess_shell = f._emit_raw(
 gcs = f._emit_raw(
     f"GEOMETRIC_CURVE_SET('shared-coordinates-list-tessellation',(#{tess_shell.eid}))"
 )
-f.add_product_chain(gcs)
+f.add_product_chain(gcs, uncertainty_literal="LENGTH_MEASURE(1.0E-7)")  # bare typed real, not enum-wrapped (scaffolding-artifact fix)

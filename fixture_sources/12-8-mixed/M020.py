@@ -83,5 +83,5 @@ gcs = f._emit_raw(
     f"GEOMETRIC_CURVE_SET('tessellated-face-style-binding-lost',"
     f"(#{tri_face.eid},#{styled.eid}))"
 )
-f.add_product_chain(gcs)
+f.add_product_chain(gcs, uncertainty_literal="LENGTH_MEASURE(1.0E-7)")  # bare typed real, not enum-wrapped (scaffolding-artifact fix)
 f.write(_Path(__file__).parent.parent.parent / "step-examples" / "12-8-mixed" / "M020.stp")
