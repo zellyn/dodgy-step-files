@@ -15,7 +15,6 @@
 <h1>Ad047 <span class="sep">—</span> <span class="entry-title">`ADVANCED_FACE` `same_sense=.F.` inverts surface normal: negative or invalid face area after orientation fix</span></h1>
 <p class="category">§12.11 (sub-class: schema-validation)</p>
 <p class="tag-pills">
-<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
 </p>
 </header>
@@ -33,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>post-fix invariant check; correct orientation idempotently.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Ad043. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic.</p></section>
+<p>**See also**: Ad043. **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the valid square `ADVANCED_FACE` is left orphan (no shape-representation root references it). Given a rooted `SHELL_BASED_SURFACE_MODEL` it builds shape(1 face) identically with `same_sense=.F.` and `.T.`, so the declared orientation defect does not drive the empty; base/clean=empty. Orphaned defect carrier, not a defect-driven silent data-loss; not a proven kernel bug.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
