@@ -2028,6 +2028,7 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Gn009 — High-degree NURBS surface bloat (degree >5, redundant knots)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (degree-9 NURBS surface bloat); a single hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL never builds a face in OCC's transfer — base, a CLEAN copy with the injected C-1-break edge closed, and a fully well-formed copy (declared defect repaired, pcurve domains corrected) are all empty (f=0), while a genuinely-building B-spline face fixture (Gn024) loads f=1.
 - **Category**: §12.2b NURBS/knots
 - **Sources**: 11-translator-vendors.md (W016 — CADfix tutorial "Reducing High Degree NURBS Surfaces")
 - **Description**: A `B_SPLINE_SURFACE_WITH_KNOTS` of degree >5 in either direction with hundreds of control points where degree-3 would suffice. Often produced by aggressive degree-elevation in source kernels. Causes meshing slowdowns; main impact on FEA prep.
@@ -2036,18 +2037,19 @@ _Section summary: 82 entries._
 - **Notes**: Synonyms: "high-degree NURBS surface bloat", "B-spline degree above 5 with hundreds of poles", "redundant knots inflate NURBS surface", "degree-9 NURBS where degree-3 would suffice", "BSpline surface degree-elevation bloat slows mesher".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (degree-9 NURBS surface bloat): the model is one hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL that OCC's STEP transfer never builds into a TopoDS face. Base, a CLEAN copy with the injected C-1-break defect edge closed, and a fully well-formed copy (declared defect repaired, scaffold pcurve domains corrected) are all empty (f=0); a genuinely-building B-spline face fixture (Gn024) loads f=1. The silent-empty is toy single-face topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Gn010 — Out-of-range / NaN NURBS control points
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (out-of-range (1e100) NURBS control point); a single hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL never builds a face in OCC's transfer — base, a CLEAN copy with the injected C-1-break edge closed, and a fully well-formed copy (declared defect repaired, pcurve domains corrected) are all empty (f=0), while a genuinely-building B-spline face fixture (Gn024) loads f=1.
 - **Category**: §12.2b NURBS/knots
 - **Sources**: 11-translator-vendors.md (W017 — HOOPS Exchange SDHE-22166)
 - **Description**: NURBS control points have coordinates far outside the model's valid extent (huge values, NaN, geometrically impossible relative to the surface intent). Often caused by exporters botching the rational arithmetic or by integer-overflow on weight normalization.
 - **Reproducer recipe**: `B_SPLINE_SURFACE_WITH_KNOTS` with one interior control point at `(1e100, 1e100, 1e100)` but otherwise sensible knots and degree-3 net.
 - **Expected kernel behavior**: reject the surface; refuse to materialize. At minimum, refuse to use it for projection or intersection. Validate magnitudes against bounding-box envelope.
-- **Notes**: **See also**: Gs036. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "NURBS control point coordinates out of range", "NaN in B-spline surface poles", "huge coordinate values 1e100 in NURBS", "NURBS pole has impossible coordinates", "NaN propagation from B-spline control points".
+- **Notes**: **See also**: Gs036. **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (out-of-range (1e100) NURBS control point): the model is one hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL that OCC's STEP transfer never builds into a TopoDS face. Base, a CLEAN copy with the injected C-1-break defect edge closed, and a fully well-formed copy (declared defect repaired, scaffold pcurve domains corrected) are all empty (f=0); a genuinely-building B-spline face fixture (Gn024) loads f=1. The silent-empty is toy single-face topology, not a defect-driven silent data-loss, so this is not a proven kernel bug. Synonyms: "NURBS control point coordinates out of range", "NaN in B-spline surface poles", "huge coordinate values 1e100 in NURBS", "NURBS pole has impossible coordinates", "NaN propagation from B-spline control points".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
@@ -2080,24 +2082,26 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Gn013 — Convert elementary to BSpline (or back): producer/consumer requires specific form
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (elementary<->BSpline conversion requirement); a single hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL never builds a face in OCC's transfer — base, a CLEAN copy with the injected C-1-break edge closed, and a fully well-formed copy (declared defect repaired, pcurve domains corrected) are all empty (f=0), while a genuinely-building B-spline face fixture (Gn024) loads f=1.
 - **Category**: §12.2b NURBS/knots
 - **Sources**: 03-occt-tests.md (R005 surface_to_bspline); 05-occt-shapefix.md (F053 `ShapeCustom_ConvertTo*`)
 - **Description**: Some downstream tools require uniform NURBS for every face; others require analytic primitives. The healer must convert plane/cylinder/cone/sphere/torus to/from BSpline on demand.
 - **Reproducer recipe**: STEP with mixed `PLANE`, `CYLINDRICAL_SURFACE`, `B_SPLINE_SURFACE_WITH_KNOTS` faces; convert all to NURBS via `ShapeCustom_ConvertToBSpline` or recover analytic via canonical recognition.
 - **Expected kernel behavior**: heal; exact algebraic conversion both ways (degree-d Bezier ⇄ NURBS with mult = degree+1; cylinder/cone/sphere ⇄ rational degree-2 NURBS).
-- **Notes**: **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "convert elementary surface to B-spline", "convert NURBS to analytic primitive", "downstream needs uniform NURBS for every face", "exact algebraic conversion between cylinder and BSpline", "kernel must convert plane/cylinder to NURBS on demand".
+- **Notes**: **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (elementary<->BSpline conversion requirement): the model is one hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL that OCC's STEP transfer never builds into a TopoDS face. Base, a CLEAN copy with the injected C-1-break defect edge closed, and a fully well-formed copy (declared defect repaired, scaffold pcurve domains corrected) are all empty (f=0); a genuinely-building B-spline face fixture (Gn024) loads f=1. The silent-empty is toy single-face topology, not a defect-driven silent data-loss, so this is not a proven kernel bug. Synonyms: "convert elementary surface to B-spline", "convert NURBS to analytic primitive", "downstream needs uniform NURBS for every face", "exact algebraic conversion between cylinder and BSpline", "kernel must convert plane/cylinder to NURBS on demand".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Gn014 — `B_SPLINE_SURFACE_WITH_KNOTS` that fits a `PLANE` / `CYLINDRICAL_SURFACE` / `CONICAL_SURFACE` / `SPHERICAL_SURFACE` / `TOROIDAL_SURFACE` (canonical recognition)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (canonical recognition (NURBS that is exactly a PLANE)); a single hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL never builds a face in OCC's transfer — base, a CLEAN copy with the injected C-1-break edge closed, and a fully well-formed copy (declared defect repaired, pcurve domains corrected) are all empty (f=0), while a genuinely-building B-spline face fixture (Gn024) loads f=1.
 - **Category**: §12.2b NURBS/knots
 - **Sources**: 05-occt-shapefix.md (F076 `ShapeAnalysis_CanonicalRecognition`); 11-translator-vendors.md (W015); 13-quaoar.md (B030); 21-patents.md (X025)
 - **Description**: A face stored as `B_SPLINE_SURFACE_WITH_KNOTS` is mathematically a `PLANE`, `CYLINDRICAL_SURFACE`, `CONICAL_SURFACE`, `SPHERICAL_SURFACE`, or `TOROIDAL_SURFACE`. Common shape: degree 1×1 with a 2×2 control net is exactly a flat quad that should have been authored as a `PLANE`. Feature recognition (hole detection, axis derivation), unfolding, CAM tool-axis derivation and DXF/SVG export degrade silently because they cannot ask the B-spline surface for its radius/axis. IGES round-trip is the canonical lossy path.
 - **Reproducer recipe**: STEP file from a system that always writes NURBS (or after IGES round-trip): query a "cylindrical" face's `BRepAdaptor_Surface::GetType()` — returns `GeomAbs_BSplineSurface` instead of `GeomAbs_Cylinder`.
 - **Expected kernel behavior**: heal; fit candidate primitive within user-specified tolerance, replace surface; reject canonicalization if recovered surface deviates beyond tolerance (otherwise watertightness may be lost).
-- **Notes**: **See also**: Gs024, N030. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: "BSpline surface should be canonical plane", "B-spline that is actually a cylinder/cone/sphere/torus", "canonical recognition needed on NURBS", "feature recognition cannot find axis on B-spline cylinder", "analytic primitive lost in NURBS form".
+- **Notes**: **See also**: Gs024, N030. **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (canonical recognition (NURBS that is exactly a PLANE)): the model is one hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL that OCC's STEP transfer never builds into a TopoDS face. Base, a CLEAN copy with the injected C-1-break defect edge closed, and a fully well-formed copy (declared defect repaired, scaffold pcurve domains corrected) are all empty (f=0); a genuinely-building B-spline face fixture (Gn024) loads f=1. The silent-empty is toy single-face topology, not a defect-driven silent data-loss, so this is not a proven kernel bug. Synonyms: "BSpline surface should be canonical plane", "B-spline that is actually a cylinder/cone/sphere/torus", "canonical recognition needed on NURBS", "feature recognition cannot find axis on B-spline cylinder", "analytic primitive lost in NURBS form".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
@@ -2130,12 +2134,13 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ### Gn017 — `B_SPLINE_SURFACE_WITH_KNOTS` requiring split-at-interior-knots Bezier conversion for legacy export
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (split-at-interior-knots Bezier conversion); a single hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL never builds a face in OCC's transfer — base, a CLEAN copy with the injected C-1-break edge closed, and a fully well-formed copy (declared defect repaired, pcurve domains corrected) are all empty (f=0), while a genuinely-building B-spline face fixture (Gn024) loads f=1.
 - **Category**: §12.2b NURBS/knots
 - **Sources**: 03-occt-tests.md (R004 surface_to_bezier); 05-occt-shapefix.md (F079 `ShapeUpgrade_ConvertCurve3dToBezier`, `ShapeUpgrade_ConvertSurfaceToBezierBasis`, `ShapeUpgrade_ShapeConvertToBezier`); 09-healing-menus.md (H056)
 - **Description**: Some legacy receivers accept Bezier (no internal knots) but not arbitrary NURBS. Common shape: a bicubic `B_SPLINE_SURFACE_WITH_KNOTS` with a 6×4 control net and a U knot vector like `(4,1,1,4)` over (0, 0.33, 0.67, 1); a surface that would split exactly into Bezier patches at the interior knots. A converter must split the B-spline surface at its interior knots into Bezier patches, each with multiplicity = degree+1 at endpoints.
 - **Reproducer recipe**: STEP with a degree-3 NURBS surface having two interior knots in U; convert to Bezier — output should be 3 Bezier patches per V-strip.
 - **Expected kernel behavior**: heal; exact split at interior knots; preserve continuity across resulting patches; warn if numerical re-fit was needed for rational surfaces.
-- **Notes**: **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "split B-spline surface at interior knots into Bezier patches", "convert NURBS to Bezier for legacy receiver", "Bezier conversion needed for downstream tool", "exact split at interior knots produces Bezier patches", "legacy receiver expects Bezier not arbitrary NURBS".
+- **Notes**: **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (split-at-interior-knots Bezier conversion): the model is one hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL that OCC's STEP transfer never builds into a TopoDS face. Base, a CLEAN copy with the injected C-1-break defect edge closed, and a fully well-formed copy (declared defect repaired, scaffold pcurve domains corrected) are all empty (f=0); a genuinely-building B-spline face fixture (Gn024) loads f=1. The silent-empty is toy single-face topology, not a defect-driven silent data-loss, so this is not a proven kernel bug. Synonyms: "split B-spline surface at interior knots into Bezier patches", "convert NURBS to Bezier for legacy receiver", "Bezier conversion needed for downstream tool", "exact split at interior knots produces Bezier patches", "legacy receiver expects Bezier not arbitrary NURBS".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
 - **Byte assertion**: contains(b'BEZIER')
 - **Tier-3 assertion**: shape_null == True
@@ -2157,6 +2162,7 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Gn019 — Degenerate zero-length `B_SPLINE` pcurve (coincident control points / sample count <2)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (degenerate zero-length B-spline seam pcurve); a single hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL never builds a face in OCC's transfer — base, a CLEAN copy with the injected C-1-break edge closed, and a fully well-formed copy (declared defect repaired, pcurve domains corrected) are all empty (f=0), while a genuinely-building B-spline face fixture (Gn024) loads f=1.
 - **Category**: §12.2b NURBS/knots
 - **Sources**: 14-brlcad-rhino.md (K007, `OpenNurbsInterfaces.cpp:1596`)
 - **Description**: A pcurve on a `CYLINDRICAL_SURFACE` (or other periodic surface) is a degenerate `B_SPLINE_CURVE_WITH_KNOTS` of degree 1 whose two control points are both at the same UV (e.g. both (0,0)); a zero-length pcurve typically representing a seam. When sampling such a pcurve for an `ON_BrepTrim`, step-g gets fewer than 2 distinct sample points, yielding a degenerate trim. Likely from `seam_curve` or near-singular pcurve evaluation on closed surfaces.
@@ -2165,7 +2171,7 @@ _Section summary: 82 entries._
 - **Notes**: Synonyms: "zero-length B-spline pcurve from coincident control points", "degenerate degree-1 BSpline pcurve", "pcurve evaluates to single point at seam", "pcurve sample count below 2", "B-spline pcurve collapsed to one point at apex".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (degenerate zero-length B-spline seam pcurve): the model is one hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL that OCC's STEP transfer never builds into a TopoDS face. Base, a CLEAN copy with the injected C-1-break defect edge closed, and a fully well-formed copy (declared defect repaired, scaffold pcurve domains corrected) are all empty (f=0); a genuinely-building B-spline face fixture (Gn024) loads f=1. The silent-empty is toy single-face topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -2245,13 +2251,14 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Gn026 — High-degree clamped `B_SPLINE_CURVE_WITH_KNOTS` requiring degree-restriction with continuity guarantee
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (high-degree B-spline degree-restriction); a single hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL never builds a face in OCC's transfer — base, a CLEAN copy with the injected C-1-break edge closed, and a fully well-formed copy (declared defect repaired, pcurve domains corrected) are all empty (f=0), while a genuinely-building B-spline face fixture (Gn024) loads f=1.
 - **Category**: §12.2b NURBS/knots
 - **Sources**: 03-occt-tests.md (R081 bug23944)
 - **Description**: A high-degree (e.g. degree-9) univariate `B_SPLINE_CURVE_WITH_KNOTS` with ~10 clamped control points (knot vector with multiplicities (10,10); a full-degree Bezier-ish curve) that downstream tooling must reduce/restrict in degree. A historical typo in the restriction parameters produced surfaces that did not achieve the requested continuity even though the API reported success. Direct hazard: kernels that trust the restriction output ship sub-spec geometry downstream.
 - **Reproducer recipe**: Pass a degree-9 BSpline through `ShapeCustom_BSplineRestriction` requesting C2 continuity at degree 3; verify resulting surface continuity.
 - **Expected kernel behavior**: Reject when continuity not achievable: BSpline restriction must achieve the requested continuity exactly or fail loudly; never silently accept sub-spec output.
 - **Notes**: **See also**: Gn011. Synonyms: "high-degree clamped B-spline degree restriction", "BSpline restriction silently fails to achieve requested continuity", "degree-9 reduction does not honor C2 request", "BSpline degree-restriction post-condition not met", "degree restriction returns sub-spec curve".- **Byte assertion**: contains(b'B_SPLINE_CURVE')
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (high-degree B-spline degree-restriction): the model is one hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL that OCC's STEP transfer never builds into a TopoDS face. Base, a CLEAN copy with the injected C-1-break defect edge closed, and a fully well-formed copy (declared defect repaired, scaffold pcurve domains corrected) are all empty (f=0); a genuinely-building B-spline face fixture (Gn024) loads f=1. The silent-empty is toy single-face topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -2271,6 +2278,7 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Gn031 — `EDGE_CURVE` periodic-to-non-periodic conversion on small-edge export (swapped start/end vertices on tiny-radius rational B-spline arc)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (periodic->non-periodic swapped-vertex tiny arc); a single hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL never builds a face in OCC's transfer — base, a CLEAN copy with the injected C-1-break edge closed, and a fully well-formed copy (declared defect repaired, pcurve domains corrected) are all empty (f=0), while a genuinely-building B-spline face fixture (Gn024) loads f=1.
 - **Category**: §12.2b NURBS/knots
 - **Sources**: 08-occt-gitlog.md (G067 — Mantis 0031301, OCCT 7ef1f9b)
 - **Description**: For small edges fully covered by vertex tolerances (typical shape: a degree-2 rational `B_SPLINE_CURVE_WITH_KNOTS` quarter-arc with three control points at sub-mm radii like 0.001), the OCCT writer converts periodic BSplines to non-periodic by cutting a segment but doesn't permute the closed-curve vertices. The result is an `EDGE_CURVE` whose start/end vertices are swapped relative to the curve parameterisation — an inverted edge over a tiny-radius arc — producing invalid edge range on read-back.
@@ -2279,12 +2287,13 @@ _Section summary: 82 entries._
 - **Notes**: **See also**: Gs019. Synonyms: "small-edge B-spline arc has swapped vertices", "tiny radius rational B-spline arc inverted", "EDGE_CURVE periodic-to-non-periodic conversion bug", "OCCT writer doesn permute closed-curve vertices", "small B-spline edge inverted on round-trip".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (periodic->non-periodic swapped-vertex tiny arc): the model is one hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL that OCC's STEP transfer never builds into a TopoDS face. Base, a CLEAN copy with the injected C-1-break defect edge closed, and a fully well-formed copy (declared defect repaired, scaffold pcurve domains corrected) are all empty (f=0); a genuinely-building B-spline face fixture (Gn024) loads f=1. The silent-empty is toy single-face topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Gn032 — Pro/E non-uniform parameter scaling on 2D Geom2dAPI_Interpolate curves
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (Pro/E non-uniform 2D-curve parameter scaling); a single hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL never builds a face in OCC's transfer — base, a CLEAN copy with the injected C-1-break edge closed, and a fully well-formed copy (declared defect repaired, pcurve domains corrected) are all empty (f=0), while a genuinely-building B-spline face fixture (Gn024) loads f=1.
 - **Category**: §12.2b NURBS/knots
 - **Sources**: 08-occt-gitlog.md (G005 — Mantis 0028594, OCCT 353e6fa)
 - **Sender**: Pro/Engineer
@@ -2294,7 +2303,7 @@ _Section summary: 82 entries._
 - **Notes**: **See also**: Gp024. Synonyms: "Pro/E non-uniform parameter scaling on 2D curves", "Geom2dAPI_Interpolate scaling tags ignored", "PRO/Engineer 2D BSpline interpolation scaling lost", "per-segment chord-length parameterisation not honored", "Pro/E 2D curve scale parameters dropped".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (Pro/E non-uniform 2D-curve parameter scaling): the model is one hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL that OCC's STEP transfer never builds into a TopoDS face. Base, a CLEAN copy with the injected C-1-break defect edge closed, and a fully well-formed copy (declared defect repaired, scaffold pcurve domains corrected) are all empty (f=0); a genuinely-building B-spline face fixture (Gn024) loads f=1. The silent-empty is toy single-face topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -10169,6 +10178,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/Fi001.stp
 
 ### Fi002 — Fillet contour walks into a high-valence vertex (> 3 incident edges)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (fillet walking into a high-valence vertex); the ADVANCED_FACE is wrapped in a GEOMETRIC_CURVE_SET (which OCC's geometric_set transfer does not build into a face), so base/clean/huge are all empty, whereas the same face placed in an OPEN_SHELL loads f=1.
 - **Category**: §12.7 feature defects (sub-class: fillet walk failure)
 - **Sources**: OCCT ChFi3d_Builder_2.cxx:2712, ChFi3d_FilBuilder.cxx:1724 (ChFiDS_WalkingFailure) (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -10179,7 +10189,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 4
 - **Byte assertion**: contains(b'valence_4_vertex')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (fillet walking into a high-valence vertex): the model root is a GEOMETRIC_CURVE_SET that wraps an ADVANCED_FACE, and OCC's geometric_set transfer does not build a face from a face embedded in a GEOMETRIC_CURVE_SET. Base, a CLEAN copy (edge loop repaired to a simple contour) and a HUGE copy are all empty, whereas the identical face placed in an OPEN_SHELL loads f=1. Container-level schema-abuse, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Fillet/chamfer operation fails to construct the rolling-ball geometry; loaded BRep has the unfilleted edges (no smoothing applied) or a NULL shape if the operation aborted, and downstream BRepCheck flags the affected edges.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -10206,13 +10216,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/Fi003.stp
 
 ### Fi004 — Fillet contour is geometrically inconsistent (disjoint or self-crossing)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (geometrically inconsistent fillet contour); the ADVANCED_FACE is wrapped in a GEOMETRIC_CURVE_SET (which OCC's geometric_set transfer does not build into a face), so base/clean/huge are all empty, whereas the same face placed in an OPEN_SHELL loads f=1.
 - **Category**: §12.7 feature defects (sub-class: faulty contour)
 - **Sources**: OCCT ChFi3d_Builder_1.cxx:378, BRepFilletAPI_MakeFillet.cxx:478 (FaultyContour) (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
 - **Description**: The user-provided fillet contour (list of spine edges) is not a connected, non-self-crossing curve. Bug-reporter language: "fillet contour invalid", "fillet edges don't connect", "broken fillet input".
 - **Reproducer recipe**: User selects three edges for a single fillet contour, but two of them are not adjacent and one self-crosses.
 - **Expected kernel behavior**: Validate contour at request time; reject; or split into multiple contours.
-- **Notes**: Synonyms: "broken contour", "fillet input not chainable", "fillet contour invalid", "fillet edges don't connect", "fillet contour self-crosses". **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either.
+- **Notes**: Synonyms: "broken contour", "fillet input not chainable", "fillet contour invalid", "fillet edges don't connect", "fillet contour self-crosses". **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (geometrically inconsistent fillet contour): the model root is a GEOMETRIC_CURVE_SET that wraps an ADVANCED_FACE, and OCC's geometric_set transfer does not build a face from a face embedded in a GEOMETRIC_CURVE_SET. Base, a CLEAN copy (edge loop repaired to a simple contour) and a HUGE copy are all empty, whereas the identical face placed in an OPEN_SHELL loads f=1. Container-level schema-abuse, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Byte assertion**: contains(b'e3_self_crossing')
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS')
 - **Byte assertion**: contains(b'figure_eight')
@@ -10240,13 +10251,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/Fi005.stp
 
 ### Fi006 — Fillet at a 4-edge corner unsupported
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (fillet at a 4-edge corner); the ADVANCED_FACE is wrapped in a GEOMETRIC_CURVE_SET (which OCC's geometric_set transfer does not build into a face), so base/clean/huge are all empty, whereas the same face placed in an OPEN_SHELL loads f=1.
 - **Category**: §12.7 feature defects (sub-class: corner valence limit)
 - **Sources**: OCCT BRepFilletAPI_MakeFillet documentation (4-edge-corner-unsupported) (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
 - **Description**: Fillet contour terminates at a vertex incident to four edges; the algorithm only supports up to three. Bug-reporter language: "fillet 4-edge corner unsupported", "fillet at high-valence corner fails".
 - **Reproducer recipe**: A box with a smaller box subtracted from the corner so that the corner vertex has four incident edges. Request a fillet on one of them.
 - **Expected kernel behavior**: Reject as unsupported, or generalize to N-edge corners.
-- **Notes**: Synonyms: "fillet 4-edge corner unsupported", "fillet at high-valence corner fails", "four-way corner fillet not handled", "fillet termination vertex too many edges". **See also**: Fi002. Distinct: Fi002 is about *walking-into*; Fi006 is about *terminating-at*. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
+- **Notes**: Synonyms: "fillet 4-edge corner unsupported", "fillet at high-valence corner fails", "four-way corner fillet not handled", "fillet termination vertex too many edges". **See also**: Fi002. Distinct: Fi002 is about *walking-into*; Fi006 is about *terminating-at*. **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (fillet at a 4-edge corner): the model root is a GEOMETRIC_CURVE_SET that wraps an ADVANCED_FACE, and OCC's geometric_set transfer does not build a face from a face embedded in a GEOMETRIC_CURVE_SET. Base, a CLEAN copy (edge loop repaired to a simple contour) and a HUGE copy are all empty, whereas the identical face placed in an OPEN_SHELL loads f=1. Container-level schema-abuse, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Byte assertion**: contains(b'valence_4_corner')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 4
 - **Tier-3 assertion**: shape_null == True
@@ -13288,6 +13300,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M061.stp
 
 ### M062 — SRR reverses the relation defined by NAUO; conflict resolved silently
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect; the GEOMETRIC_CURVE_SET model root holds only non-BRep assembly-relation (SHAPE_REPRESENTATION_RELATIONSHIP / NAUO, empty SHAPE_REPRESENTATIONs) (no ADVANCED_FACE/shell/solid), so no TopoDS shape can be built; base/clean/huge all empty.
 - **Category**: §12.8 (sub-class: assembly relation direction)
 - **Sources**: OCCT STEPControl_ActorRead.cxx:1149 ("SRR reverses relation defined by NAUO") (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -13298,7 +13311,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Byte assertion**: contains(b'SHAPE_REPRESENTATION_RELATIONSHIP')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect: the model root is a GEOMETRIC_CURVE_SET holding only non-BRep assembly-relation (SHAPE_REPRESENTATION_RELATIONSHIP / NAUO, empty SHAPE_REPRESENTATIONs) entities — no ADVANCED_FACE, shell or solid — so OCC's STEP transfer has no shape-representable geometry to build. Base, a CLEAN copy (declared defect repaired to its correct form) and a HUGE copy (defect exaggerated) are all empty. Structural absence of shape-representable geometry, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -14518,6 +14531,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`
 
 ### M059 — File with AP242 ED1 schema string but ED2-only enumeration value
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect; the GEOMETRIC_CURVE_SET model root holds only non-BRep tolerance-zone (TOLERANCE_ZONE / MEASURE_REPRESENTATION_ITEM) (no ADVANCED_FACE/shell/solid), so no TopoDS shape can be built; base/clean/huge all empty.
 - **Category**: §12.8 (sub-class: schema-edition mismatch)
 - **Sources**: 16-iso-spec AP242 ED1 vs ED2 enumeration changelog
 - **Description**: AP242 ED2 added enumeration values to existing tolerance entities (e.g. `tolerance_zone_form` gained `.WITHIN_A_SPHERE.`, `.NON_UNIFORM.`, and others). A producer upgraded to ED2 but emitting the older ED1 schema string in FILE_SCHEMA writes ED2-only enumeration values that an ED1-conformant parser rejects as invalid enumeration.
@@ -14527,7 +14541,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'TOLERANCE_ZONE_FORM')
 - **Byte assertion**: contains(b'442 1 1 1')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect: the model root is a GEOMETRIC_CURVE_SET holding only non-BRep tolerance-zone (TOLERANCE_ZONE / MEASURE_REPRESENTATION_ITEM) entities — no ADVANCED_FACE, shell or solid — so OCC's STEP transfer has no shape-representable geometry to build. Base, a CLEAN copy (declared defect repaired to its correct form) and a HUGE copy (defect exaggerated) are all empty. Structural absence of shape-representable geometry, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -14672,6 +14686,7 @@ _Section summary: 52 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### M013 — Saved-view supplemental geometry split across multiple CGRs
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect; the GEOMETRIC_CURVE_SET model root holds only non-BRep datum PLANE / SHAPE_REPRESENTATION subset (no ADVANCED_FACE/shell/solid), so no TopoDS shape can be built; base/clean/huge all empty.
 - **Category**: §12.8 (sub-class: supplemental)
 - **Sources**: 02-caxif.md; PMI v4.1 §9.4.2.2; Supplemental Geometry §5.5
 - **Description**: A part may have many supplemental elements but only some belong in a particular Saved View. Recommended pattern is one global CGR with all elements PLUS additional `shape_representation` instances tagged with `description_attribute = 'supplemental geometry subset'`.
@@ -14681,7 +14696,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'CONSTRUCTIVE_GEOMETRY_REPRESENTATION')
 - **Byte assertion**: contains(b'supplemental geometry subset')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect: the model root is a GEOMETRIC_CURVE_SET holding only non-BRep datum PLANE / SHAPE_REPRESENTATION subset entities — no ADVANCED_FACE, shell or solid — so OCC's STEP transfer has no shape-representable geometry to build. Base, a CLEAN copy (declared defect repaired to its correct form) and a HUGE copy (defect exaggerated) are all empty. Structural absence of shape-representable geometry, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -14701,6 +14716,7 @@ _Section summary: 52 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 
 ### M015 — Tessellated PMI placement: third coordinate must be 0 in tessellated_geometric_set (repositioned form preferred)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect; the GEOMETRIC_CURVE_SET model root holds only non-BRep tessellated-PMI (COORDINATES_LIST / TESSELLATED_* ) (no ADVANCED_FACE/shell/solid), so no TopoDS shape can be built; base/clean/huge all empty.
 - **Category**: §12.8 (sub-class: tessellation)
 - **Sources**: 02-caxif.md; PMI v4.1 §8.2
 - **Description**: For efficiency, tessellated annotation sets should be combined with `repositioned_tessellated_item` so that the `coordinates_list` entries have z=0 (annotation lies in its own 2D plane) and the placement axis carries the 3D position.
@@ -14711,7 +14727,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'10.0)')
 - **Byte assertion**: contains(b'annot_coords_absolute')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect: the model root is a GEOMETRIC_CURVE_SET holding only non-BRep tessellated-PMI (COORDINATES_LIST / TESSELLATED_* ) entities — no ADVANCED_FACE, shell or solid — so OCC's STEP transfer has no shape-representable geometry to build. Base, a CLEAN copy (declared defect repaired to its correct form) and a HUGE copy (defect exaggerated) are all empty. Structural absence of shape-representable geometry, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -14794,6 +14810,7 @@ _Section summary: 52 entries._
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ### M021 — Tessellated GD&T (annotation) entities not imported
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect; the GEOMETRIC_CURVE_SET model root holds only non-BRep tessellated-annotation (TESSELLATED_ANNOTATION_OCCURRENCE) (no ADVANCED_FACE/shell/solid), so no TopoDS shape can be built; base/clean/huge all empty.
 - **Category**: §12.8 (sub-class: tessellation + PMI)
 - **Sources**: 08-occt-gitlog.md (G038); OCCT b78ccf1; Mantis 0033661
 - **Description**: `TESSELLATED_ANNOTATION_OCCURRENCE` entities for GD&T were unrecognized by reader.
@@ -14802,7 +14819,7 @@ _Section summary: 52 entries._
 - **Notes**: Synonyms: "tessellated GD&T not imported", "TESSELLATED_ANNOTATION_OCCURRENCE skipped", "PMI tessellation entities unrecognized", "tessellated annotation lost on read".
 - **Byte assertion**: contains(b'TESSELLATED_ANNOTATION_OCCURRENCE')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect: the model root is a GEOMETRIC_CURVE_SET holding only non-BRep tessellated-annotation (TESSELLATED_ANNOTATION_OCCURRENCE) entities — no ADVANCED_FACE, shell or solid — so OCC's STEP transfer has no shape-representable geometry to build. Base, a CLEAN copy (declared defect repaired to its correct form) and a HUGE copy (defect exaggerated) are all empty. Structural absence of shape-representable geometry, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -14880,6 +14897,7 @@ _Section summary: 52 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 
 ### M027 — Surface-sampling-point validation property failure
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect; the GEOMETRIC_CURVE_SET model root holds only non-BRep validation-property (PROPERTY_DEFINITION / VALUE_REPRESENTATION_ITEM) (no ADVANCED_FACE/shell/solid), so no TopoDS shape can be built; base/clean/huge all empty.
 - **Category**: §12.8 (sub-class: validation-property)
 - **Sources**: 17-standards-bodies.md (M026); LOTAR Geometric Validation
 - **Description**: A finer-grained validation than volume/area: a set of (u,v,XYZ) sample points is embedded; on retrieval the receiver evaluates the surface at the same (u,v) and verifies XYZ match. Catches local NURBS reparametrization issues invisible to a volume checksum.
@@ -14889,7 +14907,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'COMPOUND_REPRESENTATION_ITEM')
 - **Byte assertion**: contains(b'SHAPE_ASPECT')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect: the model root is a GEOMETRIC_CURVE_SET holding only non-BRep validation-property (PROPERTY_DEFINITION / VALUE_REPRESENTATION_ITEM) entities — no ADVANCED_FACE, shell or solid — so OCC's STEP transfer has no shape-representable geometry to build. Base, a CLEAN copy (declared defect repaired to its correct form) and a HUGE copy (defect exaggerated) are all empty. Structural absence of shape-representable geometry, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Validation properties (volume/area/centroid) load but do not match the kernel's computed values; consumers that trust the embedded numbers diverge from those that recompute from the geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -14924,6 +14942,7 @@ _Section summary: 52 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### M030 — Validation property naming: "geometric_validation_property" with underscores vs spaces
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect; the GEOMETRIC_CURVE_SET model root holds only non-BRep validation-property (PROPERTY_DEFINITION) (no ADVANCED_FACE/shell/solid), so no TopoDS shape can be built; base/clean/huge all empty.
 - **Category**: §12.8 (sub-class: validation-property)
 - **Sources**: 08-occt-gitlog.md (G048); OCCT ffe1b14; Mantis 0029846
 - **Description**: Validation-property recommended-practices name changed (`geometric_validation_property` → `geometric validation property`); both forms appear in the wild.
@@ -14932,12 +14951,13 @@ _Section summary: 52 entries._
 - **Notes**: Synonyms: "GVP name underscore vs space", "validation property naming inconsistent", "geometric_validation_property naming form", "RP changed name format".
 - **Byte assertion**: contains(b"PROPERTY_DEFINITION('geometric_validation_property'")
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect: the model root is a GEOMETRIC_CURVE_SET holding only non-BRep validation-property (PROPERTY_DEFINITION) entities — no ADVANCED_FACE, shell or solid — so OCC's STEP transfer has no shape-representable geometry to build. Base, a CLEAN copy (declared defect repaired to its correct form) and a HUGE copy (defect exaggerated) are all empty. Structural absence of shape-representable geometry, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Validation properties (volume/area/centroid) load but do not match the kernel's computed values; consumers that trust the embedded numbers diverge from those that recompute from the geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### M031 — Validation property: missing unit_component
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect; the GEOMETRIC_CURVE_SET model root holds only non-BRep validation-property (MEASURE_REPRESENTATION_ITEM / PROPERTY_DEFINITION) (no ADVANCED_FACE/shell/solid), so no TopoDS shape can be built; base/clean/huge all empty.
 - **Category**: §12.8 (sub-class: validation-property + units)
 - **Sources**: 06-nist-sfa.md (S033); sfa-valprop.tcl:351, 942
 - **Description**: A geometric/validation property has values but no `unit_component`, leaving units unspecified.
@@ -14947,7 +14967,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'MEASURE_REPRESENTATION_ITEM')
 - **Byte assertion**: matches(rb'LENGTH_MEASURE\(123.45\),\$')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect: the model root is a GEOMETRIC_CURVE_SET holding only non-BRep validation-property (MEASURE_REPRESENTATION_ITEM / PROPERTY_DEFINITION) entities — no ADVANCED_FACE, shell or solid — so OCC's STEP transfer has no shape-representable geometry to build. Base, a CLEAN copy (declared defect repaired to its correct form) and a HUGE copy (defect exaggerated) are all empty. Structural absence of shape-representable geometry, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Validation properties (volume/area/centroid) load but do not match the kernel's computed values; consumers that trust the embedded numbers diverge from those that recompute from the geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -15016,6 +15036,7 @@ _Section summary: 52 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### M037 — AP209 FEM element wrong node count
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect; the GEOMETRIC_CURVE_SET model root holds only non-BRep FEM descriptor / INTEGER_REPRESENTATION_ITEM node-count (no ADVANCED_FACE/shell/solid), so no TopoDS shape can be built; base/clean/huge all empty.
 - **Category**: §12.8 (sub-class: FEA)
 - **Sources**: 06-nist-sfa.md (S055); sfa-fea.tcl:658, 691, 699, 706
 - **Description**: A finite-element entity declares `quadratic_tetrahedron` topology but lists 8 nodes instead of 10; or unknown element type.
@@ -15025,7 +15046,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'quadratic_tetrahedron')
 - **Byte assertion**: contains(b'VOLUME_3D_ELEMENT_DESCRIPTOR')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect: the model root is a GEOMETRIC_CURVE_SET holding only non-BRep FEM descriptor / INTEGER_REPRESENTATION_ITEM node-count entities — no ADVANCED_FACE, shell or solid — so OCC's STEP transfer has no shape-representable geometry to build. Base, a CLEAN copy (declared defect repaired to its correct form) and a HUGE copy (defect exaggerated) are all empty. Structural absence of shape-representable geometry, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -15077,6 +15098,7 @@ _Section summary: 52 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### M041 — Surface transparency (SURFACE_STYLE_TRANSPARENT) ignored on import
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect; the GEOMETRIC_CURVE_SET model root holds only non-BRep appearance/style (SURFACE_STYLE_TRANSPARENT / COLOUR) (no ADVANCED_FACE/shell/solid), so no TopoDS shape can be built; base/clean/huge all empty.
 - **Category**: §12.8 (sub-class: transparency + appearance)
 - **Sources**: 08-occt-gitlog.md (G100); OCCT 691711c; Mantis 0031550; 20-general-forums.md (J009 KiCad → SolidWorks transparency loss)
 - **Description**: STEP `SURFACE_STYLE_TRANSPARENT` field ignored on import. AP203/AP214 has no first-class alpha; transparency is conventionally encoded via `SURFACE_STYLE_TRANSPARENT`. Producers writing only `COLOUR_RGB` lose alpha; receivers reading only `COLOUR_RGB` ignore alpha when present.
@@ -15085,12 +15107,13 @@ _Section summary: 52 entries._
 - **Notes**: Synonyms: "surface transparency ignored", "SURFACE_STYLE_TRANSPARENT lost", "alpha lost on STEP import", "transparency not applied". **See also**: P019.
 - **Byte assertion**: contains(b'SURFACE_STYLE_TRANSPARENT')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect: the model root is a GEOMETRIC_CURVE_SET holding only non-BRep appearance/style (SURFACE_STYLE_TRANSPARENT / COLOUR) entities — no ADVANCED_FACE, shell or solid — so OCC's STEP transfer has no shape-representable geometry to build. Base, a CLEAN copy (declared defect repaired to its correct form) and a HUGE copy (defect exaggerated) are all empty. Structural absence of shape-representable geometry, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Appearance/style attributes detach from their target shape; the geometry loads correctly but colors, layers, or material assignments are dropped or attached to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=signal(11) ifc=schema_n/a`
 
 ### M042 — Color override at root label not applied (regression)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect; the GEOMETRIC_CURVE_SET model root holds only non-BRep appearance/style (COLOUR / STYLED_ITEM / NAUO) (no ADVANCED_FACE/shell/solid), so no TopoDS shape can be built; base/clean/huge all empty.
 - **Category**: §12.8 (sub-class: appearance)
 - **Sources**: 08-occt-gitlog.md (G097); OCCT d7d89ac; Mantis 0032977
 - **Description**: STEP color attached to root label was lost in OCCT 7.5/7.6 (regression from 6.8).
@@ -15101,7 +15124,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Byte assertion**: contains(b'COLOUR_RGB')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect: the model root is a GEOMETRIC_CURVE_SET holding only non-BRep appearance/style (COLOUR / STYLED_ITEM / NAUO) entities — no ADVANCED_FACE, shell or solid — so OCC's STEP transfer has no shape-representable geometry to build. Base, a CLEAN copy (declared defect repaired to its correct form) and a HUGE copy (defect exaggerated) are all empty. Structural absence of shape-representable geometry, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Appearance/style attributes detach from their target shape; the geometry loads correctly but colors, layers, or material assignments are dropped or attached to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=signal(11) ifc=schema_n/a`
@@ -15185,6 +15208,7 @@ _Section summary: 52 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
 
 ### M048 — Material / appearance / physical attributes silently dropped on STEP export
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect; the GEOMETRIC_CURVE_SET model root holds only non-BRep material/appearance (MATERIAL_DESIGNATION / COLOUR / STYLED_ITEM) (no ADVANCED_FACE/shell/solid), so no TopoDS shape can be built; base/clean/huge all empty.
 - **Category**: §12.8 (sub-class: materials/attributes)
 - **Sources**: 10-vendor-kbs.md (V025, V048); 11-translator-vendors.md (W024); 08-occt-gitlog.md (G057, G059)
 - **Sender**: Autodesk Fusion (V025); SolidWorks/Inventor → Inventor (V048)
@@ -15195,12 +15219,13 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'MATERIAL_DESIGNATION')
 - **Byte assertion**: contains(b'MASS_DENSITY_MEASURE(0.0)')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect: the model root is a GEOMETRIC_CURVE_SET holding only non-BRep material/appearance (MATERIAL_DESIGNATION / COLOUR / STYLED_ITEM) entities — no ADVANCED_FACE, shell or solid — so OCC's STEP transfer has no shape-representable geometry to build. Base, a CLEAN copy (declared defect repaired to its correct form) and a HUGE copy (defect exaggerated) are all empty. Structural absence of shape-representable geometry, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Appearance/style attributes detach from their target shape; the geometry loads correctly but colors, layers, or material assignments are dropped or attached to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=signal(11) ifc=schema_n/a`
 
 ### M049 — Schema migration: 53 retired kinematics entities (AP242 Ed.1)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect; the GEOMETRIC_CURVE_SET model root holds only non-BRep kinematics (MECHANISM / CYLINDRICAL_PAIR_RANGE) (no ADVANCED_FACE/shell/solid), so no TopoDS shape can be built; base/clean/huge all empty.
 - **Category**: §12.8 (sub-class: kinematics)
 - **Sources**: 17-standards-bodies.md (M016); STEP Tools "AP242 First Edition Notes"; AFNeT/Atlas AP242 Ed.4
 - **Description**: AP242 Ed.1 retired ~53 AP214/AP203 entities; `kinematic_structure`, `mechanism`, `kinematic_property_definition`, `cylindrical_pair_range` and many more. An archived AP214 file containing them cannot be re-validated against the AP242 schema.
@@ -15211,7 +15236,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'CYLINDRICAL_PAIR_RANGE')
 - **Byte assertion**: contains(b'MECHANISM')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect: the model root is a GEOMETRIC_CURVE_SET holding only non-BRep kinematics (MECHANISM / CYLINDRICAL_PAIR_RANGE) entities — no ADVANCED_FACE, shell or solid — so OCC's STEP transfer has no shape-representable geometry to build. Base, a CLEAN copy (declared defect repaired to its correct form) and a HUGE copy (defect exaggerated) are all empty. Structural absence of shape-representable geometry, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -15278,6 +15303,7 @@ _Section summary: 52 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 
 ### M054 — FACETED_BREP linked to OPEN_SHELL (schema-illegal)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared open-shell FACETED_BREP defect; the FACETED_BREP wraps a single open triangle inside a GEOMETRIC_CURVE_SET (not transferred to a solid). Base and a HUGE copy are empty; a schema-legal CLOSED_SHELL CLEAN copy crashes OCC (a separate pathology, FLAGGED) rather than producing a shape.
 - **Category**: §12.8 (sub-class: mesh-as-brep)
 - **Sources**: 20-general-forums.md (J001); OCCT forum
 - **Description**: `FACETED_BREP` is required by the schema to reference a `CLOSED_SHELL`. Some producers emit it pointing at an `OPEN_SHELL`. OCCT only handles the closed case, so loading aborts.
@@ -15288,7 +15314,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'FACETED_BREP')
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared FACETED_BREP->OPEN_SHELL defect: the FACETED_BREP wraps a single open triangle inside a GEOMETRIC_CURVE_SET, which OCC's transfer does not build into a solid. Base and a HUGE copy load empty; a schema-legal CLEAN copy (CLOSED_SHELL) crashes OCC (a separate, FLAGGED pathology) rather than producing a shape. Toy/mis-wrapped topology, not a defect-driven silent data-loss of a valid solid, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -22498,18 +22524,20 @@ they capture invariants shared by a family of healing methods. Filed under
 ## §12.2b Nurbs
 
 ### Gn034 — B-spline knots packed below parametric resolution
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (knots packed below parametric resolution); a single hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL never builds a face in OCC's transfer — base, a CLEAN copy with the injected C-1-break edge closed, and a fully well-formed copy (declared defect repaired, pcurve domains corrected) are all empty (f=0), while a genuinely-building B-spline face fixture (Gn024) loads f=1.
 - **Category**: §12.2b NURBS / B-spline (sub-class: knot vector)
 - **Sources**: OCCT `ShapeConstruct_Curve::FixKnots` (`ShapeConstruct_Curve.hxx:104`)
 - **Description**: Two consecutive knots in a B_SPLINE_CURVE_WITH_KNOTS or B_SPLINE_SURFACE_WITH_KNOTS differ by less than the kernel's parametric epsilon (e.g., 1e-12 between knots at 0.5 and 0.5+1e-12). The interval is non-empty in IEEE-754 but rounds to zero in many spline-evaluation routines, producing NaN or unstable derivatives at parameters within the gap.
 - **Reproducer recipe**: Degree-2 B-spline with knot vector `(0,0,0, 0.5, 0.500000000001, 1,1,1)` and interior multiplicity 1 between the two near-equal knots.
 - **Expected kernel behavior**: detect knots whose separation is below working precision; either widen the gap (by perturbing one knot up to nominal precision), merge the two knots and adjust multiplicity, or reject the curve as numerically ill-conditioned.
-- **Notes**: Same defect on surface knot vectors should be flagged identically. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: "B-spline knots packed below parametric resolution", "consecutive knots differ by less than working epsilon", "near-equal knots produce NaN derivatives", "knot interval rounds to zero", "BSpline ill-conditioned at near-coincident knot pair".
+- **Notes**: Same defect on surface knot vectors should be flagged identically. **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (knots packed below parametric resolution): the model is one hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL that OCC's STEP transfer never builds into a TopoDS face. Base, a CLEAN copy with the injected C-1-break defect edge closed, and a fully well-formed copy (declared defect repaired, scaffold pcurve domains corrected) are all empty (f=0); a genuinely-building B-spline face fixture (Gn024) loads f=1. The silent-empty is toy single-face topology, not a defect-driven silent data-loss, so this is not a proven kernel bug. Synonyms: "B-spline knots packed below parametric resolution", "consecutive knots differ by less than working epsilon", "near-equal knots produce NaN derivatives", "knot interval rounds to zero", "BSpline ill-conditioned at near-coincident knot pair".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Gn035 — Circle translated to NURBS form with rational weights but missing weight metadata
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (missing rational-B-spline weight tag); a single hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL never builds a face in OCC's transfer — base, a CLEAN copy with the injected C-1-break edge closed, and a fully well-formed copy (declared defect repaired, pcurve domains corrected) are all empty (f=0), while a genuinely-building B-spline face fixture (Gn024) loads f=1.
 - **Category**: §12.2b NURBS / B-spline
 - **Sources**: OCCT MANTIS#0006542 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A circle is converted to a NURBS representation when
@@ -22526,7 +22554,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Notes**: **See also**: Gn014. Synonyms: "rational B-spline missing RATIONAL flag", "circle as NURBS without rational marker", "weights present but RATIONAL_B_SPLINE_CURVE entity tag missing", "untagged rational B-spline imports as polygonal", "circle exact-NURBS form misses rational complex entity".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (missing rational-B-spline weight tag): the model is one hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL that OCC's STEP transfer never builds into a TopoDS face. Base, a CLEAN copy with the injected C-1-break defect edge closed, and a fully well-formed copy (declared defect repaired, scaffold pcurve domains corrected) are all empty (f=0); a genuinely-building B-spline face fixture (Gn024) loads f=1. The silent-empty is toy single-face topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`

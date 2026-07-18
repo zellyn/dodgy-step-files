@@ -34,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal; exact split at interior knots; preserve continuity across resulting patches; warn if numerical re-fit was needed for rational surfaces.</p></section>
 <section><h2>Notes</h2>
-<p>**OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;split B-spline surface at interior knots into Bezier patches&quot;, &quot;convert NURBS to Bezier for legacy receiver&quot;, &quot;Bezier conversion needed for downstream tool&quot;, &quot;exact split at interior knots produces Bezier patches&quot;, &quot;legacy receiver expects Bezier not arbitrary NURBS&quot;.</p></section>
+<p>**OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (split-at-interior-knots Bezier conversion): the model is one hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL that OCC&#x27;s STEP transfer never builds into a TopoDS face. Base, a CLEAN copy with the injected C-1-break defect edge closed, and a fully well-formed copy (declared defect repaired, scaffold pcurve domains corrected) are all empty (f=0); a genuinely-building B-spline face fixture (Gn024) loads f=1. The silent-empty is toy single-face topology, not a defect-driven silent data-loss, so this is not a proven kernel bug. Synonyms: &quot;split B-spline surface at interior knots into Bezier patches&quot;, &quot;convert NURBS to Bezier for legacy receiver&quot;, &quot;Bezier conversion needed for downstream tool&quot;, &quot;exact split at interior knots produces Bezier patches&quot;, &quot;legacy receiver expects Bezier not arbitrary NURBS&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
@@ -44,6 +44,9 @@
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>shape_null == True</code></li>
 </ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Gn024.html">Gn024</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
 </section>

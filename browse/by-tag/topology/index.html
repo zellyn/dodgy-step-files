@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1><span class="tag tag-topology">topology</span></h1>
 <p class="blurb">Shell / wire / face / edge / vertex topology defect.</p>
-<p class="meta">1610 entries</p>
+<p class="meta">1611 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Section</th><th>Expected validation</th></tr></thead><tbody>
@@ -35,6 +35,7 @@
 <tr><td><a href="../../12-8-mixed/Fi001.html"><code>Fi001</code></a></td><td>Fillet on a contour where concavity flips along the spine</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-8-mixed/Fi002.html"><code>Fi002</code></a></td><td>Fillet contour walks into a high-valence vertex (&gt; 3 incident edges)</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-8-mixed/Fi003.html"><code>Fi003</code></a></td><td>Fillet radius exceeds local curvature radius along the spine</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-8-mixed/Fi004.html"><code>Fi004</code></a></td><td>Fillet contour is geometrically inconsistent (disjoint or self-crossing)</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-8-mixed/Fi005.html"><code>Fi005</code></a></td><td>Fillet stops at a vertex where the rolling-ball can&#x27;t trim cleanly</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-8-mixed/Fi006.html"><code>Fi006</code></a></td><td>Fillet at a 4-edge corner unsupported</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-8-mixed/Fi008.html"><code>Fi008</code></a></td><td>Fillet completes partially: HasResult but BadShape</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></td></tr>

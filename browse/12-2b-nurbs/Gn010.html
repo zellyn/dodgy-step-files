@@ -32,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>reject the surface; refuse to materialize. At minimum, refuse to use it for projection or intersection. Validate magnitudes against bounding-box envelope.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gs036. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Synonyms: &quot;NURBS control point coordinates out of range&quot;, &quot;NaN in B-spline surface poles&quot;, &quot;huge coordinate values 1e100 in NURBS&quot;, &quot;NURBS pole has impossible coordinates&quot;, &quot;NaN propagation from B-spline control points&quot;.</p></section>
+<p>**See also**: Gs036. **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (out-of-range (1e100) NURBS control point): the model is one hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL that OCC&#x27;s STEP transfer never builds into a TopoDS face. Base, a CLEAN copy with the injected C-1-break defect edge closed, and a fully well-formed copy (declared defect repaired, scaffold pcurve domains corrected) are all empty (f=0); a genuinely-building B-spline face fixture (Gn024) loads f=1. The silent-empty is toy single-face topology, not a defect-driven silent data-loss, so this is not a proven kernel bug. Synonyms: &quot;NURBS control point coordinates out of range&quot;, &quot;NaN in B-spline surface poles&quot;, &quot;huge coordinate values 1e100 in NURBS&quot;, &quot;NURBS pole has impossible coordinates&quot;, &quot;NaN propagation from B-spline control points&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
@@ -42,7 +42,7 @@
 <li><code>shape_null == True</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
-<p><a href="../12-2c-surfaces/Gs036.html">Gs036</a></p>
+<p><a href="../12-2c-surfaces/Gs036.html">Gs036</a>, <a href="Gn024.html">Gn024</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
