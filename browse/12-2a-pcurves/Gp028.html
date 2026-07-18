@@ -32,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>detect that the wire crosses the seam and insert the seam edge automatically, or reject as malformed.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gp026. **OCC behavior**: accepts and loads shape(1); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Synonyms: &quot;wire crosses cylinder seam without seam edge&quot;, &quot;missing seam edge on periodic surface wire&quot;, &quot;pcurve range vs vertex angle disagree at seam crossing&quot;, &quot;cylinder face wire spans U=0/U=2π without explicit seam&quot;, &quot;open contour in UV from missing seam edge&quot;.</p></section>
+<p>**See also**: Gp026. **OCC behavior**: accepts and loads shape(1); OCC builds a BRepCheck-valid cylindrical face, recomputing the pcurve from the 3D curve (per Gp193), so the declared pcurve-vs-vertex angular mismatch / missing-seam defect does not survive into the built shape. Perturbing the declared defect leaves shape-counts and BRepCheck validity unchanged, so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug. Synonyms: &quot;wire crosses cylinder seam without seam edge&quot;, &quot;missing seam edge on periodic surface wire&quot;, &quot;pcurve range vs vertex angle disagree at seam crossing&quot;, &quot;cylinder face wire spans U=0/U=2π without explicit seam&quot;, &quot;open contour in UV from missing seam edge&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
@@ -49,7 +49,7 @@
 <li><code>face[0].quadric.radius == 1.0</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
-<p><a href="Gp026.html">Gp026</a></p>
+<p><a href="Gp026.html">Gp026</a>, <a href="Gp193.html">Gp193</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>

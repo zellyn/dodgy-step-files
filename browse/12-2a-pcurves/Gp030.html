@@ -34,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal; recognize PRO/E sender and route bent pcurves through the protective branch.</p></section>
 <section><h2>Notes</h2>
-<p>**OCC behavior**: accepts and loads shape(1); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;PRO/E polyline-form pcurve gets corrupted by intersection healer&quot;, &quot;bent B-spline pcurve from PRO/Engineer&quot;, &quot;pcurve sharp bend killed by generic ShapeFix&quot;, &quot;polyline pcurve degree-1 with vendor multiplicities&quot;, &quot;wire intersection fix damages PRO/E pcurve&quot;.</p></section>
+<p>**OCC behavior**: accepts and loads shape(1); OCC&#x27;s STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug. Synonyms: &quot;PRO/E polyline-form pcurve gets corrupted by intersection healer&quot;, &quot;bent B-spline pcurve from PRO/Engineer&quot;, &quot;pcurve sharp bend killed by generic ShapeFix&quot;, &quot;polyline pcurve degree-1 with vendor multiplicities&quot;, &quot;wire intersection fix damages PRO/E pcurve&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
@@ -54,6 +54,9 @@
 <li><code>edge[2].curve_type == &quot;circle&quot;</code></li>
 <li><code>edge[2].analytic.radius == 1.0</code></li>
 </ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Gp193.html">Gp193</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
 </section>

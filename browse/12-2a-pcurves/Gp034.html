@@ -15,7 +15,6 @@
 <h1>Gp034 <span class="sep">—</span> <span class="entry-title">Composite curve segments do not meet within connectivity tolerance</span></h1>
 <p class="category">§12.2a pcurves/curves (sub-class: continuity)</p>
 <p class="tag-pills">
-<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
 </p>
 </header>
@@ -33,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>report the connectivity defect with the offending segment indices and 3D gap; either bridge the segments by inserting a connecting curve, snap endpoints, or refuse to treat the aggregate as a single curve.</p></section>
 <section><h2>Notes</h2>
-<p>Similar defect class to `Twi-` wire connectivity but at the curve-aggregate level. **OCC behavior**: accepts and loads shape(1); outside catalog&#x27;s allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: &quot;composite curve segments don&#x27;t meet&quot;, &quot;gap between consecutive composite curve segments&quot;, &quot;composite_curve has disconnected segments&quot;, &quot;segment N+1 starts far from segment N&#x27;s end&quot;, &quot;composite curve connectivity check fails&quot;.</p></section>
+<p>Similar defect class to `Twi-` wire connectivity but at the curve-aggregate level. **OCC behavior**: accepts and loads shape(1); OCC does not transfer the COMPOSITE_CURVE into the face wire at all (the face loads with no edges), so the declared 3D inter-segment gap never reaches the built shape. Dialing the gap from 0 to 0.5 mm leaves shape-counts and BRepCheck validity unchanged, so the shape-count oracle cannot distinguish it from a gap-free input; shape(1) does not witness a kernel bug. Synonyms: &quot;composite curve segments don&#x27;t meet&quot;, &quot;gap between consecutive composite curve segments&quot;, &quot;composite_curve has disconnected segments&quot;, &quot;segment N+1 starts far from segment N&#x27;s end&quot;, &quot;composite curve connectivity check fails&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

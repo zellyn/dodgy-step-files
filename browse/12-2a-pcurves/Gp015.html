@@ -15,7 +15,6 @@
 <h1>Gp015 <span class="sep">—</span> <span class="entry-title">Pcurve/3D-curve trimming failure (&quot;Trimming of 2D curve failed&quot;)</span></h1>
 <p class="category">§12.2a pcurve</p>
 <p class="tag-pills">
-<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
 </p>
 </header>
@@ -33,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal; wrap parameters via period; if the surface is not periodic, reject the edge with diagnostic.</p></section>
 <section><h2>Notes</h2>
-<p>**OCC behavior**: accepts and loads shape(1); outside catalog&#x27;s allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: &quot;trimming of 2D curve failed&quot;, &quot;pcurve clip to edge range fails&quot;, &quot;edge construction aborts on pcurve trim&quot;, &quot;2D-curve trim outside pcurve domain&quot;, &quot;edge construction fails clipping pcurve&quot;.</p></section>
+<p>**OCC behavior**: accepts and loads shape(1); OCC&#x27;s STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug. Synonyms: &quot;trimming of 2D curve failed&quot;, &quot;pcurve clip to edge range fails&quot;, &quot;edge construction aborts on pcurve trim&quot;, &quot;2D-curve trim outside pcurve domain&quot;, &quot;edge construction fails clipping pcurve&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
@@ -49,6 +48,9 @@
 <li><code>face[0].surface_type == &quot;cylinder&quot;</code></li>
 <li><code>face[0].quadric.radius == 1.0</code></li>
 </ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Gp193.html">Gp193</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
 </section>

@@ -32,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>refit the pcurve with smoothing before any self-intersection analysis, reject pcurves whose curvature exceeds a threshold, or use an intersection check that is robust against high-frequency noise.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gs009. **OCC behavior**: accepts and loads shape(1); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Synonyms: &quot;pcurve oscillates wildly&quot;, &quot;high-frequency noise on projected pcurve&quot;, &quot;wire self-intersection check fooled by pcurve wiggles&quot;, &quot;non-adaptive pcurve projector emits zigzag&quot;, &quot;spurious self-intersections from oscillating 2D curve&quot;.</p></section>
+<p>**See also**: Gs009. **OCC behavior**: accepts and loads shape(1); OCC&#x27;s STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug. Synonyms: &quot;pcurve oscillates wildly&quot;, &quot;high-frequency noise on projected pcurve&quot;, &quot;wire self-intersection check fooled by pcurve wiggles&quot;, &quot;non-adaptive pcurve projector emits zigzag&quot;, &quot;spurious self-intersections from oscillating 2D curve&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
@@ -48,7 +48,7 @@
 <li><code>face[0].surface_type == &quot;bspline&quot;</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
-<p><a href="../12-2c-surfaces/Gs009.html">Gs009</a></p>
+<p><a href="../12-2c-surfaces/Gs009.html">Gs009</a>, <a href="Gp193.html">Gp193</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>

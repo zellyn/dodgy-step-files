@@ -1422,13 +1422,14 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ### Gp002 — Pcurve endpoints disagree with edge vertex 3D positions
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurve
 - **Sources**: 05-occt-shapefix.md F007
 - **Sender**: IGES re-import (pcurves recomputed independently of 3D curves)
 - **Description**: An `EDGE_CURVE` carries a `PCURVE` whose evaluation at its parameter endpoints does not match the edge's `VERTEX_POINT` 3D positions. Lifting the pcurve through the host surface (`CYLINDRICAL_SURFACE`, `PLANE`, etc.) lands at a different point than the edge's vertex coordinates. Typical pattern: 3D edge endpoints are at (10,0,0)–(10,0,5) on a cylinder of radius 10 (so the pcurve start should be at u=0,v=0), but the pcurve runs from (u=0,v=0) to (u=π/2,v=5); pcurve endpoints disagree with vertex 3D positions. Often produced when a foreign translator regenerated pcurves without coordinating with vertices, so the pcurve and the vertex disagree about where the edge starts.
 - **Reproducer recipe**: `EDGE_CURVE` whose `PCURVE` start/end points (lifted via the host surface) differ from `VERTEX_POINT` coordinates by more than vertex tolerance.
 - **Expected kernel behavior**: drop the bad pcurve and recompute it from the 3D curve, or reject as malformed. Keeping the pcurve without verification produces silent geometric corruption.
-- **Notes**: **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "pcurve endpoints don't match vertex coordinates", "2D parameter curve start/end disagrees with vertex 3D position", "lifted pcurve lands at wrong point", "edge vertices and pcurve disagree about endpoint location", "pcurve evaluation at endpoint differs from vertex_point".
+- **Notes**: **OCC behavior**: accepts and loads shape(1); OCC's STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug. Synonyms: "pcurve endpoints don't match vertex coordinates", "2D parameter curve start/end disagrees with vertex 3D position", "lifted pcurve lands at wrong point", "edge vertices and pcurve disagree about endpoint location", "pcurve evaluation at endpoint differs from vertex_point".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
@@ -1442,13 +1443,14 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 
 ### Gp005 — Pcurve with single-pole apex on sphere/cone (singularity)
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurve
 - **Sources**: 05-occt-shapefix.md F012, F065; 11-translator-vendors.md W018; 08-occt-gitlog.md G079
 - **Sender**: ProSTEP `r0501-ug.stp #182180` (cone apex); PRO/E PRO9234, PRO18206, PRO7226
 - **Description**: Projecting a 3D curve through the singular pole of a sphere or apex of a cone produces an indeterminate UV path; the parametric domain has a degenerate row where the surface map becomes non-injective. Surface-surface intersection and face translation routines misbehave near these singularities, and any wire that touches the singular point lacks a definitive UV image.
 - **Reproducer recipe**: `CONICAL_SURFACE` with semi-angle 30°; an `ADVANCED_FACE` whose outer loop touches the cone apex (`vertex_point` at apex) without an explicit degenerate edge.
 - **Expected kernel behavior**: insert a degenerate edge bridging the singular row in UV (zero length in 3D); clamp or wrap parameter ranges in intersection/projection routines; or reject as malformed. Apex-singularity handling is distinct from seam-on-periodic handling.
-- **Notes**: **See also**: Twi021. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "pcurve at sphere pole has indeterminate UV", "wire touches cone apex without degenerate edge", "singular pole on sphere/cone breaks pcurve", "indeterminate UV at sphere pole", "face touches cone apex no degenerate edge inserted".
+- **Notes**: **See also**: Twi021. **OCC behavior**: accepts and loads shape(1); the built single-edge cone face is BRepCheck-invalid because of its minimal toy topology (an off-apex edge is equally invalid), not because of the declared apex singularity. The declared apex-singularity defect changes neither shape-counts nor BRepCheck validity, so the shape-count oracle cannot distinguish it from a clean cone-apex face; shape(1) does not witness a kernel bug. Synonyms: "pcurve at sphere pole has indeterminate UV", "wire touches cone apex without degenerate edge", "singular pole on sphere/cone breaks pcurve", "indeterminate UV at sphere pole", "face touches cone apex no degenerate edge inserted".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
@@ -1461,12 +1463,13 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 
 ### Gp007 — Edge parameter range outside the pcurve's natural domain
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurve
 - **Sources**: 05-occt-shapefix.md F040, F062
 - **Description**: An edge declares a `[first, last]` parameter range that lies outside the natural domain of its pcurve, or the pcurve's active range does not match the 3D-curve range. The receiver evaluating the pcurve at the declared parameter values walks off the end of the curve definition.
 - **Reproducer recipe**: `EDGE_CURVE` with declared parameter `[0, 2.5]` whose pcurve's domain is `[0, 1]`, attached to an `ADVANCED_FACE` on a finite surface.
 - **Expected kernel behavior**: clamp the edge's parameter range to the pcurve's natural domain (when the discrepancy is small), or reject as malformed.
-- **Notes**: **See also**: Gs029. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "edge parameter range exceeds pcurve domain", "edge first/last parameters outside pcurve definition", "pcurve evaluated past natural domain", "edge trim parameters out of bounds for 2D curve", "pcurve domain too short for declared edge range".
+- **Notes**: **See also**: Gs029. **OCC behavior**: accepts and loads shape(1); OCC's STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug. Synonyms: "edge parameter range exceeds pcurve domain", "edge first/last parameters outside pcurve definition", "pcurve evaluated past natural domain", "edge trim parameters out of bounds for 2D curve", "pcurve domain too short for declared edge range".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
@@ -1478,12 +1481,13 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 
 ### Gp008 — Pcurve oscillations producing wire-intersector corruption
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurve
 - **Sources**: 03-occt-tests.md R026 (bug17128, bug17129, OCC209, bug210)
 - **Description**: A pcurve produced by projecting a 3D curve onto a host surface oscillates at high frequency along its domain; the projector lacks adaptive sampling and emits a 2D curve whose second derivative changes sign many times along the parametric span. A subsequent wire self-intersection check mis-detects the oscillations as crossings and corrupts wire topology.
 - **Reproducer recipe**: A 3D curve close to the boundary of a `B_SPLINE_SURFACE_WITH_KNOTS` whose projector lacks adaptive sampling; pcurve evaluation shows >10 zero-crossings of the second derivative.
 - **Expected kernel behavior**: refit the pcurve with smoothing before any self-intersection analysis, reject pcurves whose curvature exceeds a threshold, or use an intersection check that is robust against high-frequency noise.
-- **Notes**: **See also**: Gs009. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "pcurve oscillates wildly", "high-frequency noise on projected pcurve", "wire self-intersection check fooled by pcurve wiggles", "non-adaptive pcurve projector emits zigzag", "spurious self-intersections from oscillating 2D curve".
+- **Notes**: **See also**: Gs009. **OCC behavior**: accepts and loads shape(1); OCC's STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug. Synonyms: "pcurve oscillates wildly", "high-frequency noise on projected pcurve", "wire self-intersection check fooled by pcurve wiggles", "non-adaptive pcurve projector emits zigzag", "spurious self-intersections from oscillating 2D curve".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
@@ -1496,6 +1500,7 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 
 ### Gp010 — Surface_curve.associated_geometry contains a 3D curve in lieu of pcurve
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurve
 - **Sources**: 11-translator-vendors.md W041 (CAD Exchanger v3.24.11); 14-brlcad-rhino.md K014 (PCurve.cpp:108)
 - **Sender**: Parasolid-origin files
@@ -1510,18 +1515,19 @@ _Section summary: 82 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 1
 - **Tier-3 assertion**: n_vertices_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); OCC's reader derives the 2D pcurve from the 3D curve on transfer (the {heal} the catalog allows), so the declared 3D-curve-in-pcurve-slot defect does not survive into the built shape. The residual BRepCheck-invalidity is from the minimal single-edge toy topology, not this defect, and is invariant to it; the shape-count oracle cannot distinguish it from a proper-pcurve input, so shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 
 ### Gp011 — Seam curve with same pcurve referenced twice
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurve
 - **Sources**: 04-occt-translation.md Q032
 - **Description**: A `SEAM_CURVE` is required to carry two distinct pcurves (one for each side of the seam), but the sender wrote the same pcurve handle twice. The two banks of the seam cannot be disambiguated, and the wire fails to close around the periodic surface.
 - **Reproducer recipe**: `SEAM_CURVE('',#3d,(#pc, #pc),.PCURVE_S1.)` where both `associated_geometry` entries are the same `PCURVE`.
 - **Expected kernel behavior**: duplicate one pcurve and shift it by the surface period to recover the missing bank, or reject as malformed. Choice is kernel-design-dependent.
-- **Notes**: **See also**: Twi022. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: "seam edge has same pcurve in both slots", "seam_curve associated_geometry references one pcurve twice", "two banks of seam point at same 2D curve", "seam pcurve duplicated instead of period-shifted", "seam wire fails to close around cylinder".
+- **Notes**: **See also**: Twi022. **OCC behavior**: accepts and loads shape(1); OCC's STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug. Synonyms: "seam edge has same pcurve in both slots", "seam_curve associated_geometry references one pcurve twice", "two banks of seam point at same 2D curve", "seam pcurve duplicated instead of period-shifted", "seam wire fails to close around cylinder".
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
 - **Tier-3 assertion**: shape_null == False
@@ -1536,12 +1542,13 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 
 ### Gp012 — `SURFACE_CURVE` / seam-curve `associated_geometry` list contains a null `$` entry
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurve
 - **Sources**: 04-occt-translation.md Q033 (`StepToTopoDS_TranslateEdgeLoop.cxx:573-575`)
 - **Description**: A `SURFACE_CURVE` (typically a seam edge on a periodic surface) should carry two pcurves in its `associated_geometry` set, but the list contains a `PCURVE` followed by a `$` (null) entry; a null member inside a Part-21 SET attribute. On a true seam edge, the second pcurve is missing entirely; a translator must synthesize it from the present one by period-shifting, or the seam fails to register.
 - **Reproducer recipe**: `SEAM_CURVE('',#3d,(#pc1, $),.PCURVE_S1.)` on a cylindrical face.
 - **Expected kernel behavior**: heal; synthesize the missing pcurve as `pc1 ± period`.
-- **Notes**: **See also**: Twi022. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "seam edge on periodic surface missing one of its two parametric curves", "null pcurve in associated_geometry list", "seam_curve has dollar-sign for second pcurve", "missing pcurve entry on seam edge", "associated_geometry contains null parametric curve member", "seam pcurve list has $ placeholder".
+- **Notes**: **See also**: Twi022. **OCC behavior**: accepts and loads shape(1); OCC's STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug. Synonyms: "seam edge on periodic surface missing one of its two parametric curves", "null pcurve in associated_geometry list", "seam_curve has dollar-sign for second pcurve", "missing pcurve entry on seam edge", "associated_geometry contains null parametric curve member", "seam pcurve list has $ placeholder".
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
 - **Tier-3 assertion**: shape_null == False
@@ -1556,13 +1563,14 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 
 ### Gp013 — CATIA "like-seam": two pcurves on same near-closed `B_SPLINE_SURFACE_WITH_KNOTS`
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurve
 - **Sources**: 04-occt-translation.md Q034 (`StepToTopoDS_GeometricTool.cxx:114-199`)
 - **Sender**: CATIA
 - **Description**: CATIA encodes a cylinder as two `FACE_SURFACE`s on the same nearly-closed (but non-periodic) `B_SPLINE_SURFACE_WITH_KNOTS`. The shared `EDGE_CURVE` stores two pcurves on the same B-spline surface — one starting at (u=0,v=0) and the other at (u=1,v=0) — like a seam edge, but the surface lacks declared periodicity. The two pcurves do not lift to the same 3D edge, so the `SURFACE_CURVE.master_representation` choice is ambiguous, generic seam handling misfires, and the translator must recognize the CATIA idiom of two-pcurves-on-one-near-closed-surface.
 - **Reproducer recipe**: Two `ADVANCED_FACE`s sharing an `EDGE_CURVE` whose `SURFACE_CURVE` contains two pcurves on a non-periodic BSpline surface whose endpoints touch within `Precision::Confusion()`.
 - **Expected kernel behavior**: heal; detect the near-periodic surface, treat it as periodic for the seam, and reconcile both pcurves.
-- **Notes**: **See also**: Gs005. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "CATIA cylinder as near-closed B-spline surface", "two pcurves on non-periodic surface acting like seam", "near-closed BSpline surface treated as cylinder", "CATIA like-seam idiom on B-spline", "shared edge with two pcurves on non-periodic surface".
+- **Notes**: **See also**: Gs005. **OCC behavior**: accepts and loads shape(1); OCC's STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug. Synonyms: "CATIA cylinder as near-closed B-spline surface", "two pcurves on non-periodic surface acting like seam", "near-closed BSpline surface treated as cylinder", "CATIA like-seam idiom on B-spline", "shared edge with two pcurves on non-periodic surface".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 2
@@ -1582,13 +1590,14 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
 
 ### Gp014 — Shared pcurve across multiple edges (SYRKO)
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurve
 - **Sources**: 04-occt-translation.md Q035 (`StepToTopoDS_TranslateEdgeLoop.cxx:283-285`)
 - **Sender**: SYRKO
 - **Description**: One `PCURVE` is referenced by multiple distinct `EDGE_CURVE` instances. Trimming one edge then ends up trimming all neighbors that share the pcurve, corrupting topology.
 - **Reproducer recipe**: Two `EDGE_CURVE`s whose `SURFACE_CURVE.associated_geometry` lists point at the same `PCURVE` instance.
 - **Expected kernel behavior**: heal; when a pcurve is referenced by >1 edge, deep-copy it before applying per-edge trim.
-- **Notes**: **See also**: Gs031. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "same pcurve referenced by multiple edges", "shared pcurve aliased across edges", "trimming one edge corrupts neighbours' pcurves", "PCURVE instance referenced more than once", "SYRKO shared-pcurve aliasing".
+- **Notes**: **See also**: Gs031. **OCC behavior**: accepts and loads shape(1); OCC's STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug. Synonyms: "same pcurve referenced by multiple edges", "shared pcurve aliased across edges", "trimming one edge corrupts neighbours' pcurves", "PCURVE instance referenced more than once", "SYRKO shared-pcurve aliasing".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
@@ -1606,12 +1615,13 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
 
 ### Gp015 — Pcurve/3D-curve trimming failure ("Trimming of 2D curve failed")
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurve
 - **Sources**: 04-occt-translation.md Q036 (`StepToTopoDS_TranslateEdgeLoop.cxx:716-727`)
 - **Description**: When the translator clips a `PCURVE` to the parameter range of its hosting `EDGE_CURVE`, the trim operation fails (e.g. range outside pcurve domain, or 3D-curve range maps to a U-band where pcurve is undefined). Edge construction aborts.
 - **Reproducer recipe**: `EDGE_CURVE` whose 3D-curve `[first,last]` corresponds to U=`[5,7]` of host surface, but the pcurve is defined only on U=`[0,2π]`.
 - **Expected kernel behavior**: heal; wrap parameters via period; if the surface is not periodic, reject the edge with diagnostic.
-- **Notes**: **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: "trimming of 2D curve failed", "pcurve clip to edge range fails", "edge construction aborts on pcurve trim", "2D-curve trim outside pcurve domain", "edge construction fails clipping pcurve".
+- **Notes**: **OCC behavior**: accepts and loads shape(1); OCC's STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug. Synonyms: "trimming of 2D curve failed", "pcurve clip to edge range fails", "edge construction aborts on pcurve trim", "2D-curve trim outside pcurve domain", "edge construction fails clipping pcurve".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
@@ -1625,13 +1635,14 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 
 ### Gp016 — Pcurve in shifted/transformed UV frame relative to host surface
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurve
 - **Sources**: 05-occt-shapefix.md F082 (`ShapeBuild_Edge.cxx:15`)
 - **Sender**: IGES processor (BRep mode)
 - **Description**: A pcurve is expressed in a shifted or transformed UV coordinate frame relative to the host surface's natural UV. For example, a `PCURVE` `LINE` on a planar face starts at (u=10,v=5) while the 3D edge runs from (0,0,0) to (1,0,0); the pcurve is offset into a UV region that does not contain the lift of the 3D curve. Common output of IGES BRep mode, where pcurves arrive in a translated/rotated frame relative to the host surface's natural UV. Without re-baselining, the pcurve evaluates to wrong UV positions and vertex tolerances bloat to compensate.
 - **Reproducer recipe**: Round-trip a face through IGES BRep mode and re-import; the resulting pcurve has its origin offset from the host surface's UV origin.
 - **Expected kernel behavior**: heal; detect the IGES-style frame and re-express pcurves in the host surface's native UV.
-- **Notes**: **See also**: Gp031. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "pcurve in shifted UV frame", "IGES BRep pcurve in translated UV origin", "pcurve UV offset relative to host surface", "pcurve coordinates in alien frame", "pcurve rotated/translated relative to surface UV".
+- **Notes**: **See also**: Gp031. **OCC behavior**: accepts and loads shape(1); OCC's STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug. Synonyms: "pcurve in shifted UV frame", "IGES BRep pcurve in translated UV origin", "pcurve UV offset relative to host surface", "pcurve coordinates in alien frame", "pcurve rotated/translated relative to surface UV".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
@@ -1643,12 +1654,13 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 
 ### Gp018 — Pcurve gaps / nearly-duplicate pcurves near periodic boundary after `B_SPLINE_SURFACE` conversion
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurve
 - **Sources**: 08-occt-gitlog.md G095 (Mantis 0032557)
 - **Description**: Converting a periodic surface (cylinder, torus) into an explicit `B_SPLINE_SURFACE_WITH_KNOTS` yields a non-periodic NURBS whose parametric domain does not exactly match the original. Pcurves whose endpoints landed cleanly on the period boundary end up with small gaps at the wrap-around: typically two pcurves on the same 3D edge end up nearly coincident (e.g. one at u=0 and the other at u=0.999, within 0.001 in U) but not identical; nearly-duplicate pcurves on the same edge straddling the converted seam.
 - **Reproducer recipe**: Apply a periodic-surface-to-NURBS conversion to a face on a `CYLINDRICAL_SURFACE`; check pcurve endpoints' UV against the new BSpline surface's UV bounds.
 - **Expected kernel behavior**: adjust pcurve domain to match the converted surface (segmenting where needed) so the wraparound gap is bridged, or reject the converted result as a fidelity loss.
-- **Notes**: **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "nearly-duplicate pcurves at converted seam", "small UV gap after periodic-to-NURBS conversion", "pcurve gap near wraparound", "two pcurves on same edge after BSpline conversion", "periodic surface converted to NURBS leaves seam pcurve mismatch".
+- **Notes**: **OCC behavior**: accepts and loads shape(1); OCC's STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug. Synonyms: "nearly-duplicate pcurves at converted seam", "small UV gap after periodic-to-NURBS conversion", "pcurve gap near wraparound", "two pcurves on same edge after BSpline conversion", "periodic surface converted to NURBS leaves seam pcurve mismatch".
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 - **Tier-3 assertion**: shape_null == False
@@ -1672,12 +1684,13 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ### Gp020 — 2D gap between adjacent edges in wire — pcurves disagree in UV
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurve
 - **Sources**: 05-occt-shapefix.md F044; 09-healing-menus.md H099
 - **Description**: Two consecutive edges of a wire have pcurve endpoints that disagree in (u,v) on the host surface beyond tolerance, even though their 3D endpoints coincide. The topology is fine in 3D — both edges share the same `VERTEX_POINT` — but the pcurves evaluated at that vertex land at different UV positions. Distinct from a 3D gap, where the 3D endpoints themselves diverge; here only the parameter-space representation is broken.
 - **Reproducer recipe**: Two `EDGE_CURVE`s sharing a `VERTEX_POINT` whose pcurve evaluations on the same host surface differ by `(ΔU,ΔV) > 1e-3` despite identical 3D endpoints.
 - **Expected kernel behavior**: reconcile the parametric representation so the wire is connected in UV; snap pcurve endpoints to a common UV value, recompute one pcurve from the other, or reject as malformed if the gap exceeds the kernel's working precision.
-- **Notes**: **See also**: Gp026, Twi003. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "2D gap between consecutive edges in wire", "pcurves disagree at shared vertex in UV", "wire connected in 3D but open in UV", "pcurve endpoint mismatch at shared vertex", "edges share 3D vertex but pcurves diverge".
+- **Notes**: **See also**: Gp026, Twi003. **OCC behavior**: accepts and loads shape(1); OCC's STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug. Synonyms: "2D gap between consecutive edges in wire", "pcurves disagree at shared vertex in UV", "wire connected in 3D but open in UV", "pcurve endpoint mismatch at shared vertex", "edges share 3D vertex but pcurves diverge".
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
@@ -1690,12 +1703,13 @@ _Section summary: 82 entries._
 - **Tier-3 assertion**: n_vertices_total == 4
 
 ### Gp021 — 3D curve and pcurve on same edge disagree about edge location (skewed/off-unit pcurve `LINE`)
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurve
 - **Sources**: 05-occt-shapefix.md F045; 17-standards-bodies.md M007
 - **Description**: For one edge, the 3D-curve evaluation and the pcurve lifted through the host surface land at different points along part of the edge; the two representations of the same edge disagree about where the edge actually is, by more than the edge's tolerance. Common shapes: pcurve `LINE` whose `DIRECTION` ratios are slightly skewed from the canonical axis (e.g. (0.99875,0.04994) instead of (1,0)) or whose `VECTOR` magnitude is off unit (e.g. 1.0012 instead of 1.0), so the lifted pcurve diverges from the 3D `LINE` along the edge. Senders that store both pcurve and 3D curve but recompute one from the other independently introduce this divergence.
 - **Reproducer recipe**: `EDGE_CURVE` with both 3D `LINE` and `PCURVE` whose evaluated points diverge by >1e-3 mm on a face whose declared tolerance is 1e-6.
 - **Expected kernel behavior**: recompute the pcurve from the 3D curve by projection (or vice versa), inflate edge tolerance to absorb the divergence, or reject as malformed. Recomputing the curve preserves precision; tolerance inflation degrades it.
-- **Notes**: **See also**: Gp022. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "3D curve and pcurve disagree about edge location", "pcurve LINE direction off-axis or non-unit magnitude", "lifted pcurve diverges from 3D curve mid-edge", "skewed pcurve direction ratios", "pcurve and 3D curve describe different paths".
+- **Notes**: **See also**: Gp022. **OCC behavior**: accepts and loads shape(1); OCC's STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug. Synonyms: "3D curve and pcurve disagree about edge location", "pcurve LINE direction off-axis or non-unit magnitude", "lifted pcurve diverges from 3D curve mid-edge", "skewed pcurve direction ratios", "pcurve and 3D curve describe different paths".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
@@ -1709,12 +1723,13 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 
 ### Gp022 — `EDGE_CURVE` `SameParameter=.T.` asserted but 3D curve and pcurve use different parameterisations (degenerate B-spline pcurve)
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurve
 - **Sources**: 03-occt-tests.md R014, R015; 05-occt-shapefix.md F009; 09-healing-menus.md H057; 13-quaoar.md B018
 - **Description**: An `EDGE_CURVE` declares the same-parameter invariant (the `.T.` `same_sense` flag, plus an implicit assertion that 3D curve and pcurve share parameterisation), but evaluating both at the same parameter value yields points that diverge beyond the edge's tolerance. Common shape: pcurve is a degree-2 `B_SPLINE_CURVE_WITH_KNOTS` whose middle control point is offset (e.g. control points (0,0)/(0.8,0)/(1.0,0) with uniform endpoint-multiplicity knots), so its parameterisation collapses near the end while the 3D `LINE` is uniformly parameterised. The two curves describe the same edge geometrically but each at its own pace along the edge. Typical cause: the pcurve was reprojected at non-uniform sampling without rebasing parameter.
 - **Reproducer recipe**: Build an edge, reproject its pcurve at non-uniform spacing without re-parameterizing; topology checker reports tolerance growth.
 - **Expected kernel behavior**: re-parameterise one curve so the same parameter value yields the same point on both, drop the same-parameter assertion and inflate edge tolerance to absorb the divergence, or reject as malformed. Choice is kernel-design-dependent.
-- **Notes**: **See also**: Gp021, Gp027. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "SameParameter flag set but parameterisations differ", "edge claims same-parameter but pcurve and 3D curve diverge", "non-uniform pcurve parameterisation breaks same-parameter invariant", "tolerance growth from same-parameter violation", "B-spline pcurve middle pole offset breaks parameter sync".
+- **Notes**: **See also**: Gp021, Gp027. **OCC behavior**: accepts and loads shape(1); OCC's STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug. Synonyms: "SameParameter flag set but parameterisations differ", "edge claims same-parameter but pcurve and 3D curve diverge", "non-uniform pcurve parameterisation breaks same-parameter invariant", "tolerance growth from same-parameter violation", "B-spline pcurve middle pole offset breaks parameter sync".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
@@ -1728,6 +1743,7 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 
 ### Gp023 — Point-projection onto trimmed periodic `CYLINDRICAL_SURFACE` returns UV outside trimmed band (pcurve start parameter shifted by period)
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurve
 - **Sources**: 13-quaoar.md B012
 - **Description**: A face on a periodic surface (full `CYLINDRICAL_SURFACE`, `TOROIDAL_SURFACE`, etc.) is trimmed to a sub-band of U (e.g. U in [π, 2π]). Pcurve parameterisations for edges following a `CIRCLE` start at the wrong angle relative to the trimmed band; e.g. a pcurve `LINE` starts at u=π instead of u=0, off by π from the circle start angle. Equivalently, projecting a 3D point onto the trimmed periodic surface returns a UV pair outside the face's actual `[UMin,UMax]/[VMin,VMax]` band, even though a valid in-range pre-image exists in another period. Mesh-node reprojection during sheet-metal unfolding lands in the wrong period.
@@ -1741,7 +1757,7 @@ _Section summary: 82 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); OCC's STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
@@ -1753,13 +1769,14 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Gp024 — Pcurve refit after non-uniform scale produces large errors
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurve
 - **Sources**: 14-brlcad-rhino.md K016
 - **Sender**: Rhino after `Scale 1000` then re-export
 - **Description**: STEP files contain no pcurves natively; on Rhino export, pcurves are computed against the host surface. After scaling the 3D model by 1000, pcurve evaluation error scales by 1000 too, producing validation messages like "Distance from end of trim to 3D edge is 0.05 (edge tol = 0.0001)".
 - **Reproducer recipe**: Open a small STEP file (mm tolerance 0.0001), scale by ×1000, export STEP with "export parameter space curves" enabled.
 - **Expected kernel behavior**: heal; refit pcurves after scale, recompute pcurves at export, or scale `edge_tolerance` consistently.
-- **Notes**: **See also**: Gn032. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "pcurve error scales with non-uniform 3D scale", "scale by 1000 inflates pcurve deviation", "Rhino scale breaks pcurve trim accuracy", "edge tolerance not rescaled with model scale", "distance from end of trim to 3D edge exceeds tolerance after scale".
+- **Notes**: **See also**: Gn032. **OCC behavior**: accepts and loads shape(1); OCC's STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug. Synonyms: "pcurve error scales with non-uniform 3D scale", "scale by 1000 inflates pcurve deviation", "Rhino scale breaks pcurve trim accuracy", "edge tolerance not rescaled with model scale", "distance from end of trim to 3D edge exceeds tolerance after scale".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
@@ -1775,12 +1792,13 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 
 ### Gp026 — `EDGE_LOOP` contour not closed in UV (Jordan-curve violation across periodic-surface seam)
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurve
 - **Sources**: 13-quaoar.md B022; 09-healing-menus.md H099, H100
 - **Description**: In a face's parametric (UV) domain, the outer `EDGE_LOOP`'s start and end vertices do not coincide within face tolerance, so the contour does not partition the plane (Jordan-curve failure). Typical pattern: face on a `CYLINDRICAL_SURFACE` whose seam edges each carry pcurves referenced via separate `DEFINITIONAL_REPRESENTATION`s that do not align; a gap remains at the u=2π vs u=0 seam between consecutive `ORIENTED_EDGE`s. Caused by missed seam edges on periodic surfaces, or by corrupt pcurves with gaps.
 - **Reproducer recipe**: Face on a cylinder, omit the seam edge so the outer wire is open in UV; renderers fall back to isolines instead of triangulating.
 - **Expected kernel behavior**: connect the wire endpoints via period-shifting / vertex-merging / seam-insertion as appropriate, or reject as malformed when the gap exceeds the working tolerance budget.
-- **Notes**: **See also**: Gp020, Gp028, Gs012, Twi020. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "edge_loop not closed in UV", "Jordan curve violation across periodic seam", "outer wire fails to close in parametric domain", "renderer falls back to isolines instead of triangulating", "face contour open across cylinder seam".
+- **Notes**: **See also**: Gp020, Gp028, Gs012, Twi020. **OCC behavior**: accepts and loads shape(1); OCC builds a BRepCheck-valid cylindrical face and the declared missing-seam / open-UV-loop defect does not manifest as an invalid or count-anomalous shape. The declared defect changes neither shape-counts nor BRepCheck validity, so the shape-count oracle cannot distinguish it from a fully-seamed input; shape(1) does not witness a kernel bug. Synonyms: "edge_loop not closed in UV", "Jordan curve violation across periodic seam", "outer wire fails to close in parametric domain", "renderer falls back to isolines instead of triangulating", "face contour open across cylinder seam".
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
@@ -1795,6 +1813,7 @@ _Section summary: 82 entries._
 - **Tier-3 assertion**: n_vertices_total == 6
 
 ### Gp027 — Closed-face splitter leaves new pcurves out of sync with 3D curves on `CYLINDRICAL_SURFACE`
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurve
 - **Sources**: 13-quaoar.md B008
 - **Description**: A pass that splits closed periodic faces / solids (full `CYLINDRICAL_SURFACE`, `TOROIDAL_SURFACE`) along their seams produces new edges whose pcurves do not satisfy the same-parameter invariant — pcurve and 3D curve disagree at the same parameter value. Typical pattern: an `EDGE_CURVE` between vertices (10,0,0) and (-10,0,0) on a cylinder traverses the seam from u=0 to u=π in 3D, but the pcurve `LINE` is parameterised over [0, 1] instead of [0, π] — same UV path, different parameterisation, so the seam/branch handling is wrong. A topology checker reports invalid edges. The splitter returns a topologically inconsistent intermediate state.
@@ -1808,7 +1827,7 @@ _Section summary: 82 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); OCC's STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
@@ -1820,12 +1839,13 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Gp028 — Wire crosses periodic-surface seam without an explicit seam edge (pcurve trim range vs vertex angular position mismatch)
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurve
 - **Sources**: 08-occt-gitlog.md G111 (Mantis 0026708)
 - **Description**: A wire bounding a face on a periodic `CYLINDRICAL_SURFACE` (or torus, etc.) traverses the U=0 / U=2π seam, but the input does not include the seam edge that would carry the wire from one side of the seam to the other. Typical signature: pcurve `LINE` trim range (e.g. starts at u=5.5 with length 1.28) corresponds to a different angular interval on the cylinder than the 3D vertex positions imply (vertex angles around -0.78 rad and +0.50 rad), so pcurve and 3D-vertex angular positions disagree. Downstream shell composition sees an open contour in UV even though the wire is closed in 3D.
 - **Reproducer recipe**: STEP face where an outer wire of a cylindrical face crosses the U=0/U=2π seam direction without an explicit seam edge.
 - **Expected kernel behavior**: detect that the wire crosses the seam and insert the seam edge automatically, or reject as malformed.
-- **Notes**: **See also**: Gp026. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "wire crosses cylinder seam without seam edge", "missing seam edge on periodic surface wire", "pcurve range vs vertex angle disagree at seam crossing", "cylinder face wire spans U=0/U=2π without explicit seam", "open contour in UV from missing seam edge".
+- **Notes**: **See also**: Gp026. **OCC behavior**: accepts and loads shape(1); OCC builds a BRepCheck-valid cylindrical face, recomputing the pcurve from the 3D curve (per Gp193), so the declared pcurve-vs-vertex angular mismatch / missing-seam defect does not survive into the built shape. Perturbing the declared defect leaves shape-counts and BRepCheck validity unchanged, so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug. Synonyms: "wire crosses cylinder seam without seam edge", "missing seam edge on periodic surface wire", "pcurve range vs vertex angle disagree at seam crossing", "cylinder face wire spans U=0/U=2π without explicit seam", "open contour in UV from missing seam edge".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
@@ -1839,12 +1859,13 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 
 ### Gp029 — Period-shift fix on revolved face leaves wire in inconsistent UV band, blocks meshing
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurve
 - **Sources**: 03-occt-tests.md R082 (bug26716)
 - **Description**: After a period-shift pass on a revolved face's wire, the wire endpoints land in an inconsistent parameter band — some pcurve endpoints in `[0,2π]`, others in `[2π,4π]` — even though all should sit in a single period band. The inconsistency blocks subsequent triangulation, which expects a single coherent parameter window.
 - **Reproducer recipe**: Face on a `SURFACE_OF_REVOLUTION` whose pcurves require shifting by 2π; run the period-shift pass; attempt to mesh.
 - **Expected kernel behavior**: a period-shift pass must produce a self-consistent UV band for all wire endpoints, or refuse the shift when no consistent band exists. A post-condition check on the band coverage catches the inconsistency.
-- **Notes**: **See also**: Gs019. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "period-shift fix leaves wire across multiple bands", "wire endpoints in inconsistent UV bands after period adjust", "triangulation blocked by mixed-band pcurves", "revolved face period shift fails to converge", "pcurve endpoints scattered across periods after healing".
+- **Notes**: **See also**: Gs019. **OCC behavior**: accepts and loads shape(1); OCC's STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug. Synonyms: "period-shift fix leaves wire across multiple bands", "wire endpoints in inconsistent UV bands after period adjust", "triangulation blocked by mixed-band pcurves", "revolved face period shift fails to converge", "pcurve endpoints scattered across periods after healing".
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Tier-3 assertion**: edge[0].curve_type == "circle"
 - **Tier-3 assertion**: edge[0].analytic.radius == 2.0
@@ -1857,13 +1878,14 @@ _Section summary: 82 entries._
 - **Tier-3 assertion**: n_vertices_total == 8
 
 ### Gp030 — Bent / polyline-form `B_SPLINE` pcurve from PRO/E IGES requires protective handling
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurve
 - **Sources**: 05-occt-shapefix.md F061 (`ShapeFix_Wire.cxx`)
 - **Sender**: PRO/E (`PRO7978.igs`, `PRO10107.stp`)
 - **Description**: PRO/E exports (identifiable by `originating_system` 'PRO/Engineer …' in `FILE_NAME`) contain pcurves with sharp bends, typically authored as degree-1 `B_SPLINE_CURVE_WITH_KNOTS` in `.POLYLINE_FORM.` with vendor-specific interior knot multiplicities. These vendor-shaped B-spline pcurves must be protected from generic intersection-fix routines that would otherwise corrupt them. A specialized "bend-pcurve" pass holds the pcurve fixed while neighbors are adjusted.
 - **Reproducer recipe**: PRO/E STEP file with a face whose pcurve has a sharp bend; run generic ShapeFix wire intersection healing; observe pcurve corruption.
 - **Expected kernel behavior**: heal; recognize PRO/E sender and route bent pcurves through the protective branch.
-- **Notes**: **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "PRO/E polyline-form pcurve gets corrupted by intersection healer", "bent B-spline pcurve from PRO/Engineer", "pcurve sharp bend killed by generic ShapeFix", "polyline pcurve degree-1 with vendor multiplicities", "wire intersection fix damages PRO/E pcurve".
+- **Notes**: **OCC behavior**: accepts and loads shape(1); OCC's STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug. Synonyms: "PRO/E polyline-form pcurve gets corrupted by intersection healer", "bent B-spline pcurve from PRO/Engineer", "pcurve sharp bend killed by generic ShapeFix", "polyline pcurve degree-1 with vendor multiplicities", "wire intersection fix damages PRO/E pcurve".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'PCURVE') >= 1
@@ -1881,12 +1903,13 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 
 ### Gp031 — Cylinder represented twice as duplicate `CYLINDRICAL_SURFACE` instances loses analytic identity
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurve
 - **Sources**: 05-occt-shapefix.md F063 (`ShapeBuild_Edge.cxx:647`)
 - **Description**: After an IGES BRep round-trip (or other translator path), a cylindrical face appears with two distinct but identically-defined `CYLINDRICAL_SURFACE` instances (e.g. `#20` and `#21`) where each `ADVANCED_FACE` uses one copy; analytic identity is lost. A single 3D edge then has two pcurves on these supposedly-same surfaces; duplicate surface definitions and aliased pcurves create confusion, and pcurves stored against the second copy disagree with those against the first even though geometrically identical.
 - **Reproducer recipe**: Cylindrical face → IGES BRep → re-import; check that all faces of the cylinder share the same `Geom_CylindricalSurface` handle.
 - **Expected kernel behavior**: heal; canonicalize duplicate analytic surfaces post-IGES; re-bind pcurves to the canonical surface.
-- **Notes**: **See also**: Gn023, Gp016. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "duplicate CYLINDRICAL_SURFACE instances after IGES BRep round-trip", "cylinder analytic identity lost", "two copies of same cylindrical surface", "duplicate analytic surfaces after IGES round-trip", "pcurves on supposedly-same cylinder disagree".
+- **Notes**: **See also**: Gn023, Gp016. **OCC behavior**: accepts and loads shape(1); OCC's STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug. Synonyms: "duplicate CYLINDRICAL_SURFACE instances after IGES BRep round-trip", "cylinder analytic identity lost", "two copies of same cylindrical surface", "duplicate analytic surfaces after IGES round-trip", "pcurves on supposedly-same cylinder disagree".
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
@@ -22051,12 +22074,13 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Gp034 — Composite curve segments do not meet within connectivity tolerance
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurves/curves (sub-class: continuity)
 - **Sources**: OCCT `ShapeExtend_ComplexCurve::CheckConnectivity` (`ShapeExtend_ComplexCurve.hxx:88`)
 - **Description**: A `COMPOSITE_CURVE` lists multiple segments that are intended to form a single continuous curve. Segment N's last 3D point sits at a distance of several millimetres from segment N+1's first 3D point; far beyond any reasonable connectivity tolerance. The composite curve is not actually connected; treating it as one curve produces invalid downstream geometry.
 - **Reproducer recipe**: Two LINE-based EDGE_CURVEs whose vertices are at `(5,0,0)` and `(5.005,0,0)` respectively. Both edges share a wire but the kernel must report a 5e-3 disconnect.
 - **Expected kernel behavior**: report the connectivity defect with the offending segment indices and 3D gap; either bridge the segments by inserting a connecting curve, snap endpoints, or refuse to treat the aggregate as a single curve.
-- **Notes**: Similar defect class to `Twi-` wire connectivity but at the curve-aggregate level. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: "composite curve segments don't meet", "gap between consecutive composite curve segments", "composite_curve has disconnected segments", "segment N+1 starts far from segment N's end", "composite curve connectivity check fails".
+- **Notes**: Similar defect class to `Twi-` wire connectivity but at the curve-aggregate level. **OCC behavior**: accepts and loads shape(1); OCC does not transfer the COMPOSITE_CURVE into the face wire at all (the face loads with no edges), so the declared 3D inter-segment gap never reaches the built shape. Dialing the gap from 0 to 0.5 mm leaves shape-counts and BRepCheck validity unchanged, so the shape-count oracle cannot distinguish it from a gap-free input; shape(1) does not witness a kernel bug. Synonyms: "composite curve segments don't meet", "gap between consecutive composite curve segments", "composite_curve has disconnected segments", "segment N+1 starts far from segment N's end", "composite curve connectivity check fails".
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_faces_total == 1
@@ -22064,12 +22088,13 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Gp035 — Edge has 3D curve but no pcurve, requiring projection onto host surface
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurves/curves (sub-class: missing pcurve)
 - **Sources**: OCCT `ShapeConstruct_ProjectCurveOnSurface::Perform` (`ShapeConstruct_ProjectCurveOnSurface.hxx:126`)
 - **Description**: An edge on an analytic surface (cylinder, cone, sphere, torus, plane) carries a 3D space curve but no 2D pcurve. To trim the surface, the kernel must project the 3D curve into UV. Some senders never emit pcurves, expecting the consumer to compute them; the projection must remain same-parameter and may resolve to an analytic 2D primitive (line in UV) where the geometry permits.
 - **Reproducer recipe**: A vertical EDGE_CURVE on a CYLINDRICAL_SURFACE running from `(R,0,0)` to `(R,0,h)` with only a 3D LINE representation, no SURFACE_CURVE pcurve.
 - **Expected kernel behavior**: synthesize the missing pcurve via projection, validate same-parameter consistency afterwards, and emit an analytic 2D line where the underlying surface admits one (e.g., on cylinders, spheres). Alternatively, refuse the edge and require a sender that supplies pcurves.
-- **Notes**: Distinct from a *bad* pcurve (Twi-class). Also see Gp019 (edge without pcurve). **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: "edge has no parametric curve", "pcurve absent on face edge", "tessellator fails on edge with no UV curve", "kernel must project 3D curve onto surface", "edge without 2D representation needs synthesis".
+- **Notes**: Distinct from a *bad* pcurve (Twi-class). Also see Gp019 (edge without pcurve). **OCC behavior**: accepts and loads shape(1); the edge carrying only a bare 3D curve (no pcurve) is transferred by synthesizing its pcurve via projection (the documented heal), building a complete, BRepCheck-valid 4-edge face. The declared missing-pcurve defect thus does not survive into the built shape; the shape-count oracle cannot distinguish it from a pcurve-supplied input, so shape(1) does not witness a kernel bug. Synonyms: "edge has no parametric curve", "pcurve absent on face edge", "tessellator fails on edge with no UV curve", "kernel must project 3D curve onto surface", "edge without 2D representation needs synthesis".
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_faces_total == 1
@@ -22085,6 +22110,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Gp036 — Pcurve shifting on non-periodic surface produces wrong result
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurves
 - **Sources**: OCCT MANTIS#0028595 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A 2D-curve-shift routine intended for periodic surfaces
@@ -22103,7 +22129,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); OCC's STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -22132,6 +22158,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Gp038 — Vertex 3D point and pcurve do not match within tolerance
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurves
 - **Sources**: OCCT MANTIS#0025634 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: An edge's vertex point in 3D and the pcurve evaluated at
@@ -22151,12 +22178,13 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); OCC's STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Gp039 — Pcurve projection unstable on closed B-spline curve
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurves
 - **Sources**: OCCT GitHub#967; OCCT GitHub#894; OCCT GitHub#890; OCCT GitHub#600
 - **Description**: A 3D B-spline curve, closed (first control point ==
@@ -22176,7 +22204,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); OCC's STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -30530,6 +30558,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Tier-3 assertion**: n_faces_total == 3
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
 ### Gp040 — Pcurves emitted by default duplicate / contradict the surface 3D curve
+- **Status**: honest reclassification (2026-07-18, pilot fidelity re-audit) — oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off. The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte assertions and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.2a pcurve defects (sub-class: writer-emitted pcurves disagree with 3D)
 - **Sources**: OCCT MANTIS#0025654; bug-reporter language: "disable writing pcurves to STEP and IGES by default", "pcurves and 3D curves disagree on round-trip", "writer-emitted pcurves cause downstream failures". (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Sender**: OCCT's STEP writer when configured to emit pcurves (`write.surfacecurve.mode = 1`).
@@ -30540,7 +30569,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Byte assertion**: contains(b'PCURVE')
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Tier-3 assertion**: shape_null == False
-- **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads shape(1); OCC's STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The pcurve attribute on the affected EDGE_CURVE/SEAM_CURVE is missing, NULL, or inconsistent with its 3D companion; downstream meshing and boolean operations either rebuild it from the 3D edge (introducing tolerance error) or dereference a null handle and abort.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`

@@ -15,7 +15,6 @@
 <h1>Gp035 <span class="sep">—</span> <span class="entry-title">Edge has 3D curve but no pcurve, requiring projection onto host surface</span></h1>
 <p class="category">§12.2a pcurves/curves (sub-class: missing pcurve)</p>
 <p class="tag-pills">
-<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
 </p>
 </header>
@@ -33,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>synthesize the missing pcurve via projection, validate same-parameter consistency afterwards, and emit an analytic 2D line where the underlying surface admits one (e.g., on cylinders, spheres). Alternatively, refuse the edge and require a sender that supplies pcurves.</p></section>
 <section><h2>Notes</h2>
-<p>Distinct from a *bad* pcurve (Twi-class). Also see Gp019 (edge without pcurve). **OCC behavior**: accepts and loads shape(1); outside catalog&#x27;s allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: &quot;edge has no parametric curve&quot;, &quot;pcurve absent on face edge&quot;, &quot;tessellator fails on edge with no UV curve&quot;, &quot;kernel must project 3D curve onto surface&quot;, &quot;edge without 2D representation needs synthesis&quot;.</p></section>
+<p>Distinct from a *bad* pcurve (Twi-class). Also see Gp019 (edge without pcurve). **OCC behavior**: accepts and loads shape(1); the edge carrying only a bare 3D curve (no pcurve) is transferred by synthesizing its pcurve via projection (the documented heal), building a complete, BRepCheck-valid 4-edge face. The declared missing-pcurve defect thus does not survive into the built shape; the shape-count oracle cannot distinguish it from a pcurve-supplied input, so shape(1) does not witness a kernel bug. Synonyms: &quot;edge has no parametric curve&quot;, &quot;pcurve absent on face edge&quot;, &quot;tessellator fails on edge with no UV curve&quot;, &quot;kernel must project 3D curve onto surface&quot;, &quot;edge without 2D representation needs synthesis&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

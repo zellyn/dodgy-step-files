@@ -34,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal; detect the IGES-style frame and re-express pcurves in the host surface&#x27;s native UV.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gp031. **OCC behavior**: accepts and loads shape(1); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;pcurve in shifted UV frame&quot;, &quot;IGES BRep pcurve in translated UV origin&quot;, &quot;pcurve UV offset relative to host surface&quot;, &quot;pcurve coordinates in alien frame&quot;, &quot;pcurve rotated/translated relative to surface UV&quot;.</p></section>
+<p>**See also**: Gp031. **OCC behavior**: accepts and loads shape(1); OCC&#x27;s STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug. Synonyms: &quot;pcurve in shifted UV frame&quot;, &quot;IGES BRep pcurve in translated UV origin&quot;, &quot;pcurve UV offset relative to host surface&quot;, &quot;pcurve coordinates in alien frame&quot;, &quot;pcurve rotated/translated relative to surface UV&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
@@ -49,7 +49,7 @@
 <li><code>n_vertices_total == 2</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
-<p><a href="Gp031.html">Gp031</a></p>
+<p><a href="Gp031.html">Gp031</a>, <a href="Gp193.html">Gp193</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>

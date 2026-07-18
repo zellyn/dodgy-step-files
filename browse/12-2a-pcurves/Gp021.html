@@ -33,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>recompute the pcurve from the 3D curve by projection (or vice versa), inflate edge tolerance to absorb the divergence, or reject as malformed. Recomputing the curve preserves precision; tolerance inflation degrades it.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gp022. **OCC behavior**: accepts and loads shape(1); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Synonyms: &quot;3D curve and pcurve disagree about edge location&quot;, &quot;pcurve LINE direction off-axis or non-unit magnitude&quot;, &quot;lifted pcurve diverges from 3D curve mid-edge&quot;, &quot;skewed pcurve direction ratios&quot;, &quot;pcurve and 3D curve describe different paths&quot;.</p></section>
+<p>**See also**: Gp022. **OCC behavior**: accepts and loads shape(1); OCC&#x27;s STEP reader recomputes the pcurve from the 3D curve on transfer (per Gp193), so the declared 2D/pcurve defect does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves the built shape unchanged in both shape-counts and BRepCheck validity (heal_on and heal_off), so the shape-count oracle cannot distinguish it from a clean input; shape(1) does not witness a kernel bug. Synonyms: &quot;3D curve and pcurve disagree about edge location&quot;, &quot;pcurve LINE direction off-axis or non-unit magnitude&quot;, &quot;lifted pcurve diverges from 3D curve mid-edge&quot;, &quot;skewed pcurve direction ratios&quot;, &quot;pcurve and 3D curve describe different paths&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
@@ -50,7 +50,7 @@
 <li><code>face[0].quadric.radius == 1.0</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
-<p><a href="Gp022.html">Gp022</a></p>
+<p><a href="Gp022.html">Gp022</a>, <a href="Gp193.html">Gp193</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>

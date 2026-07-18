@@ -33,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>connect the wire endpoints via period-shifting / vertex-merging / seam-insertion as appropriate, or reject as malformed when the gap exceeds the working tolerance budget.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gp020, Gp028, Gs012, Twi020. **OCC behavior**: accepts and loads shape(1); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Synonyms: &quot;edge_loop not closed in UV&quot;, &quot;Jordan curve violation across periodic seam&quot;, &quot;outer wire fails to close in parametric domain&quot;, &quot;renderer falls back to isolines instead of triangulating&quot;, &quot;face contour open across cylinder seam&quot;.</p></section>
+<p>**See also**: Gp020, Gp028, Gs012, Twi020. **OCC behavior**: accepts and loads shape(1); OCC builds a BRepCheck-valid cylindrical face and the declared missing-seam / open-UV-loop defect does not manifest as an invalid or count-anomalous shape. The declared defect changes neither shape-counts nor BRepCheck validity, so the shape-count oracle cannot distinguish it from a fully-seamed input; shape(1) does not witness a kernel bug. Synonyms: &quot;edge_loop not closed in UV&quot;, &quot;Jordan curve violation across periodic seam&quot;, &quot;outer wire fails to close in parametric domain&quot;, &quot;renderer falls back to isolines instead of triangulating&quot;, &quot;face contour open across cylinder seam&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
