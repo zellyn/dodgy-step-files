@@ -3364,6 +3364,7 @@ _Section summary: 101 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Tsh037 — Free wires/edges in compound (Q029, F080 — no faces, INTERNAL orientation)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty is caused by topological ORIENTED_EDGEs wrapped in a GEOMETRIC_CURVE_SET, not by 'wireframe-only content': the same square as four TRIMMED_CURVE geometric curves in a GEOMETRIC_CURVE_SET builds shape(4 edges); base/clean/huge all empty
 - **Category**: §12.3a shell-orientation
 - **Sources**: 05-occt-shapefix.md F080; 04-occt-translation.md Q028, Q029
 - **Description**: A STEP compound contains free wires or edges with no parent face; wireframe content with no surface model. Related cases: `EDGE_BASED_WIREFRAME_MODEL` / `FACE_BASED_SURFACE_MODEL` instances with empty content. A receiver expecting solid or surface bodies needs to handle these as wireframe-only assets.
@@ -3373,7 +3374,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'GEOMETRIC_CURVE_SET')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 0
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: loads empty regardless of the declared defect — the wire is presented as topological ORIENTED_EDGEs wrapped in a GEOMETRIC_CURVE_SET, which OCC's STEP reader cannot build. A well-formed wireframe of the same square (four TRIMMED_CURVE geometric curves in a GEOMETRIC_CURVE_SET) builds shape(4 edges), and OCC does materialise genuine free wireframe as a compound of edges. Base, clean and huge are all empty, so the silent-empty is driven by the topological-entity-in-geometric-set mis-parenting, not by 'wireframe-only content' — not defect-driven silent data-loss and not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -4299,13 +4300,14 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 
 ### Tfa018 — Same-domain face merge across periodic seam: shared `EDGE_CURVE` reused with `.T.`/`.F.` on both halves (missed-seam reconstruction)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty is caused by the ADVANCED_FACEs being wrapped in a GEOMETRIC_CURVE_SET (topological faces in a geometric-set container), not by the declared defect: moving the same faces into an OPEN_SHELL builds shape(2 faces); base/clean/huge all empty
 - **Category**: §12.3c face-sliver-sewing
 - **Sources**: 08-occt-gitlog G103 (Mantis 0033193 / 0032581 / 0032623 / 0032715)
 - **Description**: When merging same-domain faces across a periodic seam (e.g. a cylinder split into two halves A and B), the seam-reconstruction path that emits the new edge crashes in debug mode, returns invalid geometry in release mode, or leaves the union incomplete. Common signature: the two seam `EDGE_CURVE`s are each referenced by both halves' `EDGE_LOOP`s as `ORIENTED_EDGE`s with opposing `.T.`/`.F.` senses; each seam edge appears twice with the confusing same-edge-different-sense pattern. The kernel needed to synthesise the seam edge from one of the input pcurves but failed to copy it correctly.
 - **Reproducer recipe**: Compound of co-cylindrical faces with implicit seam between them.
 - **Expected kernel behavior**: copy an existing pcurve when reconstructing the seam edge; correctly detect periodicity; for closed-but-not-periodic surfaces, modify the underlying surface to be periodic before merging, or refuse the merge.
 - **Notes**: **See also**: Tfa016. Synonyms: "seam edge reused with both senses", "same edge appears twice in loop with .T. and .F.", "missed-seam reconstruction across cylinder halves", "merged cylinder halves crash on seam edge", "edge used in both orientations on periodic merge".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: loads empty regardless of the declared defect — the ADVANCED_FACEs are wrapped in a GEOMETRIC_CURVE_SET, which OCC's STEP reader mines only for geometric points/curves/surfaces and never builds a topological face, so no face is ever created. Moving the identical faces into an OPEN_SHELL/SHELL_BASED_SURFACE_MODEL builds shape(2 faces) (control). Base, clean (defect repaired) and huge (defect exaggerated) are all empty, so the silent-empty is driven by the mis-parented container, not by the declared seam-edge / same-domain-face-merge defect — not defect-driven silent data-loss and not a proven kernel bug.
 - **Severity**: P1
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'(-10.0,0.0,0.0)')
@@ -4344,6 +4346,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 
 ### Tfa022 — Almost-closed `EDGE_LOOP` with sub-tolerance gap and wrong Closed flag (ConnectEdgesToWires)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty is caused by the EDGE_LOOP being wrapped in a GEOMETRIC_CURVE_SET (topological loop in a geometric-set container), not by the declared defect: a pristine square EDGE_LOOP in the same scaffold is empty (control A) while the same wire in a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1) (control B); base/clean/huge all empty
 - **Category**: §12.3c face-sliver-sewing
 - **Sources**: 03-occt-tests R032 (bug25068, bug25333), R076 (bug22924 non-determinism)
 - **Description**: A free-edge connector pass returns `EDGE_LOOP`s / wires whose closed-or-open flag disagrees with the wire's actual geometry — geometrically open wires marked closed, or vice versa. Common signature: an `EDGE_LOOP` of four edges whose last edge ends at a `VERTEX_POINT` (e.g. (0, 1e-6, 0)) that differs from the first edge's start vertex (e.g. (0, 0, 0)) by ~1e-6 mm — the loop is not closed by that tiny gap, and the file may carry the unclosed loop as a free EDGE_LOOP without any `FACE_OUTER_BOUND` / `ADVANCED_FACE` wrapper. Repeated runs over the same input also produce different orderings (non-deterministic output).
@@ -4354,7 +4357,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 5
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 5
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: loads empty regardless of the declared defect — the EDGE_LOOP is wrapped in a GEOMETRIC_CURVE_SET, which OCC's STEP reader mines only for geometric points/curves/surfaces and never builds a topological loop, so no wire or edge is ever created. A pristine well-formed square EDGE_LOOP in the identical GEOMETRIC_CURVE_SET scaffold loads equally empty (control A); the same wire moved into a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1 face) (control B). Base, clean (defect repaired) and huge (defect exaggerated) are all empty, so the silent-empty is driven by the mis-parented container, not by the declared defect — not defect-driven silent data-loss and not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -4389,13 +4392,14 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 
 ### Tfa025 — Glue Edges: duplicate `EDGE_CURVE` instances over duplicated `LINE` / `VERTEX_POINT` entities (coincident edges)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty is caused by the EDGE_LOOP being wrapped in a GEOMETRIC_CURVE_SET (topological loop in a geometric-set container), not by the declared defect: a pristine square EDGE_LOOP in the same scaffold is empty (control A) while the same wire in a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1) (control B); base/clean/huge all empty
 - **Category**: §12.3c face-sliver-sewing
 - **Sources**: 09-healing-menus H064, H102; 11-vendor W045
 - **Description**: Edge-level analogue of Glue Faces: a wireframe model (e.g. `GEOMETRIC_CURVE_SET`) or sewing residue carries duplicate `EDGE_CURVE` instances across patches that should be shared. Common signature: four geometrically identical edges in one set — two using the same `VERTEX_POINT`s and `LINE` (true duplicates), one using duplicated `LINE` instance over the same vertices, and one using duplicated `VERTEX_POINT` instances over the same line — all combinations of duplicated underlying entities for the same physical edge.
 - **Reproducer recipe**: Compound where two `EDGE_CURVE`s reference the same `LINE` between identical `VERTEX_POINT`s, but live in different parents.
 - **Expected kernel behavior**: heal; merge coincident edges within tolerance; rebind ancestors to the kept edge.
 - **Notes**: **See also**: Twi033. Synonyms: "duplicate edges over same line and vertices", "coincident edges in wireframe", "same edge defined four times with duplicate underlying entities", "edges sharing geometry but stored separately", "edge dedup needed across patches".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: loads empty regardless of the declared defect — the EDGE_LOOP is wrapped in a GEOMETRIC_CURVE_SET, which OCC's STEP reader mines only for geometric points/curves/surfaces and never builds a topological loop, so no wire or edge is ever created. A pristine well-formed square EDGE_LOOP in the identical GEOMETRIC_CURVE_SET scaffold loads equally empty (control A); the same wire moved into a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1 face) (control B). Base, clean (defect repaired) and huge (defect exaggerated) are all empty, so the silent-empty is driven by the mis-parented container, not by the declared defect — not defect-driven silent data-loss and not a proven kernel bug.
 - **Severity**: P1
 - **Byte assertion**: contains(b'line_shared')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') >= 2
@@ -20352,6 +20356,7 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Twi094 — Wire endpoint first/last edge skipped during wire build (open EDGE_LOOP missing first ORIENTED_EDGE; orphan VERTEX_POINT defined but never referenced)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty is caused by the EDGE_LOOP being wrapped in a GEOMETRIC_CURVE_SET (topological loop in a geometric-set container), not by the declared defect: a pristine square EDGE_LOOP in the same scaffold is empty (control A) while the same wire in a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1) (control B); base/clean/huge all empty
 - **Category**: §12.3b wires/loops/edges
 - **Sources**: OCCT MANTIS#0022822 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: An open (non-closed) wire's first or last edge is silently
@@ -20372,7 +20377,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'four_edges_first_dropped')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 4
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: loads empty regardless of the declared defect — the EDGE_LOOP is wrapped in a GEOMETRIC_CURVE_SET, which OCC's STEP reader mines only for geometric points/curves/surfaces and never builds a topological loop, so no wire or edge is ever created. A pristine well-formed square EDGE_LOOP in the identical GEOMETRIC_CURVE_SET scaffold loads equally empty (control A); the same wire moved into a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1 face) (control B). Base, clean (defect repaired) and huge (defect exaggerated) are all empty, so the silent-empty is driven by the mis-parented container, not by the declared defect — not defect-driven silent data-loss and not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -20403,6 +20408,7 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ### Twi096 — Wire with internal cross-loop translates incorrectly
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty is caused by the EDGE_LOOP being wrapped in a GEOMETRIC_CURVE_SET (topological loop in a geometric-set container), not by the declared defect: a pristine square EDGE_LOOP in the same scaffold is empty (control A) while the same wire in a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1) (control B); base/clean/huge all empty
 - **Category**: §12.3b wires/loops/edges
 - **Sources**: OCCT MANTIS#0005027 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A STEP wire encodes a self-crossing path: edges visit a
@@ -20418,12 +20424,13 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'B_to_E')
 - **Byte assertion**: contains(b'A_to_B')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: loads empty regardless of the declared defect — the EDGE_LOOP is wrapped in a GEOMETRIC_CURVE_SET, which OCC's STEP reader mines only for geometric points/curves/surfaces and never builds a topological loop, so no wire or edge is ever created. A pristine well-formed square EDGE_LOOP in the identical GEOMETRIC_CURVE_SET scaffold loads equally empty (control A); the same wire moved into a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1 face) (control B). Base, clean (defect repaired) and huge (defect exaggerated) are all empty, so the silent-empty is driven by the mis-parented container, not by the declared defect — not defect-driven silent data-loss and not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Twi097 — Edge-projection-aux range computation loses precision on periodic curves
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty is caused by the EDGE_LOOP being wrapped in a GEOMETRIC_CURVE_SET (topological loop in a geometric-set container), not by the declared defect: a pristine square EDGE_LOOP in the same scaffold is empty (control A) while the same wire in a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1) (control B); base/clean/huge all empty
 - **Category**: §12.3b wires/loops/edges
 - **Sources**: OCCT MANTIS#0024370; OCCT MANTIS#0024921 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: An edge whose host curve is periodic (circle, ellipse,
@@ -20441,7 +20448,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'CIRCLE(')
 - **Byte assertion**: contains(b'(0.7080734182735711,-0.7061278960829493,0.0)')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: loads empty regardless of the declared defect — the EDGE_LOOP is wrapped in a GEOMETRIC_CURVE_SET, which OCC's STEP reader mines only for geometric points/curves/surfaces and never builds a topological loop, so no wire or edge is ever created. A pristine well-formed square EDGE_LOOP in the identical GEOMETRIC_CURVE_SET scaffold loads equally empty (control A); the same wire moved into a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1 face) (control B). Base, clean (defect repaired) and huge (defect exaggerated) are all empty, so the silent-empty is driven by the mis-parented container, not by the declared defect — not defect-driven silent data-loss and not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -20451,6 +20458,7 @@ _Section summary: 41 entries._
 ## §12.3c face / sewing
 
 ### Twi098 — `FixTails` removes wire tail edges incorrectly (EDGE_LOOP with intentional short feature edges, e.g., a chamfer edge plus a disconnected free-floating short edge)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty is caused by the EDGE_LOOP being wrapped in a GEOMETRIC_CURVE_SET (topological loop in a geometric-set container), not by the declared defect: a pristine square EDGE_LOOP in the same scaffold is empty (control A) while the same wire in a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1) (control B); base/clean/huge all empty
 - **Category**: §12.3b wires/loops/edges
 - **Sources**: OCCT MANTIS#0026282; OCCT GitHub#565 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A wire-cleanup pass intended to remove "tail" edges
@@ -20466,12 +20474,13 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'e6_short_1mm_fillet_marker')
 - **Byte assertion**: contains(b'hex_with_two_short_features')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: loads empty regardless of the declared defect — the EDGE_LOOP is wrapped in a GEOMETRIC_CURVE_SET, which OCC's STEP reader mines only for geometric points/curves/surfaces and never builds a topological loop, so no wire or edge is ever created. A pristine well-formed square EDGE_LOOP in the identical GEOMETRIC_CURVE_SET scaffold loads equally empty (control A); the same wire moved into a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1 face) (control B). Base, clean (defect repaired) and huge (defect exaggerated) are all empty, so the silent-empty is driven by the mis-parented container, not by the declared defect — not defect-driven silent data-loss and not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Tfa061 — Sewing of thin faces takes excessive time during seam-edge creation
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty is caused by the ADVANCED_FACEs being wrapped in a GEOMETRIC_CURVE_SET (topological faces in a geometric-set container), not by the declared defect: moving the same faces into an OPEN_SHELL builds shape(12 faces); base/clean/huge all empty
 - **Category**: §12.3c faces/sewing
 - **Sources**: OCCT MANTIS#0030831 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A shell contains many extremely thin faces (strip width
@@ -20491,7 +20500,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'(100.0,0.001,0.0)')
 - **Byte assertion**: contains(b'(0.0,0.01,0.0)')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: emits a diagnostic but produces an empty result; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: loads empty regardless of the declared defect — the ADVANCED_FACEs are wrapped in a GEOMETRIC_CURVE_SET, which OCC's STEP reader mines only for geometric points/curves/surfaces and never builds a topological face, so no face is ever created. Moving the identical faces into an OPEN_SHELL/SHELL_BASED_SURFACE_MODEL builds shape(12 faces) (control). Base, clean (defect repaired) and huge (defect exaggerated) are all empty, so the silent-empty is driven by the mis-parented container, not by the declared thin-face sewing defect — not defect-driven silent data-loss and not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Face sewing leaves free bounds or duplicate edges; the resulting shell is open instead of closed, so MakeSolid produces an invalid solid and volume/property computations return wrong values.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -21351,13 +21360,14 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 
 ### Twi067 — Lacking edge: 2D gap not absorbable by vertex tolerance
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty is caused by the EDGE_LOOP being wrapped in a GEOMETRIC_CURVE_SET (topological loop in a geometric-set container), not by the declared defect: a pristine square EDGE_LOOP in the same scaffold is empty (control A) while the same wire in a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1) (control B); base/clean/huge all empty
 - **Category**: §12.3b wires / loops / edges (sub-class: lacking-edge)
 - **Sources**: OCCT `ShapeAnalysis_Wire::CheckLacking` (`ShapeAnalysis_Wire.hxx:236`)
 - **Description**: Between two consecutive edges of a wire, the pcurve endpoints differ by more than the shared vertex's tolerance can cover. The 3D coordinates may agree but in UV there is a gap that requires *insertion* of a connecting edge; not just snapping.
 - **Reproducer recipe**: An edge ends at UV `(10, 0)`; the next edge starts at UV `(10.5, 0)` — pcurve gap 0.5 in UV space, but 3D distance is small because the host surface compresses parameter space at that location.
 - **Expected kernel behavior**: report DONE1 (gap too large for vertex tolerance) vs DONE2 (vector across gap is anti-parallel to neighboring pcurves); insert a synthetic connecting edge or reject. The insertion's geometry must be consistent with both neighbors.
 - **Notes**: One of the canonical "needs a degenerate seam edge" defects in periodic-surface land. Synonyms: "UV gap too big for vertex tolerance", "lacking edge in parameter space", "wire 2D gap can't be absorbed by snap", "synthesized connecting edge needed in UV".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: loads empty regardless of the declared defect — the EDGE_LOOP is wrapped in a GEOMETRIC_CURVE_SET, which OCC's STEP reader mines only for geometric points/curves/surfaces and never builds a topological loop, so no wire or edge is ever created. A pristine well-formed square EDGE_LOOP in the identical GEOMETRIC_CURVE_SET scaffold loads equally empty (control A); the same wire moved into a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1 face) (control B). Base, clean (defect repaired) and huge (defect exaggerated) are all empty, so the silent-empty is driven by the mis-parented container, not by the declared defect — not defect-driven silent data-loss and not a proven kernel bug.
 - **Severity**: P1
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'B_pc_starts_at_U10p5')
@@ -21367,6 +21377,7 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Twi068 — Wire 3D-gap analysis must enumerate all gaps (EDGE_LOOP with multiple junctions where consecutive ORIENTED_EDGEs have mismatched VERTEX_POINTs, e.g., 0.05-0.07 mm gaps)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty is caused by the EDGE_LOOP being wrapped in a GEOMETRIC_CURVE_SET (topological loop in a geometric-set container), not by the declared defect: a pristine square EDGE_LOOP in the same scaffold is empty (control A) while the same wire in a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1) (control B); base/clean/huge all empty
 - **Category**: §12.3b wires / loops / edges (sub-class: gap-analysis)
 - **Sources**: OCCT `ShapeAnalysis_Wire::CheckGaps3d` (`ShapeAnalysis_Wire.hxx:238`)
 - **Description**: The wire-wide 3D gap analyzer must visit every consecutive-edge junction and report each gap individually. A wire with multiple defective junctions should not be reported as "broken at junction 1" when it also breaks at junctions 3 and 5.
@@ -21377,12 +21388,13 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'(2.07,0.0,0.0)')
 - **Byte assertion**: contains(b'(2.0,1.06,0.0)')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: loads empty regardless of the declared defect — the EDGE_LOOP is wrapped in a GEOMETRIC_CURVE_SET, which OCC's STEP reader mines only for geometric points/curves/surfaces and never builds a topological loop, so no wire or edge is ever created. A pristine well-formed square EDGE_LOOP in the identical GEOMETRIC_CURVE_SET scaffold loads equally empty (control A); the same wire moved into a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1 face) (control B). Base, clean (defect repaired) and huge (defect exaggerated) are all empty, so the silent-empty is driven by the mis-parented container, not by the declared defect — not defect-driven silent data-loss and not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Twi069 — Wire 2D-gap analysis must enumerate all pcurve gaps
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty is caused by the EDGE_LOOP being wrapped in a GEOMETRIC_CURVE_SET (topological loop in a geometric-set container), not by the declared defect: a pristine square EDGE_LOOP in the same scaffold is empty (control A) while the same wire in a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1) (control B); base/clean/huge all empty
 - **Category**: §12.3b wires / loops / edges (sub-class: gap-analysis)
 - **Sources**: OCCT `ShapeAnalysis_Wire::CheckGaps2d` (`ShapeAnalysis_Wire.hxx:240`)
 - **Description**: Pcurve-space analogue of Twi068. A wire whose pcurves have multiple gaps in UV should produce a per-junction list. Often produced when the wire is built by stitching pcurves from different sources without parameter alignment.
@@ -21393,19 +21405,20 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'(1.5,0.0)')
 - **Byte assertion**: contains(b'(3.4,0.0)')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: loads empty regardless of the declared defect — the EDGE_LOOP is wrapped in a GEOMETRIC_CURVE_SET, which OCC's STEP reader mines only for geometric points/curves/surfaces and never builds a topological loop, so no wire or edge is ever created. A pristine well-formed square EDGE_LOOP in the identical GEOMETRIC_CURVE_SET scaffold loads equally empty (control A); the same wire moved into a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1 face) (control B). Base, clean (defect repaired) and huge (defect exaggerated) are all empty, so the silent-empty is driven by the mis-parented container, not by the declared defect — not defect-driven silent data-loss and not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Twi070 — Curve gap within a single edge: 3D curve and pcurve drift mid-edge
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty is caused by the EDGE_LOOP being wrapped in a GEOMETRIC_CURVE_SET (topological loop in a geometric-set container), not by the declared defect: a pristine square EDGE_LOOP in the same scaffold is empty (control A) while the same wire in a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1) (control B); base/clean/huge all empty
 - **Category**: §12.3b wires / loops / edges (sub-class: per-edge gap)
 - **Sources**: OCCT `ShapeAnalysis_Wire::CheckCurveGaps` (`ShapeAnalysis_Wire.hxx:242`)
 - **Description**: Along the interior of one edge, the 3D curve and the lifted pcurve diverge by more than tolerance even though the endpoints agree. Senders that store both representations and recompute one without re-projecting introduce this. The defect is invisible at endpoints; only mid-curve sampling reveals it.
 - **Reproducer recipe**: Edge whose 3D LINE goes from `(0,0,0)→(10,0,0)` straight, but whose pcurve traces a slight arc through `(5, 0.01)` in UV — endpoints match, mid-edge does not.
 - **Expected kernel behavior**: per-edge sample-and-compare; report max divergence and parameter where it occurs. Reproject one representation onto the other or reject.
 - **Notes**: Search terms: "pcurve drift", "curve sag", "mid-edge mismatch". Synonyms: "edge representations drift in middle", "endpoints match but interior diverges", "mid-edge sample shows mismatch", "spatial and parametric sag mid-edge".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: loads empty regardless of the declared defect — the EDGE_LOOP is wrapped in a GEOMETRIC_CURVE_SET, which OCC's STEP reader mines only for geometric points/curves/surfaces and never builds a topological loop, so no wire or edge is ever created. A pristine well-formed square EDGE_LOOP in the identical GEOMETRIC_CURVE_SET scaffold loads equally empty (control A); the same wire moved into a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1 face) (control B). Base, clean (defect repaired) and huge (defect exaggerated) are all empty, so the silent-empty is driven by the mis-parented container, not by the declared defect — not defect-driven silent data-loss and not a proven kernel bug.
 - **Severity**: P1
 - **Byte assertion**: contains(b'(5.0,0.01)')
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS(')
@@ -21415,13 +21428,14 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Twi071 — Seam edge has its two pcurves swapped
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty is caused by the EDGE_LOOP being wrapped in a GEOMETRIC_CURVE_SET (topological loop in a geometric-set container), not by the declared defect: a pristine square EDGE_LOOP in the same scaffold is empty (control A) while the same wire in a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1) (control B); base/clean/huge all empty
 - **Category**: §12.3b wires / loops / edges (sub-class: seam orientation)
 - **Sources**: OCCT `ShapeAnalysis_Wire::CheckSeam` (`ShapeAnalysis_Wire.hxx:298`)
 - **Description**: A seam edge of a face on a periodic surface (cylinder, sphere, torus) carries two pcurves; one for the FORWARD side, one for the REVERSED side. The diagnostic detects the case where these have been swapped: FORWARD-side carries the pcurve that should be on REVERSED, and vice versa.
 - **Reproducer recipe**: A seam edge of a cylindrical face where the forward pcurve is at U=2π and the reversed pcurve is at U=0 (correct order is the reverse).
 - **Expected kernel behavior**: detect the swap and either swap the pcurve handles or report it for caller-side fix.
 - **Notes**: Related to existing Gp seam entries. Synonyms: "seam pcurves on wrong sides", "forward-side and reversed-side parametric curves swapped", "periodic-face seam with reversed sides", "seam edge two parametric curves exchanged".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: loads empty regardless of the declared defect — the EDGE_LOOP is wrapped in a GEOMETRIC_CURVE_SET, which OCC's STEP reader mines only for geometric points/curves/surfaces and never builds a topological loop, so no wire or edge is ever created. A pristine well-formed square EDGE_LOOP in the identical GEOMETRIC_CURVE_SET scaffold loads equally empty (control A); the same wire moved into a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1 face) (control B). Base, clean (defect repaired) and huge (defect exaggerated) are all empty, so the silent-empty is driven by the mis-parented container, not by the declared defect — not defect-driven silent data-loss and not a proven kernel bug.
 - **Severity**: P1
 - **Byte assertion**: contains(b'.PCURVE_S1_AND_S2.')
 - **Byte assertion**: contains(b'forward_at_U_2pi')
@@ -21444,6 +21458,7 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 
 ### Twi073 — Per-junction 2D pcurve gap query
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty is caused by the EDGE_LOOP being wrapped in a GEOMETRIC_CURVE_SET (topological loop in a geometric-set container), not by the declared defect: a pristine square EDGE_LOOP in the same scaffold is empty (control A) while the same wire in a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1) (control B); base/clean/huge all empty
 - **Category**: §12.3b wires / loops / edges (sub-class: gap-analysis)
 - **Sources**: OCCT `ShapeAnalysis_Wire::CheckGap2d` (`ShapeAnalysis_Wire.hxx:352`)
 - **Description**: Pcurve-space analogue of Twi072. Targeted single-junction query that returns whether the pcurve endpoints at junction `num` disagree in UV.
@@ -21453,7 +21468,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'junction2_pcurve_gap_0p5')
 - **Byte assertion**: contains(b'(2.5,0.0)')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: loads empty regardless of the declared defect — the EDGE_LOOP is wrapped in a GEOMETRIC_CURVE_SET, which OCC's STEP reader mines only for geometric points/curves/surfaces and never builds a topological loop, so no wire or edge is ever created. A pristine well-formed square EDGE_LOOP in the identical GEOMETRIC_CURVE_SET scaffold loads equally empty (control A); the same wire moved into a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1 face) (control B). Base, clean (defect repaired) and huge (defect exaggerated) are all empty, so the silent-empty is driven by the mis-parented container, not by the declared defect — not defect-driven silent data-loss and not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -21472,6 +21487,7 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 
 ### Twi075 — Connect-shape diagnostic: how does a foreign ORIENTED_EDGE attach to an EDGE_LOOP wire (e.g., open 3-edge wire plus a free edge near its tail with a sub-mm gap)?
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty is caused by the EDGE_LOOP being wrapped in a GEOMETRIC_CURVE_SET (topological loop in a geometric-set container), not by the declared defect: a pristine square EDGE_LOOP in the same scaffold is empty (control A) while the same wire in a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1) (control B); base/clean/huge all empty
 - **Category**: §12.3b wires / loops / edges (sub-class: wire-grow)
 - **Sources**: OCCT `ShapeAnalysis_Wire::CheckShapeConnect` (`ShapeAnalysis_Wire.hxx:496`)
 - **Description**: Given an existing wire and a foreign edge or wire, the analyzer reports four possible connection outcomes: foreign-follows-wire-direct, foreign-follows-wire-reversed, foreign-precedes-wire-direct, foreign-precedes-wire-reversed. Plus the smallest gap distance and whether tail vs head attachment is closer.
@@ -21482,7 +21498,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'foreign_edge')
 - **Byte assertion**: contains(b'open_three_edge_wire')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: loads empty regardless of the declared defect — the EDGE_LOOP is wrapped in a GEOMETRIC_CURVE_SET, which OCC's STEP reader mines only for geometric points/curves/surfaces and never builds a topological loop, so no wire or edge is ever created. A pristine well-formed square EDGE_LOOP in the identical GEOMETRIC_CURVE_SET scaffold loads equally empty (control A); the same wire moved into a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1 face) (control B). Base, clean (defect repaired) and huge (defect exaggerated) are all empty, so the silent-empty is driven by the mis-parented container, not by the declared defect — not defect-driven silent data-loss and not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -21502,13 +21518,14 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(22) ifc=schema_n/a`
 
 ### Twi077 — Wire tail / sliver: two adjacent EDGE_CURVEs form a sharp 180° fold over sub-tolerance width (one edge nearly retraces the other in opposite direction)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty is caused by the EDGE_LOOP being wrapped in a GEOMETRIC_CURVE_SET (topological loop in a geometric-set container), not by the declared defect: a pristine square EDGE_LOOP in the same scaffold is empty (control A) while the same wire in a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1) (control B); base/clean/huge all empty
 - **Category**: §12.3b wires / loops / edges (sub-class: tail)
 - **Sources**: OCCT `ShapeAnalysis_Wire::CheckTail` (`ShapeAnalysis_Wire.hxx:519`)
 - **Description**: Two consecutive edges of a wire fold back on themselves at near-180° over a width below tolerance. The "tail" is a degenerate geometric feature (a stick poking into the face). The check identifies the four sub-edges produced when the tail's two long sides are split at their crossing point.
 - **Reproducer recipe**: A wire with two long edges meeting at a sharp angle, the second edge nearly retracing the first within 1e-6.
 - **Expected kernel behavior**: detect the tail, report the four sub-edges, and either remove the tail (collapse to a single corner) or reject.
 - **Notes**: Distinct from a notch (Twi054): a tail is a fold-back; a notch is a small detour. Synonyms: "wire has 180-degree fold-back", "two edges retrace each other under tolerance", "tail spike sticking into face", "edge pair forms a fold over near-zero width".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: loads empty regardless of the declared defect — the EDGE_LOOP is wrapped in a GEOMETRIC_CURVE_SET, which OCC's STEP reader mines only for geometric points/curves/surfaces and never builds a topological loop, so no wire or edge is ever created. A pristine well-formed square EDGE_LOOP in the identical GEOMETRIC_CURVE_SET scaffold loads equally empty (control A); the same wire moved into a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1 face) (control B). Base, clean (defect repaired) and huge (defect exaggerated) are all empty, so the silent-empty is driven by the mis-parented container, not by the declared defect — not defect-driven silent data-loss and not a proven kernel bug.
 - **Severity**: P1
 - **Byte assertion**: contains(b'B_dir_retrace_with_1e6_offset')
 - **Byte assertion**: contains(b'(-10.0,0.00001,0.0)')
@@ -21518,6 +21535,7 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Twi078 — Wire-order analysis: reorder unordered edges (no reversal needed)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty is caused by the EDGE_LOOP being wrapped in a GEOMETRIC_CURVE_SET (topological loop in a geometric-set container), not by the declared defect: a pristine square EDGE_LOOP in the same scaffold is empty (control A) while the same wire in a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1) (control B); base/clean/huge all empty
 - **Category**: §12.3b wires / loops / edges (sub-class: order)
 - **Sources**: OCCT `ShapeAnalysis_WireOrder::Perform` (`ShapeAnalysis_WireOrder.hxx:107`)
 - **Description**: Edges of a wire emitted in arbitrary order. The analyzer must reconstruct head-to-tail order using 3D and 2D vertex matching with a starting tolerance and report `STATUS_DONE` (reordered, no reversal needed); distinct from `STATUS_DONE2` (some edges needed flipping) and `STATUS_FAIL` (could not reorder).
@@ -21528,7 +21546,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 4
 - **Byte assertion**: count_entity_def(b'ORIENTED_EDGE') == 4
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: loads empty regardless of the declared defect — the EDGE_LOOP is wrapped in a GEOMETRIC_CURVE_SET, which OCC's STEP reader mines only for geometric points/curves/surfaces and never builds a topological loop, so no wire or edge is ever created. A pristine well-formed square EDGE_LOOP in the identical GEOMETRIC_CURVE_SET scaffold loads equally empty (control A); the same wire moved into a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1 face) (control B). Base, clean (defect repaired) and huge (defect exaggerated) are all empty, so the silent-empty is driven by the mis-parented container, not by the declared defect — not defect-driven silent data-loss and not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -21582,6 +21600,7 @@ _Section summary: 41 entries._
 - **Fixture path**: step-examples/12-3b-wires/Twi081.stp
 
 ### Twi082 — Edge `same_range` flag claims parametric agreement that does not hold
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty is caused by the EDGE_LOOP being wrapped in a GEOMETRIC_CURVE_SET (topological loop in a geometric-set container), not by the declared defect: a pristine square EDGE_LOOP in the same scaffold is empty (control A) while the same wire in a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1) (control B); base/clean/huge all empty
 - **Category**: §12.3b (sub-class: edge flag mismatch)
 - **Sources**: OCCT BRepCheck_Edge.cxx:321, 360 (InvalidSameRangeFlag) (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -21593,13 +21612,14 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'DIRECTION_2D(')
 - **Byte assertion**: contains(b'(2.0,0.0)')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: loads empty regardless of the declared defect — the EDGE_LOOP is wrapped in a GEOMETRIC_CURVE_SET, which OCC's STEP reader mines only for geometric points/curves/surfaces and never builds a topological loop, so no wire or edge is ever created. A pristine well-formed square EDGE_LOOP in the identical GEOMETRIC_CURVE_SET scaffold loads equally empty (control A); the same wire moved into a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1 face) (control B). Base, clean (defect repaired) and huge (defect exaggerated) are all empty, so the silent-empty is driven by the mis-parented container, not by the declared defect — not defect-driven silent data-loss and not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3b-wires/Twi082.stp
 
 ### Twi083 — EDGE_CURVE flagged degenerate but its 3D LINE has positive length (non-zero distance between distinct VERTEX_POINTs)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty is caused by the EDGE_LOOP being wrapped in a GEOMETRIC_CURVE_SET (topological loop in a geometric-set container), not by the declared defect: a pristine square EDGE_LOOP in the same scaffold is empty (control A) while the same wire in a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1) (control B); base/clean/huge all empty
 - **Category**: §12.3b (sub-class: degenerate flag mismatch)
 - **Sources**: OCCT BRepCheck_Edge.cxx:147, BRepCheck_Wire.cxx:760 (InvalidDegeneratedFlag) (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -21607,7 +21627,7 @@ _Section summary: 41 entries._
 - **Reproducer recipe**: An EDGE_CURVE with `edge_geometry` referencing a LINE of length 1.0 between two distinct VERTEX_POINTs but the edge's degenerate flag set true. (In Part-21 terms, this is encoded in a `seam_curve` / pcurve representation discrepancy.)
 - **Expected kernel behavior**: Recompute the flag from curve length; correct it, or reject as malformed.
 - **Notes**: Synonyms: "degenerate-edge mismatch", "wrong pole flag", "edge marked degenerate but has positive length", "non-zero-length edge claims to be degenerate", "degeneracy flag wrong".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: loads empty regardless of the declared defect — the EDGE_LOOP is wrapped in a GEOMETRIC_CURVE_SET, which OCC's STEP reader mines only for geometric points/curves/surfaces and never builds a topological loop, so no wire or edge is ever created. A pristine well-formed square EDGE_LOOP in the identical GEOMETRIC_CURVE_SET scaffold loads equally empty (control A); the same wire moved into a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1 face) (control B). Base, clean (defect repaired) and huge (defect exaggerated) are all empty, so the silent-empty is driven by the mis-parented container, not by the declared defect — not defect-driven silent data-loss and not a proven kernel bug.
 - **Severity**: P1
 - **Byte assertion**: contains(b'positive_length_line')
 - **Byte assertion**: contains(b'degenerate_flag_lying')
@@ -21618,6 +21638,7 @@ _Section summary: 41 entries._
 - **Fixture path**: step-examples/12-3b-wires/Twi083.stp
 
 ### Twi084 — Closed-curve edge has different start and end vertex points
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty is caused by the EDGE_LOOP being wrapped in a GEOMETRIC_CURVE_SET (topological loop in a geometric-set container), not by the declared defect: a pristine square EDGE_LOOP in the same scaffold is empty (control A) while the same wire in a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1) (control B); base/clean/huge all empty
 - **Category**: §12.3b (sub-class: closed-curve invariant)
 - **Sources**: OCCT BRepLib_MakeEdge EdgeError.DifferentPointsOnClosedCurve (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -21625,7 +21646,7 @@ _Section summary: 41 entries._
 - **Reproducer recipe**: `EDGE_CURVE` referencing a `CIRCLE` of radius 1.0 with `edge_start = #V1` (at (1,0,0)) and `edge_end = #V2` (at (1.5,0,0)); the curve geometry is closed but the topology says otherwise.
 - **Expected kernel behavior**: Detect via the curve's `closed` predicate vs vertex equality test; coerce vertices to coincide, or reject.
 - **Notes**: Bug-reporter synonyms: "non-coincident closed-curve endpoints", "circle edge has gap between start and end", "closed curve declared with distinct endpoints", "circle edge open due to mismatched vertices".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: loads empty regardless of the declared defect — the EDGE_LOOP is wrapped in a GEOMETRIC_CURVE_SET, which OCC's STEP reader mines only for geometric points/curves/surfaces and never builds a topological loop, so no wire or edge is ever created. A pristine well-formed square EDGE_LOOP in the identical GEOMETRIC_CURVE_SET scaffold loads equally empty (control A); the same wire moved into a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1 face) (control B). Base, clean (defect repaired) and huge (defect exaggerated) are all empty, so the silent-empty is driven by the mis-parented container, not by the declared defect — not defect-driven silent data-loss and not a proven kernel bug.
 - **Severity**: P1
 - **Byte assertion**: contains(b'CIRCLE(')
 - **Byte assertion**: contains(b'end_NOT_equal_to_start')
@@ -21636,6 +21657,7 @@ _Section summary: 41 entries._
 - **Fixture path**: step-examples/12-3b-wires/Twi084.stp
 
 ### Twi085 — Edge endpoint vertex's 3D point disagrees with curve evaluation at the boundary parameter
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty is caused by the EDGE_LOOP being wrapped in a GEOMETRIC_CURVE_SET (topological loop in a geometric-set container), not by the declared defect: a pristine square EDGE_LOOP in the same scaffold is empty (control A) while the same wire in a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1) (control B); base/clean/huge all empty
 - **Category**: §12.3b (sub-class: vertex-on-curve mismatch)
 - **Sources**: OCCT BRepLib_MakeEdge EdgeError.DifferentsPointAndParameter (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -21643,7 +21665,7 @@ _Section summary: 41 entries._
 - **Reproducer recipe**: A `LINE` from (0,0,0) along (1,0,0). `EDGE_CURVE` with `edge_start = #V` at (5,0,0). The line's natural parameterization makes `t=5` the right value, but the edge declares `same_parameter` with a parameter range starting at `t=2`.
 - **Expected kernel behavior**: Reproject the vertex onto the curve to recover the correct parameter, or reject the edge.
 - **Notes**: Distinct from Bo014 (which is about same_range); this one is about a single boundary mismatch. Synonyms: "vertex coordinate doesn't match curve at declared parameter", "edge boundary parameter wrong for vertex", "edge start parameter inconsistent with start vertex", "vertex projects to different parameter than declared".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: loads empty regardless of the declared defect — the EDGE_LOOP is wrapped in a GEOMETRIC_CURVE_SET, which OCC's STEP reader mines only for geometric points/curves/surfaces and never builds a topological loop, so no wire or edge is ever created. A pristine well-formed square EDGE_LOOP in the identical GEOMETRIC_CURVE_SET scaffold loads equally empty (control A); the same wire moved into a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1 face) (control B). Base, clean (defect repaired) and huge (defect exaggerated) are all empty, so the silent-empty is driven by the mis-parented container, not by the declared defect — not defect-driven silent data-loss and not a proven kernel bug.
 - **Severity**: P1
 - **Byte assertion**: contains(b'vertex_at_t5')
 - **Byte assertion**: contains(b'(5.0,0.0,0.0)')
@@ -21654,6 +21676,7 @@ _Section summary: 41 entries._
 - **Fixture path**: step-examples/12-3b-wires/Twi085.stp
 
 ### Twi086 — Edge geometry is a line through two coincident points (zero-length line edge)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty is caused by the EDGE_LOOP being wrapped in a GEOMETRIC_CURVE_SET (topological loop in a geometric-set container), not by the declared defect: a pristine square EDGE_LOOP in the same scaffold is empty (control A) while the same wire in a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1) (control B); base/clean/huge all empty
 - **Category**: §12.3b (sub-class: zero-length edge)
 - **Sources**: OCCT BRepLib_MakeEdge EdgeError.LineThroughIdenticPoints (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -21661,7 +21684,7 @@ _Section summary: 41 entries._
 - **Reproducer recipe**: `EDGE_CURVE` whose `edge_start` and `edge_end` both reference `#V` at (0,0,0); `edge_geometry` is a `LINE` from (0,0,0) along direction (1,0,0); both edge parameters declared as `0.0`.
 - **Expected kernel behavior**: Promote the edge to degenerate, drop it from incident wires, or reject.
 - **Notes**: Synonyms: "tiny edge", "edge with start = end", "collapsed line edge". **See also**: BOPAlgo's `TooSmallEdge` (already covered).
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: loads empty regardless of the declared defect — the EDGE_LOOP is wrapped in a GEOMETRIC_CURVE_SET, which OCC's STEP reader mines only for geometric points/curves/surfaces and never builds a topological loop, so no wire or edge is ever created. A pristine well-formed square EDGE_LOOP in the identical GEOMETRIC_CURVE_SET scaffold loads equally empty (control A); the same wire moved into a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1 face) (control B). Base, clean (defect repaired) and huge (defect exaggerated) are all empty, so the silent-empty is driven by the mis-parented container, not by the declared defect — not defect-driven silent data-loss and not a proven kernel bug.
 - **Severity**: P1
 - **Byte assertion**: contains(b'collapsed_line_edge')
 - **Byte assertion**: contains(b'#11,#11,#22')
@@ -21672,6 +21695,7 @@ _Section summary: 41 entries._
 - **Fixture path**: step-examples/12-3b-wires/Twi086.stp
 
 ### Twi087 — Wire is non-manifold: a vertex is incident to >2 edges of the wire
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty is caused by the EDGE_LOOP being wrapped in a GEOMETRIC_CURVE_SET (topological loop in a geometric-set container), not by the declared defect: a pristine square EDGE_LOOP in the same scaffold is empty (control A) while the same wire in a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1) (control B); base/clean/huge all empty
 - **Category**: §12.3b (sub-class: non-manifold wire)
 - **Sources**: OCCT BRepLib_MakeWire WireError.NonManifoldWire (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -21679,7 +21703,7 @@ _Section summary: 41 entries._
 - **Reproducer recipe**: A wire built from three edges all sharing a common endpoint vertex `#V`, forming a Y-shape rather than a path.
 - **Expected kernel behavior**: Reject the wire as non-manifold, split into manifold pieces, or accept and tag as branching.
 - **Notes**: Synonyms: "Y-junction wire", "wire branches", "wire has T-vertex".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: loads empty regardless of the declared defect — the EDGE_LOOP is wrapped in a GEOMETRIC_CURVE_SET, which OCC's STEP reader mines only for geometric points/curves/surfaces and never builds a topological loop, so no wire or edge is ever created. A pristine well-formed square EDGE_LOOP in the identical GEOMETRIC_CURVE_SET scaffold loads equally empty (control A); the same wire moved into a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1 face) (control B). Base, clean (defect repaired) and huge (defect exaggerated) are all empty, so the silent-empty is driven by the mis-parented container, not by the declared defect — not defect-driven silent data-loss and not a proven kernel bug.
 - **Severity**: P1
 - **Byte assertion**: contains(b'y_wire_branching')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 3
@@ -21690,6 +21714,7 @@ _Section summary: 41 entries._
 - **Fixture path**: step-examples/12-3b-wires/Twi087.stp
 
 ### Twi088 — Edge in topology has no 3D curve attached
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty is caused by the EDGE_LOOP being wrapped in a GEOMETRIC_CURVE_SET (topological loop in a geometric-set container), not by the declared defect: a pristine square EDGE_LOOP in the same scaffold is empty (control A) while the same wire in a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1) (control B); base/clean/huge all empty
 - **Category**: §12.3b (sub-class: missing 3D curve)
 - **Sources**: OCCT BRepLib::BuildCurves3d (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -21701,13 +21726,14 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b',$,.T.)')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 1
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: loads empty regardless of the declared defect — the EDGE_LOOP is wrapped in a GEOMETRIC_CURVE_SET, which OCC's STEP reader mines only for geometric points/curves/surfaces and never builds a topological loop, so no wire or edge is ever created. A pristine well-formed square EDGE_LOOP in the identical GEOMETRIC_CURVE_SET scaffold loads equally empty (control A); the same wire moved into a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1 face) (control B). Base, clean (defect repaired) and huge (defect exaggerated) are all empty, so the silent-empty is driven by the mis-parented container, not by the declared defect — not defect-driven silent data-loss and not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3b-wires/Twi088.stp
 
 ### Twi089 — Two collinear edges meeting at a degree-2 vertex should be fused into one edge
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty is caused by the EDGE_LOOP being wrapped in a GEOMETRIC_CURVE_SET (topological loop in a geometric-set container), not by the declared defect: a pristine square EDGE_LOOP in the same scaffold is empty (control A) while the same wire in a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1) (control B); base/clean/huge all empty
 - **Category**: §12.3b (sub-class: redundant vertex)
 - **Sources**: OCCT BRepLib::FuseEdges (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -21715,7 +21741,7 @@ _Section summary: 41 entries._
 - **Reproducer recipe**: A wire of two `LINE`-edges (0,0,0)→(1,0,0) and (1,0,0)→(2,0,0) joined at `#V` (1,0,0), where `#V` is not used by any other wire/face.
 - **Expected kernel behavior**: Fuse the two edges; or leave as-is if downstream needs the split.
 - **Notes**: Synonyms: "spurious vertex", "non-essential vertex split".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: loads empty regardless of the declared defect — the EDGE_LOOP is wrapped in a GEOMETRIC_CURVE_SET, which OCC's STEP reader mines only for geometric points/curves/surfaces and never builds a topological loop, so no wire or edge is ever created. A pristine well-formed square EDGE_LOOP in the identical GEOMETRIC_CURVE_SET scaffold loads equally empty (control A); the same wire moved into a FACE_OUTER_BOUND/OPEN_SHELL builds shape(1 face) (control B). Base, clean (defect repaired) and huge (defect exaggerated) are all empty, so the silent-empty is driven by the mis-parented container, not by the declared defect — not defect-driven silent data-loss and not a proven kernel bug.
 - **Severity**: P1
 - **Byte assertion**: contains(b'over_split_chain')
 - **Byte assertion**: contains(b'mid_unused')
