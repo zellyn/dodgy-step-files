@@ -32,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal — accept PDS child; resolve PDS → PD silently.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: A034. **OCC behavior**: accepts and loads shape(1); outside catalog&#x27;s allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: &quot;NAUO target points to PRODUCT_DEFINITION_SHAPE not PRODUCT_DEFINITION&quot;, &quot;assembly link uses wrong entity type&quot;, &quot;schema rule broken for component reference&quot;, &quot;STEP reader confused by NAUO-&gt;PDS chain&quot;.</p></section>
+<p>**See also**: A034. **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC&#x27;s shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug. Synonyms: &quot;NAUO target points to PRODUCT_DEFINITION_SHAPE not PRODUCT_DEFINITION&quot;, &quot;assembly link uses wrong entity type&quot;, &quot;schema rule broken for component reference&quot;, &quot;STEP reader confused by NAUO-&gt;PDS chain&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

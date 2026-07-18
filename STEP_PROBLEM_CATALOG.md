@@ -6467,13 +6467,14 @@ _Section summary: 84 entries._
 ### A-prefix entries (mining batch)
 
 ### A001 — Duplicated component instances collapsed to a single transform on export
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 (sub-class: instance-multiplication / placement)
 - **Sources**: V027 (Inventor), V028 (CATIA V5 R25/R26), J018 (cross-vendor), Y027 (CATIA V5 export), Y003 (Fusion 360 → KiCad).
 - **Sender**: Autodesk Inventor; CATIA V5 R22–R26; Fusion 360 (linked components).
 - **Description**: When the same component appears multiple times under an assembly with different placements, the writer either (a) emits only one instance (Inventor V027), (b) emits all instances at the same coordinate (CATIA V28), or (c) collapses many `MAPPED_ITEM` references of the same product into one; losing distinct transforms. Frequently caused by sharing a single `AXIS2_PLACEMENT_3D` rather than giving each instance its own.
 - **Reproducer recipe**: Build an assembly with N siblings instancing the same `PRODUCT_DEFINITION` via N `NEXT_ASSEMBLY_USAGE_OCCURRENCE` rows; for each, attach a distinct `MAPPED_ITEM` whose `mapping_target` is a unique `AXIS2_PLACEMENT_3D`. Verify the writer emits N distinct placements, not a single shared one.
 - **Expected kernel behavior**: heal/accept; every NAUO instance must carry its own placement; readers must not deduplicate placements by reference equality.
-- **Notes**: One of the two "CATIA bug" canonical patterns referenced in the task description. **See also**: Pf013. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "duplicate part instances merged into one on export", "multiple component copies show up at the same coordinate", "writer drops repeated subassembly placements", "N copies of same component become one in STEP", "MAPPED_ITEM placements deduplicated by mistake".
+- **Notes**: One of the two "CATIA bug" canonical patterns referenced in the task description. **See also**: Pf013. **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug. Synonyms: "duplicate part instances merged into one on export", "multiple component copies show up at the same coordinate", "writer drops repeated subassembly placements", "N copies of same component become one in STEP", "MAPPED_ITEM placements deduplicated by mistake".
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') == 3
 - **Byte assertion**: count_entity_def(b'MAPPED_ITEM') == 3
 - **Byte assertion**: contains(b"AXIS2_PLACEMENT_3D('SHARED_PLACEMENT'")
@@ -6504,13 +6505,14 @@ _Section summary: 84 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A003 — Empty / phantom assembly nodes (PRODUCT_DEFINITION with no shape)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 (sub-class: assembly hygiene)
 - **Sources**: M012 (LOTAR), W022 (SpaceClaim 2025R2), K022 (Rhino).
 - **Sender**: SpaceClaim 2025R2 (writer regression); ad-hoc tools that emit PDM stub products; assemblies after a configuration filter.
 - **Description**: A `NEXT_ASSEMBLY_USAGE_OCCURRENCE` references a `PRODUCT_DEFINITION` whose `SHAPE_DEFINITION_REPRESENTATION` is empty (no faces, no axes), or whose `MANIFOLD_SURFACE_SHAPE_REPRESENTATION` is degenerate. Common after suppressed components, "Reference vs Convert" mismatches, or configuration filters that produced nothing.
 - **Reproducer recipe**: NAUO referencing a PD whose SDR points to an empty `MANIFOLD_SURFACE_SHAPE_REPRESENTATION`.
 - **Expected kernel behavior**: accept; warn loudly; LOTAR-archive systems must reject; per-product status must be reported (not aggregated success).
-- **Notes**: **See also**: A004, A037. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "assembly node has no geometry", "PRODUCT_DEFINITION with empty SHAPE_DEFINITION_REPRESENTATION", "phantom subassembly with nothing inside", "empty product node breaks import", "assembly tree has stub branches with no parts".
+- **Notes**: **See also**: A004, A037. **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug. Synonyms: "assembly node has no geometry", "PRODUCT_DEFINITION with empty SHAPE_DEFINITION_REPRESENTATION", "phantom subassembly with nothing inside", "empty product node breaks import", "assembly tree has stub branches with no parts".
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') == 1
 - **Byte assertion**: contains(b'MANIFOLD_SURFACE_SHAPE_REPRESENTATION')
 - **Byte assertion**: contains(b'PHANTOM_INSTANCE')
@@ -6522,13 +6524,14 @@ _Section summary: 84 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A004 — `NEXT_ASSEMBLY_USAGE_OCCURRENCE` references missing `PRODUCT_DEFINITION` (unresolved NAUO target)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 (sub-class: assembly graph integrity)
 - **Sources**: M013 (LOTAR), K022 (Rhino "successfully read" but components missing), V050 (Creo "Reference" mode), V034 (Inventor unresolved external paths).
 - **Sender**: any producer that splits assembly into per-component files; PTC Creo with referenced (not converted) components.
 - **Description**: A `NEXT_ASSEMBLY_USAGE_OCCURRENCE` whose `related_product_definition` slot points at an entity id (e.g. `#99999`) that doesn't exist in the file; the partner component was lost, the path was unreachable, or the component was filtered out. Many readers report "successfully read" while silently dropping the component.
 - **Reproducer recipe**: Split a multi-product assembly into per-component STEP files; remove one of the partners; reload the parent.
 - **Expected kernel behavior**: reject as invalid 10303-21 reference, or accept and emit a per-product diagnostic with non-zero skipped-count return.
-- **Notes**: **See also**: A003. **OCC behavior**: emits a diagnostic but produces no shape (warn-and-proceed by oracle, but result is empty); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "NAUO points to missing part", "assembly references non-existent product", "unresolved component reference on import", "dangling subassembly link", "missing referenced product breaks load".
+- **Notes**: **See also**: A003. **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug. Synonyms: "NAUO points to missing part", "assembly references non-existent product", "unresolved component reference on import", "dangling subassembly link", "missing referenced product breaks load".
 - **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_UNRESOLVED_REFS)); OCCT silently accepts (load is `empty`). OCC auto-heals a spec-level violation.
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') == 2
 - **Byte assertion**: contains(b'#99999')
@@ -6541,6 +6544,7 @@ _Section summary: 84 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A005 — Lost assembly hierarchy on round-trip (flatten to single CATPart / single solid)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 (sub-class: instance-flattening on import)
 - **Sources**: V030 (CATIA→Inventor), V032 (CATIA import), V058 (Inventor multi-body), Y026 (CATIA), V031 (CATIA V5 import options), K021 (Rhino blocks).
 - **Sender**: any multi-product STEP assembly.
@@ -6556,7 +6560,7 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -6581,12 +6585,13 @@ _Section summary: 84 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A007 — SHAPE_REPRESENTATION_RELATIONSHIP with swapped/mixed rep_1/rep_2 axis placements
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 (sub-class: SRR / SRRWT)
 - **Sources**: G014 (OCCT 06a505b/Mantis 0030087), Q041 (OCCT NAUO winning over SRR direction), Q042 (OCCT TEST_MCI_2.step swapped axes in ITEM_DEFINED_TRANSFORMATION), G033 (OCCT reference-to-reference SRR).
 - **Description**: SRR with swapped axis-placements where one is shared between assembly and component representation causes wrong assembly transform. Variant: SRR's `rep_2` is itself an SRR (reference-to-reference). Variant: ITEM_DEFINED_TRANSFORMATION's source/target axes exchanged. NAUO direction conflicts with SRR direction; receiver must pick one.
 - **Reproducer recipe**: SRR whose rep_1 and rep_2 axes share one `AXIS2_PLACEMENT_3D` in both representations; or SRR whose rep_2 is another SRR.
 - **Expected kernel behavior**: detect swap pattern and recover the correct transform; resolve transitively; cap recursion depth; let NAUO direction win when SRR contradicts.
-- **Notes**: **See also**: A006. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "axis placement swapped between subassembly and parent", "rep_1 and rep_2 mixed up in SHAPE_REPRESENTATION_RELATIONSHIP", "component oriented incorrectly after import", "transform applied to wrong frame on round-trip", "subassembly axes flipped vs designed".
+- **Notes**: **See also**: A006. **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug. Synonyms: "axis placement swapped between subassembly and parent", "rep_1 and rep_2 mixed up in SHAPE_REPRESENTATION_RELATIONSHIP", "component oriented incorrectly after import", "transform applied to wrong frame on round-trip", "subassembly axes flipped vs designed".
 - **Byte assertion**: contains(b'ITEM_DEFINED_TRANSFORMATION')
 - **Byte assertion**: contains(b'swapped')
 - **Tier-3 assertion**: shape_null == False
@@ -6597,12 +6602,13 @@ _Section summary: 84 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A008 — AP242 Ed.2 widened SELECT for product_definition_relationship.related/relating
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 (sub-class: schema-version migration)
 - **Sources**: M017 (STEP Tools Ed.1 notes), W034 (STEP Tools AP242 e2 SELECT).
 - **Description**: AP242e2 changed `representation_relationship.rep_1`/`rep_2` and `product_definition_relationship.related`/`relating` from direct references to SELECT types. Code doing direct dot-access (`pdr->related()->product()`) crashes against an Ed.2 file whose related is a SELECT case wrapping a `product_definition_occurrence`.
 - **Reproducer recipe**: AP242e2 file using new SELECT form; load with AP203/AP242e1 reader.
 - **Expected kernel behavior**: heal; accept both forms via `stix_get_related_pdef`-style helper; never assume direct.
-- **Notes**: Validation observed: silent-empty rather than crash. Kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "AP242 Ed.2 product_definition_relationship SELECT widened", "writer uses Ed.1 SELECT and reader expects Ed.2", "schema-mismatch on related/relating types", "product_definition_relationship references rejected by older importers".
+- **Notes**: Validation observed: silent-empty rather than crash. Kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug. Synonyms: "AP242 Ed.2 product_definition_relationship SELECT widened", "writer uses Ed.1 SELECT and reader expects Ed.2", "schema-mismatch on related/relating types", "product_definition_relationship references rejected by older importers".
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Tier-3 assertion**: shape_null == False
@@ -6613,12 +6619,13 @@ _Section summary: 84 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A009 — NAUO references PRODUCT_DEFINITION_SHAPE instead of PRODUCT_DEFINITION
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 (sub-class: NAUO)
 - **Sources**: G016 (OCCT bedd79c / Mantis 0025167), R049 (OCCT bug25167).
 - **Description**: Schema requires NAUO children to be `PRODUCT_DEFINITION`, but some files supply `PRODUCT_DEFINITION_SHAPE`. Schema-strict reader rejects.
 - **Reproducer recipe**: `#5 = NEXT_ASSEMBLY_USAGE_OCCURRENCE(.. #PDS_id ..)` where `#PDS_id` is a PDS, not a PD.
 - **Expected kernel behavior**: heal — accept PDS child; resolve PDS → PD silently.
-- **Notes**: **See also**: A034. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "NAUO target points to PRODUCT_DEFINITION_SHAPE not PRODUCT_DEFINITION", "assembly link uses wrong entity type", "schema rule broken for component reference", "STEP reader confused by NAUO->PDS chain".
+- **Notes**: **See also**: A034. **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug. Synonyms: "NAUO target points to PRODUCT_DEFINITION_SHAPE not PRODUCT_DEFINITION", "assembly link uses wrong entity type", "schema rule broken for component reference", "STEP reader confused by NAUO->PDS chain".
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') == 1
 - **Byte assertion**: contains(b"NEXT_ASSEMBLY_USAGE_OCCURRENCE('1','BAD'")
 - **Tier-3 assertion**: shape_null == False
@@ -6629,6 +6636,7 @@ _Section summary: 84 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A010 — NAUO instance name lost on round-trip / re-export
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 (sub-class: assembly naming)
 - **Sources**: G096 (OCCT 87b7b49 / Mantis 0032679), R062 (OCCT bug32679), G052 (PRODUCT_DEFINITION_WITH_ASSOCIATED_DOCUMENTS), K025 (SolidWorks → Rhino name slot mismatch).
 - **Description**: STEP writer drops instance-level names when assembly itself has no name. Or PD_WITH_ASSOCIATED_DOCUMENTS carries its own name that the reader doesn't pick up. Or SolidWorks writes the name in `PRODUCT.name` while Rhino looks at `MANIFOLD_SOLID_BREP.name`. STEP has multiple name slots: `product.name`, `product_definition_formation.id`, `next_assembly_usage_occurrence.name`, `manifold_solid_brep.name`, `representation.name`; vendors disagree which one is canonical.
@@ -6642,12 +6650,13 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A011 — Naming collision: same component referenced by colliding `PRODUCT.name` across sub-assemblies
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 (sub-class: naming collisions / non-unique part names)
 - **Sources**: I021/I077 (CadQuery on KiCad mobo-3D), J018 (SolidWorks/AutoCAD "Duplicate Definition of Block"), V050.
 - **Sender**: KiCad STEP writer; large-assembly producers that emit one PRODUCT per use site instead of reusing one PRODUCT with N NAUOs.
@@ -6661,18 +6670,19 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A012 — Self-reference / cyclic external file reference
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 (sub-class: external-ref / circular references)
 - **Sources**: G032 (OCCT 2547d97 / Mantis 0031711), A004 (cyclic complex-entity reference graph).
 - **Description**: External-file-assignment whose target path resolves to the main file under translation; reader loops forever. Or cyclic `#A=(B(..) C(#A))` complex entity referencing itself; semantic resolver follows `#A → #A` ad infinitum.
 - **Reproducer recipe**: `APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT` to same `.step` file path; or `#1=(NAMED_UNIT(*) SI_UNIT(..) DERIVED_UNIT_ELEMENT(#1, 1.0))`.
 - **Expected kernel behavior**: detect identity by canonical path; skip self-reference; Tarjan-style cycle detection during reference resolution; reject with E_REFERENCE_CYCLE.
-- **Notes**: **See also**: Pf010, Ad052, M060. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "external reference points back to itself", "cyclic file dependency in assembly", "STEP file references its own product", "external-anchor loop crashes reader".
+- **Notes**: **See also**: Pf010, Ad052, M060. **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug. Synonyms: "external reference points back to itself", "cyclic file dependency in assembly", "STEP file references its own product", "external-anchor loop crashes reader".
 - **Byte assertion**: contains(b'APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT')
 - **Byte assertion**: contains(b'self_ref')
 - **Tier-3 assertion**: shape_null == False
@@ -6683,12 +6693,13 @@ _Section summary: 84 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A013 — STEP assembly reader returns success even when external-reference files are missing
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 (sub-class: external-ref / DDP)
 - **Sources**: G082 (OCCT 3b7f55e / Mantis 0029873), W048 (Datakit AP242 federation), M030 (DDP cross-file refs).
 - **Description**: `APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT` paths don't exist; OCCT silently fails resolution but Transfer() returns success. AP242 supports referencing geometric elements (face, edge) in a separate Part 21 file via External Element Reference / DDP linking. When the package is repacked or split, the references break.
 - **Reproducer recipe**: STEP assembly whose `APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT` paths don't exist on disk; or a DDP archive where `assembly.stp` references face #47 in `part_3.stp`; rename `part_3.stp`.
 - **Expected kernel behavior**: try alternate paths from `DOCUMENT_FILE`; report failure honestly; archive-stable requires DDP integrity check; reject if cross-file refs do not resolve.
-- **Notes**: **See also**: M008, Pmi065. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "STEP reader returns success even when external file missing", "no error when referenced subassembly file is absent", "silent partial-load on missing externals", "reader treats missing referenced file as OK".
+- **Notes**: **See also**: M008, Pmi065. **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug. Synonyms: "STEP reader returns success even when external file missing", "no error when referenced subassembly file is absent", "silent partial-load on missing externals", "reader treats missing referenced file as OK".
 - **Byte assertion**: contains(b'APPLIED_EXTERNAL_IDENTIFICATION_ASSIGNMENT')
 - **Byte assertion**: contains(b'part_3.stp')
 - **Tier-3 assertion**: shape_null == False
@@ -6699,13 +6710,14 @@ _Section summary: 84 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A014 — EXTERNAL_ANCHOR uniqueness (1:1 anchor↔entity) violated; orphan EER source
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 (sub-class: external-ref Edition-3 anchors)
 - **Sources**: CAx-IF EER §7.3.1 (entry from 02-caxif: "EXTERNAL_ANCHOR uniqueness rule"), CAx-IF EER §7.3.2 (entry from 02-caxif: "EER source file must include placeholder representation"), CAx-IF EER §6.4 ("Nested external references").
 - **Sender**: per-level split assembly writers; tools that copy anchors when re-exporting.
 - **Description**: For each entity instance there must be at most one EXTERNAL_ANCHOR; every EXTERNAL_ANCHOR must reference exactly one data-section entity. Writers that copy anchors duplicate them. Source files containing `externally_defined_representation_item` must wrap them in a placeholder `externally_defined_representation`. When the assembly tree is split per-level, the same leaf part may be referenced from multiple sub-assembly files with divergent `product.id`.
 - **Reproducer recipe**: `!EXTERNAL_ANCHOR('AAA', #100); !EXTERNAL_ANCHOR('BBB', #100);`. Or `externally_defined_representation_item` whose `source` is set but is not contained inside any `externally_defined_representation`.
 - **Expected kernel behavior**: reject duplicate anchors; reject orphan externally-defined items; surface PDM mismatch when same product diverges across files.
-- **Notes**: **OCC behavior**: emits a diagnostic but produces no shape (warn-and-proceed by oracle, but result is empty); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "external anchor points to multiple entities", "EXTERNAL_ANCHOR uniqueness violated", "orphan EER source references", "non-1:1 anchor mapping breaks resolution".
+- **Notes**: **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug. Synonyms: "external anchor points to multiple entities", "EXTERNAL_ANCHOR uniqueness violated", "orphan EER source references", "non-1:1 anchor mapping breaks resolution".
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') == 1
 - **Byte assertion**: contains(b'EXTERNAL_ANCHOR') or contains(b'externally_defined_representation_item')
 - **Tier-3 assertion**: shape_null == False
@@ -6716,6 +6728,7 @@ _Section summary: 84 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A016 — UDA on multi-level reference designator (MLRD) ignored
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 (sub-class: MLRD attribute attachment)
 - **Sources**: CAx-IF UDA §6.2/§8 (entry from 02-caxif).
 - **Description**: UDAs at the assembly-instance level can be attached to NAUOs or to MLRDs (multi-level paths). They must be counted at the product representing their context node. Some receivers ignore MLRD-attached UDAs entirely.
@@ -6729,7 +6742,7 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -6832,12 +6845,13 @@ _Section summary: 84 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A024 — `MAPPED_ITEM` `AXIS2_PLACEMENT_3D` with left-handed (mirrored, negative-determinant) frame
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 (sub-class: assembly placement transform / mirror handling)
 - **Sources**: G061 (OCCT 9592ae2 / Mantis 0027457 — BRepTools_PurgeLocations), W039 (HOOPS Exchange Parasolid mirrored MAPPED_ITEM), K017 (Rhino mirrored block + pcurve flip), J006 (Onshape post-rotation disintegration).
 - **Description**: A `MAPPED_ITEM`'s target `AXIS2_PLACEMENT_3D` uses `DIRECTION` axes that form a left-handed (mirrored) frame; for example Z=(0,0,1) and X=(-1,0,0), so the implicit Y=Z×X=(0,-1,0) gives a negative-determinant placement. Shape locations containing scale or mirror are sources of invalid STEP/IGES output: the mirrored instance is exported with a copy whose orientation is silently corrected, flipping handedness. When "Export parameter space curves" is enabled and the block instance has negative-determinant transform, surfaces import with reversed normals.
 - **Reproducer recipe**: Shape with `gp_Trsf` containing scale or mirror; export. Or Rhino model with block instance scaled `(-1,1,1)` exported with pcurves on.
 - **Expected kernel behavior**: bake the scale/mirror into geometry changes before STEP write (purging the negative-determinant placement) rather than emitting it as a transform STEP cannot losslessly carry; preserve handedness by flipping face normals coherently; flip pcurve orientation when emitting from a mirrored instance. Or reject the input as un-exportable.
-- **Notes**: **See also**: A017, Pmi068, Tsh033. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "MAPPED_ITEM transform has negative determinant", "left-handed frame in component placement", "mirrored axis placement in MAPPED_ITEM", "improper rotation on assembly transform".
+- **Notes**: **See also**: A017, Pmi068, Tsh033. **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug. Synonyms: "MAPPED_ITEM transform has negative determinant", "left-handed frame in component placement", "mirrored axis placement in MAPPED_ITEM", "improper rotation on assembly transform".
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Byte assertion**: contains(b'MIRROR')
 - **Tier-3 assertion**: shape_null == False
@@ -6848,6 +6862,7 @@ _Section summary: 84 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A025 — Names with special / non-ASCII / encoded characters lost or corrupted
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 (sub-class: characters in names)
 - **Sources**: G040 (control directives in names), G041 (cp1251/GB2312/DOS850), G042 (Japanese), G043 (embedded apostrophes), G044 (single space), G045 (backslashes), R052/R053 (OCCT bug25440/bug33815), J004 (FreeCAD GH#7987), W031 (CAD Exchanger).
 - **Sender**: SolidWorks (Chinese/Japanese locales); Inventor (locale-dependent codepages); Pro/E and Inventor with control-directive names.
@@ -6861,12 +6876,13 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A026 — Quadratic-time assembly graph traversal: many `NEXT_ASSEMBLY_USAGE_OCCURRENCE` siblings share a single leaf `PRODUCT_DEFINITION`
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 (sub-class: assembly performance)
 - **Sources**: G046 (OCCT 63cdf48 / Mantis 0029830), V017 (Creo → Inventor OOM), V051 (Revit-derived data), J019 (440MB STEP entity-name map O(n²)), I047 (20MB STEP 50s).
 - **Description**: STEP-assembly reader performance degrades quadratically with assembly size — entity-name lookup runs as a nested scan. Common stress shape: a wide assembly with many sibling `NEXT_ASSEMBLY_USAGE_OCCURRENCE` instances (e.g. 24 NAUOs) all referencing the same single leaf `PRODUCT_DEFINITION` (e.g. `#32`) — building the name-to-shape map for 10k faces takes ~45 minutes versus ~2 min for the read itself. Importer hangs at "X%" for many minutes and may appear stalled. The shell-orientation healing pass during read is also a known multiplier on top.
@@ -6878,18 +6894,19 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A028 — Reference loss when defeaturing / simplifying for CAE
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 (sub-class: persistent IDs in simplification)
 - **Sources**: X011 (Dassault EP 3472735 A1), X023 (Ansys CAD-to-CAE topology mapping).
 - **Description**: Roundtripping through neutral formats or running defeaturing blows away face/edge/vertex identifiers. Drawings, mates, in-context assembly references, and dimensioning all break. Read-only parent files cannot be edited to repair the references. Going CAD→CAE is opaque: any upstream CAD edit invalidates downstream boundary conditions silently.
 - **Reproducer recipe**: Suppress a fillet via direct-edit, re-export; downstream drawing's centerline reference (originally to fillet edge) becomes orphaned. Or apply a face-pressure load in Ansys; defeature the face.
 - **Expected kernel behavior**: maintain stable identifiers across simplification; merge multiple features into one but preserve the union of their face/edge/vertex IDs as aliases; explicit traceable mapping data structure between CAD and engineering-model entities.
-- **Notes**: **See also**: N044. **OCC behavior**: emits a diagnostic but produces no shape (warn-and-proceed by oracle, but result is empty); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "defeaturing for CAE drops references to original geometry", "simplified mesh loses link to source PMI", "downstream tool can't trace back to original part", "reference loss when feature suppressed for analysis".
+- **Notes**: **See also**: N044. **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug. Synonyms: "defeaturing for CAE drops references to original geometry", "simplified mesh loses link to source PMI", "downstream tool can't trace back to original part", "reference loss when feature suppressed for analysis".
 - **Byte assertion**: contains(b'SHAPE_ASPECT')
 - **Byte assertion**: contains(b'load_face_orphan')
 - **Tier-3 assertion**: shape_null == False
@@ -6932,12 +6949,13 @@ _Section summary: 84 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A031 — Schema migration: retired AP214/AP203 kinematics entities
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 (sub-class: schema migration / deprecated entities)
 - **Sources**: M016 (STEP Tools AP242 Ed.1 notes — 53 retired entities), M019 (Ed.2 entities deleted in Ed.3).
 - **Description**: AP242 Ed.1 retired ~53 AP214/AP203 entities (`kinematic_structure`, `mechanism`, `kinematic_property_definition`, etc.). Ed.3 retired three never-implemented Ed.2 entities (`connected_edge_with_length_set_representation`, `edge_with_length`, `vertex_on_edge`). Archived files using them cannot be re-validated against the newer schema.
 - **Reproducer recipe**: AP214 file using `kinematic_link_representation_relation` re-headered as AP242; or Ed.2 file with `vertex_on_edge` re-validated against Ed.3.
 - **Expected kernel behavior**: archive-stable in original schema form; on migration drop entities (with recorded loss-of-fidelity) or refuse migration.
-- **Notes**: **See also**: A030, M049. **OCC behavior**: emits a diagnostic but produces no shape (warn-and-proceed by oracle, but result is empty); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: "retired AP214 kinematics entity in current file", "obsolete kinematics entity rejected", "schema migration drops legacy kinematics".
+- **Notes**: **See also**: A030, M049. **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug. Synonyms: "retired AP214 kinematics entity in current file", "obsolete kinematics entity rejected", "schema migration drops legacy kinematics".
 - **Byte assertion**: contains(b'KINEMATIC_LINK_REPRESENTATION')
 - **Byte assertion**: contains(b'KINEMATIC_PROPERTY_DEFINITION') or contains(b'KINEMATIC_LINK_REPRESENTATION_RELATION')
 - **Tier-3 assertion**: shape_null == False
@@ -6948,12 +6966,13 @@ _Section summary: 84 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A032 — Schema migration: enum-value reordering between AP242 Ed.2 and Ed.3
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 (sub-class: schema migration / enum stability)
 - **Sources**: M018 (STEP Tools AP242 Ed.3 notes).
 - **Description**: Four enums reordered between Ed.2 and Ed.3: `area_unit_type`, `datum_reference_modifier_type`, `geometric_tolerance_modifier`, `simple_datum_reference_modifier`. Any code that compares by ordinal index (rather than by name) silently misinterprets values across the boundary.
 - **Reproducer recipe**: AP242 Ed.2 reader with internal int mapping for `geometric_tolerance_modifier` reads an Ed.3 file.
 - **Expected kernel behavior**: heal; compare by string name, not ordinal; detect schema version from `FILE_SCHEMA` and choose mapping accordingly.
-- **Notes**: **See also**: A030. **OCC behavior**: emits a diagnostic but produces no shape (warn-and-proceed by oracle, but result is empty); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "enum order changed between AP242 Ed.2 and Ed.3", "wrong enum value on schema migration", "enum reordering between editions breaks file".
+- **Notes**: **See also**: A030. **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug. Synonyms: "enum order changed between AP242 Ed.2 and Ed.3", "wrong enum value on schema migration", "enum reordering between editions breaks file".
 - **Byte assertion**: contains(b'GEOMETRIC_TOLERANCE_WITH_DATUM_REFERENCE')
 - **Byte assertion**: contains(b'GEOMETRIC_TOLERANCE_WITH_MODIFIERS')
 - **Tier-3 assertion**: shape_null == False
@@ -6964,6 +6983,7 @@ _Section summary: 84 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A033 — `applied_external_identification_assignment` /`product_definition_with_associated_documents` name dropped
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 (sub-class: product naming / external doc assoc)
 - **Sources**: G052 (OCCT 3b739e6 / Mantis 0030789), R061 (OCCT bug30789).
 - **Description**: `PRODUCT_DEFINITION_WITH_ASSOCIATED_DOCUMENTS` carries its own `name` attribute that OCCT did not pick up; specific entity-name patterns silently dropped on import.
@@ -6976,7 +6996,7 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: silently accepts with diagnostic and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -7000,6 +7020,7 @@ _Section summary: 84 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A035 — Product with both sub-assemblies and direct shape
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 (sub-class: hybrid product structure)
 - **Sources**: Q040 (OCCT STEPControl_ActorRead.cxx:735-736).
 - **Description**: A `PRODUCT` simultaneously has both sub-assemblies (NAUO children) and a direct geometric `SHAPE_REPRESENTATION` of its own. Strict assembly-vs-leaf classifiers misroute one or the other.
@@ -7012,12 +7033,13 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: silently accepts with diagnostic and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A036 — Hybrid AP203 (≤1998) using ShapeAspect-attached SDR
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 (sub-class: hybrid product structure / legacy AP203)
 - **Sources**: Q039 (OCCT STEPControl_ActorRead.cxx:425-458,519-525).
 - **Description**: Older AP203 (≤1998) hybrid models linked SDRs to the main model via shape_aspect rather than directly via product_definition_shape. Modern readers expect direct linkage.
@@ -7030,7 +7052,7 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: silently accepts with diagnostic and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -7049,6 +7071,7 @@ _Section summary: 84 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### A038 — Constructive Geometry Representation Relationship — assembly axis placements
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 (sub-class: assembly axes / CGR)
 - **Sources**: G013 (OCCT 89180f9 / Mantis 0029803).
 - **Description**: AP242 files use inch units inside `GEOMETRIC_REPRESENTATION_CONTEXT` for axis placements in `CONSTRUCTIVE_GEOMETRY_REPRESENTATION_RELATIONSHIP`, but unit was not applied; axes land at wrong scale, mis-positioning every component that uses them.
@@ -7061,7 +7084,7 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: silently accepts with diagnostic and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -7528,6 +7551,7 @@ End of file. Total: 38 entries (A001.A038).
 ---
 
 ### A064 — Subshape names not transferred on STEP import
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 48 verts / 24 edges / 6 faces (compound), BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 assembly
 - **Sources**: OCCT MANTIS#0029403; OCCT MANTIS#0023773; OCCT MANTIS#0021802; OCCT MANTIS#0023895 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: `STYLED_ITEM` and `PRESENTATION_LAYER_ASSIGNMENT` carry
@@ -7546,7 +7570,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 6
 - **Tier-3 assertion**: n_edges_total == 24
 - **Tier-3 assertion**: n_vertices_total == 48
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a`
@@ -7575,6 +7599,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A066 — `UpdateAssemblies` produces wrong compounds for located roots
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 assembly
 - **Sources**: OCCT MANTIS#0029282; OCCT MANTIS#0031517 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: An assembly's `UpdateAssemblies` pass rebuilds top-level
@@ -7595,7 +7620,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -7625,6 +7650,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(162) ifc=schema_n/a`
 
 ### A068 — Color of root label not exported through XCAF
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 assembly
 - **Sources**: OCCT MANTIS#0033317; OCCT MANTIS#0030856; OCCT MANTIS#0032977 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A document holds a colour assigned to the root XCAF label
@@ -7642,12 +7668,13 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A069 — Material with zero density blocks STEP write
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 assembly
 - **Sources**: OCCT MANTIS#0025910 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A material entity carrying density of zero (e.g., a
@@ -7665,12 +7692,13 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A070 — Layers not imported from STEP file
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 assembly
 - **Sources**: OCCT MANTIS#0031466 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A STEP file containing `PRESENTATION_LAYER_ASSIGNMENT`
@@ -7689,12 +7717,13 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A071 — Visibility flag of free shapes lost on STEP write
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 assembly
 - **Sources**: OCCT MANTIS#0023951; OCCT MANTIS#0023950 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A document contains a "free" shape (top-level, not in any
@@ -7710,7 +7739,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -7754,6 +7783,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A074 — Texture lost when saving binary XBF after STEP import
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 assembly
 - **Sources**: OCCT MANTIS#0033183 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A STEP file containing texture data (`IMAGE_TEXTURE`,
@@ -7773,12 +7803,13 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A075 — Free-shape-after-import is empty
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 assembly
 - **Sources**: OCCT MANTIS#0031786; OCCT MANTIS#0031191; OCCT MANTIS#0033261; OCCT MANTIS#0029241; OCCT MANTIS#0022680 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A STEP file from SolidWorks 2018 (or similar producers)
@@ -7799,12 +7830,13 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A076 — General attributes (AP242 GENERAL_PROPERTY) dropped on import
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 assembly
 - **Sources**: OCCT MANTIS#0033530; OCCT MANTIS#0033641 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: AP242 introduces `GENERAL_PROPERTY` as a generic
@@ -7824,12 +7856,13 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A077 — Sub-assembly extraction loses XDE attributes
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 assembly
 - **Sources**: OCCT MANTIS#0028104; OCCT MANTIS#0028055; OCCT MANTIS#0029888 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A "save sub-assembly" operation extracts a child branch of
@@ -7847,12 +7880,13 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A078 — Compound-with-vertex emitted as empty in non-manifold export
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 assembly
 - **Sources**: OCCT MANTIS#0033053; OCCT MANTIS#0032914 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A compound containing solids and one isolated vertex is
@@ -7869,12 +7903,13 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A079 — Visibility / colour ignored for sub-shapes by `XCAFPrs_AISObject`
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 16 verts / 8 edges / 2 faces (compound), BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 assembly
 - **Sources**: OCCT MANTIS#0025381; OCCT MANTIS#0022776; OCCT MANTIS#0028641 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: An XCAF document carries a sub-shape that is invisible or
@@ -7891,12 +7926,13 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 2
 - **Tier-3 assertion**: n_edges_total == 8
 - **Tier-3 assertion**: n_vertices_total == 16
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a`
 
 ### A080 — Hierarchy & colours lost on partial-document IGES/STEP write
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 assembly
 - **Sources**: OCCT MANTIS#0026657; OCCT MANTIS#0026500 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: Writing only a subset of an XCAF document (e.g., one
@@ -7914,12 +7950,13 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A081 — Material attribute overridden by generic colour on round-trip
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 assembly
 - **Sources**: OCCT MANTIS#0022982; OCCT MANTIS#0022962 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A document has both a colour and a richer material record
@@ -7936,12 +7973,13 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A082 — Big-path STEP write fails with name >150 characters
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 assembly
 - **Sources**: OCCT MANTIS#0023561 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A STEP writer fails when the output file path exceeds
@@ -7957,12 +7995,13 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A083 — STEP exporter generates bad geometry for revolution / extrusion since 7.4.0
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 2 verts / 1 edge / 1 face, BRepCheck invalid (invalid from the single-edge toy loop, not the declared profile defect)). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 assembly
 - **Sources**: OCCT MANTIS#0032264; OCCT MANTIS#0029945 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A solid built from `SURFACE_OF_REVOLUTION` of a non-circular
@@ -7983,12 +8022,13 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 1
 - **Tier-3 assertion**: n_vertices_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the ADVANCED_FACE is built on a single-edge EDGE_LOOP that is invalid independent of the revolution profile -- it stays BRepCheck-invalid even with a benign straight generatrix -- so the declared parabolic-revolution defect is not what the oracle reports. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 
 ### A084 — STEP exporter writes untrimmed curve where trimmed expected
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 assembly
 - **Sources**: OCCT MANTIS#0032817 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: An edge backed by a trimmed curve (e.g., a half-circle
@@ -8008,12 +8048,13 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the untrimmed `CIRCLE` / half-arc `EDGE_CURVE` is an orphan presentation entity disconnected from the built face, so it never reaches `OneShape`. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A085 — STEP exporter loses `COMPSOLID` in nonmanifold writes
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 16 verts / 8 edges / 2 faces (compound), BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 assembly
 - **Sources**: OCCT MANTIS#0025092; OCCT MANTIS#0032914 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A `COMPSOLID` (cellular solid, multiple cells sharing
@@ -8034,7 +8075,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 2
 - **Tier-3 assertion**: n_edges_total == 8
 - **Tier-3 assertion**: n_vertices_total == 16
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); `OneShape` reflects the `SHELL_BASED_SURFACE_MODEL`; the `COMPSOLID` / `MANIFOLD_SOLID_BREP` cells sit in a secondary non-manifold representation the reader does not surface, so the declared compsolid-loss defect is invisible to shape-counts. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -8044,6 +8085,7 @@ End of file. Total: 38 entries (A001.A038).
 ## §12.7 PMI / GD&T
 
 ### A086 — Step exporter not respecting `write.step.schema` configuration
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 8 verts / 4 edges / 1 face, BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 assembly
 - **Sources**: OCCT MANTIS#0025694; OCCT GitHub#355; OCCT GitHub#475 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A writer is configured to emit AP203, but the output file
@@ -8061,7 +8103,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -8106,6 +8148,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A089 — Sub-shape names lost in non-manifold STEP output
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) -- oracle-invariance test: perturbing the declared defect from clean to grossly exaggerated leaves shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off (base = clean = huge: 16 verts / 8 edges / 2 faces (compound), BRepCheck valid). The declared defect does not survive into the built shape, so shape(1) does not witness a kernel bug. Expected line, byte and Tier-3 assertions unchanged; retained as byte-level / provenance coverage of the defect class.
 - **Category**: §12.6 assembly
 - **Sources**: OCCT GitHub#284; OCCT MANTIS#0023384 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A document with named sub-shapes is exported in
@@ -8123,7 +8166,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: n_faces_total == 2
 - **Tier-3 assertion**: n_edges_total == 8
 - **Tier-3 assertion**: n_vertices_total == 16
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC's shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`

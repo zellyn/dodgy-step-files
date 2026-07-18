@@ -33,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>try alternate paths from `DOCUMENT_FILE`; report failure honestly; archive-stable requires DDP integrity check; reject if cross-file refs do not resolve.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: M008, Pmi065. **OCC behavior**: accepts and loads shape(1); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant. Synonyms: &quot;STEP reader returns success even when external file missing&quot;, &quot;no error when referenced subassembly file is absent&quot;, &quot;silent partial-load on missing externals&quot;, &quot;reader treats missing referenced file as OK&quot;.</p></section>
+<p>**See also**: M008, Pmi065. **OCC behavior**: accepts and loads shape(1); the declared defect lives in the assembly / product-structure / presentation layer, outside the geometric representation OCCT builds into `OneShape`, so it does not survive into the built shape. Perturbing the declared defect from clean to grossly exaggerated leaves OCC&#x27;s shape-counts AND BRepCheck validity unchanged under both heal_on and heal_off, so the shape-count oracle cannot distinguish it from a clean input and shape(1) does not witness a kernel bug. Synonyms: &quot;STEP reader returns success even when external file missing&quot;, &quot;no error when referenced subassembly file is absent&quot;, &quot;silent partial-load on missing externals&quot;, &quot;reader treats missing referenced file as OK&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
