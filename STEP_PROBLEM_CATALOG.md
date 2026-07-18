@@ -17317,7 +17317,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts under one mode and emits a diagnostic under the other (no shape produced); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: both heal modes (`read.surfacecurve.mode` 3 and 0) accept and load the SAME shape(1) — a valid face built from the well-formed geometry. The declared cross-product defects do not prevent the load: the unresolved-entity axis (a second `bad_face` referencing undefined `#999`) IS genuinely witnessed by the structural oracle (`DANGLING_REF`), while the schema-mismatch (AP203 `FILE_SCHEMA`) and forward-reference axes are tolerated and leave no shape-count anomaly. (Corrected 2026-07-18: the prior "silently accepts under one mode, diagnostic with no shape under the other" framing was false — live oracle shows both modes produce the identical shape(1).)
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Structural assertion**: struct == DANGLING_REF
@@ -17623,7 +17623,7 @@ _Section summary: 41 entries._
  empty-aggregate policy, extreme-magnitude clamp/reject, NaN-detection.
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts under one mode and emits a diagnostic under the other (no shape produced); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: both heal modes (`read.surfacecurve.mode` 3 and 0) accept and load the SAME shape(1) — a valid face built from the well-formed geometry. The declared cross-product defects (empty `GEOMETRIC_SET`, extreme `1e308` coordinate, `NaN` component) sit in points OUTSIDE the loaded face, so they are oracle-invisible: neither the shape-count oracle (loads the same face) nor the structural oracle (`ok`) witnesses them. (Corrected 2026-07-18: the prior "silently accepts under one mode, diagnostic with no shape under the other" framing was false — live oracle shows both modes produce the identical shape(1); the malformed points never reach the face.)
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
