@@ -49245,7 +49245,8 @@
   {
     "byte_assertions": [
       "contains(b'B_SPLINE_SURFACE')",
-      "contains(b'B_SPLINE_CURVE')"
+      "contains(b'B_SPLINE_CURVE')",
+      "contains(b'GEOMETRIC_SET')"
     ],
     "category": "§12.2b NURBS/knots",
     "closure_defect": null,
@@ -49253,12 +49254,12 @@
     "cross_oracle_note": null,
     "description": "A `RATIONAL_B_SPLINE_CURVE` (or surface) has a weights array whose length differs from the control-point list length, breaking reader contracts. OCCT's writer historically also emitted mismatched lengths.",
     "expected_kernel_behavior": "heal; pad weights with 1.0 / truncate to match pole count; warn. Do not crash. Writers must always emit len(weights) == len(poles).",
-    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn002.stp",
     "id": "Gn002",
-    "notes": "Validation observed: silent-empty (the malformed complex-instance entity is dropped at parse without a diagnostic) rather than the cited heal-or-crash. Specific reader-contract code path returns a quiet false at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class. **See also**: Ad059. **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1) gmsh=shape(1). The mismatched-weights RATIONAL_B_SPLINE is byte-present but sits in an unreferenced GEOMETRIC_CURVE_SET, so OCC/gmsh build a 1-vertex stub and silently accept with NO distinguishing signal vs a clean file. oracle-invisible (shape_counts): the defect is byte-verifiable but not demonstrable by the load-time shape-count oracles. Synonyms: \"rational B-spline weights count doesn't match poles\", \"weights array length differs from control points\", \"NbWeights ≠ NbControlPoints\", \"NURBS curve weight vector wrong length\", \"rational BSpline missing weight or has extra weight\".",
-    "occ_behavior_note": "silent-empty (the malformed complex-instance entity is dropped at parse without a diagnostic) rather than the cited heal-or-crash. Specific reader-contract code path returns a quiet false at fixture scale; the kernel-mishandling-by-silent-acceptance still demonstrates the defect class.",
+    "notes": "Both malformed rational entities (curve: 4 poles / 3 weights; surface: 4×4 net / 4×3 weight grid) are wired as members of a `GEOMETRIC_SET` (`#2`) reachable from the shape representation — they are genuinely part of the loaded model, not orphan definitions. **Live-oracle behaviour (OCCT 7.8.1, deterministic across reruns):** the parser accepts the file but the transfer stage silently DROPS both entities on the weight-count mismatch, so `occt` yields `shape_null` (empty); gmsh likewise yields empty. This is genuinely CAUSED by the defect: a well-formed control (curve 4 weights, surface 4×4 grid) built the same way yields a real edge+face (`occt=shape(1)`, face:1). So the fixture demonstrates the class by the observable empty-vs-nonempty contrast, not merely by byte presence. (An earlier version placed the malformed entities in an *unreferenced* `GEOMETRIC_CURVE_SET` beside a decoy point, which loaded a 1-vertex stub and demonstrated nothing — corrected 2026-07-17 to wire the defect carriers into the loaded model.) **See also**: Ad059. Synonyms: \"rational B-spline weights count doesn't match poles\", \"weights array length differs from control points\", \"NbWeights ≠ NbControlPoints\", \"NURBS curve weight vector wrong length\", \"rational BSpline missing weight or has extra weight\".",
+    "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
     "reproducer": "Emit `RATIONAL_B_SPLINE_CURVE(..,(w0,w1,w2))` paired with a 2D/3D pole list of length 4; or surface analogue with rectangular weight grid having a missing row.",
@@ -49275,13 +49276,11 @@
     ],
     "structural_assertions": [],
     "taxonomy": [
-      "crash",
       "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
-      "shape_null == False",
-      "n_vertices_total == 1"
+      "shape_null == True"
     ],
     "title": "RATIONAL_BSPLINE_CURVE / SURFACE with `NbWeights ≠ NbControlPoints`"
   },

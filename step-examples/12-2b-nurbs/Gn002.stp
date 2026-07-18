@@ -1,5 +1,5 @@
 ISO-10303-21;
-/* Gn002: RATIONAL_B_SPLINE_CURVE: 4 control points but only 3 weights (length mismatch); RATIONAL_B_SPLINE_SURFACE: 4x4 control net but 4x3 weights grid (column missing); STEP semantics require strict equality NbWeights == NbControlPoints; heal: pad weights with 1.0 / truncate to match pole count; warn; do not crash; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
+/* Gn002: RATIONAL_B_SPLINE_CURVE: 4 control points but only 3 weights (length mismatch); RATIONAL_B_SPLINE_SURFACE: 4x4 control net but 4x3 weights grid (column missing); STEP semantics require strict equality NbWeights == NbControlPoints. Both malformed rational entities are wired into the model as members of a GEOMETRIC_SET (#2), reachable from the shape representation. Live-oracle behaviour (OCCT 7.8.1, deterministic across reruns): the reader parses both but the transfer stage silently DROPS both (weight-count mismatch) -> shape_null / empty result; gmsh likewise yields empty. A well-formed control (4 weights on the curve, 4x4 grid on the surface) yields a real edge+face -- so the empty result is genuinely caused by the weight mismatch, not by the container. */
 HEADER;
 FILE_DESCRIPTION(('Gn002'),'2;1');
 FILE_NAME('Gn002.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
@@ -7,8 +7,7 @@ FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
 #9000=APPLICATION_CONTEXT('mechanical design');
-#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#2=GEOMETRIC_CURVE_SET('',(#1));
+#2=GEOMETRIC_SET('',(#9067,#9084));
 #9050=PRODUCT_CONTEXT('',#9000,'mechanical');
 #9051=PRODUCT('Gn002','Gn002','',(#9050));
 #9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
