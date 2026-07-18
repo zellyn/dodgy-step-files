@@ -67,14 +67,32 @@ agents, integrate per batch. **PILOT: the ~29 Gp pcurve fixtures** (highest-conf
 Gp193 already proved OCC recomputes pcurves) to validate the method + measure the overclaim rate before
 scaling. Full list = the 358 `occt=shape` + allowed∌{accept,warn} entries (regenerate with the scratchpad
 detector). This is a multi-session campaign.
-**(B) PROGRESS:** Batch 1 Gp pcurves = 29/29 overclaim (100%, 02e63927). Batch 2 Gs surfaces = **27/40
-overclaim (67.5%)** — a genuine MIX, 8 SOUND preserved (self-cross→face-split, sliver-at-tol, validity-flip)
-+ 5 ambiguous flagged/left-sound (Gs040/043/053 shipped-magnitude-too-mild; Gs044 non-perturbable branch;
-Gs198 reader-limitation). Method now validated on 2 very different classes; BRepCheck-validity discriminator
-is essential. ~289 remaining (A/Tsh/M/Pmi/Xp/Pf/Ad/…). **Follow-up flags:** Gs049 (generic interior-knot
-reader limitation, not the claimed C0 break — reclassified, cf Gs198); Gs006 (baked-in U-knot/control-net
-count mismatch, never builds a face); the 5 too-mild-magnitude Gs fixtures (defect class real, as-shipped
-value oracle-invisible — a maintainer could strengthen the magnitude instead of reclassifying).
+**(B) CAMPAIGN COMPLETE 2026-07-18 (through 0b49ca70).** All true-risky clusters re-audited via
+worktree-isolated Opus agents (perturb clean→huge, shape-counts + BRepCheck-validity invariance,
+toy-topology discriminator). **220 fixtures reclassified overclaim; "Kernel-bug witnessed" 801 → 581.**
+Per-cluster overclaim rate:
+- Gp 29/29 (100%) · Gs 27/40 (67.5%) · A 43/46 (93.5%) · M 37/38 (97.4%) · Tsh 32/42 (76%)
+- Pmi 34/34 (100%) · Pf 12/19 (63%) · Xp 7/12 (58%) · P+Wr+Bo+Lh 17/21 (81%)
+- Ad+Gn 19/21 (90.5%) · Sw+Twi+Os+N+Gb+Tfa 19/22 (86%)
+
+**45 SOUND preserved** (defect genuinely oracle-visible): Gs 8+flagged, Tsh 9 (+Tsh022 flagged), Pf 7
+(+Pf039 not-shape(1)), Xp 5, Bo008/Bo030 (+Bo001 flagged), Gn024 (+Gn012 flagged), Sw003/Sw008,
+M033, Lh053 flagged, Twi286. Detector confirms 0 unprocessed risky entries remain.
+
+**Follow-up flags for maintainer (optional quality items, NOT overclaims):**
+- **Pf 7 SOUND** — shape genuinely reflects scale, but the OCC-behavior narrative frames a *runtime*
+  pathology (slow import, stack overflow, OOM, quadratic join) as a witnessed *shape-level* bug. Soften to
+  "accepts a valid shape; the perf/scale claim is runtime, not shape-level."
+- **Twi052** — edited overclaim but borderline: invariant empty-valid-face is driven by OCC dropping the
+  entire malformed wire (construction failure), not clean healing; consider re-homing as structural/parse.
+- **Sw008** (left SOUND) — observable is degenerate-loop detection, not the literal "fast-sewing edge-table
+  miss" the entry names; mechanism framing looser than the witnessed behavior.
+- **Bo001 / Lh053** (left SOUND, flagged) — genuine but not cleanly magnitude-perturbable (pure placeholder
+  / verbatim-load-vs-aspirational-heal); worth a manual look at whether they demonstrate their claim.
+- **Gs049** (interior-knot reader limitation, not the claimed C0 break — reclassified, cf Gs198); **Gs006**
+  (baked-in U-knot/control-net count mismatch, never builds a face); the 5 too-mild-magnitude Gs
+  (Gs040/043/053/044/198 — defect class real, as-shipped value oracle-invisible; strengthen magnitude
+  instead of reclassifying).
 
 ## Fidelity — orphaned-defect-carrier fixes (IN PROGRESS 2026-07-17)
 
