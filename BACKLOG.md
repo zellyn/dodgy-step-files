@@ -113,10 +113,21 @@ TransferRoots), Bo002 (dangling-shell resolves).
   Need a maintainer decision on the right verdict framing for this adversarial-probe sub-class.
 - **Ls010** — internal contradiction: Expected behavior says "accept+warn, do not reject" but its
   OCC-behavior allowed set is `{reject}`-only. Pre-existing; separate fix.
-**Remaining bug-witness verdicts (306):** the risky residue is now just 45 shape(1) sounds + 45 empty
-sounds/flagged + 24 `occt=signal` crash claims (crashes are defensible — audit in progress/next). The rest
-carry allowed sets that INCLUDE accept/warn (legitimate differential claims, not overclaims). See
-[[project_shape1_bug_reaudit_complete]], [[feedback_worktree_wave_integration]].
+**(D) SIGNAL/CRASH CLAIMS VETTED 2026-07-18 — 24/24 SOUND, 0 reclassified.** Every `occt=signal` bug-claim
+genuinely crashes OCC (exit 139/SIGSEGV under BOTH heal_on and heal_off), attributed to the `oracle_occt`
+worker itself (STEPControl_Reader), not a mislabeled gmsh signal; Expected `signal(11)` lines all match; no
+drift. Crashes are defensible witnessed kernel bugs → all kept. Flags: **Gs002** crash is driven by the
+degenerate VERTEX_LOOP topology (within the declared-defect envelope but not the headlined torus-radius
+defect); **9 fixtures** (Gn016, Gs002, P009, Gb002, Gb003, M057, M019, M020, Pmi164) carry a NON-load-bearing
+malformed `.LENGTH_MEASURE(1.0E-7).` (enum-dot-wrapped typed real) that emits a spurious
+`ERR StepFile : Incorrect Syntax` before the segfault — builder-hygiene scrub worth doing (does NOT affect
+the crash or the verdict).
+
+**BUG-WITNESS FIDELITY SWEEP COMPLETE (all 3 verdict classes): shape(1) ✓ · empty ✓ · signal ✓.**
+"Kernel-bug witnessed" 801 → 306 (495 reclassified). The remaining 306 = risky-but-genuine residue
+(50 sounds + ~40 flagged adversarial probes + 24 confirmed crashes) + verdicts whose allowed set INCLUDES
+accept/warn (legitimate differential claims, never in scope). See [[project_shape1_bug_reaudit_complete]],
+[[feedback_worktree_wave_integration]].
 
 ## Fidelity — orphaned-defect-carrier fixes (IN PROGRESS 2026-07-17)
 
