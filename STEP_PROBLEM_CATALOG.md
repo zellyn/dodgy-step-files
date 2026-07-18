@@ -8189,6 +8189,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 
 ### Pmi077 — PMI text values wrong when document LENGTH_UNIT is METRE but DIMENSIONAL_VALUE is in inches/mm without unit conversion
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 PMI/GD&T
 - **Sources**: OCCT MANTIS#0033095 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A document declares its length unit as metres; PMI
@@ -8204,12 +8205,13 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'LENGTH_UNIT')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: emits a diagnostic but loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi078 — PMI text location wrong after import
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 PMI/GD&T
 - **Sources**: OCCT MANTIS#0032731 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A `DIMENSION` PMI entity carries an annotation text
@@ -8226,7 +8228,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') == 2
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8248,6 +8250,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Pmi080 — GD&T tolerance frame missing tolerance-zone plane reference
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 PMI/GD&T
 - **Sources**: OCCT MANTIS#0029338 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A geometric tolerance specifies a tolerance zone (e.g.,
@@ -8266,12 +8269,13 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'SHAPE_ASPECT')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi081 — GD&T saved-views label name silently emptied
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 PMI/GD&T
 - **Sources**: OCCT MANTIS#0029854 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A document has reserved labels (saved-view labels) that
@@ -8286,12 +8290,13 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'ANNOTATION_PLANE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi082 — Saved-views and clipping planes lost on STEP read
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 PMI/GD&T
 - **Sources**: OCCT MANTIS#0030315; OCCT MANTIS#0028389; OCCT MANTIS#0028044 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A STEP file containing AP242 saved-view entities
@@ -8306,7 +8311,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'PRESENTATION_VIEW')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8331,6 +8336,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Pmi084 — Coordinate-system connection points for dimensions missing
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 PMI/GD&T
 - **Sources**: OCCT GitHub#779
 - **Description**: AP242 dimensions reference coordinate-system connection
@@ -8347,12 +8353,13 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'PRESENTED_ITEM_REPRESENTATION')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi085 — Dimension names dropped on round-trip
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 PMI/GD&T
 - **Sources**: OCCT MANTIS#0029525 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A PMI dimension's `name` attribute (an identifier used
@@ -8366,7 +8373,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: count_entity_def(b'SHAPE_ASPECT') == 2
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8376,6 +8383,7 @@ End of file. Total: 38 entries (A001.A038).
 ## §12.5 units / transform
 
 ### Pmi086 — Empty IGES/STEP write loses general attributes
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 PMI/GD&T
 - **Sources**: OCCT GitHub#634; OCCT MANTIS#0033165 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A document with `GENERAL_PROPERTY` entries (AP242
@@ -8392,7 +8400,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'ANNOTATION_PLANE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8418,6 +8426,7 @@ _Section summary: 106 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(39) ifc=schema_n/a`
 
 ### Pmi002 — Blank/hidden dimensions exported as semantic dimensions
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 (sub-class: semantic-vs-graphic)
 - **Sources**: 02-caxif (PMI v4.1 §10.1.1.2)
 - **Description**: CAD users hide a dimension's value to keep extension lines as visual aids; it is purely presentational. Writers that emit those as full `dimensional_size` / `dimensional_location` instances inflate semantic-PMI counts and produce phantom semantic content with no real value.
@@ -8429,12 +8438,13 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'SHAPE_DIMENSION_REPRESENTATION') == 2
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi003 — Stacked vs composite tolerance frames mis-tagged
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 (sub-class: composite-tolerance)
 - **Sources**: 02-caxif (PMI v4.1 §10.1.1.2 Fig 108), 11-translator-vendors (W026)
 - **Description**: Multiple `geometric_tolerance` rows grouped only for visual presentation ("stacked") are semantically independent. True "composite" tolerances must be linked by a `geometric_tolerance_relationship` whose `name` is `'composite'`. Writers that always emit `geometric_tolerance_relationship` with `name='composite'` (or who flatten composite frames into independent tolerances on export) inflate or destroy composite counts.
@@ -8446,19 +8456,20 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'composite') or contains(b'stacked')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi004 — Non-coplanar leader collapsed onto annotation plane loses attachment
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 (sub-class: semantic-vs-graphic / annotation-plane)
 - **Sources**: 02-caxif (PMI v4.1 §8 intro, §8.3.1; CAx-IF Round 56J JPMI scope)
 - **Sender**: NX, JAMA/JAPIA-style models
 - **Description**: NX permits an annotation whose leader is not in the same plane as the text. Polyline and Tessellated graphic presentation in STEP both require all geometry of an `annotation_occurrence` to be coplanar. Writers project the leader onto the annotation plane, but the projection no longer touches the geometry it was attached to. Required handling is to split into multiple `annotation_occurrence`s (one per coplanar subset) under one `draughting_callout`, with the first subset as principal.
 - **Reproducer recipe**: NX-style annotation: text in plane Z=10; leader endpoints (0,0,5) and (0,0,0). Export as either Polyline or Tessellated graphic presentation.
 - **Expected kernel behavior**: Split such annotations into coplanar subsets gathered under one `draughting_callout`; preserve attachment by referencing original geometry from the leader subset.
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Notes**: Synonyms: "non-coplanar leader collapsed onto annotation plane", "leader attachment point lost when projected to plane", "PMI leader pulled out of 3D into 2D", "leader dropped when not in annotation plane".
 - **Byte assertion**: count_entity_def(b'ANNOTATION_CURVE_OCCURRENCE') == 2
@@ -8487,6 +8498,7 @@ _Section summary: 106 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi006 — Saved-view name location ambiguous (camera_model_d3 vs model_geometric_view)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 (sub-class: saved-view)
 - **Sources**: 02-caxif (PMI v4.1 §9.4.2)
 - **Sender**: CATIA prefers `camera_model_d3.name`; Creo prefers `model_geometric_view.name`
@@ -8499,7 +8511,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'MODEL_GEOMETRIC_VIEW') == 0
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: OCCT silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture (normalize the ambiguous saved-view name) rather than silently accept it. The gmsh oracle crashes with signal(11) on this same input; OCCT itself does not.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug. (The gmsh oracle separately crashes with signal(11) on this input — a gmsh robustness issue, not a witnessed OCC kernel bug.)
 - **Severity**: P1
 - **Model impact**: The saved-view name resolution is ambiguous and silently unresolved rather than normalized or diagnosed; a downstream gmsh-based consumer of this exact file additionally crashes outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a`
@@ -8522,6 +8534,7 @@ _Section summary: 106 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi009 — Rounding mode unspecified (ASME banker's vs ISO half-up)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 (sub-class: precision_qualifier)
 - **Sources**: 02-caxif (PMI v4.1 §4.1.1)
 - **Description**: For 0.5625 displayed at 3 decimals, ASME rounds to 0.562 (banker's) and ISO rounds to 0.563 (half-up). Source and target may both be "correct" yet show different displayed values. STEP carries no flag indicating which rule was applied.
@@ -8533,7 +8546,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'CONVERSION_BASED_UNIT')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8554,6 +8567,7 @@ _Section summary: 106 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi012 — Identical id_attribute reused across shape_aspect / dimensional_location / dimensional_size / shape_aspect_relationship
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 (sub-class: persistent-id)
 - **Sources**: 02-caxif (PMI v4.1 §5.1)
 - **Description**: AP242 imposes a global uniqueness rule on the derived `id` attribute across `shape_aspect`, `dimensional_location`, `dimensional_size`, and `shape_aspect_relationship`. Writers that scope IDs per-entity-type produce conflicting IDs that violate the rule.
@@ -8565,12 +8579,13 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'DIMENSIONAL_LOCATION')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi013 — Counterbore/countersink emitted as separate dimensions with no compound link
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 (sub-class: hole-feature)
 - **Sources**: 02-caxif (PMI v4.1 §5.1.9), 10-vendor-kbs (V062), 14-brlcad-rhino (K024)
 - **Description**: AP242 Ed.1 lacks compound-feature semantics. Workaround: emit counterbore as two unrelated dimensions; countersink adds a third (angle). No relationship ties them as one feature, so SolidWorks Hole Wizard / Onshape thread features become plain holes on round-trip.
@@ -8582,7 +8597,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'PLUS_MINUS_TOLERANCE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8622,6 +8637,7 @@ _Section summary: 106 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi017 — Saved-view supplemental geometry split via "supplemental geometry subset"
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 (sub-class: saved-view)
 - **Sources**: 02-caxif (PMI v4.1 §9.4.2.2; Supplemental Geometry §5.5)
 - **Description**: A part may have many supplemental elements but only some belong in a particular Saved View. The recommended pattern is one global CGR with all elements, plus additional `shape_representation` instances tagged with `description_attribute = 'supplemental geometry subset'`.
@@ -8633,7 +8649,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'PLANE') == 5
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8722,6 +8738,7 @@ _Section summary: 106 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi024 — Illegal characters inside a UUID value
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 (sub-class: persistent-id)
 - **Sources**: 06-nist-sfa (S019)
 - **Description**: UUID string contains characters outside `[0-9a-f-]`.
@@ -8733,12 +8750,13 @@ _Section summary: 106 entries._
 - **Byte assertion**: matches(rb"'4ce0ACF8-1a2b-4c3d-9e8f-7a6b5c4dXYZ'")
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi025 — Datum reference frame contains identical datums
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 (sub-class: datum-frame)
 - **Sources**: 06-nist-sfa (S042)
 - **Description**: A `datum_system` lists the same datum letter in primary/secondary/tertiary slots.
@@ -8750,12 +8768,13 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'POSITION_TOLERANCE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi026 — Datum letters not unique within product
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 (sub-class: datum-frame)
 - **Sources**: 06-nist-sfa (S043)
 - **Description**: Two `datum.identification` letters are equal within the same `product_definition_shape`.
@@ -8767,7 +8786,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'POSITION_TOLERANCE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8807,6 +8826,7 @@ _Section summary: 106 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi029 — Datum system carries mixed Datum_System / Datum_Reference SELECT array
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 (sub-class: datum-frame)
 - **Sources**: 08-occt-gitlog (G002 Mantis 0033569)
 - **Description**: AP242 `Datum_System_AP242.constituents` is a SELECT array that may contain both `Datum_System` and `Datum_Reference` items. Decoders that assume a homogeneous array crash on multi-body files.
@@ -8818,7 +8838,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'DATUM_REFERENCE_ELEMENT')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8887,6 +8907,7 @@ _Section summary: 106 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Pmi034 — placed_datum_target_feature shared DatumTargetType_Area null deref
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 (sub-class: datum-targets)
 - **Sources**: 08-occt-gitlog (G051 Mantis 0031685)
 - **Description**: Incorrect sharing of `DatumTargetType_Area` instance across multiple `PLACED_DATUM_TARGET_FEATURE`s causes NULL dereference during translation.
@@ -8898,12 +8919,13 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'DESCRIPTIVE_REPRESENTATION_ITEM')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi036 — relating_shape_aspect / related_shape_aspect reversed
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 (sub-class: semantic-vs-graphic)
 - **Sources**: 06-nist-sfa (S050)
 - **Description**: For `geometric_item_specific_usage` / `item_identified_representation_usage` / `shape_aspect_relationship` between `datum_target` and feature, the two sides have been swapped.
@@ -8915,7 +8937,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'SHAPE_ASPECT')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -8984,6 +9006,7 @@ _Section summary: 106 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi043 — Lower-case relation names where RP requires lower-case keywords
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 (sub-class: semantic-vs-graphic)
 - **Sources**: 06-nist-sfa (S070)
 - **Description**: Relation `name` values (e.g. on `geometric_tolerance_relationship`) use upper or mixed case where RP requires lower-case keywords (`'composite'`, `'all around'`, etc.).
@@ -8995,7 +9018,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'DATUM_SYSTEM')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -9014,6 +9037,7 @@ _Section summary: 106 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Pmi045 — Graphic-only PMI with no semantic backing
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 (sub-class: semantic-vs-graphic)
 - **Sources**: 17-standards-bodies (M009), 06-nist-sfa (S029), 10-vendor-kbs (V013, V015), 20-general-forums (J017)
 - **Sender**: AP203/AP214 polyline PMI; pre-Creo-9 dimension/GTOL exports; SolidWorks AP242 import drops PMI silently
@@ -9026,12 +9050,13 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'STYLED_ITEM')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi046 — characterized_object with non-PMI draughting subtypes for graphic PMI
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 (sub-class: semantic-vs-graphic)
 - **Sources**: 06-nist-sfa (S029)
 - **Description**: Producer used `(characterized_object)(draughting_callout)` or `draughting_annotation_*_occurrence` instead of the AP242 RP-prescribed `annotation_curve_occurrence`.
@@ -9043,12 +9068,13 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'COLOUR_RGB')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi047 — Annotation has no annotation_plane
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 (sub-class: annotation-plane)
 - **Sources**: 06-nist-sfa (S027)
 - **Description**: A graphic PMI annotation occurrence is not referenced by any `annotation_plane.elements`. Without an annotation plane the placement is ambiguous.
@@ -9059,7 +9085,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'ANNOTATION_PLANE') == 1
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -9133,6 +9159,7 @@ _Section summary: 106 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi055 — AP242 hole feature missing required attribute / inconsistent dims
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 (sub-class: hole-feature)
 - **Sources**: 06-nist-sfa (S054)
 - **Description**: `round_hole` / `counterbore` / `countersink` is missing `depth` / `diameter` / `tip_angle`, OR counterbore/countersink diameter ≤ drill diameter, OR counterbore depth ≥ drill depth.
@@ -9144,7 +9171,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'PLUS_MINUS_TOLERANCE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -9270,6 +9297,7 @@ _Section summary: 106 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi065 — DDP / EER cross-file PMI references break on repackaging
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 (sub-class: persistent-id)
 - **Sources**: 17-standards-bodies (M030), 02-caxif (External Reference v3.1 §7.5.2)
 - **Description**: AP242 supports referencing geometric elements (a specific face, edge) in a separate Part 21 file via `component_path_shape_aspect` / External Element Reference / DDP linking. When the package is repacked or split, the references break; PMI in file A points to a face in file B that no longer exists or has a different ID. Additionally, `component_path_shape_aspect.of_shape.product_definition_shape.definition` must reference the root product_definition; the leaf-end shape_aspect's `of_shape.definition` must reference the leaf product_definition. Mid-tree anchors are wrong.
@@ -9281,12 +9309,13 @@ _Section summary: 106 entries._
 - **Byte assertion**: count_entity_def(b'PRODUCT') == 3
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi066 — Compound-feature semantics (HTC counterbore/countersink/counterdrill) per Hole RP
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 (sub-class: hole-feature)
 - **Sources**: 02-caxif (CAx-IF Round 56J Test Suite §2.3.4.2), 02-caxif (PMI v4.1 §5.1.9)
 - **Description**: Compound holes (counterbore, countersink, counter-drill) must be modeled as semantic features per the draft Hole Information Recommended Practices. Files emitting each segment as an independent `dimensional_size` lose the compound-feature link.
@@ -9298,7 +9327,7 @@ _Section summary: 106 entries._
 - **Byte assertion**: contains(b'PLUS_MINUS_TOLERANCE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -9343,6 +9372,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 ---
 
 ### Pmi069 — `DIMENSIONAL_LOCATION_WITH_PATH` whose path connects unrelated shape aspects
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 (sub-class: dimensional location)
 - **Sources**: 16-iso-spec AP242 §DIMENSIONAL_LOCATION_WITH_PATH
 - **Description**: AP242 DIMENSIONAL_LOCATION_WITH_PATH carries an extra 'path' attribute (a SHAPE_ASPECT_RELATIONSHIP chain) describing the route through the model along which a dimension is to be measured. The spec assumes the path is a connected sequence of shape_aspects. A producer that emits a path whose endpoints are unrelated shape_aspects on disconnected components leaves the dimension's interpretation ambiguous.
@@ -9354,12 +9384,13 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'SHAPE_ASPECT') == 2
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi070 — `GEOMETRIC_TOLERANCE_RELATIONSHIP` cycle (A→B→C→A)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 (sub-class: tolerance relationship)
 - **Sources**: 16-iso-spec AP242 §GEOMETRIC_TOLERANCE_RELATIONSHIP
 - **Description**: AP242 GEOMETRIC_TOLERANCE_RELATIONSHIP allows one tolerance to be derived/refined from another (e.g. a position tolerance refined under MMC by a separate form tolerance). The spec does not explicitly forbid cycles; producers that compose tolerance frames programmatically can emit a cycle by linking three GEOMETRIC_TOLERANCE_RELATIONSHIP records A→B, B→C, C→A. A receiver that walks the relationship graph to evaluate a tolerance recurses infinitely or hits a stack guard.
@@ -9371,7 +9402,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'SHAPE_ASPECT') == 3
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -9441,6 +9472,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi075 — `KINEMATIC_JOINT` referencing the same link as both ends (self-loop)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v1 c1 (a single CARTESIAN_POINT wrapped in a compound; no face, no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 (sub-class: kinematic joint)
 - **Sources**: 16-iso-spec AP242 §KINEMATIC_JOINT
 - **Description**: AP242 kinematic representation models a mechanism as a graph: KINEMATIC_LINK nodes joined by KINEMATIC_JOINT edges. A joint should reference exactly two distinct links (one per end). A producer that omits one end (referencing the same link twice, or pointing the second end to a deleted link) yields an inconsistent kinematic graph that cannot be simulated.
@@ -9452,7 +9484,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'PRODUCT_DEFINITION') == 2
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -9530,6 +9562,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 
 ### Pmi090 — Persistent UUID lost on round-trip (PMI association breaks)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v8 e4 f1 (a single open face; no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 (sub-class: persistent-id)
 - **Sources**: 02-caxif (External Reference v3.1 §7 — persistent-UUID identification); 17-standards-bodies (M030); bug-reporter language: "STEP UUID changes on round-trip", "PMI link breaks after re-export"
 - **Sender**: deduced — receivers that regenerate UUIDs on import rather than honouring the producer-emitted `APPLIED_IDENTIFICATION_ASSIGNMENT('uuid',..)`
@@ -9546,7 +9579,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)) — exactly the behavior the catalog forbids. Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -33244,6 +33277,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi094 — XCAF GD&T data does not round-trip to STEP AP242 PMI
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean (declared defect removed)/huge (declared defect duplicated/exaggerated) all give identical shape-counts (v8 e4 f1 (a single open face; no solid)) and BRepCheck valid=True under heal_on and heal_off; the declared defect is a PMI/annotation/semantic property that never becomes B-rep topology, so shape(1) (the loaded wrapper, not a repaired solid) does not witness a kernel bug.
 - **Category**: §12.7 PMI / GD&T (sub-class: GD&T export coverage gap)
 - **Sources**: OCCT MANTIS#0026859; bug-reporter language: "export of GDT from XCAF to STEP", "geometric tolerances in XCAF document not written to STEP", "GD&T not preserved on export". (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Sender**: OCCT writer when an XCAF document carries `XCAFDoc_GeomToleranceTool` or `XCAFDoc_DimTolTool` records.
@@ -33257,7 +33291,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: silent-accept observed (catalog allowed: {heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads shape(1) (an ERR parser diagnostic is emitted on the file's minimal syntax, but a shape is still produced); the declared PMI/annotation/semantic defect never enters the built B-rep, so it is invisible to the shape-count oracle. Removing the defect (clean) or exaggerating it (huge) leaves shape-counts and BRepCheck validity unchanged under heal_on and heal_off; shape(1) does not witness a kernel bug — OCC accepting/loading the file is the honest observed behavior, not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
