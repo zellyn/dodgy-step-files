@@ -3424,6 +3424,7 @@ _Section summary: 101 entries._
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Twi001 — Empty edge_list in EDGE_LOOP
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base(empty loop, v0) and clean(real 4-edge wire, v8) both load BRepCheck-valid shape(1); OCC never rejects the empty loop.
 - **Category**: §12.3b wire-loop
 - **Sources**: 04-occt-translation.md Q001; 03-occt-tests.md R045 (bug33307)
 - **Sender**: Unknown (bug33307 corpus); seen on real STEP imports
@@ -3431,7 +3432,7 @@ _Section summary: 101 entries._
 - **Reproducer recipe**: `#10=EDGE_LOOP('',());` referenced by `FACE_OUTER_BOUND` of an `ADVANCED_FACE`.
 - **Expected kernel behavior**: reject the loop with diagnostic; do not propagate null wire to face; do not crash.
 - **Notes**: The defect bites in two places: the AP203/AP242 entity-reader's edge-loop attribute-validation, and the topology translator's edge-loop transfer pass. Both must guard against the empty list. **See also**: Tsh023. Synonyms: "wire has no edges", "empty edge list crashes reader", "loop with zero edges", "face has no perimeter", "translator drops face on empty wire".
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1), `load == "ok"`); outside catalog's allowed set ({reject}). Kernel-bug witnessed: the empty edge_list is silently tolerated (guards added post-bug33307 prevent the crash but also swallow the malformed loop without rejecting it); receivers enforcing the spec must reject this fixture instead.
+- **OCC behavior**: OCC loads shape(1) BRepCheck-valid and silently accepts the empty EDGE_LOOP as a valid unbounded face; replacing it with a real 4-edge wire (clean) also loads valid shape(1), so validity is invariant. Post-bug33307 guards prevent the historical crash but accept the empty loop rather than rejecting it — the "must reject" is not witnessed on the current live oracle (a structural/Part-21 linter, not the OCC kernel, is the appropriate venue for the empty-list violation).
 - **Severity**: P1
 - **Byte assertion**: contains(b"EDGE_LOOP('',())")
 - **Byte assertion**: count_entity_def(b'ORIENTED_EDGE') == 0
@@ -4006,6 +4007,7 @@ _Section summary: 101 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 
 ### Twi044 — Internal `FACE_BOUND` hole-wire with sub-tolerance enclosed area (degenerate tiny inner wire)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: clean(big real hole) and huge(~5e-13 mm² hole) both load BRepCheck-valid shape(1) v14/e7/f1 identically; OCC retains the inner wire on import in every case.
 - **Category**: §12.3b wire-loop
 - **Sources**: 05-occt-shapefix.md F054 (ShapeUpgrade_RemoveInternalWires); 08-occt-gitlog.md G091/G092 (FixSmallAreaWire); 09-healing-menus.md H060 (Suppress Internal Wires); 15-academic.md L001
 - **Description**: A face carries one or more inner `FACE_BOUND` ("hole") wires whose enclosed area is below a configurable threshold relative to the face's overall area — a tiny wire that almost-encloses-nothing, typically left behind by imprecise reverse-engineering or Boolean fallout rather than describing a genuine hole. Common shape: a triangle inner wire with vertices like (5,5,0), (5.001,5,0), (5.0,5.001,0) — enclosed area ~5e-7 mm² well below typical working tolerance — sitting inside a 100 mm² planar face.
@@ -4013,7 +4015,7 @@ _Section summary: 101 entries._
 - **Expected kernel behavior**: drop the spurious inner wire and fill the would-be hole, keep it but accept the noise, or reject as malformed; choice is kernel-policy-dependent and may be exposed via a healing flag.
 - **Closure intent**: sheet
 - **Notes**: **See also**: Twi045. Historical finding (validation/SEGFAULT_CHARACTERIZATION.md, captured before the Wave-B fixture rebuild): kernel-level segfault (signal 11) observed on OCCT/gmsh load, hypothesized path NaN propagation through BRepLib::SameParameter on degenerate geometry. Live-verified (this worktree's OCCT 7.8.1, current Wave-B-rebuilt bytes, heal-on and heal-off identical): no crash reproduces — the fixture loads cleanly as `shape(1)/shape(1)`, and the sub-tolerance inner wire is silently accepted rather than healed or rejected. Synonyms: "tiny inner hole wire below threshold area", "spurious sub-mm hole on face", "hole wire encloses near-zero area", "Boolean leftover tiny inner loop", "sub-tolerance inner wire silently accepted".
-- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal (drop/fill the spurious wire) or reject this fixture. A pre-Wave-B build of this fixture segfaulted on this mechanism (see Notes); the current live oracle loads it cleanly instead.
+- **OCC behavior**: OCC loads shape(1) BRepCheck-valid and silently retains the inner wire regardless of its area — enlarging the hole to a real 2 mm triangle (clean) or shrinking it to ~5e-13 mm² (huge) leaves shape-counts (v14/e7/f1) and validity identical. The sub-threshold-area drop is a runtime ShapeUpgrade_RemoveInternalWires pass never run on import — oracle-invisible, not a witnessed kernel bug. (The historical segfault does not reproduce on the current bytes; see Notes.)
 - **Severity**: P1
 - **Byte assertion**: contains(b'(5.001,5.0,0.0)')
 - **Byte assertion**: contains(b'(5.0,5.001,0.0)')
@@ -4022,6 +4024,7 @@ _Section summary: 101 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 
 ### Twi045 — Small-area wire removal on a reversed or located face mis-orients output wires
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base, clean(.T. + big hole), huge(.F. + tiny hole) and flag-only variants all load BRepCheck-valid shape(1) v14/e7/f1 identically; neither the reversed flag nor the wire area affects import.
 - **Category**: §12.3b wire-loop
 - **Sources**: 08-occt-gitlog.md G076 (Mantis 0029717), G092 (Mantis 0027781)
 - **Description**: When a hole-wire-removal pass runs on a face that has been reversed (its normal points the other way), the rebuilt face emerges with mis-oriented wires; the algorithm rebuilt the face from scratch and lost the original wire-orientation context. A related case: when the face carries a non-identity placement transform, the helper face used to project pcurves is built without preserving the placement and pcurves are dropped.
@@ -4032,7 +4035,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'#20,.F.)')
 - **Byte assertion**: contains(b'FACE_BOUND(')
 - **Byte assertion**: contains(b'(5.001,5.0,0.0)')
-- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers should heal (preserve orientation/placement across the small-wire-removal rebuild) rather than silently deliver a shape whose wire orientation may be wrong. Live-verified (this worktree's OCCT 7.8.1, heal-on and heal-off identical): no crash — see Twi044's Notes for the pre-Wave-B segfault characterization that predates this fixture's current bytes.
+- **OCC behavior**: OCC loads shape(1) BRepCheck-valid; neither the reversed same_sense flag nor the inner-wire area affects the imported shape — flipping .F.->.T. (clean) and shrinking the inner wire (huge) both leave shape-counts (v14/e7/f1) and validity identical. FixSmallAreaWire is a runtime pass never run on import — oracle-invisible, not a witnessed kernel bug. (No crash on the current bytes; see Twi044's Notes.)
 - **Severity**: P1
 - **Model impact**: The rebuilt face may emerge with mis-oriented wires or dropped pcurves relative to the original placement/orientation context; downstream consumers relying on consistent wire winding see silently-corrupted topology rather than a diagnostic.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
@@ -4967,6 +4970,7 @@ _Section summary: 70 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### N033 — Tolerance value polymorphic encoding (`MeasureRepresentationItem` vs plain measure)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base and clean(tolerance PMI block removed) both load BRepCheck-valid shape(1) v1 identically; the tolerance encoding never enters the geometric shape.
 - **Category**: §12.4 (sub-class: tolerance type entity coverage)
 - **Sources**: 08-occt-gitlog G050 (Mantis 0030616); 18-other-issues I011 (OCCT #384)
 - **Description**: `STEP_SHAPE_TOLERANCE_VALUE` lower/upper bounds may be encoded via plain `length_measure_with_unit`, via `StepRepr_ReprItemAndMeasureWithUnit`, or via the AP242 complex form `(LENGTH_MEASURE_WITH_UNIT() MEASURE_REPRESENTATION_ITEM() MEASURE_WITH_UNIT(…) REPRESENTATION_ITEM(''))`. Readers that hard-code a single subtype fail; OCCT had 21 reader classes affected.
@@ -4977,19 +4981,20 @@ _Section summary: 70 entries._
 - **Byte assertion**: count(b'0.005') >= 3
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: OCC loads shape(1) BRepCheck-valid (the single CARTESIAN_POINT); the FLATNESS/STRAIGHTNESS/CYLINDRICITY tolerance PMI does not enter the geometric shape, so removing it (clean) leaves shape-counts (v1) and validity identical. The polymorphic measure-with-unit reader concern is metadata-only and does not affect the loaded shape — oracle-invisible, not a witnessed kernel bug.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### N034 — `+/-` tolerance bounds inverted, equal, or wrong measure type
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base and clean(bounds corrected) both load BRepCheck-valid shape(1) v1 identically; the tolerance bounds never enter the geometric shape.
 - **Category**: §12.4 (sub-class: tolerance type entity coverage / PMI numeric)
 - **Sources**: 06-nist-sfa S036, S037, S038
 - **Description**: `PLUS_MINUS_TOLERANCE` recorded with `upper_bound < lower_bound` or `upper_bound == lower_bound` or with bound expressed via `descriptive_representation_item` / `plane_angle_measure_with_unit` instead of `length_measure_with_unit`. SFA tooling flags these as warnings; many CAD systems silently accept and ignore.
 - **Reproducer recipe**: `PLUS_MINUS_TOLERANCE(TOLERANCE_VALUE(LENGTH_MEASURE(0.005), LENGTH_MEASURE(-0.005)),..);` with values swapped.
 - **Expected kernel behavior**: warn or auto-swap; reject the wrong-type case.
 - **Notes**: **See also**: N033. Synonyms: "upper tolerance bound less than lower", "PLUS_MINUS_TOLERANCE has equal bounds", "tolerance bound uses wrong measure type", "angle measure used for length tolerance".
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads shape(1) BRepCheck-valid (the single CARTESIAN_POINT); the PLUS_MINUS_TOLERANCE bounds are PMI metadata that never enter the geometric shape — correcting the inverted/equal/wrong-type bounds (clean) leaves shape-counts (v1) and validity identical. Oracle-invisible, not a witnessed kernel bug.
 - **Severity**: P1
 - **Byte assertion**: count_entity_def(b'PLUS_MINUS_TOLERANCE') == 4
 - **Byte assertion**: contains(b'-0.005') and contains(b'0.005')
@@ -5049,12 +5054,13 @@ _Section summary: 70 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N038 — Patrikalakis interval-solid violation: face-pair gap exceeds bound
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base(gap 5e-5), clean(gap 0) and huge(gap 5.0) all load BRepCheck-valid shape(1) v16/e8/f2 identically; the inter-patch gap does not affect import.
 - **Category**: §12.4 (sub-class: validity / interval solid)
 - **Sources**: 15-academic L044 (Patrikalakis, Sakkalis, Shen, Math of Surfaces IX 2000)
 - **Description**: Adjacent faces are not "approximately equal" to an interval solid: the maximum gap between any two trimmed surfaces along their shared edge exceeds the chosen interval radius. Without this guarantee the boundary reconstruction is not provably gap-free; the model is effectively non-watertight for any tolerance below the maximum gap.
 - **Reproducer recipe**: Two B-spline trims along a shared edge whose maximum Hausdorff distance is 5×ε in a model with declared tolerance ε.
 - **Expected kernel behavior**: heal; reconstruct an interval solid that bounds both surfaces in a tube of radius ε; if no such tube exists, refine geometry until it does.
-- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the two B-spline patches of the GEOMETRIC_CURVE_SET as shape(1) BRepCheck-valid (two independent faces); closing the inter-patch gap to 0 (clean) or opening it to 5.0 mm (huge) leaves shape-counts (v16/e8/f2) and validity identical. The interval-solid watertightness metric is a runtime analysis never run on import — oracle-invisible, not a witnessed kernel bug.
 - **Severity**: P1
 - **Notes**: Synonyms: "face-pair gap exceeds interval bound", "model not watertight by interval-solid metric", "shared edge gap larger than interval radius", "interval-solid validity violated".
 - **Byte assertion**: count_entity_def(b'B_SPLINE_SURFACE_WITH_KNOTS') == 2
@@ -10461,6 +10467,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/Os012.stp
 
 ### Os013 — Pipe section plane does not intersect the guide curve
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base, clean(plane intersects guide) and huge(plane far) all load BRepCheck-valid shape(1) e1 identically; no sweep runs on import.
 - **Category**: §12.8 (sub-class: pipe section plane miss)
 - **Sources**: OCCT BRepOffsetAPI_MakePipeShell.cxx:147 (PlaneNotIntersectGuide) (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -10473,13 +10480,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'10.0')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_edges_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the loose curves of the GEOMETRIC_CURVE_SET as shape(1) BRepCheck-valid (one free edge); moving the section plane to intersect the guide (clean) or far away (huge) leaves shape-counts (e1) and validity identical. The 'plane misses guide' failure is a runtime BRepOffsetAPI_MakePipeShell outcome never run on import — oracle-invisible, not a witnessed kernel bug.
 - **Severity**: P1
 - **Model impact**: Pipe sweep cannot construct the swept body; the kernel returns a NULL shape and the swept feature is absent from the loaded assembly.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/Os013.stp
 
 ### Os014 — Pipe section drifts beyond auxiliary spine reach (impossible contact)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base, clean(aux spine long) and huge(aux spine short) all load BRepCheck-valid shape(1) e2 identically; no sweep runs on import.
 - **Category**: §12.8 (sub-class: pipe section guide drift)
 - **Sources**: OCCT BRepOffsetAPI_MakePipeShell.cxx (ImpossibleContact) (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -10491,7 +10499,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'LINE') >= 2
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_edges_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the two spines of the GEOMETRIC_CURVE_SET as shape(1) BRepCheck-valid (two free edges); lengthening the auxiliary spine (clean) or shortening it (huge) leaves shape-counts (e2) and validity identical. The KeepContact 'impossible contact' failure is a runtime BRepOffsetAPI_MakePipeShell outcome never run on import — oracle-invisible, not a witnessed kernel bug.
 - **Severity**: P1
 - **Model impact**: Pipe sweep cannot construct the swept body; the kernel returns a NULL shape and the swept feature is absent from the loaded assembly.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`
@@ -10586,6 +10594,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/Os019.stp
 
 ### Os020 — MakeEvolved: profile sweep along a non-planar spine self-intersects
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base, clean(profile r=0.5) and huge(profile r=10) all load BRepCheck-valid shape(1) v4/e2 identically; no evolved sweep runs on import.
 - **Category**: §12.8 (sub-class: evolved sweep)
 - **Sources**: OCCT BRepOffsetAPI_MakeEvolved (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -10598,7 +10607,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_edges_total == 2
 - **Tier-3 assertion**: n_vertices_total == 4
-- **OCC behavior**: accepts with ERR diagnostic (loads a non-null shape, `shape_null == False`); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture rather than silently accept the self-intersecting evolved profile.
+- **OCC behavior**: OCC loads the circle and spine of the GEOMETRIC_CURVE_SET as shape(1) BRepCheck-valid (two free edges); shrinking the profile radius so no fold occurs (clean, r=0.5) or exaggerating it (huge, r=10) leaves shape-counts (v4/e2) and validity identical. The evolved-surface self-intersection is a runtime BRepOffsetAPI_MakeEvolved outcome never run on import — oracle-invisible, not a witnessed kernel bug.
 - **Severity**: P1
 - **Model impact**: The self-intersecting evolved profile is silently accepted rather than trimmed or rejected; the resulting edges carry the fold with no diagnostic pointing at it.
 - **Tier-3 assertion**: edge[0].curve_type == "circle"
@@ -10607,6 +10616,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/Os020.stp
 
 ### Os021 — Normal projection: source curve has no projection on target surface
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base, clean(line near sphere) and huge(line far) all load BRepCheck-valid shape(1) e1 identically; no projection runs on import.
 - **Category**: §12.8 (sub-class: normal projection)
 - **Sources**: OCCT BRepOffsetAPI_NormalProjection (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -10618,7 +10628,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'LINE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_edges_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the line of the GEOMETRIC_CURVE_SET as shape(1) BRepCheck-valid (one free edge); moving the line close to the sphere (clean) or farther (huge) leaves shape-counts (e1) and validity identical. The normal-projection 'no foot' failure is a runtime BRepOffsetAPI_NormalProjection outcome never run on import — oracle-invisible, not a witnessed kernel bug.
 - **Severity**: P1
 - **Model impact**: Offset operation fails or produces an invalid shape; the kernel returns NULL or raises `StdFail_NotDone`, and the offset feature is absent from the resulting BRep.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -13647,6 +13657,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 ## §12.2c — Geometric-base utilities (Gb)
 
 ### Gb001 — Curve approximation cannot meet the requested tolerance
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base and clean(LINE face_geometry replaced by a real PLANE) both load BRepCheck-INVALID shape(1); the invalidity is the toy single-edge-loop / curve-as-surface topology, not the claimed approximation failure.
 - **Category**: §12.2c (sub-class: approximation failure)
 - **Sources**: OCCT Approx_Status.NoApproximation (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -13654,7 +13665,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Reproducer recipe**: A `LINE` evaluated at densely-sampled points; request a B-spline approximation through these points within tolerance below the kernel's working precision.
 - **Expected kernel behavior**: Return the partial result with the achieved residual reported; or reject.
 - **Fixture kind**: receiver-behavior
-- **Notes**: Synonyms: "fit didn't converge". Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
+- **Notes**: Synonyms: "fit didn't converge". Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: OCC loads a non-null shape(1) that is BRepCheck-invalid because the ADVANCED_FACE uses a LINE as its face_geometry and carries a single-edge loop (toy topology); giving it a real PLANE surface (clean) stays invalid, so the invalidity is not the claimed approximation failure. The B-spline approximation convergence (Approx_Status) is runtime-only and never exercised on import — not a witnessed kernel bug.
 - **Byte assertion**: contains(b'LINE(')
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 5
 - **Tier-3 assertion**: load == "ok"
@@ -13696,6 +13707,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-2c-surfaces/Gb003.stp
 
 ### Gb004 — Pcurve and 3D curve disagree by a measurable distance (CheckCurveOnSurface)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base(pcurve bow 0.01), clean(straight pcurve) and huge(bow 1.0) all load BRepCheck-valid shape(1) v8/e4/f1 identically; OCC recomputes the pcurve from the 3D curve on import.
 - **Category**: §12.2c (sub-class: pcurve-3D quantitative gap)
 - **Sources**: OCCT GeomLib_CheckCurveOnSurface (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -13707,7 +13719,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'SURFACE_CURVE(')
 - **Byte assertion**: contains(b'EDGE_CURVE(')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads shape(1) BRepCheck-valid; it rebuilds the edge's pcurve from the 3D LINE on transfer (SameParameter), so the declared pcurve deviation does not survive — straightening the pcurve (clean) or exaggerating the bow to 1.0 mm (huge) leaves shape-counts (v8/e4/f1) and validity identical. The CheckCurveOnSurface deviation is oracle-invisible, not a witnessed kernel bug (mirrors Gs007).
 - **Severity**: P1
 - **Model impact**: Geometric-utility computation (intersection, projection, extrema) returns a wrong or NULL result; downstream operations that depend on it propagate the wrong value into the loaded geometry.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -20453,6 +20465,7 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Tfa062 — Face silently accepted despite null/unresolvable inner-wire bound during face fix
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base(dangling #777) and clean(bad bound removed) both load BRepCheck-valid shape(1) v8/e4/f1 identically; the reject-worthiness lives in the structural oracle (struct==DANGLING_REF), not the OCC kernel.
 - **Category**: §12.3c faces/sewing
 - **Sources**: OCCT MANTIS#0026524; OCCT MANTIS#0033179 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: An `ADVANCED_FACE` lists a `FACE_BOUND` with a null /
@@ -20467,7 +20480,7 @@ _Section summary: 41 entries._
 - **Closure intent**: sheet
 - **Notes**: **See also**: Ad084. Live-verified (this worktree's OCCT 7.8.1, heal-on and heal-off identical): neither the crash nor the empty-load outcome hypothesized below reproduces — the fixture loads cleanly as `shape(1)/shape(1)`, `n_faces_total==1`. Synonyms: "face fix crashes on null inner wire", "ShapeFix crashes on FACE_BOUND with null wire", "fix invalid face dereferences null pointer", "null inner loop causes face fix segfault".
 - **Notes**: Cross-oracle: pure-Python Part-21 validator rejects (reject(E_UNRESOLVED_REFS)); OCCT silently accepts and loads a shape. OCC auto-heals a spec-level violation.
-- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture (bounds list with null/missing entries) rather than silently accept it. Earlier characterizations of this MANTIS-tracked bug reported a crash on some heal modes; that does not reproduce on the current live oracle.
+- **OCC behavior**: OCC silently drops the dangling FACE_BOUND (undefined #777) and loads a BRepCheck-valid shape(1) (v8/e4/f1); removing the bad bound (clean) is identical. The dangling reference is caught by the structural / Part-21 oracle (struct == DANGLING_REF), NOT by the OCC kernel — so this is a structural-spec violation, not a witnessed OCC kernel bug. Earlier characterizations reported a crash on some heal modes; that does not reproduce on the current live oracle.
 - **Severity**: P2
 - **Model impact**: The null/unresolvable inner-wire bound is silently dropped or ignored during face construction; the resulting face's bounds list no longer matches what the file declared, with no diagnostic pointing at the loss.
 - **Structural assertion**: struct == DANGLING_REF
@@ -20807,6 +20820,7 @@ _Section summary: 41 entries._
 ## §12.3a — Sewing-specific defects (Sw)
 
 ### Sw001 — Three or more faces share a boundary edge after sewing (non-manifold result)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: clean(2-face manifold) and huge(5-face) both load BRepCheck-valid shape(1); OCC runs no sewing on import so the multiple-edge/non-manifold condition is never surfaced.
 - **Category**: §12.3a (sub-class: sewing produces non-manifold)
 - **Sources**: OCCT BRepBuilderAPI_Sewing.hxx:120, .cxx:2124 (NbMultipleEdges) (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -20820,7 +20834,7 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: n_faces_total == 3
 - **Tier-3 assertion**: n_edges_total == 12
 - **Tier-3 assertion**: n_vertices_total == 24
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads shape(1) BRepCheck-valid whether the shared edge joins two faces (clean, manifold) or five (huge, exaggerated non-manifold) — shape-counts scale with the authored face list but validity is invariant True. The STEP reader performs no sewing on import, so the multiple-edge/non-manifold join is never evaluated; it is a runtime BRepBuilderAPI_Sewing outcome, not a defect witnessed by the import oracle.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`
@@ -20886,6 +20900,7 @@ _Section summary: 41 entries._
 - **Fixture path**: step-examples/12-3a-shells/Sw004.stp
 
 ### Sw005 — Fast-sewing face host surface has infinite extent
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base and clean(PLANE wrapped in RECTANGULAR_TRIMMED_SURFACE) both load BRepCheck-valid shape(1) v8/e4/f1 identically.
 - **Category**: §12.3a (sub-class: fast-sewing prerequisite)
 - **Sources**: OCCT BRepBuilderAPI_FastSewing.cxx:199, 236 (FS_InfiniteSurface) (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -20899,13 +20914,14 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads shape(1) BRepCheck-valid; the wire already bounds the face, so wrapping the untrimmed PLANE in a RECTANGULAR_TRIMMED_SURFACE (clean) leaves shape-counts and validity identical. The infinite-extent condition is a fast-sewing (BRepBuilderAPI_FastSewing) prerequisite never exercised on import — oracle-invisible, not a witnessed kernel bug.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3a-shells/Sw005.stp
 
 ### Sw006 — Fast-sewing face whose parametric bounds are tighter than surface natural bounds
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base, clean(orphan RTS removed) and huge(RTS bounds tightened) all load BRepCheck-valid shape(1) v8/e4/f1 identically.
 - **Category**: §12.3a (sub-class: fast-sewing parameter mismatch)
 - **Sources**: OCCT BRepBuilderAPI_FastSewing.cxx:189, 226 (FS_NotNaturalBoundsFace) (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -20919,13 +20935,14 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads shape(1) BRepCheck-valid; the RECTANGULAR_TRIMMED_SURFACE is orphan (the face references the raw PLANE), so removing it (clean) or tightening its bounds (huge) leaves shape-counts and validity identical. The non-natural-bounds condition is a fast-sewing prerequisite never exercised on import — oracle-invisible orphan carrier, not a witnessed kernel bug.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3a-shells/Sw006.stp
 
 ### Sw007 — Fast-sewing cannot find the canonical vertex for a wire endpoint
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base(sep 1e6), clean(sep 1.0) and huge(sep 1e12) all load BRepCheck-INVALID shape(1) v4/e2/f1 identically — the invalidity is the degenerate back-and-forth loop, not the claimed hash collision.
 - **Category**: §12.3a (sub-class: fast-sewing vertex-table miss)
 - **Sources**: OCCT BRepBuilderAPI_FastSewing.cxx:480 (FS_FindVertexError) (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -20936,7 +20953,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 2
 - **Byte assertion**: contains(b'1.0e6') or contains(b'1.0E6') or contains(b'1.E6') or contains(b'1000000')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads a non-null shape(1) that is BRepCheck-invalid, but the invalidity comes from the degenerate back-and-forth zero-area face, not the claimed hash collision: setting the vertices coincident (clean, sep 1.0) or 1e12 apart (huge) leaves counts and invalidity unchanged. The fast-sewing vertex-table hash collision is runtime-only (see Notes) and never witnessed on import — toy topology, not a witnessed kernel bug.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
@@ -20961,6 +20978,7 @@ _Section summary: 41 entries._
 - **Fixture path**: step-examples/12-3a-shells/Sw008.stp
 
 ### Sw009 — `same_parameter` flag-skip trap during fast sewing
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base and clean(orphan LINE_2D/VECTOR_2D removed) both load BRepCheck-valid shape(1) v8/e4/f1 identically; same_parameter has no byte encoding.
 - **Category**: §12.3a (sub-class: fast-sewing edge-flag trap)
 - **Sources**: OCCT BRepBuilderAPI_FastSewing.cxx (SameParameter handling) (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -20972,7 +20990,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'VECTOR_2D')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads shape(1) BRepCheck-valid; the LINE_2D/VECTOR_2D pcurve is orphan (not bound via PCURVE/SURFACE_CURVE), so removing it (clean) leaves shape-counts and validity identical, and same_parameter is not encoded in any byte of EDGE_CURVE. The flag-skip is fast-sewing runtime behavior never exercised on import — oracle-invisible orphan carrier, not a witnessed kernel bug.
 - **Severity**: P1
 - **Model impact**: Sewing leaves the shell open or produces non-manifold edges; loaded shape is a compound of free faces instead of a closed shell, and MakeSolid downstream fails to produce a valid solid.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -21071,13 +21089,14 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 
 ### Twi052 — Wire whose edges accumulate several pcurve / 3D-curve defects at once
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base and a `#*`-context-repaired variant both load a BRepCheck-valid EMPTY face shape(1) v0/e0/f1; the defect wire never materializes into edges.
 - **Category**: §12.3b wires / loops / edges (sub-class: edge-pipeline)
 - **Sources**: OCCT `ShapeFix_Wire::FixEdgeCurves` (`ShapeFix_Wire.hxx:296`)
 - **Description**: A single wire's edges variously exhibit: reversed-sense pcurve, stale pcurve that disagrees with the 3D curve, missing 3D curve, seam edge whose pcurve is shifted by a full surface period, and same-parameter (3D-vs-pcurve parameterisation) violations. The kernel cannot fix the closure of the wire as a whole until each edge's curve representation is internally consistent first.
 - **Reproducer recipe**: A four-edge wire where edge 1 has reversed pcurve, edge 2 has no 3D curve, edge 3 sits on a seam shifted by 2π, edge 4 violates same-parameter.
 - **Expected kernel behavior**: heal the per-edge curve defects (reversed pcurve, missing pcurve, missing 3D curve, period-shifted seam, parameterisation mismatch) before validating wire-level closure; or reject the input as malformed if multiple defects co-occur. Order matters: later fixes must not invalidate earlier ones.
 - **Notes**: Sub-pipeline of Twi051. Synonyms: "wire edges have many curve defects at once", "edge-curve consistency multi-defect", "stale parametric vs spatial curve combinations", "reversed sense and missing 3D curve and seam shift".
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1), `load == "ok"`); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture rather than silently accept the accumulated per-edge curve defects.
+- **OCC behavior**: OCC silently drops the entire multi-defect wire and loads an empty but BRepCheck-valid face (shape(1), v0/e0/f1); the outcome is invariant even after repairing the malformed `#*` pcurve contexts. The claimed per-edge pcurve/3D-curve defects are never individually witnessed on import — oracle-invisible, not a witnessed kernel bug (borderline: the wire-drop is construction failure rather than clean healing).
 - **Severity**: P1
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE(')
 - **Byte assertion**: contains(b'edge2_no_3d')
