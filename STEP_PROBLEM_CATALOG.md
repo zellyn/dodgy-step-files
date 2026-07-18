@@ -2869,6 +2869,7 @@ _Section summary: 101 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Tsh003 — Closed solid round-trips as SHELL_BASED_SURFACE_MODEL/OPEN_SHELL (SpaceClaim regression)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean shape-counts 24-12-4-4-4 valid=True (OPEN_SHELL→CLOSED_SHELL changes nothing); the face-set loads as edge-disjoint per-face shells, never a solid, so the open-vs-closed container defect is oracle-invisible
 - **Category**: §12.3a shell-orientation
 - **Sources**: 11-translator-vendors.md W021
 - **Sender**: Ansys SpaceClaim 2025R2 / HOOPS Exchange 24.6–25.2 (regression)
@@ -2882,12 +2883,13 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') == 0
 - **Tier-3 assertion**: n_faces_total == 4
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); renaming the OPEN_SHELL to CLOSED_SHELL makes no difference: OCC builds the same edge-disjoint per-face shells and never promotes to a solid, so the open-vs-closed distinction is invisible to shape-counts. Base, clean (defect removed) and huge (defect exaggerated) leave OCC's shape-counts and BRepCheck validity unchanged (heal_on ≡ heal_off), so the declared defect does not survive into the built shape and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(20) ifc=schema_n/a`
 
 ### Tsh004 — Sheet bodies imported in place of solids (FEA pipeline)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean shape-counts 40-20-5-5-5 valid=True (OPEN_SHELL→CLOSED_SHELL changes nothing); the face-set loads as edge-disjoint per-face shells, never a solid, so the open-vs-closed container defect is oracle-invisible
 - **Category**: §12.3a shell-orientation
 - **Sources**: 17-standards-bodies.md M021; 14-brlcad-rhino.md K023
 - **Sender**: Rhino, ICEM Surf, older CATIA workbenches, surface modellers in general
@@ -2901,12 +2903,13 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 5
 - **Tier-3 assertion**: n_faces_total == 5
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); renaming the OPEN_SHELL to CLOSED_SHELL makes no difference: OCC builds the same edge-disjoint per-face shells and never promotes to a solid, so the open-vs-closed distinction is invisible to shape-counts. Base, clean (defect removed) and huge (defect exaggerated) leave OCC's shape-counts and BRepCheck validity unchanged (heal_on ≡ heal_off), so the declared defect does not survive into the built shape and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(33) ifc=schema_n/a`
 
 ### Tsh005 — Solid demoted by stricter receiver tolerance ("clean in FreeCAD, broken in SolidWorks")
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean ≡ huge shape-counts 48-24-6-6-6 valid=True; snapping the ~1.1e-3 seam vertex to exact, or widening it to 3.0, leaves OCC topology and validity unchanged (faces are edge-disjoint, never sewn)
 - **Category**: §12.3a shell-orientation
 - **Sources**: 20-general-forums.md J028
 - **Sender**: KiCad StepUp pipeline and others
@@ -2921,12 +2924,13 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 6
 - **Tier-3 assertion**: n_faces_total == 6
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the ~1.1e-3 seam-vertex tolerance is oracle-invisible: base, snapped-clean and widened-huge all give identical shape-counts and validity; the faces never sew into a solid regardless. Base, clean (defect removed) and huge (defect exaggerated) leave OCC's shape-counts and BRepCheck validity unchanged (heal_on ≡ heal_off), so the declared defect does not survive into the built shape and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(40) ifc=schema_n/a`
 
 ### Tsh006 — Bundled component STEP packages emit OPEN_SHELL components
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean shape-counts 40-20-5-5-5 valid=True (OPEN_SHELL→CLOSED_SHELL changes nothing); the face-set loads as edge-disjoint per-face shells, never a solid, so the open-vs-closed container defect is oracle-invisible
 - **Category**: §12.3a shell-orientation
 - **Sources**: 22-niche-forums.md Y007
 - **Sender**: kicad-packages3D bundled vendor STEP (SOT-89-3, TO-252-2, TO-263 series)
@@ -2940,7 +2944,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 5
 - **Tier-3 assertion**: n_faces_total == 5
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); renaming the OPEN_SHELL to CLOSED_SHELL makes no difference: OCC builds the same edge-disjoint per-face shells and never promotes to a solid, so the open-vs-closed distinction is invisible to shape-counts. Base, clean (defect removed) and huge (defect exaggerated) leave OCC's shape-counts and BRepCheck validity unchanged (heal_on ≡ heal_off), so the declared defect does not survive into the built shape and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(33) ifc=schema_n/a`
@@ -2961,6 +2965,7 @@ _Section summary: 101 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(33) ifc=schema_n/a`
 
 ### Tsh008 — Mis-oriented faces in shell (Möbius-detect)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean ≡ huge shape-counts 48-24-6-6-6 valid=True (heal_on ≡ heal_off); alternating same_sense=.F. face flags leaves OCC topology and BRepCheck validity unchanged
 - **Category**: §12.3a shell-orientation
 - **Sources**: 05-occt-shapefix.md F033 (ShapeFix_Shell::FixFaceOrientation); 09-healing-menus.md H101 (Netgen FixFaceOrientation); 15-academic.md L016, L036
 - **Description**: Faces are oriented inconsistently within a shell — some are flipped — so adjacent faces' outward normals do not agree along their shared edges. The inside/outside classification of the resulting solid is broken; rendering shows alternating inside-out shading.
@@ -2971,12 +2976,13 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 6
 - **Tier-3 assertion**: n_faces_total == 6
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); alternating same_sense=.F. face flags is oracle-invisible: OCC normalizes/ignores it on read, so base, clean and huge give identical shape-counts and validity. Base, clean (defect removed) and huge (defect exaggerated) leave OCC's shape-counts and BRepCheck validity unchanged (heal_on ≡ heal_off), so the declared defect does not survive into the built shape and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(38) ifc=schema_n/a`
 
 ### Tsh009 — Solid built from open shell with inward-pointing outer-shell normals
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean ≡ huge shape-counts 48-24-6-6-6 valid=True (heal_on ≡ heal_off); all-inward same_sense=.F. face flags leaves OCC topology and BRepCheck validity unchanged
 - **Category**: §12.3a shell-orientation
 - **Sources**: 05-occt-shapefix.md F036 (ShapeFix_Solid); 09-healing-menus.md H079, H096 (OCCMakeSolids/makesolids); 17-standards-bodies.md M003 (LOTAR invalid volume)
 - **Description**: `MANIFOLD_SOLID_BREP` built from a shell whose face normals collectively point inward (rather than outward as a solid requires), so the computed volume is negative and the inside/outside classification is inverted. The shell is closed; its orientation is just backward.
@@ -2987,12 +2993,13 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 6
 - **Tier-3 assertion**: n_faces_total == 6
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); all-inward same_sense=.F. face flags is oracle-invisible: OCC normalizes/ignores it on read, so base, clean and huge give identical shape-counts and validity. Base, clean (defect removed) and huge (defect exaggerated) leave OCC's shape-counts and BRepCheck validity unchanged (heal_on ≡ heal_off), so the declared defect does not survive into the built shape and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(38) ifc=schema_n/a`
 
 ### Tsh010 — Reversed face normal in closed shell ("inside-out" shading)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean ≡ huge shape-counts 48-24-6-6-6 valid=True (heal_on ≡ heal_off); the single reversed same_sense=.F. face flag leaves OCC topology and BRepCheck validity unchanged
 - **Category**: §12.3a shell-orientation
 - **Sources**: 11-translator-vendors.md W010, W043
 - **Sender**: TransMagic, ProtoTech docs ("reversed face normals", "surface normal corruption")
@@ -3004,12 +3011,13 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 6
 - **Tier-3 assertion**: n_faces_total == 6
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the single reversed same_sense=.F. face flag is oracle-invisible: OCC normalizes/ignores it on read, so base, clean and huge give identical shape-counts and validity. Base, clean (defect removed) and huge (defect exaggerated) leave OCC's shape-counts and BRepCheck validity unchanged (heal_on ≡ heal_off), so the declared defect does not survive into the built shape and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(38) ifc=schema_n/a`
 
 ### Tsh011 — `FACE_OUTER_BOUND` orientation flag inconsistent with required winding
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean ≡ huge shape-counts 16-8-2-1-1 valid=True (heal_on ≡ heal_off); the reversed ORIENTED_EDGE winding flag leaves OCC topology and BRepCheck validity unchanged
 - **Category**: §12.3a shell-orientation
 - **Sources**: 11-translator-vendors.md W043 (loop direction); 05-occt-shapefix.md F022 (FixOrientation)
 - **Description**: An `EDGE_LOOP`'s `ORIENTED_EDGE.orientation` flags are inconsistent with the geometric winding required by the face's outward normal; the outer wire winds the wrong way, or a hole is oriented as if it were the outer bound.
@@ -3020,7 +3028,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'FACE_BOUND')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
 - **Tier-3 assertion**: n_faces_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the reversed ORIENTED_EDGE winding flag is oracle-invisible: OCC normalizes/ignores it on read, so base, clean and huge give identical shape-counts and validity. Base, clean (defect removed) and huge (defect exaggerated) leave OCC's shape-counts and BRepCheck validity unchanged (heal_on ≡ heal_off), so the declared defect does not survive into the built shape and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`
@@ -3073,6 +3081,7 @@ _Section summary: 101 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(76) ifc=schema_n/a`
 
 ### Tsh018 — Volume orientation mismatch between `LastShape()` and parent solid
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean ≡ huge shape-counts 20-10-3-3-1 valid=True (heal_on ≡ heal_off); the LastShape cap-orientation flag leaves OCC topology and BRepCheck validity unchanged
 - **Category**: §12.3a shell-orientation
 - **Sources**: 13-quaoar.md B006 (BRepPrimAPI_MakeRevol::LastShape)
 - **Description**: Constructor returns the closing face oriented FORWARD via `LastShape()`, but the same face inside the resulting solid is REVERSED. Code using `LastShape()` to drive a follow-up operation sees an inconsistent normal direction.
@@ -3083,7 +3092,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 3
 - **Tier-3 assertion**: n_faces_total == 3
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the LastShape cap-orientation flag is oracle-invisible: OCC normalizes/ignores it on read, so base, clean and huge give identical shape-counts and validity. Base, clean (defect removed) and huge (defect exaggerated) leave OCC's shape-counts and BRepCheck validity unchanged (heal_on ≡ heal_off), so the declared defect does not survive into the built shape and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`
@@ -3120,6 +3129,7 @@ _Section summary: 101 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 
 ### Tsh021 — Non-manifold vertex (bowtie / hourglass / fan-of-fans)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base (shared bowtie VERTEX_POINT) ≡ faithful-clean (vertex un-shared) shape-counts 12-6-2-2-2 valid=True; huge (3 fans) 18-9-3-3-3 valid=True; OCC never sews the triangles at the shared vertex (they load as disjoint shells), so the non-manifold vertex is oracle-invisible
 - **Category**: §12.3a shell-orientation
 - **Sources**: 09-healing-menus.md H009, H010, H042 (CGAL duplicate_non_manifold_vertices, Manifold SplitPinchedVerts); 15-academic.md L012, L047 (Attene 2013)
 - **Description**: A vertex whose 1-ring is not a single fan; touching cones, bowtie meshes (two fans glued at a single point). Common when two solids touch at exactly one vertex (hourglass).
@@ -3131,7 +3141,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); OCC does not sew the two triangles at their shared vertex — they load as edge-disjoint shells whether or not the vertex is shared — so the non-manifold-vertex defect never manifests in the built shape. Base, clean (defect removed) and huge (defect exaggerated) leave OCC's shape-counts and BRepCheck validity unchanged (heal_on ≡ heal_off), so the declared defect does not survive into the built shape and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
@@ -3213,6 +3223,7 @@ _Section summary: 101 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Tsh028 — `STYLED_ITEM` attached to sub-tolerance sliver `ADVANCED_FACE` (lost / mis-bound on healing)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean shape-counts 14-7-2-2-2 valid=True; the authored face is full-size (no sub-tolerance sliver is present in the bytes), and the STYLED_ITEM binding is an XCAF-layer concern invisible to the shape/BRepCheck oracle
 - **Category**: §12.3a shell-orientation
 - **Sources**: 17-standards-bodies.md M032; 22-niche-forums.md Y004
 - **Description**: Per-face `STYLED_ITEM` / `PRESENTATION_STYLE_ASSIGNMENT` references break when the face they target is dropped by sliver-face removal or merged with neighbors during orientation healing. Common signature: a 3-edge sliver `ADVANCED_FACE` whose two long-side vertices differ in only one coordinate by ~1e-9 mm — width below the working tolerance — with a `STYLED_ITEM` attached. Also seen with nested `PRODUCT_DEFINITION` hierarchy where flatten loses inner-component color.
@@ -3224,7 +3235,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared sub-tolerance sliver is not present in the authored geometry (snapping the 1e-9 offset leaves base ≡ clean), and the STYLED_ITEM re-binding is an XCAF-path concern the shape-count oracle cannot observe. Base, clean (defect removed) and huge (defect exaggerated) leave OCC's shape-counts and BRepCheck validity unchanged (heal_on ≡ heal_off), so the declared defect does not survive into the built shape and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(16) ifc=schema_n/a`
@@ -3259,6 +3270,7 @@ _Section summary: 101 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Tsh032 — Single `ADVANCED_FACE` with `same_sense=.F.` flipped inward in `CLOSED_SHELL` (Thingi10K cluster)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean ≡ huge shape-counts 16-8-2-2-2 valid=True (heal_on ≡ heal_off); the single same_sense=.F. face flag leaves OCC topology and BRepCheck validity unchanged
 - **Category**: §12.3a shell-orientation
 - **Sources**: 19-datasets.md D013 (~3% Thingi10K), D016 (non-PWN ~45-50%); 09-healing-menus.md H024, H025 (orient_polygon_soup, orient_to_bound_a_volume)
 - **Description**: Adjacent faces with opposite outward normals; one or more faces in a `CLOSED_SHELL` carry `same_sense=.F.` while their neighbours carry `.T.`, producing a face flipped inward. Common signature: a six-face cube `CLOSED_SHELL` where five faces have orientation `.T.` and exactly one face (e.g. the +Y wall) is `.F.`, breaking normal coherence. Aggregates with open-shell and non-manifold defects into the umbrella "non-PWN / non-solid" class (~50% of Thingi10K).
@@ -3268,12 +3280,13 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'CLOSED_SHELL')
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the single same_sense=.F. face flag is oracle-invisible: OCC normalizes/ignores it on read, so base, clean and huge give identical shape-counts and validity. Base, clean (defect removed) and huge (defect exaggerated) leave OCC's shape-counts and BRepCheck validity unchanged (heal_on ≡ heal_off), so the declared defect does not survive into the built shape and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 
 ### Tsh033 — Mirrored block instances flip surface direction with parameter-space curves
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean ≡ huge shape-counts 16-8-2-2-2 valid=True (heal_on ≡ heal_off); the mirrored-instance same_sense flag leaves OCC topology and BRepCheck validity unchanged
 - **Category**: §12.3a shell-orientation
 - **Sources**: 14-brlcad-rhino.md K017; 11-translator-vendors.md W039
 - **Sender**: Rhino with mirrored block references; HOOPS Exchange Parasolid writer
@@ -3285,12 +3298,13 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the mirrored-instance same_sense flag is oracle-invisible: OCC normalizes/ignores it on read, so base, clean and huge give identical shape-counts and validity. Base, clean (defect removed) and huge (defect exaggerated) leave OCC's shape-counts and BRepCheck validity unchanged (heal_on ≡ heal_off), so the declared defect does not survive into the built shape and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 
 ### Tsh035 — `DEGENERATE_TOROIDAL_SURFACE` with negative minor radius and same `EDGE_CURVE` reused with opposite senses (orientation ambiguity)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean shape-counts 0-0-0-0-1 valid=False (empty shell, 0 faces); flipping the DEGENERATE_TOROIDAL_SURFACE minor radius from -0.3 to +0.3 still yields an empty invalid shell, so the invalidity is the degenerate torus, not the negative-radius sign
 - **Category**: §12.3a shell-orientation
 - **Sources**: 20-general-forums.md J010
 - **Description**: A `DEGENERATE_TOROIDAL_SURFACE` whose minor radius is negative (e.g. minor=-0.3, major=1.0) — the toroid is created by revolving a profile whose curvature center sits to the left of the rotation axis and below the upper edge — leads OCCT to invert the surface normal. Common signature: an `EDGE_LOOP` on the degenerate torus seam reuses the same `EDGE_CURVE` twice with opposite `ORIENTED_EDGE` senses, so the orientation choice is genuinely ambiguous and depends on the sign convention. Causes flipped face shading and hole-vs-stud mis-classification.
@@ -3301,12 +3315,13 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: loads shape(1) but the built shape is BRepCheck-invalid; the degenerate torus builds an empty shell (0 faces) whether the minor radius is negative or positive. The CLEAN copy (declared defect removed) is still BRepCheck-invalid, so the invalidity comes from the degenerate/toy topology, not the declared defect; shape(1)/invalid does not witness the claimed kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Tsh036 — Revolved shape imported with complementary (reversed) angle
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base shape-counts 0-0-0-0-1 valid=False (empty shell); the reversed-angle SURFACE_OF_REVOLUTION over an unbounded LINE profile is a type-error toy (clean/huge crash OCC), so no reversed-sweep is represented
 - **Category**: §12.3a shell-orientation
 - **Sources**: 18-other-issues.md I012 (OCCT #378)
 - **Description**: A revolved shape comes out with the complementary (reversed) angular sweep. Visible in standard XDE display.
@@ -3317,7 +3332,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: loads shape(1) but the built shape is BRepCheck-invalid; the base builds an empty shell (0 faces); the swept profile is an unbounded LINE (a construction type-error), so no reversed angular sweep is ever represented. The CLEAN copy (declared defect removed) is still BRepCheck-invalid, so the invalidity comes from the degenerate/toy topology, not the declared defect; shape(1)/invalid does not witness the claimed kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
@@ -3338,6 +3353,7 @@ _Section summary: 101 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Tsh039 — Self-touching boundary cycle (figure-eight wire after triangulation)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean shape-counts 8-4-1-1-1 valid=True; OCC silently drops the two self-touching spur edges on read (6 declared ORIENTED_EDGEs → 4 built edges), so the figure-eight loads identically to a plain 4-edge square
 - **Category**: §12.3a shell-orientation
 - **Sources**: 09-healing-menus.md H002 (CGAL stitch_boundary_cycles), H011, H041 (Manifold DedupeEdges); 15-academic.md L013
 - **Description**: A face whose boundary loop folds back on itself after triangulation, or "4-manifold edge" (one shared edge has two pairs of triangles).
@@ -3349,12 +3365,13 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
 - **Tier-3 assertion**: n_faces_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); OCC silently drops the self-touching spur edges on read (the wire's 6 declared edges build a 4-edge square identical to the clean case), so the figure-eight defect leaves no trace in shape-counts or validity. Base, clean (defect removed) and huge (defect exaggerated) leave OCC's shape-counts and BRepCheck validity unchanged (heal_on ≡ heal_off), so the declared defect does not survive into the built shape and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Tsh040 — `EDGE_CURVE` shared across two `OPEN_SHELL`s in one `SHELL_BASED_SURFACE_MODEL` (T-junction mis-classified as non-manifold by slicer)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean ≡ huge shape-counts 16-8-2-2-2 valid=True; OCC never merges the EDGE_CURVE shared across the two OPEN_SHELLs (they load as disjoint face-shells), so the T-junction non-manifoldness is oracle-invisible
 - **Category**: §12.3a shell-orientation
 - **Sources**: 20-general-forums.md J015
 - **Sender**: Fusion 360
@@ -3367,7 +3384,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: count_entity_def(b'OPEN_SHELL') == 2
 - **Byte assertion**: contains(b'SHELL_BASED_SURFACE_MODEL')
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); OCC loads the two OPEN_SHELLs as edge-disjoint face-shells and never merges them at the shared EDGE_CURVE, so the shared-edge/non-manifold claim does not survive into the built shape. Base, clean (defect removed) and huge (defect exaggerated) leave OCC's shape-counts and BRepCheck validity unchanged (heal_on ≡ heal_off), so the declared defect does not survive into the built shape and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
@@ -18922,6 +18939,7 @@ _Section summary: 41 entries._
 ## §12.3a Shells — Pass-A gap-fill
 
 ### Tsh043 — Multi-face shell needs orchestrated face-by-face plus shell-wide healing (e.g., OPEN_SHELL with two ADVANCED_FACEs where one has same_sense=.F. flipped relative to neighbour)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean ≡ huge shape-counts 16-8-2-2-1 valid=True (heal_on ≡ heal_off); the per-face same_sense=.F. flag leaves OCC topology and BRepCheck validity unchanged
 - **Category**: §12.3a shells / orientation (sub-class: pipeline)
 - **Sources**: OCCT `ShapeFix_Shell::Perform` (`ShapeFix_Shell.hxx:55`)
 - **Description**: An OPEN_SHELL of multiple faces has per-face defects (orientation flips, missing pcurves, sub-tolerance edges) and shell-level defects (face-orientation propagation cannot resolve until per-face fixes converge). Healing one face changes the inputs to the next face's fix; a one-pass approach leaves residual defects.
@@ -18932,7 +18950,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the per-face same_sense=.F. flag is oracle-invisible: OCC normalizes/ignores it on read, so base, clean and huge give identical shape-counts and validity. Base, clean (defect removed) and huge (defect exaggerated) leave OCC's shape-counts and BRepCheck validity unchanged (heal_on ≡ heal_off), so the declared defect does not survive into the built shape and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
@@ -19697,6 +19715,7 @@ _Section summary: 41 entries._
  even though the underlying EDGE_CURVE directions trace CCW.
 
 ### Tsh045 — `MANIFOLD_SOLID_BREP` whose outer shell loses the closed flag after face unification
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean ≡ huge shape-counts 56-28-7-7-6 valid=True; the file loads as a compound of edge-disjoint shells (no solid), so the face-unification / stale-closed-flag mechanism is never exercised on read
 - **Category**: §12.3a shells/orientation
 - **Sources**: OCCT MANTIS#0030927; OCCT MANTIS#0028227 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A solid is built from a closed shell (six cube faces sharing every
@@ -19716,12 +19735,13 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 7
 - **Tier-3 assertion**: n_faces_total == 7
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the face loads as a compound of edge-disjoint shells (never a solid); the face-unification and closed-flag mechanism is not invoked by the read path, so the declared defect is invisible to shape-counts and validity. Base, clean (defect removed) and huge (defect exaggerated) leave OCC's shape-counts and BRepCheck validity unchanged (heal_on ≡ heal_off), so the declared defect does not survive into the built shape and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(44) ifc=schema_n/a`
 
 ### Tsh046 — Adjacent same-domain faces fail to merge across linear-edge chain
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — declared near-collinear kink is oracle-invisible: straight-clean ≡ kink-preserving-basefix ≡ exaggerated-huge shape-counts 44-22-2-2-1 valid=True; (the file's separate base-emptiness is an undeclared malformed inline-coordinate-tuple LINE artifact, not the kink)
 - **Category**: §12.3a shells/orientation
 - **Sources**: OCCT MANTIS#0029544; OCCT MANTIS#0028681; OCCT MANTIS#0028207 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A flat face has been split along a chain of small, near-collinear
@@ -19743,7 +19763,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the near-collinear edge kink makes no difference to what OCC builds (straight, kink-preserved and exaggerated all give identical 44-22-2-2-1 valid shapes); same-domain face unification is not invoked by the read path. Base, clean (defect removed) and huge (defect exaggerated) leave OCC's shape-counts and BRepCheck validity unchanged (heal_on ≡ heal_off), so the declared defect does not survive into the built shape and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`
@@ -19783,6 +19803,7 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a`
 
 ### Tsh048 — Same-domain face unification corrupts shape with mirrored sub-instance
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean shape-counts 0-0-0-0-1 valid=False (empty shell); the MAPPED_ITEM / mirror instance is unresolved on the plain read path so nothing transfers, and the CLEAN copy is still empty/invalid
 - **Category**: §12.3a shells/orientation
 - **Sources**: OCCT MANTIS#0028529; OCCT MANTIS#0031441 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A solid carries a non-identity location (mirror or scale).
@@ -19800,7 +19821,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: emits a diagnostic but loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: loads shape(1) but the built shape is BRepCheck-invalid; the MAPPED_ITEM mirror instance is not resolved on the plain read path, so the built shape is an empty shell whether the mirror is present or removed. The CLEAN copy (declared defect removed) is still BRepCheck-invalid, so the invalidity comes from the degenerate/toy topology, not the declared defect; shape(1)/invalid does not witness the claimed kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
@@ -19851,6 +19872,7 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 
 ### Tsh051 — Shell shared-face union loses location when REPRESENTATION_MAP / AXIS2_PLACEMENT_3D ref_direction encodes a non-unit (scaled) DIRECTION
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean shape-counts 0-0-0-0-1 valid=False (empty shell); the non-unit ref_direction is carried on a MAPPED_ITEM that the plain read path leaves unresolved, so the CLEAN copy is still empty/invalid
 - **Category**: §12.3a shells/orientation
 - **Sources**: OCCT MANTIS#0028529; OCCT MANTIS#0030534 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A compound containing two solids, each at distinct
@@ -19869,7 +19891,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Tsh048. Synonyms: "shell merge loses non-unit DIRECTION location", "scaled instance comes in at origin after merge", "MAPPED_ITEM placement dropped on shell union", "non-uniform scale in REPRESENTATION_MAP lost", "compound location vanishes after topology op".
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 1
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: loads shape(1) but the built shape is BRepCheck-invalid; the scaled/non-unit ref_direction rides on an unresolved MAPPED_ITEM; the built shape is an empty invalid shell whether the direction is (2,0,0) or (1,0,0). The CLEAN copy (declared defect removed) is still BRepCheck-invalid, so the invalidity comes from the degenerate/toy topology, not the declared defect; shape(1)/invalid does not witness the claimed kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
@@ -19947,6 +19969,7 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Tsh055 — Merging adjacent same-surface faces with opposite normals returns inverted face
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean ≡ huge shape-counts 16-8-2-2-1 valid=True (heal_on ≡ heal_off); the opposite-normal same_sense flags leaves OCC topology and BRepCheck validity unchanged
 - **Category**: §12.3a shells/orientation
 - **Sources**: OCCT MANTIS#0032140; OCCT MANTIS#0027004 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: Two faces that should be merged have surface normals
@@ -19962,7 +19985,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Tfa016, Tsh001. Synonyms: "merge of opposite-normal faces returns inverted face", "merging same-plane faces with opposite normals breaks shell", "unifier ignores face direction", "merged face has wrong outward direction", "opposite-orientation faces merged silently".
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the opposite-normal same_sense flags is oracle-invisible: OCC normalizes/ignores it on read, so base, clean and huge give identical shape-counts and validity. Base, clean (defect removed) and huge (defect exaggerated) leave OCC's shape-counts and BRepCheck validity unchanged (heal_on ≡ heal_off), so the declared defect does not survive into the built shape and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
@@ -19990,6 +20013,7 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
 
 ### Tsh057 — Merging near-tangent adjacent ADVANCED_FACEs (PLANE normals differ ~1e-4 rad, shared EDGE_CURVE with mismatched vertex z) returns self-overlapping face
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean ≡ huge shape-counts 16-8-2-2-2 valid=True; the plain read path loads the two near-tangent faces as 2 separate valid faces and never invokes the same-surface merge that would produce the self-overlap
 - **Category**: §12.3a shells/orientation
 - **Sources**: OCCT MANTIS#0029845; OCCT MANTIS#0028995; OCCT MANTIS#0028343 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: Two adjacent ADVANCED_FACEs meet at an EDGE_CURVE with
@@ -20012,12 +20036,13 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1), n_faces_total==2); outside catalog's allowed set ({heal}). Kernel-bug witnessed: the plain default read path does not itself invoke the same-surface merge that would trigger the self-overlap — the two near-tangent faces load as 2 separate faces, not a single merged self-overlapping one; receivers whose pipeline does perform this merge must still heal (revert on post-merge invalidity) rather than accept the corrupted result.
+- **OCC behavior**: accepts and loads a valid shape(1); the self-overlap is a same-surface-merge artifact; the default read path does not invoke that merge (it loads 2 separate valid faces), so perturbing the near-tangent tilt leaves shape-counts and validity unchanged. Base, clean (defect removed) and huge (defect exaggerated) leave OCC's shape-counts and BRepCheck validity unchanged (heal_on ≡ heal_off), so the declared defect does not survive into the built shape and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 
 ### Tsh058 — Adjacent same-surface face merge ignores edge-preservation request
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean ≡ huge shape-counts 16-8-2-2-1 valid=True (heal_on ≡ heal_off); the 'keep_edge' EDGE_CURVE name token leaves OCC topology and BRepCheck validity unchanged
 - **Category**: §12.3a shells/orientation
 - **Sources**: OCCT MANTIS#0028227 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: When same-surface face merging is invoked with a flag
@@ -20034,12 +20059,13 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the 'keep_edge' EDGE_CURVE name token is oracle-invisible: OCC normalizes/ignores it on read, so base, clean and huge give identical shape-counts and validity. Base, clean (defect removed) and huge (defect exaggerated) leave OCC's shape-counts and BRepCheck validity unchanged (heal_on ≡ heal_off), so the declared defect does not survive into the built shape and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 
 ### Tsh059 — Coplanar-face merge history map omits intermediate shapes (multiple ADVANCED_FACEs aliasing the same FACE_OUTER_BOUND and same PLANE)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean shape-counts 32-16-4-4-4 valid=True; de-aliasing the four ADVANCED_FACEs to four distinct FACE_OUTER_BOUNDs leaves the counts identical, so the bound-aliasing is oracle-invisible (the huge delta is pure added-face count, not the mechanism)
 - **Category**: §12.3a shells/orientation
 - **Sources**: OCCT MANTIS#0028710; OCCT MANTIS#0028226 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: After merging adjacent same-surface ADVANCED_FACEs, a
@@ -20060,12 +20086,13 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: A007. Synonyms: "history map missing intermediate edges after merge", "PMI lost during multi-pass face merge", "color attribute disappears on edges from merged faces", "shape history incomplete after unification", "edge mapping doesn't follow merge chain".
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 4
 - **Tier-3 assertion**: n_faces_total == 4
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the FACE_OUTER_BOUND/PLANE aliasing is invisible: de-aliasing to four distinct bounds gives identical shape-counts and validity; the history-map defect is a merge-operation concern the read path never exercises. Base, clean (defect removed) and huge (defect exaggerated) leave OCC's shape-counts and BRepCheck validity unchanged (heal_on ≡ heal_off), so the declared defect does not survive into the built shape and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a`
 
 ### Tsh060 — Same-surface face merge runs quadratically across disjoint shells
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean shape-counts 64-32-8-8-8 valid=True; the declared O(N²) same-surface-merge cost is a performance property with no topology or validity signature (huge is pure scale-up)
 - **Category**: §12.3a shells/orientation
 - **Sources**: OCCT MANTIS#0027085; OCCT MANTIS#0028467; OCCT MANTIS#0029502; OCCT MANTIS#0026957 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A compound containing N independent shells is processed
@@ -20081,7 +20108,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: count_entity_def(b'OPEN_SHELL') == 8
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 8
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); this is a performance claim (quadratic same-surface merge across disjoint shells) with no shape-count or validity signature; the read path loads the shells unchanged, so nothing is witnessed by shape(1). Base, clean (defect removed) and huge (defect exaggerated) leave OCC's shape-counts and BRepCheck validity unchanged (heal_on ≡ heal_off), so the declared defect does not survive into the built shape and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(72) ifc=schema_n/a`
@@ -20535,6 +20562,7 @@ _Section summary: 41 entries._
 ## §12.6 assembly / metadata / writer / appearance
 
 ### Tsh062 — Merging adjacent same-surface faces returns topologically invalid shape (OPEN_SHELL of multiple CYLINDRICAL_SURFACE faces with degenerate seam edges where two distinct VERTEX_POINTs share coords)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean shape-counts 10-5-5-5-5 valid=False; giving the coincident seam VERTEX_POINTs distinct coordinates still yields a BRepCheck-invalid shape, so the invalidity is the degenerate cylinder-seam faces, not the duplicate-coordinate vertices
 - **Category**: §12.3a shells/orientation
 - **Sources**: OCCT MANTIS#0032332; OCCT MANTIS#0032213; OCCT MANTIS#0031187; OCCT MANTIS#0030905; OCCT MANTIS#0027000; OCCT MANTIS#0026644; OCCT MANTIS#0026489; OCCT MANTIS#0026219; OCCT GitHub#876; OCCT GitHub#624; OCCT GitHub#372 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A class of long-running regressions in same-surface
@@ -20560,7 +20588,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 5
 - **Tier-3 assertion**: n_faces_total == 5
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: loads shape(1) but the built shape is BRepCheck-invalid; the shape is BRepCheck-invalid from the degenerate cylindrical-seam faces; separating the coincident seam vertices to distinct coordinates does not restore validity. The CLEAN copy (declared defect removed) is still BRepCheck-invalid, so the invalidity comes from the degenerate/toy topology, not the declared defect; shape(1)/invalid does not witness the claimed kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
@@ -20582,6 +20610,7 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 
 ### Tsh063 — Adjacent toroidal faces with identical parameters are not detected as same-surface
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean shape-counts 4-2-2-2-1 valid=False; collapsing the two identical-parameter TOROIDAL_SURFACEs to a single surface still yields a BRepCheck-invalid shape, so the invalidity is the toy toroidal faces, not the surface-identity detection
 - **Category**: §12.3a shells/orientation
 - **Sources**: OCCT MANTIS#0030100; OCCT MANTIS#0029358; OCCT MANTIS#0032619 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: Two adjacent faces on the same `TOROIDAL_SURFACE` (e.g.,
@@ -20600,7 +20629,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'OPEN_SHELL')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 2
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: loads shape(1) but the built shape is BRepCheck-invalid; the shape is BRepCheck-invalid from the toy toroidal faces; collapsing the two identical toroidal surfaces to one does not restore validity, so the same-surface-detection claim is not what makes it invalid. The CLEAN copy (declared defect removed) is still BRepCheck-invalid, so the invalidity comes from the degenerate/toy topology, not the declared defect; shape(1)/invalid does not witness the claimed kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Tier-3 assertion**: face[0].surface_type == "torus"
@@ -20655,6 +20684,7 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Tsh066 — Same `CLOSED_SHELL` referenced from two `MANIFOLD_SOLID_BREP` entities
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean ≡ huge shape-counts 48-24-6-6-6 valid=True; the transferred representation root is a SHELL_BASED model of the shared CLOSED_SHELL, so the two aliasing MANIFOLD_SOLID_BREP entities are orphaned and never on the read path
 - **Category**: §12.3a shells/orientation (sub-class: shell sharing)
 - **Sources**: bug-reporter language: "two solids point at the same shell", "shell shared between bodies"; deduced from EXPRESS — neither AP203 nor AP242 explicitly forbids the cross-reference
 - **Sender**: deduced — assembly exporters that emit one body per part definition and two bodies that happen to instance the same template shell, or buggy writers that re-use a shell handle without cloning
@@ -20669,12 +20699,13 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: n_faces_total == 6
 - **Tier-3 assertion**: n_edges_total == 24
 - **Tier-3 assertion**: n_vertices_total == 48
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the dual MANIFOLD_SOLID_BREP entities that alias one CLOSED_SHELL are orphaned (the transferred root is a SHELL_BASED_SURFACE_MODEL of the shell); giving the second solid its own shell changes nothing, so the aliasing is oracle-invisible. Base, clean (defect removed) and huge (defect exaggerated) leave OCC's shape-counts and BRepCheck validity unchanged (heal_on ≡ heal_off), so the declared defect does not survive into the built shape and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a`
 
 ### Tsh067 — Inner void shell extends beyond outer shell extent (void poking through)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean ≡ huge shape-counts 96-48-12-12-12 valid=True; the transferred root is a SHELL_BASED model of both shells, so the BREP_WITH_VOIDS entity is orphaned and the void-containment relationship is never exercised on read
 - **Category**: §12.3a shells/orientation (sub-class: BREP_WITH_VOIDS containment)
 - **Sources**: 16-iso-spec ISO 10303-42 §BREP_WITH_VOIDS (the void-shells must be entirely contained inside the outer shell); bug-reporter language: "STEP void escapes the part", "inner shell pokes out"
 - **Sender**: deduced — Boolean-cut exporters that emit a BREP_WITH_VOIDS where the cut tool's bounding shell extends past one face of the host part
@@ -20689,7 +20720,7 @@ _Section summary: 41 entries._
 - **Tier-3 assertion**: n_faces_total == 12
 - **Tier-3 assertion**: n_edges_total == 48
 - **Tier-3 assertion**: n_vertices_total == 96
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the BREP_WITH_VOIDS entity is orphaned (the transferred root is a SHELL_BASED_SURFACE_MODEL of the two shells); shrinking the void inside the outer shell or enlarging it far beyond leaves shape-counts and validity unchanged, so containment is oracle-invisible. Base, clean (defect removed) and huge (defect exaggerated) leave OCC's shape-counts and BRepCheck validity unchanged (heal_on ≡ heal_off), so the declared defect does not survive into the built shape and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(108) ifc=schema_n/a`
@@ -29442,6 +29473,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Tsh068 — `MANIFOLD_SOLID_BREP` whose outer shell is open (not closed) silently accepted
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — base ≡ clean shape-counts 16-8-2-2-2 valid=True (OPEN_SHELL→CLOSED_SHELL changes nothing); the MANIFOLD_SOLID_BREP is not the transferred representation root (a SHELL_BASED model of the raw shell is), so the open-shell-as-solid claim is never exercised on read
 - **Category**: §12.3a shells / orientation (sub-class: open shell as outer)
 - **Sources**: OCCT MANTIS#0025169; bug-reporter language: "STEP Reader allow opened shells to be an outer for ManifoldSolidBrep", "open shell used as outer of solid", "manifold solid invariant violated". (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Sender**: Tools that emit a `MANIFOLD_SOLID_BREP` whose `outer` references a `CLOSED_SHELL` but where the shell's faces actually leave gaps (free edges) — the schema requires the outer shell to be topologically closed.
@@ -29453,7 +29485,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: contains(b'OPEN_SHELL') or contains(b'CLOSED_SHELL')
 - **Tier-3 assertion**: n_faces_total == 2
-- **OCC behavior**: silent-accept observed (catalog allowed: {reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the OPEN_SHELL-as-MANIFOLD_SOLID_BREP entity is orphaned (the transferred root is a SHELL_BASED_SURFACE_MODEL of the shell); OPEN_SHELL→CLOSED_SHELL leaves shape-counts unchanged. Base, clean (defect removed) and huge (defect exaggerated) leave OCC's shape-counts and BRepCheck validity unchanged (heal_on ≡ heal_off), so the declared defect does not survive into the built shape and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
