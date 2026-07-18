@@ -1,5 +1,5 @@
 ISO-10303-21;
-/* Gn002: RATIONAL_B_SPLINE_CURVE: 4 control points but only 3 weights (length mismatch); RATIONAL_B_SPLINE_SURFACE: 4x4 control net but 4x3 weights grid (column missing); STEP semantics require strict equality NbWeights == NbControlPoints. Both malformed rational entities are wired into the model as members of a GEOMETRIC_SET (#2), reachable from the shape representation. Live-oracle behaviour (OCCT 7.8.1, deterministic across reruns): the reader parses both but the transfer stage silently DROPS both (weight-count mismatch) -> shape_null / empty result; gmsh likewise yields empty. A well-formed control (4 weights on the curve, 4x4 grid on the surface) yields a real edge+face -- so the empty result is genuinely caused by the weight mismatch, not by the container. */
+/* Gn002: RATIONAL_B_SPLINE_CURVE: 4 control points but only 3 weights (length mismatch); RATIONAL_B_SPLINE_SURFACE: 4x4 control net but 4x3 weights grid (column missing); STEP semantics require strict equality NbWeights == NbControlPoints. Both malformed rational entities are wired into a GEOMETRIC_SET reachable from the shape representation; OCCT's transfer stage throws on the weight mismatch and yields an empty shape (a well-formed control yields a real edge+face). */
 HEADER;
 FILE_DESCRIPTION(('Gn002'),'2;1');
 FILE_NAME('Gn002.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
@@ -7,7 +7,45 @@ FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
 ENDSEC;
 DATA;
 #9000=APPLICATION_CONTEXT('mechanical design');
-#2=GEOMETRIC_SET('',(#9067,#9084));
+#1=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#2=CARTESIAN_POINT('',(1.0,1.0,0.0));
+#3=CARTESIAN_POINT('',(2.0,1.0,0.0));
+#4=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#5=(
+  BOUNDED_CURVE()
+  B_SPLINE_CURVE(3,(#1,#2,#3,#4),.UNSPECIFIED.,.F.,.F.)
+  B_SPLINE_CURVE_WITH_KNOTS((4,4),(0.0,1.0),.UNSPECIFIED.)
+  CURVE()
+  GEOMETRIC_REPRESENTATION_ITEM()
+  RATIONAL_B_SPLINE_CURVE((1.0,2.0,1.0))
+  REPRESENTATION_ITEM('rcurve_bad_weights')
+);
+#6=CARTESIAN_POINT('',(0.0,0.0,0.0));
+#7=CARTESIAN_POINT('',(0.0,1.0,0.0));
+#8=CARTESIAN_POINT('',(0.0,2.0,0.0));
+#9=CARTESIAN_POINT('',(0.0,3.0,0.0));
+#10=CARTESIAN_POINT('',(1.0,0.0,0.0));
+#11=CARTESIAN_POINT('',(1.0,1.0,0.1));
+#12=CARTESIAN_POINT('',(1.0,2.0,0.2));
+#13=CARTESIAN_POINT('',(1.0,3.0,0.3));
+#14=CARTESIAN_POINT('',(2.0,0.0,0.0));
+#15=CARTESIAN_POINT('',(2.0,1.0,0.2));
+#16=CARTESIAN_POINT('',(2.0,2.0,0.4));
+#17=CARTESIAN_POINT('',(2.0,3.0,0.6));
+#18=CARTESIAN_POINT('',(3.0,0.0,0.0));
+#19=CARTESIAN_POINT('',(3.0,1.0,0.3));
+#20=CARTESIAN_POINT('',(3.0,2.0,0.6));
+#21=CARTESIAN_POINT('',(3.0,3.0,0.9));
+#22=(
+  BOUNDED_SURFACE()
+  B_SPLINE_SURFACE(3,3,((#6,#7,#8,#9),(#10,#11,#12,#13),(#14,#15,#16,#17),(#18,#19,#20,#21)),.UNSPECIFIED.,.F.,.F.,.F.)
+  B_SPLINE_SURFACE_WITH_KNOTS((4,4),(4,4),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.)
+  GEOMETRIC_REPRESENTATION_ITEM()
+  RATIONAL_B_SPLINE_SURFACE(((1.0,1.0,1.0),(1.0,1.0,1.0),(1.0,1.0,1.0),(1.0,1.0,1.0)))
+  REPRESENTATION_ITEM('rsurf_bad_weights')
+  SURFACE()
+);
+#23=GEOMETRIC_SET('',(#5,#22));
 #9050=PRODUCT_CONTEXT('',#9000,'mechanical');
 #9051=PRODUCT('Gn002','Gn002','',(#9050));
 #9052=PRODUCT_DEFINITION_FORMATION('','',#9051);
@@ -19,45 +57,7 @@ DATA;
 #9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
 #9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,'distance_accuracy_value','');
 #9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT('','3D'));
-#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#2),#9060);
+#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION('',(#23),#9060);
 #9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
-#9063=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#9064=CARTESIAN_POINT('',(1.0,1.0,0.0));
-#9065=CARTESIAN_POINT('',(2.0,1.0,0.0));
-#9066=CARTESIAN_POINT('',(3.0,0.0,0.0));
-#9067=(
-  BOUNDED_CURVE()
-  B_SPLINE_CURVE(3,(#9063,#9064,#9065,#9066),.UNSPECIFIED.,.F.,.F.)
-  B_SPLINE_CURVE_WITH_KNOTS((4,4),(0.0,1.0),.UNSPECIFIED.)
-  CURVE()
-  GEOMETRIC_REPRESENTATION_ITEM()
-  RATIONAL_B_SPLINE_CURVE((1.0,2.0,1.0))
-  REPRESENTATION_ITEM('rcurve_bad_weights')
-);
-#9068=CARTESIAN_POINT('',(0.0,0.0,0.0));
-#9069=CARTESIAN_POINT('',(0.0,1.0,0.0));
-#9070=CARTESIAN_POINT('',(0.0,2.0,0.0));
-#9071=CARTESIAN_POINT('',(0.0,3.0,0.0));
-#9072=CARTESIAN_POINT('',(1.0,0.0,0.0));
-#9073=CARTESIAN_POINT('',(1.0,1.0,0.1));
-#9074=CARTESIAN_POINT('',(1.0,2.0,0.2));
-#9075=CARTESIAN_POINT('',(1.0,3.0,0.3));
-#9076=CARTESIAN_POINT('',(2.0,0.0,0.0));
-#9077=CARTESIAN_POINT('',(2.0,1.0,0.2));
-#9078=CARTESIAN_POINT('',(2.0,2.0,0.4));
-#9079=CARTESIAN_POINT('',(2.0,3.0,0.6));
-#9080=CARTESIAN_POINT('',(3.0,0.0,0.0));
-#9081=CARTESIAN_POINT('',(3.0,1.0,0.3));
-#9082=CARTESIAN_POINT('',(3.0,2.0,0.6));
-#9083=CARTESIAN_POINT('',(3.0,3.0,0.9));
-#9084=(
-  BOUNDED_SURFACE()
-  B_SPLINE_SURFACE(3,3,((#9068,#9069,#9070,#9071),(#9072,#9073,#9074,#9075),(#9076,#9077,#9078,#9079),(#9080,#9081,#9082,#9083)),.UNSPECIFIED.,.F.,.F.,.F.)
-  B_SPLINE_SURFACE_WITH_KNOTS((4,4),(4,4),(0.0,1.0),(0.0,1.0),.UNSPECIFIED.)
-  GEOMETRIC_REPRESENTATION_ITEM()
-  RATIONAL_B_SPLINE_SURFACE(((1.0,1.0,1.0),(1.0,1.0,1.0),(1.0,1.0,1.0),(1.0,1.0,1.0)))
-  REPRESENTATION_ITEM('rsurf_bad_weights')
-  SURFACE()
-);
 ENDSEC;
 END-ISO-10303-21;
