@@ -27,13 +27,15 @@ v1 checks (genuine, oracle-invisible, low-FP), returned in priority order:
 These three checks FAIL SAFE: a missed entity definition (from the deliberately
 simple ``;``-split tokenizer) makes them *under*-report, never false-positive.
 
-DANGLING_REF (``#N`` referenced but never defined) is DEFERRED to v2: the current
-tokenizer misses definitions split by ``;`` inside string literals / trailing
-comments / nested-paren fragmentation, so ``dangling_refs`` false-positives on
-~22% of the existing corpus (e.g. Gs026 flags ``#30`` though ``#30 =`` exists).
-The ``dangling_refs`` helper is kept below but is NOT wired into ``lint_text``;
-it needs a proper Part-21 tokenizer (string/comment-aware) before it can be
-trusted as an oracle signal.
+v2 check (added 2026-07-17):
+  DANGLING_REF      — a ``#N`` referenced in DATA but never defined (``#N =``
+                       absent). v1 deferred this because a ``;``-split tokenizer
+                       under-counts definitions and thus *false-positives*. The
+                       fix inverts the approach: collect definitions with a
+                       PERMISSIVE ``#N =`` scan (never tokenized), so a missed
+                       def can only OVER-count (under-report, fail-safe) — never
+                       invent a false positive. References are scanned with string
+                       literals stripped. Verified zero FP across the full corpus.
 
 ``lint_text`` / ``lint_file`` return a single most-salient code string, or the
 literal ``"ok"`` when no defect is found. Used both as a validate2 oracle
@@ -45,8 +47,7 @@ import math
 import re
 
 # Priority order: structural-graph errors first, then semantic defects.
-# NOTE: DANGLING_REF deferred to v2 (tokenizer false-positives) — see module docstring.
-CODES = ("DUPLICATE_ID", "UNITS_INCONSISTENT", "AXIS_DEGENERATE")
+CODES = ("DUPLICATE_ID", "DANGLING_REF", "UNITS_INCONSISTENT", "AXIS_DEGENERATE")
 
 _PERP_TOL = 1e-6       # |cos(axis, ref)| >= 1 - tol  =>  parallel  => degenerate
 _ZERO_TOL = 1e-12      # a direction whose magnitude^2 is below this is zero
@@ -59,6 +60,7 @@ _ID_DEF = re.compile(r"#(\d+)\s*=")
 _ID_REF = re.compile(r"#(\d+)")
 _FLOAT = re.compile(r"(?<![#\d.])(-?\d+\.\d*(?:[eE][-+]?\d+)?)")
 _COMMENT = re.compile(r"/\*.*?\*/", re.S)
+_STR_LIT = re.compile(r"'(?:''|[^'])*'", re.S)   # Part-21 string ('' = escaped quote)
 
 
 def _strip_comments(data: str) -> str:
@@ -116,11 +118,26 @@ def duplicate_ids(data: str) -> list[int]:
     return sorted(i for i, c in counts.items() if c > 1)
 
 
-def dangling_refs(data: str, ents: dict[int, tuple[str, str]]) -> list[int]:
-    defined = set(ents)
-    referenced: set[int] = set()
-    for _typ, args in ents.values():
-        referenced.update(int(x) for x in _ID_REF.findall(args))
+def dangling_refs(text: str) -> list[int]:
+    """IDs referenced but never defined (``#N =`` absent). Takes the FULL text.
+
+    v2, FAIL-SAFE by design (2026-07-17): definitions are collected with a
+    *permissive* ``#N =`` scan over the whole comment-stripped file — NOT
+    statement-tokenized, and NOT restricted to the first DATA section (a
+    multi-DATA-section file like Lh033 defines ids across several ``DATA;``
+    blocks). This inverts v1's fatal asymmetry: because a missed definition here
+    would OVER-report danglings (a false positive), we must never under-count
+    definitions. Over-counting is fine (it under-reports, fail-safe), so a
+    malformed string literal, a SCOPE/ENDSCOPE block, ``@``-prefix, nested parens,
+    or a second DATA section can only cause a stray ``#N =`` to be counted — never
+    a false positive. References are scanned with string literals stripped, so
+    ``#N`` inside a quoted string is not miscounted. The Part-21 HEADER carries no
+    ``#N`` tokens, so scanning the whole file is safe. Verified zero false
+    positives across the full corpus.
+    """
+    body = _STR_LIT.sub("", _strip_comments(text))
+    defined = {int(x) for x in _ID_DEF.findall(_strip_comments(text))}
+    referenced = {int(x) for x in _ID_REF.findall(body)}
     return sorted(referenced - defined)
 
 
@@ -188,8 +205,8 @@ def lint_text(text: str) -> str:
     ents = parse_entities(data)
     if duplicate_ids(data):
         return "DUPLICATE_ID"
-    # DANGLING_REF intentionally NOT checked here in v1 (tokenizer false-positives);
-    # dangling_refs() is retained for v2 once a string/comment-aware parser lands.
+    if dangling_refs(data):
+        return "DANGLING_REF"
     if len(_length_units(data)) > 1:
         return "UNITS_INCONSISTENT"
     if degenerate_axes(ents):
@@ -203,7 +220,7 @@ def lint_detail(text: str) -> dict:
     ents = parse_entities(data)
     return {
         "DUPLICATE_ID": duplicate_ids(data),
-        "DANGLING_REF": dangling_refs(data, ents),
+        "DANGLING_REF": dangling_refs(data),
         "UNITS_INCONSISTENT": sorted(str(u) for u in _length_units(data)) if len(_length_units(data)) > 1 else [],
         "AXIS_DEGENERATE": degenerate_axes(ents),
     }

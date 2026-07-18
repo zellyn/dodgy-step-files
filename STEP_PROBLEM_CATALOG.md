@@ -333,6 +333,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The 8-bit shift directive desynchronizes the string scanner; the host attribute loads with merged or truncated content, and parity tracking for the rest of the DATA section may be off by one apostrophe.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le022 — Non-ASCII / Japanese / Greek Unicode in PRODUCT.name via `\X2\…\X0\`
@@ -378,6 +379,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
 - **Model impact**: A whitespace-only attribute is silently emptied during normalization; the loaded entity records `''` where the source carried `' '`, losing the producer's intent.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le026 — `\X0\` end-marker missing — remainder treated as encoded content
@@ -6494,6 +6496,7 @@ _Section summary: 84 entries._
 - **Tier-3 assertion**: n_edges_total == 4
 - **Tier-3 assertion**: n_vertices_total == 8
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A005 — Lost assembly hierarchy on round-trip (flatten to single CATPart / single solid)
@@ -7044,6 +7047,7 @@ End of file. Total: 38 entries (A001.A038).
 - **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Defect causes the loader to either abort, silently drop the affected entity, or accept it with corrupted attributes; downstream operations on the affected sub-shape produce results inconsistent with the producer's intent.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### P002 — Non-UTF-8 (GB18030 / locale code page) in string literals
@@ -9507,6 +9511,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **OCC behavior**: loads a shape (with ERR diagnostic) — reading as healing; outside catalog's allowed set ({reject}). Documented divergence: OCC's auto-repair is stronger than the catalog's reject-only stance; conservative kernels should still reject.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Pmi126 — `LOCATING_FEATURE` tolerance zone larger than the locator feature itself
@@ -10693,6 +10698,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **OCC behavior**: silently accepts with diagnostic and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M075.stp
 
@@ -10996,6 +11002,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'NETWORK')
 - **Tier-3 assertion**: n_faces_total == 1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M087.stp
 
@@ -13851,6 +13858,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'TESSELLATED')
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ad097 — Comment string inside STEP file breaks parser
@@ -15798,6 +15806,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: matches(rb'ADVANCED_FACE\([^;]*#42[^;]*#43') or contains(b'#999999999')
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: Parser dereferences invalid memory while processing the malformed token; the load process is killed by a signal and no shape is delivered.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ad014 — Float literal with extreme exponent (`1E999999`) propagates as inf/NaN
@@ -15950,6 +15959,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ad043 — STEP read raises uncaught exception on null / invalid entity reference
@@ -15966,6 +15976,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ad044 — `EDGE_CURVE.same_sense` boolean read uninitialised
@@ -16063,6 +16074,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: matches(rb'#-\d+')
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: Parser dereferences invalid memory while processing the malformed token; the load process is killed by a signal and no shape is delivered.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ad052 — STEP file referencing itself as external file (infinite loop)
@@ -16208,6 +16220,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must reject or emit a diagnostic this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ad080 — Two `DATA` sections with colliding `#NNN` id space in one file (token-boundary attack)
@@ -16234,6 +16247,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: matches(rb',\(\),')
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ad082 — Late-bound forward reference (`FACE_OUTER_BOUND` → `EDGE_LOOP` → `ORIENTED_EDGE` defined later) trips binary BREP indexed-map lookup
@@ -16262,6 +16276,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ad084 — `XCAFDoc_ShapeTool::FindSubShape` crash building XCAF tree
@@ -17261,6 +17276,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts under one mode and emits a diagnostic under the other (no shape produced); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ---
@@ -18043,6 +18059,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'REPRESENTATION_MAP')
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ## §12.1a Encoding
@@ -18333,6 +18350,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: count(b'.TRUE.') + count(b'.FALSE.') >= 1
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le056 — Mixed `.T.` and `.TRUE.` boolean lexemes within one file
@@ -18347,6 +18365,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: count(b'.T.') >= 1 and count(b'.TRUE.') >= 1
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le057 — Records terminated with `;\n` plus extra blank lines between records
@@ -18394,6 +18413,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'@geometry#') or contains(b'@geom#') or contains(b'@pmi#')
 - **Tier-3 assertion**: load != "ok"
 - **Model impact**: Header metadata fields load with empty/wrong values; downstream consumers that branch on schema name or implementation level pick the wrong code path even though the DATA section is well-formed.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=schema_n/a`
 
 ### Lh034 — REFERENCE section pointing at unresolvable external anchor
@@ -18822,6 +18842,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: count_entity_def(b'CLOSED_SHELL') == 0
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: Shell construction reports invalidity (free edges, multi-connected vertices, or wrong orientation); BRepCheck flags the shape, and downstream solid construction either produces an invalid solid or fails outright.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-3a-shells/Bo002.stp
 
@@ -20201,6 +20222,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture (bounds list with null/missing entries) rather than silently accept it. Earlier characterizations of this MANTIS-tracked bug reported a crash on some heal modes; that does not reproduce on the current live oracle.
 - **Severity**: P2
 - **Model impact**: The null/unresolvable inner-wire bound is silently dropped or ignored during face construction; the resulting face's bounds list no longer matches what the file declared, with no diagnostic pointing at the loss.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Tier-3 assertion**: n_faces_total == 1
 
@@ -24686,6 +24708,7 @@ Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-16): the top fac
 
 - **Tier-3 assertion**: n_faces_total == 1
 - **Notes**: Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed away from face-splitting repair (never invoked; no split geometry exists) to the genuine, verified behavior — a dangling entity reference causes clean per-edge failure and bound-dropping. **See also**: Tfa252 (same fallback pattern, explicit-null trigger instead of dangling reference). Synonyms: "undefined entity reference in edge geometry", "dangling reference clean fail", "unresolved reference bound dropped".
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### Tfa099 — Cone face with a v-parameter-decreasing (reverse-height) wire wrap loads intact as encoded; twisted-face checking is never invoked to classify it
 
@@ -29144,6 +29167,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **OCC behavior**: silent-accept, warn-and-proceed observed (catalog allowed: {reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Pf036 — `STEPCAFControl_Reader` hangs in infinite loop on cyclic `MAPPED_ITEM` reference
@@ -29176,6 +29200,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **OCC behavior**: silent-accept observed (catalog allowed: {reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 
 ### A103 — Geometry imports correctly but every face arrives with no colour assigned
@@ -33242,6 +33267,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **OCC behavior**: heal, warn-and-proceed observed (catalog allowed: {reject}). Documented divergence: OCC's lenient/healing parser accepts where the spec text says reject; conservative kernels enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: The PMI/GD&T annotation either fails to attach to its target geometry or loads with wrong tolerance/datum metadata; the model geometry is unchanged but the semantic PMI structure is broken or invisible to downstream tools.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A097 — Error transferring `.stp` model from `STEPCAFControl_Reader` to OCAF document
@@ -37165,6 +37191,7 @@ exercised against CGAL PMP / MeshFix.
 - **Notes**: Synonyms: "STEP Export crash PCurve", "PCURVE null deref crash", "OCCT segfault on STEP export PCurve", "dangling surface ref crashes writer", "PCurve to missing surface crashes".
 - **Byte assertion**: contains(b'PCURVE')
 - **Tier-3 assertion**: load == "ok"
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Production crash on what looks like a small fixture; data-loss for the entire export session.
 
@@ -37177,6 +37204,7 @@ exercised against CGAL PMP / MeshFix.
 - **Notes**: Synonyms: "ifcopenshell segfault malformed step-id", "non-numeric STEP id crash", "STEP forward-ref into string segfault", "#xx token inside label crashes reader", "STEP reader segfaults on malformed id".
 - **Byte assertion**: contains(b'PRESENTATION_LAYER_ASSIGNMENT')
 - **Tier-3 assertion**: load == "ok"
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Reader unavailable until the file is removed; affects batch-mode pipelines that process untrusted STEP input.
 
@@ -37189,6 +37217,7 @@ exercised against CGAL PMP / MeshFix.
 - **Notes**: Synonyms: "negative STEP id segfault", "STEP reader atoi -1 crash", "#-1 as STEP id crashes", "unsigned index from signed STEP id segfault", "malformed STEP-IDs segfault variant".
 - **Byte assertion**: contains(b'PRESENTATION_LAYER_ASSIGNMENT')
 - **Tier-3 assertion**: load == "ok"
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Reader crashes; if the slot happened to be readable, the wrong entity gets dereferenced and downstream geometry is mis-bound.
 
@@ -37201,6 +37230,7 @@ exercised against CGAL PMP / MeshFix.
 - **Notes**: Synonyms: "ifcopenshell add() step_id segfault", "STEP id collision on writer crash", "explicit step_id collides with auto-id", "forward ref past end of data section crashes", "writer auto-id collision segfault".
 - **Byte assertion**: contains(b'PROPERTY_DEFINITION')
 - **Tier-3 assertion**: load == "ok"
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Output file either crashes the writer mid-emit or contains an unresolvable forward reference that crashes the next reader.
 
@@ -37239,6 +37269,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'CLOSED_SHELL')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
 - **Tier-3 assertion**: load == "ok"
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Visual inspection misleads the user about completeness; downstream meshing produces a leaky surface.
 
@@ -37425,6 +37456,7 @@ exercised against CGAL PMP / MeshFix.
 - **Notes**: Synonyms: "STEP merge tree corruption", "NAUO wrong parent after combine", "combining STEP files tree messed up", "STEP assembly graph re-keyed wrong", "FreeCAD combine STEP tree broken".
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Tier-3 assertion**: load == "ok"
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Assembly traversal hits an orphan or wrong-parent sub-tree; downstream BoM extraction reports wrong parent-child relationships.
 
@@ -37450,6 +37482,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'SHAPE_ASPECT')
 - **Byte assertion**: contains(b'GEOMETRIC_ITEM_SPECIFIC_USAGE')
 - **Tier-3 assertion**: load == "ok"
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: PMI annotations attach to the wrong feature on import; downstream tolerance checks reference the wrong geometry.
 
@@ -37587,6 +37620,7 @@ exercised against CGAL PMP / MeshFix.
 - **Notes**: Synonyms: "pythonocc STEP missing ref kills Python", "OSD::SetSignal escapes Python try/except", "STEP crash kills process not exception", "missing references kills python OCC", "OCC signal handler escape on STEP read".
 - **Byte assertion**: contains(b'PRESENTATION_LAYER_ASSIGNMENT')
 - **Tier-3 assertion**: load == "ok"
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Production pipeline cannot defend against a single broken file by wrapping reads in try/except; whole worker process dies.
 
@@ -37664,6 +37698,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Byte assertion**: contains(b'REPRESENTATION_MAP')
 - **Tier-3 assertion**: load == "ok"
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: PCB exports look complete to the producer but downstream rendering / inspection has no components.
 
@@ -37727,6 +37762,7 @@ exercised against CGAL PMP / MeshFix.
 - **Notes**: Synonyms: "OCE SurfaceCurve downcast crash", "StepGeom_SurfaceCurve null curve_3d", "SURFACE_CURVE translates null edge loop", "OCE 0.18.x EDGE_LOOP crash", "legacy OCC SurfaceCurve segfault".
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Tier-3 assertion**: load == "ok"
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Legacy OCE-based pipelines crash; modern OCCT has fixed but the pattern surfaces a class of downcast-null issues.
 

@@ -1396,7 +1396,9 @@
       "`entity_status[id] = STEP_LOAD_ERROR` set during pass-2 but never consulted by shell/solid consumers",
       "bug-reporter language: \"step-g imports a 50 MB STEP file and the resulting .g lacks a subassembly with no obvious error\", \"WARNING is not valid scrolled past in the import log\", \"step-g entity_status STEP_LOAD_ERROR not propagated\"."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "performance"
     ],
@@ -1679,7 +1681,9 @@
       "06-nist-sfa.md S008",
       "03-occt-tests.md R044 (entity #18 deleted but referenced)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "silent-loss",
       "spec-violation",
@@ -2130,7 +2134,9 @@
       "18-other-issues.md I001 (CATIA V6 SDR with `SHAPE_ASPECT` instead of `PROPERTY_DEFINITION` — null-handle deref)",
       "08-occt-gitlog.md G002 (Datum_System mixed array → crash on multi-body), G016 (NAUO with PDS instead of PD)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "crash",
       "spec-violation",
@@ -2175,7 +2181,9 @@
       "08-occt-gitlog.md G027 (`STYLED_ITEM.item` NULL), G029 (NULL vertex name/id), G034, G035, G050, G063, G083, G085, G086, G109 (GD&T null-deref family)",
       "18-other-issues.md I001, I003, I004, I044"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "silent-loss",
       "adversarial"
@@ -2465,7 +2473,9 @@
     "sources": [
       "08-occt-gitlog.md G030 (Mantis 0031292)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "silent-loss",
       "adversarial"
@@ -2862,7 +2872,9 @@
       "08-occt-gitlog.md G016 (Mantis 0025167)",
       "03-occt-tests.md R049"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "adversarial"
     ],
@@ -2941,7 +2953,9 @@
     "sources": [
       "18-other-issues.md I044 (pythonocc-core #702)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "crash",
       "adversarial"
@@ -3021,7 +3035,9 @@
       "18-other-issues.md I021 (CadQuery #1962, KiCad), I077",
       "03-occt-tests.md R057"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "crash",
       "adversarial"
@@ -3548,7 +3564,9 @@
       "OCCT MANTIS#0027404",
       "OCCT MANTIS#0030380 (OCCT MANTIS tracker 502 as of 2026-05-02)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "adversarial"
     ],
@@ -4433,7 +4451,9 @@
       "OCCT MANTIS#0029979",
       "bug-reporter language: \"crash by reading STEP file\", \"STEP reader crashes on import\", \"segmentation fault on small STEP file\". (OCCT MANTIS tracker 502 as of 2026-05-02)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "crash",
       "adversarial"
@@ -4669,7 +4689,9 @@
     "sources": [
       "Pattern-mined from Open-Cascade-SAS/OCCT#80 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: STEP export crashes during PCURVE processing."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "crash",
       "adversarial"
@@ -4706,7 +4728,9 @@
     "sources": [
       "Pattern-mined from IfcOpenShell/IfcOpenShell#6032 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: file with bad `#NNN` tokens segfaults the reader."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "crash",
       "adversarial"
@@ -4743,7 +4767,9 @@
     "sources": [
       "Pattern-mined from IfcOpenShell/IfcOpenShell#5680 (LGPL-clean — pattern only, no bytes copied). Distinct from Ad124: this variant exposes the failure when the reader parses an explicit negative ID and uses it as an array index."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "crash",
       "adversarial"
@@ -4780,7 +4806,9 @@
     "sources": [
       "Pattern-mined from IfcOpenShell/IfcOpenShell#2726 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: `f.add(entity, step_id=N)` crashes when N matches an auto-generated ID."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "crash",
       "adversarial"
@@ -4817,7 +4845,9 @@
     "sources": [
       "Pattern-mined from pythonocc/pythonocc-core#1295 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: opening a corrupted STEP with missing references kills the Python process rather than raising a catchable exception. Root cause: OCC's OSD::SetSignal converts SIGSEGV into a process kill instead of a recoverable exception."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "crash",
       "adversarial"
@@ -5445,7 +5475,9 @@
     "sources": [
       "synthesized cross-product."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "silent-loss",
       "interop"
@@ -6953,7 +6985,9 @@
       "t/27615 \"Exporting step files fails for some components\"",
       "bug-reporter language: \"some footprints are missing entirely\", \"TO-220 imports as TO-252\", \"donut artefacts on the pin\"."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "interop"
     ],
@@ -36892,7 +36926,9 @@
       "G042/OCCT git log",
       "N044/ISO 10303-21 Issue 043"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "spec-violation",
       "encoding"
@@ -37011,7 +37047,9 @@
     "sources": [
       "G044/OCCT 0911d06, Mantis 27169"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "silent-loss",
       "encoding"
@@ -38138,7 +38176,9 @@
       "ISO 10303-21 §6.3.4 (boolean lexemes are exactly `.T.` and `.F.`)",
       "bug-reporter language: \"STEP file uses .TRUE. and parser rejects\""
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "silent-loss",
       "spec-violation",
@@ -38181,7 +38221,9 @@
       "ISO 10303-21 §6.3.4",
       "deduced from multi-source writer pipelines where one subsystem composes records as `.T.` and another as `.TRUE.`"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "silent-loss",
       "spec-violation",
@@ -39491,7 +39533,9 @@
     "sources": [
       "16-iso-spec ISO 10303-21 Ed.3 §7 (multi-section data, cross-section reference syntax)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "spec-violation",
       "syntax"
@@ -62781,7 +62825,9 @@
       "OCCT BRepLib_MakeShell error path",
       "BRepCheck_Shell.cxx:155 (uncovered class evidence)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "silent-loss",
       "topology"
@@ -72123,7 +72169,9 @@
     "sources": [
       "Pattern-mined from Open-Cascade-SAS/OCCT#349 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: STEP file with valid faces displays incomplete in viewer."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "topology"
     ],
@@ -83114,7 +83162,9 @@
     "sources": [
       "Pattern-mined from tpaviot/oce#607 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: legacy OCE 0.18.x crashes in `StepToTopoDS_TranslateEdgeLoop::Init` when a SURFACE_CURVE's `curve_3d` slot resolves to null after `StepGeom_SurfaceCurve` downcast."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -87097,7 +87147,9 @@
       "OCCT MANTIS#0026524",
       "OCCT MANTIS#0033179 (OCCT MANTIS tracker 502 as of 2026-05-02)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "silent-loss",
       "topology"
@@ -88426,7 +88478,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "topology"
     ],
@@ -101352,7 +101406,9 @@
     "sources": [
       "Pattern-mined from IfcOpenShell/IfcOpenShell#5363 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: \"Exporting STEP File with Labels Associated to IfcShapeAspect – Location Issue\"."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "spec-violation"
     ],
@@ -103144,7 +103200,9 @@
     "sources": [
       "M013 (LOTAR), K022 (Rhino \"successfully read\" but components missing), V050 (Creo \"Reference\" mode), V034 (Inventor unresolved external paths)."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "silent-loss",
       "assembly"
@@ -106230,7 +106288,9 @@
     "sources": [
       "Pattern-mined from FreeCAD/FreeCAD#11441 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: \"Combining STEP files messes tree structure in resulting file\"."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "assembly"
     ],
@@ -106304,7 +106364,9 @@
       "Pattern-mined from KiCad gitlab#11482 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: VRML 3D-model components in a KiCad PCB project survive into the STEP file as placeholder MAPPED_ITEMs whose REPRESENTATION_MAP target was never resolved",
       "receivers see a bare PCB with no components and no diagnostic."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "assembly"
     ],
@@ -106621,7 +106683,9 @@
     "sources": [
       "FreeCAD #15685"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "round-trip",
       "assembly"
@@ -111543,7 +111607,9 @@
       "CAx-IF Feature Information Recommended Practice §feature linkage",
       "bug-reporter language: \"AP242 feature references missing face\", \"GISU dangling reference\", \"SHAPE_ASPECT linked to nonexistent geometry\"."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "spec-violation",
       "pmi"
@@ -112220,7 +112286,9 @@
       "16-iso-spec AP242 §locating_feature",
       "CAx-IF Inspection Recommended Practices §datum-target identification"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "spec-violation",
       "pmi"
@@ -116996,7 +117064,9 @@
     "sources": [
       "deduced from AP238 §7 program structure (selective / parallel / if_statement)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "spec-violation"
     ],
@@ -117458,7 +117528,9 @@
     "sources": [
       "deduced from AP210 §7 network connectivity invariants"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "spec-violation"
     ],
