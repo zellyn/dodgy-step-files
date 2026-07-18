@@ -5245,6 +5245,7 @@ End of file. 44 distinct entries.
 ---
 
 ### Tb002 — Sub-tolerance vertex gap that closes at 1e-7 but inflates at 1e-3
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (Sub-tolerance vertex gap that closes at 1e-7 but inflates at 1e-3); the model root's GEOMETRIC_CURVE_SET holds topological EDGE_CURVE entities (not geometric_set_select), so OCC's STEP transfer builds nothing; base + representative repaired copies (Tb002/Tb013) all empty (f=0).
 
 - **Category**: §12.4 (sub-class: tolerance-boundary, inverse regime)
 - **Sources**: synthesized time-bomb.
@@ -5268,7 +5269,7 @@ End of file. 44 distinct entries.
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 3
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 4
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (Sub-tolerance vertex gap that closes at 1e-7 but inflates at 1e-3): the model root is a GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION over a GEOMETRIC_CURVE_SET whose members are topological EDGE_CURVE entities, which are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and a CLEAN copy with the declared defect repaired (representative copies Tb002/Tb013) is still empty, while a GEOMETRIC_CURVE_SET holding real point/curve geometry (M086) builds a compound. The silent-empty is container/type-mismatch-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -5276,6 +5277,7 @@ End of file. 44 distinct entries.
 ---
 
 ### Tb003 — Vertex-edge-face tolerance hierarchy holds in mm but inverts in m
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (Vertex-edge-face tolerance hierarchy holds in mm but inverts in m); the model root's GEOMETRIC_CURVE_SET holds topological EDGE_CURVE entities (not geometric_set_select), so OCC's STEP transfer builds nothing; base + representative repaired copies (Tb002/Tb013) all empty (f=0).
 
 - **Category**: §12.4 (sub-class: hierarchy × unit-scaling)
 - **Sources**: synthesized time-bomb.
@@ -5303,7 +5305,7 @@ End of file. 44 distinct entries.
 - **Byte assertion**: contains(b'1.0E-6') and contains(b'1.0E-5') and contains(b'1.0E-4')
 - **Byte assertion**: contains(b'.MILLI.')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (Vertex-edge-face tolerance hierarchy holds in mm but inverts in m): the model root is a GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION over a GEOMETRIC_CURVE_SET whose members are topological EDGE_CURVE entities, which are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and a CLEAN copy with the declared defect repaired (representative copies Tb002/Tb013) is still empty, while a GEOMETRIC_CURVE_SET holding real point/curve geometry (M086) builds a compound. The silent-empty is container/type-mismatch-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -5396,6 +5398,7 @@ End of file. 44 distinct entries.
 ---
 
 ### Tb007 — NURBS knot-difference quantum below tolerance: knot collapses or doesn't
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (NURBS knot-difference quantum below tolerance: knot collapses or doesn't); the model root's GEOMETRIC_CURVE_SET holds topological EDGE_CURVE entities (not geometric_set_select), so OCC's STEP transfer builds nothing; base + representative repaired copies (Tb002/Tb013) all empty (f=0).
 
 - **Category**: §12.2b (sub-class: knot-multiplicity × tolerance) — placed in
  §12.4 via `Tb` prefix because the *trigger* is tolerance interpretation,
@@ -5421,7 +5424,7 @@ End of file. 44 distinct entries.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') == 5
 - **Byte assertion**: contains(b'1.0E-7')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (NURBS knot-difference quantum below tolerance: knot collapses or doesn't): the model root is a GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION over a GEOMETRIC_CURVE_SET whose members are topological EDGE_CURVE entities, which are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and a CLEAN copy with the declared defect repaired (representative copies Tb002/Tb013) is still empty, while a GEOMETRIC_CURVE_SET holding real point/curve geometry (M086) builds a compound. The silent-empty is container/type-mismatch-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -5429,6 +5432,7 @@ End of file. 44 distinct entries.
 ---
 
 ### Tb008 — NURBS knot-difference quantum scaled by parametric range
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (NURBS knot-difference quantum scaled by parametric range); the model root's GEOMETRIC_CURVE_SET holds topological EDGE_CURVE entities (not geometric_set_select), so OCC's STEP transfer builds nothing; base + representative repaired copies (Tb002/Tb013) all empty (f=0).
 
 - **Category**: §12.4 (sub-class: knot-tolerance × parameter-range)
 - **Sources**: synthesized time-bomb.
@@ -5449,7 +5453,7 @@ End of file. 44 distinct entries.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') == 5
 - **Byte assertion**: contains(b'1.0E-6')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (NURBS knot-difference quantum scaled by parametric range): the model root is a GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION over a GEOMETRIC_CURVE_SET whose members are topological EDGE_CURVE entities, which are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and a CLEAN copy with the declared defect repaired (representative copies Tb002/Tb013) is still empty, while a GEOMETRIC_CURVE_SET holding real point/curve geometry (M086) builds a compound. The silent-empty is container/type-mismatch-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -5512,6 +5516,7 @@ End of file. 44 distinct entries.
 ---
 
 ### Tb011 — Periodic-surface seam matching requires period-relative tolerance
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (Periodic-surface seam matching requires period-relative tolerance); the model root's GEOMETRIC_CURVE_SET holds topological EDGE_CURVE entities (not geometric_set_select), so OCC's STEP transfer builds nothing; base + representative repaired copies (Tb002/Tb013) all empty (f=0).
 
 - **Category**: §12.4 (sub-class: periodic-surface × tolerance)
 - **Sources**: synthesized time-bomb.
@@ -5532,7 +5537,7 @@ End of file. 44 distinct entries.
 - **Byte assertion**: count_entity_def(b'PCURVE') == 2
 - **Byte assertion**: contains(b'1.0E-3')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: emits a diagnostic but produces an empty result; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (Periodic-surface seam matching requires period-relative tolerance): the model root is a GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION over a GEOMETRIC_CURVE_SET whose members are topological EDGE_CURVE entities, which are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and a CLEAN copy with the declared defect repaired (representative copies Tb002/Tb013) is still empty, while a GEOMETRIC_CURVE_SET holding real point/curve geometry (M086) builds a compound. The silent-empty is container/type-mismatch-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -5540,6 +5545,7 @@ End of file. 44 distinct entries.
 ---
 
 ### Tb012 — Sphere seam matching across pole singularity
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (Sphere seam matching across pole singularity); the model root's GEOMETRIC_CURVE_SET holds topological EDGE_CURVE entities (not geometric_set_select), so OCC's STEP transfer builds nothing; base + representative repaired copies (Tb002/Tb013) all empty (f=0).
 
 - **Category**: §12.4 (sub-class: periodic-surface × tolerance)
 - **Sources**: synthesized time-bomb.
@@ -5558,7 +5564,7 @@ End of file. 44 distinct entries.
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 1
 - **Byte assertion**: contains(b'1.0E-7')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (Sphere seam matching across pole singularity): the model root is a GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION over a GEOMETRIC_CURVE_SET whose members are topological EDGE_CURVE entities, which are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and a CLEAN copy with the declared defect repaired (representative copies Tb002/Tb013) is still empty, while a GEOMETRIC_CURVE_SET holding real point/curve geometry (M086) builds a compound. The silent-empty is container/type-mismatch-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -5566,6 +5572,7 @@ End of file. 44 distinct entries.
 ---
 
 ### Tb013 — Coordinate at 1e-300 tests as "near zero" only under denormalized math
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (Coordinate at 1e-300 tests as "near zero" only under denormalized math); the model root's GEOMETRIC_CURVE_SET holds topological EDGE_CURVE entities (not geometric_set_select), so OCC's STEP transfer builds nothing; base + representative repaired copies (Tb002/Tb013) all empty (f=0).
 
 - **Category**: §12.4 (sub-class: float-special-value × tolerance)
 - **Sources**: synthesized time-bomb.
@@ -5588,7 +5595,7 @@ End of file. 44 distinct entries.
 - **Byte assertion**: contains(b'1.0E-7')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 1
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (Coordinate at 1e-300 tests as "near zero" only under denormalized math): the model root is a GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION over a GEOMETRIC_CURVE_SET whose members are topological EDGE_CURVE entities, which are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and a CLEAN copy with the declared defect repaired (representative copies Tb002/Tb013) is still empty, while a GEOMETRIC_CURVE_SET holding real point/curve geometry (M086) builds a compound. The silent-empty is container/type-mismatch-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -5623,6 +5630,7 @@ End of file. 44 distinct entries.
 ---
 
 ### Tb015 — Sliver edge length at sqrt(tol) — under squared comparison or linear?
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (Sliver edge length at sqrt(tol) — under squared comparison or linear?); the model root's GEOMETRIC_CURVE_SET holds topological EDGE_CURVE entities (not geometric_set_select), so OCC's STEP transfer builds nothing; base + representative repaired copies (Tb002/Tb013) all empty (f=0).
 
 - **Category**: §12.4 (sub-class: sqrt-tolerance ambiguity)
 - **Sources**: synthesized time-bomb.
@@ -5640,7 +5648,7 @@ End of file. 44 distinct entries.
 - **Byte assertion**: contains(b'1.0E-6')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 1
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (Sliver edge length at sqrt(tol) — under squared comparison or linear?): the model root is a GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION over a GEOMETRIC_CURVE_SET whose members are topological EDGE_CURVE entities, which are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and a CLEAN copy with the declared defect repaired (representative copies Tb002/Tb013) is still empty, while a GEOMETRIC_CURVE_SET holding real point/curve geometry (M086) builds a compound. The silent-empty is container/type-mismatch-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -5648,6 +5656,7 @@ End of file. 44 distinct entries.
 ---
 
 ### Tb016 — Tolerance budget exhausted by accumulation across long edge chain
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (Tolerance budget exhausted by accumulation across long edge chain); the model root's GEOMETRIC_CURVE_SET holds topological EDGE_CURVE entities (not geometric_set_select), so OCC's STEP transfer builds nothing; base + representative repaired copies (Tb002/Tb013) all empty (f=0).
 
 - **Category**: §12.4 (sub-class: cumulative tolerance)
 - **Sources**: synthesized time-bomb.
@@ -5671,7 +5680,7 @@ End of file. 44 distinct entries.
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 6
 - **Byte assertion**: contains(b'1.0E-6')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (Tolerance budget exhausted by accumulation across long edge chain): the model root is a GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION over a GEOMETRIC_CURVE_SET whose members are topological EDGE_CURVE entities, which are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and a CLEAN copy with the declared defect repaired (representative copies Tb002/Tb013) is still empty, while a GEOMETRIC_CURVE_SET holding real point/curve geometry (M086) builds a compound. The silent-empty is container/type-mismatch-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -5704,6 +5713,7 @@ End of file. 44 distinct entries.
 ---
 
 ### Tb018 — UNCERTAINTY value of exactly zero — no fuzzy compare
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (UNCERTAINTY value of exactly zero — no fuzzy compare); the model root's GEOMETRIC_CURVE_SET holds topological EDGE_CURVE entities (not geometric_set_select), so OCC's STEP transfer builds nothing; base + representative repaired copies (Tb002/Tb013) all empty (f=0).
 
 - **Category**: §12.4 (sub-class: zero-tolerance)
 - **Sources**: synthesized time-bomb.
@@ -5723,7 +5733,7 @@ End of file. 44 distinct entries.
 - **Byte assertion**: matches(rb'LENGTH_MEASURE\(\s*0\.0\)')
 - **Byte assertion**: count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 1
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (UNCERTAINTY value of exactly zero — no fuzzy compare): the model root is a GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION over a GEOMETRIC_CURVE_SET whose members are topological EDGE_CURVE entities, which are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and a CLEAN copy with the declared defect repaired (representative copies Tb002/Tb013) is still empty, while a GEOMETRIC_CURVE_SET holding real point/curve geometry (M086) builds a compound. The silent-empty is container/type-mismatch-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -5780,6 +5790,7 @@ End of file. 44 distinct entries.
 ---
 
 ### Tb021 — Multiple UNCERTAINTY entries with conflicting values, no labels
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (Multiple UNCERTAINTY entries with conflicting values, no labels); the model root's GEOMETRIC_CURVE_SET holds topological EDGE_CURVE entities (not geometric_set_select), so OCC's STEP transfer builds nothing; base + representative repaired copies (Tb002/Tb013) all empty (f=0).
 
 - **Category**: §12.4 (sub-class: ambiguous tolerance declaration)
 - **Sources**: synthesized time-bomb.
@@ -5801,7 +5812,7 @@ End of file. 44 distinct entries.
 - **Byte assertion**: count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 3
 - **Byte assertion**: contains(b'1.0E-3') and contains(b'1.0E-6') and contains(b'1.0E-9')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (Multiple UNCERTAINTY entries with conflicting values, no labels): the model root is a GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION over a GEOMETRIC_CURVE_SET whose members are topological EDGE_CURVE entities, which are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and a CLEAN copy with the declared defect repaired (representative copies Tb002/Tb013) is still empty, while a GEOMETRIC_CURVE_SET holding real point/curve geometry (M086) builds a compound. The silent-empty is container/type-mismatch-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -5809,6 +5820,7 @@ End of file. 44 distinct entries.
 ---
 
 ### Tb022 — Tolerance declared in different units than coordinates
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (Tolerance declared in different units than coordinates); the model root's GEOMETRIC_CURVE_SET holds topological EDGE_CURVE entities (not geometric_set_select), so OCC's STEP transfer builds nothing; base + representative repaired copies (Tb002/Tb013) all empty (f=0).
 
 - **Category**: §12.4 (sub-class: tolerance-unit mismatch)
 - **Sources**: synthesized time-bomb.
@@ -5830,12 +5842,13 @@ End of file. 44 distinct entries.
 - **Byte assertion**: contains(b'1.0E-6')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 1
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (Tolerance declared in different units than coordinates): the model root is a GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION over a GEOMETRIC_CURVE_SET whose members are topological EDGE_CURVE entities, which are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and a CLEAN copy with the declared defect repaired (representative copies Tb002/Tb013) is still empty, while a GEOMETRIC_CURVE_SET holding real point/curve geometry (M086) builds a compound. The silent-empty is container/type-mismatch-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Tb023 — Coordinates near 1e15 where float64 ULP exceeds declared tolerance
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the far-from-origin coordinates; the VERTEX_POINT/EDGE_CURVE entities have no shape-representation root, so OCC builds nothing; base + CLEAN (near-origin) both empty (f=0).
 
 - **Category**: §12.4 (sub-class: far-from-origin precision)
 - **Sources**: bug-reporter language: "STEP file with huge coordinates loses precision", "GIS-style absolute coordinates", "model far from origin is wobbly"; deduced — spatial twin of Tb013 (denormalised near-zero)
@@ -5847,7 +5860,7 @@ End of file. 44 distinct entries.
 - **Byte assertion**: matches(rb'\d\.\d+e\+?15') or contains(b'1.234567890123e+15')
 - **Byte assertion**: contains(b'1.234567890123e15') or contains(b'1.234567890123E15') or contains(b'1234567890123')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (Coordinates near 1e15 where float64 ULP exceeds declared tolerance): the VERTEX_POINT/EDGE_CURVE entities are free-floating with no shape-representation root at all, so OCC's STEP transfer has nothing to build. Base loads empty (f=0), and a CLEAN copy with the coordinates brought near the origin is still empty. The silent-empty is missing-representation-root-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tolerance/precision interaction creates a latent invalidity that does not surface at load time; downstream operations (boolean, fillet, mesh) on the affected sub-shape later fail or produce wrong geometry.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -7820,6 +7833,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A072 — Compound with single vertex written as compound-of-two-points
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the compound-of-two-points; the ADVANCED_BREP_SHAPE_REPRESENTATION holds only a bare CARTESIAN_POINT + VERTEX_POINT (no solid/shell/face), so STEPControl builds nothing; base + CLEAN (single vertex) both empty (f=0).
 - **Category**: §12.6 assembly
 - **Sources**: OCCT MANTIS#0023379; OCCT MANTIS#0013175 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A document contains a single isolated vertex (e.g., a
@@ -7835,7 +7849,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 1
 - **Byte assertion**: contains(b'emitted_twice')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (Compound with single vertex written as compound-of-two-points): the ADVANCED_BREP_SHAPE_REPRESENTATION holds only a bare CARTESIAN_POINT and its VERTEX_POINT — no solid, shell, or face — which the STEP transfer does not materialize into a TopoDS shape. Base is empty, and a CLEAN copy deduplicated to a single VERTEX_POINT item is still empty. The silent-empty is bare-vertex/container-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -10951,6 +10965,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M076.stp
 
 ### M077 — AP238 fixture references different workpiece than the setup is machining
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP238 fixture references different workpiece than the setup is machining); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP238 fixture / workpiece linking)
 - **Sources**: deduced from AP238 §3.4 setup / workpiece_setup invariants
 - **Sender**: deduced — STEP-NC publisher with fixture-stack copy/paste error
@@ -10969,7 +10984,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'WORKPIECE_SETUP')
 - **Byte assertion**: contains(b'WORKPIECE')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP238 fixture references different workpiece than the setup is machining): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC machining metadata (WORKPIECE / WORKPIECE_SETUP / SETUP / WORKINGSTEP / machining-operation / tool entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible STEP-NC metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -11051,6 +11066,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M080.stp
 
 ### M081 — AP209 integration_point_count not consistent with element_type
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP209 integration_point_count not consistent with element_type); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP209 FEA metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP209 integration rule)
 - **Sources**: deduced from AP209 §6 element_representation rules
 - **Sender**: deduced — FEA exporter copying integration rule from a
@@ -11069,13 +11085,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'CURVE_3D_ELEMENT_DESCRIPTOR')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP209 integration_point_count not consistent with element_type): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric FEA metadata (NODE / element-descriptor / FEA_MODEL / ELEMENT_REPRESENTATION entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP209 FEA metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M081.stp
 
 ### M082 — AP209 surface element node order is clockwise (negative Jacobian)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP209 surface element node order is clockwise (negative Jacobian)); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP209 FEA metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP209 element winding)
 - **Sources**: deduced from AP209 §6 element node-ordering convention
 - **Sender**: deduced — FEA exporter with mesh-orientation export bug
@@ -11094,7 +11111,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'SURFACE_3D_ELEMENT_DESCRIPTOR')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP209 surface element node order is clockwise (negative Jacobian)): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric FEA metadata (NODE / element-descriptor / FEA_MODEL / ELEMENT_REPRESENTATION entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP209 FEA metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -11148,6 +11165,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M084.stp
 
 ### M085 — AP210 ply with mismatched top/bottom material designations
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP210 ply with mismatched top/bottom material designations); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP210 PCB metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP210 PCB stackup)
 - **Sources**: deduced from AP210 §5 laminate_or_ply_definition invariants
 - **Sender**: deduced — ECAD exporter conflating ply with prepreg+core stack
@@ -11168,7 +11186,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'LAMINATE_OR_PLY_DEFINITION')
 - **Byte assertion**: count_entity_def(b'MATERIAL_DESIGNATION') >= 2
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP210 ply with mismatched top/bottom material designations): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric PCB/PWB metadata (stackup / NETWORK / via / footprint entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP210 PCB metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -11256,6 +11274,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M088.stp
 
 ### M089 — AP210 stackup plies overlap in the Z direction
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP210 stackup plies overlap in the Z direction); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP210 PCB metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP210 stackup geometry)
 - **Sources**: deduced from AP210 §5 laminate_table sequencing rules
 - **Sender**: deduced — ECAD exporter with stacking-offset bug
@@ -11273,13 +11292,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: count_entity_def(b'LAMINATE_OR_PLY_DEFINITION') >= 2
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP210 stackup plies overlap in the Z direction): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric PCB/PWB metadata (stackup / NETWORK / via / footprint entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP210 PCB metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M089.stp
 
 ### M090 — AP210 BoM line item with no PRODUCT_DEFINITION chain
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP210 BoM line item with no PRODUCT_DEFINITION chain); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP210 PCB metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP210 BoM completeness)
 - **Sources**: deduced from AP210 BoM completeness rules / AP242 PDM
  conventions
@@ -11299,7 +11319,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ELECTRONIC_ASSEMBLY_INTERCONNECT_AND_PACKAGING_DESIGN')
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP210 BoM line item with no PRODUCT_DEFINITION chain): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric PCB/PWB metadata (stackup / NETWORK / via / footprint entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP210 PCB metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -11333,6 +11353,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M091.stp
 
 ### M092 — AP238 workplan workingsteps in non-executable order
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP238 workplan workingsteps in non-executable order); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP238 workplan ordering)
 - **Sources**: deduced from ISO 10303-238 §6.4 workplan execution semantics
 - **Sender**: deduced — STEP-NC publisher emitting workingsteps in authoring order rather than dependency order
@@ -11357,13 +11378,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'WORKPLAN(')
 - **Byte assertion**: contains(b'MACHINING_OPERATION')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP238 workplan workingsteps in non-executable order): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC machining metadata (WORKPIECE / WORKPIECE_SETUP / SETUP / WORKINGSTEP / machining-operation / tool entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible STEP-NC metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M092.stp
 
 ### M093 — AP238 machining_tool referenced without cutting-edge geometry
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP238 machining_tool referenced without cutting-edge geometry); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP238 tool definition)
 - **Sources**: deduced from ISO 10303-238 §5.7 cutting_tool geometric attribution
 - **Sender**: deduced — STEP-NC publisher emitting tool stub before tool library
@@ -11384,13 +11406,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'MACHINING_OPERATION')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP238 machining_tool referenced without cutting-edge geometry): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC machining metadata (WORKPIECE / WORKPIECE_SETUP / SETUP / WORKINGSTEP / machining-operation / tool entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible STEP-NC metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M093.stp
 
 ### M094 — AP238 setup placement inconsistent with workpiece coordinate system
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP238 setup placement inconsistent with workpiece coordinate system); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP238 setup transform)
 - **Sources**: deduced from ISO 10303-238 §5.4 setup-to-workpiece transformation
 - **Sender**: deduced — STEP-NC publisher with stale fixture origin after part
@@ -11415,13 +11438,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'SETUP')
 - **Byte assertion**: contains(b'AXIS2_PLACEMENT_3D')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP238 setup placement inconsistent with workpiece coordinate system): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC machining metadata (WORKPIECE / WORKPIECE_SETUP / SETUP / WORKINGSTEP / machining-operation / tool entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible STEP-NC metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M094.stp
 
 ### M095 — AP238 machining_operation declares negative execution time
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP238 machining_operation declares negative execution time); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP238 process timing)
 - **Sources**: deduced from ISO 10303-238 §5.6 time_measure non-negativity
 - **Sender**: deduced — STEP-NC publisher with timestamp-arithmetic bug computing
@@ -11442,7 +11466,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'TIME_MEASURE')
 - **Byte assertion**: contains(b'MACHINING_OPERATION')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP238 machining_operation declares negative execution time): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC machining metadata (WORKPIECE / WORKPIECE_SETUP / SETUP / WORKINGSTEP / machining-operation / tool entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible STEP-NC metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -11476,6 +11500,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M096.stp
 
 ### M097 — AP238 workingstep references a feature not on the workpiece
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP238 workingstep references a feature not on the workpiece); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP238 feature reference)
 - **Sources**: deduced from ISO 10303-238 §6.4 workingstep / its_feature link
 - **Sender**: deduced — STEP-NC publisher exporting feature library shared
@@ -11498,13 +11523,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'MACHINING_WORKINGSTEP')
 - **Byte assertion**: count_entity_def(b'WORKPIECE') >= 2
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP238 workingstep references a feature not on the workpiece): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC machining metadata (WORKPIECE / WORKPIECE_SETUP / SETUP / WORKINGSTEP / machining-operation / tool entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible STEP-NC metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: FEA mesh/load entities attach to wrong target geometry or load with corrupted node/element references; the analysis dataset becomes inconsistent with the underlying BRep.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M097.stp
 
 ### M098 — AP238 tool feedrate exceeds manufacturer rated maximum
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP238 tool feedrate exceeds manufacturer rated maximum); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP238 tool feedrate)
 - **Sources**: deduced from ISO 10303-238 §5.8 machining_tool_feedspeed bounds
 - **Sender**: deduced — CAM post-processor copying feedrate from a different
@@ -11526,13 +11552,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'MACHINING_TOOL_FEEDSPEED')
 - **Byte assertion**: contains(b'50000.0')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP238 tool feedrate exceeds manufacturer rated maximum): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC machining metadata (WORKPIECE / WORKPIECE_SETUP / SETUP / WORKINGSTEP / machining-operation / tool entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible STEP-NC metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M098.stp
 
 ### M099 — AP238 tool feedrate declared as zero
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP238 tool feedrate declared as zero); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP238 tool feedrate)
 - **Sources**: deduced from ISO 10303-238 §5.8 feedspeed positivity invariant
 - **Sender**: deduced — CAM exporter losing feedrate during template flattening
@@ -11550,13 +11577,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'MACHINING_TOOL_FEEDSPEED')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP238 tool feedrate declared as zero): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC machining metadata (WORKPIECE / WORKPIECE_SETUP / SETUP / WORKINGSTEP / machining-operation / tool entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible STEP-NC metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M099.stp
 
 ### M100 — AP238 spindle-on issued after first tool-workpiece contact
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP238 spindle-on issued after first tool-workpiece contact); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP238 process ordering)
 - **Sources**: deduced from ISO 10303-238 §6.4 spindle / coolant / approach
  ordering
@@ -11578,13 +11606,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'DRILLING_OPERATION')
 - **Byte assertion**: contains(b'WORKPLAN')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP238 spindle-on issued after first tool-workpiece contact): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC machining metadata (WORKPIECE / WORKPIECE_SETUP / SETUP / WORKINGSTEP / machining-operation / tool entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible STEP-NC metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M100.stp
 
 ### M101 — AP238 two5d_milling_operation applied to a 3D-only feature
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP238 two5d_milling_operation applied to a 3D-only feature); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP238 operation/feature compatibility)
 - **Sources**: deduced from ISO 10303-238 §5.8 two5d_milling_operation
  applicability constraints
@@ -11605,13 +11634,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'TWO5D_MILLING_OPERATION')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP238 two5d_milling_operation applied to a 3D-only feature): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC machining metadata (WORKPIECE / WORKPIECE_SETUP / SETUP / WORKINGSTEP / machining-operation / tool entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible STEP-NC metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: FEA mesh/load entities attach to wrong target geometry or load with corrupted node/element references; the analysis dataset becomes inconsistent with the underlying BRep.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M101.stp
 
 ### M102 — AP238 drilling sequence with coincident hole positions
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP238 drilling sequence with coincident hole positions); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP238 drilling sequence)
 - **Sources**: deduced from ISO 10303-238 §5.8 drilling_operation positional
  uniqueness convention
@@ -11631,7 +11661,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: count_entity_def(b'DRILLING_OPERATION') >= 2
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP238 drilling sequence with coincident hole positions): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC machining metadata (WORKPIECE / WORKPIECE_SETUP / SETUP / WORKINGSTEP / machining-operation / tool entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible STEP-NC metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -11671,6 +11701,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M103.stp
 
 ### M104 — AP238 producer emits SETUP where WORKPIECE_SETUP is required
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP238 producer emits SETUP where WORKPIECE_SETUP is required); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP238 setup type)
 - **Sources**: deduced from ISO 10303-238 §5.4 setup vs workpiece_setup
  distinction
@@ -11692,7 +11723,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'SETUP')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP238 producer emits SETUP where WORKPIECE_SETUP is required): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC machining metadata (WORKPIECE / WORKPIECE_SETUP / SETUP / WORKINGSTEP / machining-operation / tool entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible STEP-NC metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -11755,6 +11786,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M106.stp
 
 ### M107 — AP238 cutting tool diameter declared as zero or negative
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP238 cutting tool diameter declared as zero or negative); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP238 tool dimension)
 - **Sources**: deduced from ISO 10303-238 §5.7 cutting_tool_dimension positivity
 - **Sender**: deduced — STEP-NC publisher emitting tool template with default
@@ -11774,13 +11806,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'POSITIVE_LENGTH_MEASURE(0.0)')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP238 cutting tool diameter declared as zero or negative): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC machining metadata (WORKPIECE / WORKPIECE_SETUP / SETUP / WORKINGSTEP / machining-operation / tool entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible STEP-NC metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M107.stp
 
 ### M108 — AP238 freeform_milling_operation without surface-tolerance attribute
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP238 freeform_milling_operation without surface-tolerance attribute); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP238 freeform milling)
 - **Sources**: deduced from ISO 10303-238 §5.8 freeform_milling_operation
  surface-tolerance requirement
@@ -11801,7 +11834,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'FREEFORM_MILLING_OPERATION')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP238 freeform_milling_operation without surface-tolerance attribute): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric STEP-NC machining metadata (WORKPIECE / WORKPIECE_SETUP / SETUP / WORKINGSTEP / machining-operation / tool entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible STEP-NC metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -11890,6 +11923,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M111.stp
 
 ### M112 — AP209 multi_point_constraint chain forms a dependency cycle
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP209 multi_point_constraint chain forms a dependency cycle); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP209 FEA metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP209 multi-point constraint cycle)
 - **Sources**: deduced from AP209 §7 multi_point_constraint master/slave
  acyclic graph requirement
@@ -11910,13 +11944,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: count_entity_def(b'MULTI_POINT_CONSTRAINT') >= 3
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP209 multi_point_constraint chain forms a dependency cycle): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric FEA metadata (NODE / element-descriptor / FEA_MODEL / ELEMENT_REPRESENTATION entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP209 FEA metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M112.stp
 
 ### M113 — AP209 element_representation with degenerate jacobian (collapsed corner)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP209 element_representation with degenerate jacobian (collapsed corner)); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP209 FEA metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP209 mesh quality)
 - **Sources**: deduced from AP209 §6 element shape-function jacobian
  positivity
@@ -11938,13 +11973,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'VOLUME_3D_ELEMENT_DESCRIPTOR')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP209 element_representation with degenerate jacobian (collapsed corner)): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric FEA metadata (NODE / element-descriptor / FEA_MODEL / ELEMENT_REPRESENTATION entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP209 FEA metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Appearance/style attributes detach from their target shape; the geometry loads correctly but colors, layers, or material assignments are dropped or attached to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M113.stp
 
 ### M114 — AP209 hex element with aspect ratio greater than 10000
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP209 hex element with aspect ratio greater than 10000); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP209 FEA metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP209 mesh quality)
 - **Sources**: deduced from AP209 §6 element shape-quality recommendations;
  Abaqus/Ansys mesh-quality thresholds
@@ -11964,13 +12000,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'VOLUME_3D_ELEMENT_DESCRIPTOR')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP209 hex element with aspect ratio greater than 10000): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric FEA metadata (NODE / element-descriptor / FEA_MODEL / ELEMENT_REPRESENTATION entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP209 FEA metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M114.stp
 
 ### M115 — AP209 nodal force distribution with negative weights
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP209 nodal force distribution with negative weights); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP209 FEA metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP209 load distribution)
 - **Sources**: deduced from AP209 §7 nodal_load distribution_factor convention
  (positive weights summing to 1)
@@ -11993,13 +12030,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'NODE_WITH_FORCE')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP209 nodal force distribution with negative weights): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric FEA metadata (NODE / element-descriptor / FEA_MODEL / ELEMENT_REPRESENTATION entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP209 FEA metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M115.stp
 
 ### M116 — AP209 modal extraction count exceeds DOF rank
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP209 modal extraction count exceeds DOF rank); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP209 FEA metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP209 modal analysis)
 - **Sources**: deduced from AP209 §9 eigenvalue_extraction_method requested-mode
  count vs system DOF
@@ -12017,13 +12055,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'FEA_MODEL')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP209 modal extraction count exceeds DOF rank): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric FEA metadata (NODE / element-descriptor / FEA_MODEL / ELEMENT_REPRESENTATION entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP209 FEA metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M116.stp
 
 ### M117 — AP209 anisotropic material with missing tensor components
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP209 anisotropic material with missing tensor components); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP209 FEA metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP209 material card completeness)
 - **Sources**: deduced from AP209 §8 anisotropic_linear_elasticity tensor
  symmetry-class invariants
@@ -12045,13 +12084,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'ANISOTROPIC_LINEAR_ELASTICITY')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP209 anisotropic material with missing tensor components): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric FEA metadata (NODE / element-descriptor / FEA_MODEL / ELEMENT_REPRESENTATION entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP209 FEA metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M117.stp
 
 ### M118 — AP209 non-conforming mesh: tet and hex sharing a face with mismatched node counts
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP209 non-conforming mesh: tet and hex sharing a face with mismatched node counts); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP209 FEA metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP209 mesh continuity)
 - **Sources**: deduced from AP209 §6 mesh-conformity invariants
 - **Sender**: deduced — multi-mesher pipeline that didn't insert MPC tying at
@@ -12073,7 +12113,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: count_entity_def(b'VOLUME_3D_ELEMENT_DESCRIPTOR') >= 2
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP209 non-conforming mesh: tet and hex sharing a face with mismatched node counts): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric FEA metadata (NODE / element-descriptor / FEA_MODEL / ELEMENT_REPRESENTATION entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP209 FEA metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -12140,6 +12180,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M120.stp
 
 ### M121 — AP209 time-history loadcase with non-monotonically increasing time vector
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP209 time-history loadcase with non-monotonically increasing time vector); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP209 FEA metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP209 transient loadcase)
 - **Sources**: deduced from AP209 §9 time-history representation invariants
 - **Sender**: deduced — FEA exporter sorting time-vs-amplitude pairs by
@@ -12159,7 +12200,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'NODE_WITH_FORCE')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP209 time-history loadcase with non-monotonically increasing time vector): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric FEA metadata (NODE / element-descriptor / FEA_MODEL / ELEMENT_REPRESENTATION entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP209 FEA metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -12196,6 +12237,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M122.stp
 
 ### M123 — AP209 element references the same node twice in its node list
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP209 element references the same node twice in its node list); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP209 FEA metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP209 element node uniqueness)
 - **Sources**: deduced from AP209 §6 element node-set uniqueness invariant
 - **Sender**: deduced — FEA preprocessor with off-by-one in node-list construction
@@ -12215,13 +12257,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'linear_tetrahedron')
 - **Byte assertion**: contains(b'VOLUME_3D_ELEMENT_DESCRIPTOR')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP209 element references the same node twice in its node list): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric FEA metadata (NODE / element-descriptor / FEA_MODEL / ELEMENT_REPRESENTATION entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP209 FEA metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M123.stp
 
 ### M124 — AP209 fea_model includes element referencing a node outside its node-set
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP209 fea_model includes element referencing a node outside its node-set); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP209 FEA metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP209 model node-set membership)
 - **Sources**: deduced from AP209 §6 fea_model.its_node_set / its_element_set
  consistency
@@ -12244,13 +12287,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'FEA_MODEL_3D')
 - **Byte assertion**: contains(b'VOLUME_3D_ELEMENT_DESCRIPTOR')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP209 fea_model includes element referencing a node outside its node-set): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric FEA metadata (NODE / element-descriptor / FEA_MODEL / ELEMENT_REPRESENTATION entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP209 FEA metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: FEA mesh/load entities attach to wrong target geometry or load with corrupted node/element references; the analysis dataset becomes inconsistent with the underlying BRep.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M124.stp
 
 ### M125 — AP209 node_group declares the same node id twice
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP209 node_group declares the same node id twice); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP209 FEA metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP209 node-group membership)
 - **Sources**: deduced from AP209 §7 node_group set-semantics
 - **Sender**: deduced — FEA preprocessor concatenating two overlapping
@@ -12267,7 +12311,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'STRUCTURAL_ANALYSIS_DESIGN')
 - **Byte assertion**: contains(b'NODE_GROUP')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP209 node_group declares the same node id twice): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric FEA metadata (NODE / element-descriptor / FEA_MODEL / ELEMENT_REPRESENTATION entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP209 FEA metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -12306,6 +12350,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M126.stp
 
 ### M127 — AP203 DOCUMENT_FILE referenced with empty URI / path field
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP203 DOCUMENT_FILE referenced with empty URI / path field); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP203 PDM metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 (sub-class: AP203 document reference completeness)
 - **Sources**: 16-iso-spec ISO 10303-203 §5.4 (document references);
  bug-reporter language: "DOCUMENT_FILE has no URI", "AP203 document
@@ -12326,13 +12371,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'DOCUMENT_FILE')
 - **Byte assertion**: contains(b"DOCUMENT_FILE('','','',")
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP203 DOCUMENT_FILE referenced with empty URI / path field): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric PDM / config-control metadata (approval / PERSON / date / document entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP203 PDM metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M127.stp
 
 ### M128 — AP203 design approved AFTER its effectivity start date
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP203 design approved AFTER its effectivity start date); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP203 PDM metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 (sub-class: AP203 approval / effectivity ordering)
 - **Sources**: 16-iso-spec ISO 10303-203 §4 (approval workflow precedes
  effectivity); bug-reporter language: "AP203 approval after effectivity",
@@ -12355,13 +12401,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'APPROVAL_DATE_TIME')
 - **Byte assertion**: contains(b'TIME_INTERVAL_BASED_EFFECTIVITY')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP203 design approved AFTER its effectivity start date): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric PDM / config-control metadata (approval / PERSON / date / document entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP203 PDM metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M128.stp
 
 ### M129 — AP203 new revision references parent not in change-history chain
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP203 new revision references parent not in change-history chain); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP203 PDM metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 (sub-class: AP203 ECO chain / revision history)
 - **Sources**: 16-iso-spec ISO 10303-203 §4.3 (product revision relationships);
  bug-reporter language: "AP203 ECO skips a revision", "engineering change
@@ -12386,13 +12433,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'PRODUCT_DEFINITION_FORMATION') >= 3
 - **Byte assertion**: contains(b'PRODUCT_DEFINITION_RELATIONSHIP')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP203 new revision references parent not in change-history chain): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric PDM / config-control metadata (approval / PERSON / date / document entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP203 PDM metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M129.stp
 
 ### M130 — AP203 assembly classified at lower security level than its components
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP203 assembly classified at lower security level than its components); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP203 PDM metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 (sub-class: AP203 security classification hierarchy)
 - **Sources**: 16-iso-spec ISO 10303-203 §5.5 (security classification);
  bug-reporter language: "AP203 security inversion", "child confidential
@@ -12418,13 +12466,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'SECURITY_CLASSIFICATION') >= 2
 - **Byte assertion**: contains(b'CC_DESIGN_SECURITY_CLASSIFICATION')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP203 assembly classified at lower security level than its components): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric PDM / config-control metadata (approval / PERSON / date / document entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP203 PDM metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M130.stp
 
 ### M131 — AP203 PRODUCT_DEFINITION linked to wrong PRODUCT_CONTEXT frame_of_reference
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP203 PRODUCT_DEFINITION linked to wrong PRODUCT_CONTEXT frame_of_reference); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP203 PDM metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 (sub-class: AP203 product class hierarchy)
 - **Sources**: 16-iso-spec ISO 10303-203 §4.2 (product_context.discipline_type);
  bug-reporter language: "AP203 product class mismatch", "mechanical part
@@ -12448,13 +12497,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'PRODUCT_CONTEXT') >= 2
 - **Byte assertion**: contains(b'PRODUCT_DEFINITION')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP203 PRODUCT_DEFINITION linked to wrong PRODUCT_CONTEXT frame_of_reference): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric PDM / config-control metadata (approval / PERSON / date / document entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP203 PDM metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M131.stp
 
 ### M132 — AP203 material-class APPLIED_GROUP_ASSIGNMENT without a material reference
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP203 material-class APPLIED_GROUP_ASSIGNMENT without a material reference); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP203 PDM metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 (sub-class: AP203 material specification missing)
 - **Sources**: 16-iso-spec ISO 10303-203 §5.6 (material assignment via
  group); bug-reporter language: "AP203 material group has no material",
@@ -12477,13 +12527,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'APPLIED_GROUP_ASSIGNMENT')
 - **Byte assertion**: count_entity_def(b'MATERIAL_DESIGNATION') == 0
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP203 material-class APPLIED_GROUP_ASSIGNMENT without a material reference): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric PDM / config-control metadata (approval / PERSON / date / document entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP203 PDM metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M132.stp
 
 ### M133 — AP203 inconsistent ISO 8601 date formats within the same file
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP203 inconsistent ISO 8601 date formats within the same file); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP203 PDM metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 (sub-class: AP203 date format consistency)
 - **Sources**: 16-iso-spec ISO 10303-203 §5.7 (date_and_time / timezone);
  bug-reporter language: "STEP dates inconsistent timezone", "AP203 mixed
@@ -12506,13 +12557,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'DATE_AND_TIME') >= 2
 - **Byte assertion**: contains(b'COORDINATED_UNIVERSAL_TIME_OFFSET')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP203 inconsistent ISO 8601 date formats within the same file): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric PDM / config-control metadata (approval / PERSON / date / document entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP203 PDM metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M133.stp
 
 ### M134 — AP203 two distinct PERSON entities share the same id
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP203 two distinct PERSON entities share the same id); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP203 PDM metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 (sub-class: AP203 identifier collision)
 - **Sources**: 16-iso-spec ISO 10303-41 (person uniqueness in approval);
  bug-reporter language: "AP203 PERSON id collision", "two people same
@@ -12534,13 +12586,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'PERSON') >= 2
 - **Byte assertion**: contains(b"PERSON('jdoe',")
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP203 two distinct PERSON entities share the same id): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric PDM / config-control metadata (approval / PERSON / date / document entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP203 PDM metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M134.stp
 
 ### M135 — AP203 declares CONFIG_CONTROL_DESIGN (CC1) but uses CC2-only entities
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP203 declares CONFIG_CONTROL_DESIGN (CC1) but uses CC2-only entities); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP203 PDM metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 (sub-class: AP203 schema-version mismatch)
 - **Sources**: 16-iso-spec ISO 10303-203 Ed.1 vs Ed.2 (CC1 / CC2 schema
  delta); bug-reporter language: "AP203 CC1 with CC2 entities",
@@ -12563,7 +12616,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'DESIGN_CONTEXT')
 - **Byte assertion**: contains(b'MECHANICAL_CONTEXT')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP203 declares CONFIG_CONTROL_DESIGN (CC1) but uses CC2-only entities): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric PDM / config-control metadata (approval / PERSON / date / document entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP203 PDM metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -12627,6 +12680,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M137.stp
 
 ### M138 — AP203 APPROVAL_PERSON_ORGANIZATION with empty PERSON field
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP203 APPROVAL_PERSON_ORGANIZATION with empty PERSON field); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP203 PDM metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 (sub-class: AP203 approval personal record missing)
 - **Sources**: 16-iso-spec ISO 10303-41 (approval_person_organization
  required attributes); bug-reporter language: "AP203 approver missing",
@@ -12649,7 +12703,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'APPROVAL_PERSON_ORGANIZATION')
 - **Byte assertion**: contains(b"PERSON('','',")
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP203 APPROVAL_PERSON_ORGANIZATION with empty PERSON field): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric PDM / config-control metadata (approval / PERSON / date / document entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP203 PDM metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -12683,6 +12737,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M139.stp
 
 ### M140 — AP203 make-or-buy declaration contradicts external supplier record
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP203 make-or-buy declaration contradicts external supplier record); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP203 PDM metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 (sub-class: AP203 make-or-buy / supplier consistency)
 - **Sources**: 16-iso-spec ISO 10303-203 §5.4 (specified_source / supplier);
  bug-reporter language: "AP203 made part has supplier", "make-or-buy
@@ -12706,7 +12761,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'PRODUCT_DEFINITION_FORMATION_WITH_SPECIFIED_SOURCE')
 - **Byte assertion**: contains(b'.MADE.')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP203 make-or-buy declaration contradicts external supplier record): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric PDM / config-control metadata (approval / PERSON / date / document entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP203 PDM metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -12801,6 +12856,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M143.stp
 
 ### M144 — AP210 NETWORK_NODE chain forms a cycle (signal feedback path)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP210 NETWORK_NODE chain forms a cycle (signal feedback path)); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP210 PCB metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP210 net connectivity)
 - **Sources**: 16-iso-spec ISO 10303-210 §7 (network connectivity
  acyclicity for non-feedback nets); bug-reporter language: "AP210 net
@@ -12822,13 +12878,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'NETWORK_NODE') >= 3
 - **Byte assertion**: contains(b'NETWORK')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP210 NETWORK_NODE chain forms a cycle (signal feedback path)): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric PCB/PWB metadata (stackup / NETWORK / via / footprint entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP210 PCB metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M144.stp
 
 ### M145 — AP210 fixed-side reference inverts top/bottom semantics
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP210 fixed-side reference inverts top/bottom semantics); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP210 PCB metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP210 layer-side reference)
 - **Sources**: 16-iso-spec ISO 10303-210 §5 (laminate side conventions);
  bug-reporter language: "AP210 top side mirrored", "PCB side reference
@@ -12852,7 +12909,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'fixed_side')
 - **Byte assertion**: contains(b"'BOTTOM'")
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP210 fixed-side reference inverts top/bottom semantics): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric PCB/PWB metadata (stackup / NETWORK / via / footprint entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP210 PCB metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -12924,6 +12981,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M147.stp
 
 ### M148 — AP210 same NETWORK identifier used for two unrelated nets
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP210 same NETWORK identifier used for two unrelated nets); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP210 PCB metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP210 net naming collision)
 - **Sources**: 16-iso-spec ISO 10303-210 §7 (network identifier
  uniqueness); bug-reporter language: "AP210 two nets named VCC",
@@ -12944,7 +13002,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'NETWORK') >= 2
 - **Byte assertion**: contains(b"NETWORK('VCC',")
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP210 same NETWORK identifier used for two unrelated nets): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric PCB/PWB metadata (stackup / NETWORK / via / footprint entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP210 PCB metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -12980,6 +13038,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M149.stp
 
 ### M150 — AP210 differential-pair traces have > 5 % length mismatch
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP210 differential-pair traces have > 5 % length mismatch); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP210 PCB metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP210 differential-pair length skew)
 - **Sources**: 16-iso-spec ISO 10303-210 §7 (network electrical
  attributes); bug-reporter language: "AP210 diff pair length skew",
@@ -13002,13 +13061,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'CONDUCTOR_TRACK_PROFILE') >= 2
 - **Byte assertion**: contains(b'NETWORK')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP210 differential-pair traces have > 5 % length mismatch): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric PCB/PWB metadata (stackup / NETWORK / via / footprint entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP210 PCB metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M150.stp
 
 ### M151 — AP210 declared trace impedance contradicts stackup geometry
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP210 declared trace impedance contradicts stackup geometry); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP210 PCB metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP210 impedance vs geometry)
 - **Sources**: 16-iso-spec ISO 10303-210 §7 (electrical_property);
  bug-reporter language: "AP210 50 ohm trace not 50 ohm", "PCB impedance
@@ -13033,13 +13093,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'characteristic_impedance')
 - **Byte assertion**: contains(b'CONDUCTOR_TRACK_PROFILE')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP210 declared trace impedance contradicts stackup geometry): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric PCB/PWB metadata (stackup / NETWORK / via / footprint entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP210 PCB metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M151.stp
 
 ### M152 — AP210 microvia depth exceeds substrate thickness
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP210 microvia depth exceeds substrate thickness); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP210 PCB metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP210 via depth out of bounds)
 - **Sources**: 16-iso-spec ISO 10303-210 §6 (via_definition depth bounds);
  bug-reporter language: "AP210 via deeper than board", "microvia drill
@@ -13060,13 +13121,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'VIA_DEFINITION')
 - **Byte assertion**: contains(b'LAMINATE_TABLE')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP210 microvia depth exceeds substrate thickness): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric PCB/PWB metadata (stackup / NETWORK / via / footprint entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP210 PCB metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M152.stp
 
 ### M153 — AP210 buried via has only one terminating layer reference
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP210 buried via has only one terminating layer reference); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP210 PCB metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP210 buried via termination)
 - **Sources**: 16-iso-spec ISO 10303-210 §6 (buried_via two-endpoint
  invariant); bug-reporter language: "AP210 buried via one end",
@@ -13088,7 +13150,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'VIA_DEFINITION')
 - **Byte assertion**: contains(b'BURIED')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP210 buried via has only one terminating layer reference): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric PCB/PWB metadata (stackup / NETWORK / via / footprint entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP210 PCB metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -13217,6 +13279,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M157.stp
 
 ### M158 — AP210 assembly footprint pitch conflicts with component-library footprint
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (AP210 assembly footprint pitch conflicts with component-library footprint); the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric AP210 PCB metadata (no ADVANCED_FACE/shell/solid), so OCC builds nothing; base + representative repaired copies (M077/M081/M116) all empty (f=0), while a real-geometry GEOMETRIC_CURVE_SET sibling (M086) builds a compound (v=3,e=1).
 - **Category**: §12.8 mixed (sub-class: AP210 footprint override conflict)
 - **Sources**: 16-iso-spec ISO 10303-210 §6 (component placement vs
  library cross-check); bug-reporter language: "AP210 pin pitch wrong",
@@ -13238,7 +13301,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'library_pin_pitch_mm')
 - **Byte assertion**: contains(b'assembly_pin_pitch_mm')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP210 assembly footprint pitch conflicts with component-library footprint): the model root is a SHAPE_REPRESENTATION whose only item is a GEOMETRIC_CURVE_SET holding non-geometric PCB/PWB metadata (stackup / NETWORK / via / footprint entities), with no ADVANCED_FACE, shell, or solid anywhere; those entities are not geometric_set_select members, so OCC's STEP transfer builds nothing. Base loads empty (f=0), and because the declared defect is oracle-invisible AP210 PCB metadata semantics no clean repair of it can add shape-representable geometry (confirmed on representative repaired copies across this bucket — M077/M081/M116 — all empty), while a sibling whose GEOMETRIC_CURVE_SET holds real point/curve geometry (M086) builds a compound (v=3,e=1). The silent-empty is container/metadata-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -13479,6 +13542,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-1c-syntax/In003.stp
 
 ### In011 — Reader exception swallowed (entity bound to null) when B_SPLINE control points use extreme-magnitude or subnormal coordinates (1.0E+308 / 5.0E-324)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the extreme-magnitude coordinates; the B_SPLINE_CURVE defect-carrier has no shape-representation root, so OCC builds nothing; base + CLEAN (normal coordinates) both empty (f=0); declared exception-swallow symptom is runtime-only.
 - **Category**: §12.1c (sub-class: transfer exception)
 - **Sources**: OCCT Transfer_TransferOutput.cxx:67 (Transfer_TransferFailure raise; binding null) (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -13490,13 +13554,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'HEADER;')
 - **Byte assertion**: count(b'ENDSEC;') >= 2
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (Reader exception swallowed (entity bound to null) when B_SPLINE control points use extreme-magnitude or subnormal coordinates (1.0E+308 / 5.0E-324)): the B_SPLINE_CURVE_WITH_KNOTS and its LINE/VECTOR are free-floating with no shape-representation root, so OCC's STEP transfer has nothing to build regardless of coordinate magnitude. Base is empty, and a well-formed CLEAN copy with normal coordinates is still empty. This fixture's declared symptom (a swallowed transfer-time exception) is runtime-only (its own Notes state bytes alone cannot demonstrate it); OCC-empty here is missing-representation-root-driven, not defect-driven silent data-loss, so it is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Interface/transfer layer fails to map the entity to its OCCT counterpart; the loaded Transfer document records the entity as un-transferred, and the affected sub-tree is absent from the resulting BRep.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-1c-syntax/In011.stp
 
 ### In012 — Transfer watchdog fires: dependency cycle in entity references
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the REPRESENTATION_MAP reference cycle; the REPRESENTATION_MAP entities build no geometry, so OCC is empty whether cyclic or acyclic; base + CLEAN (acyclic) both empty (f=0); declared dead-loop symptom is runtime-only.
 - **Category**: §12.1c (sub-class: transfer dead-loop)
 - **Sources**: OCCT Transfer_TransferDeadLoop.hxx (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -13504,7 +13569,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Reproducer recipe**: A `MAPPED_ITEM` whose `mapping_source` resolves through a chain that eventually re-references the original entity.
 - **Expected kernel behavior**: Detect cycle; reject the file; emit the cycle path in the diagnostic.
 - **Notes**: Synonyms: "circular dependency", "STEP cycle". Provenance tier: runtime-only; the bytes can encode a reference cycle, but the catalogued defect is the kernel's transfer-time watchdog firing (or failing to fire). Whether the kernel produces the dead-loop diagnostic vs. recursing forever is a runtime behavior, not a property of the file content. A behavioral test against a transfer engine is the appropriate venue. Synonyms: "STEP entity reference cycle", "circular references in STEP DATA", "kernel detects loop in STEP", "watchdog fires on STEP cycle", "dependency cycle entity references".
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (Transfer watchdog fires: dependency cycle in entity references): the REPRESENTATION_MAP entities carry no shape-representation geometry that OCC materializes, so the STEP transfer builds nothing whether or not the references cycle. Base is empty, and a well-formed CLEAN copy with the cycle broken is still empty. This fixture's declared symptom (a transfer dead-loop watchdog) is runtime-only (its own Notes state bytes alone cannot demonstrate it); OCC-empty here is no-buildable-geometry-driven, not defect-driven silent data-loss, so it is not a proven kernel bug.
 - **Severity**: P1
 - **Byte assertion**: contains(b'DATA;')
 - **Byte assertion**: contains(b'HEADER;')
@@ -14563,6 +14628,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 _Section summary: 52 entries._
 
 ### M002 — AP242 Edition 1 disallows axis2_placement_3d in tessellated_shape_representation
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the forbidden AXIS2_PLACEMENT_3D; STEPControl builds neither the TESSELLATED_SOLID nor the GEOMETRIC_CURVE_SET-of-points model root; base + CLEAN (defect removed, GCS root dropped) both empty (f=0).
 - **Category**: §12.8 (sub-class: tessellation)
 - **Sources**: 02-caxif.md; Tessellated Geometry §4.1; PMI v4.1 §8.2
 - **Description**: AP242 Ed.1's `tessellated_shape_representation` accepts only `tessellated_representation_item` in its `items`, so an `axis2_placement_3d` for assembly placement cannot be inside it. Workaround is to use a plain `shape_representation` and keep tessellated items under a separate representation. Files written by tools that ignore this rule fail schema validation.
@@ -14573,7 +14639,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'AXIS2_PLACEMENT_3D')
 - **Byte assertion**: matches(rb'TESSELLATED_SHAPE_REPRESENTATION\([^)]*#133')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (AP242 Edition 1 disallows axis2_placement_3d in tessellated_shape_representation): the STEPControl transfer builds neither the TESSELLATED_SOLID/TRIANGULATED_FACE (tessellated geometry is not materialized into a TopoDS solid by the STEP transfer) nor the GEOMETRIC_CURVE_SET-of-points that is the model root. Base is empty, and a CLEAN copy with the forbidden AXIS2_PLACEMENT_3D removed from the tessellated rep — and even one that additionally drops the GEOMETRIC_CURVE_SET root — is still empty. The silent-empty is tessellation/container-driven, not defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
