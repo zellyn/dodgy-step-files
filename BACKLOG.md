@@ -47,7 +47,26 @@ to the machine-verified `Expected validation` line — so it drifts. Two problem
   maintainer decision on the verdict philosophy (is "OCC loaded shape(1) when the defect needed heal/reject,
   and heal-vs-accept is indistinguishable" a witnessed bug or an overclaim?) before a bulk remediation.
 
-**Status:** (A)'s 89-fixture prose-correction batch delegated 2026-07-18. (B) awaits maintainer philosophy call.
+**(A) DONE 2026-07-18 (033a4392):** 73 prose contradictions corrected & live-verified (51 empty→shape, 17
+empty→signal SIGSEGV-understatements, 3 empty→reject, 2 shape→empty). 11 "signal→shape" were false flags
+(the crash word refers to a separate gmsh/mesh oracle or a historical non-reproducing segfault noted as
+such — accurate provenance, left intact). **2 NEW genuine bugs found, NOT yet fixed → [ ] Xp006, Xp017**
+(§12.12): prose claims a dual-mode "silently accepts under one / diagnostic under the other (no shape)"
+but live oracle shows BOTH heal modes load a real shape(1) — the dual-mode framing is false, needs a
+rewrite (not a minimal outcome swap).
+
+**(B) DEEP RE-AUDIT of the 358 shape(1)-bug-claim fixtures — MAINTAINER CHOSE THIS (2026-07-18).**
+Per-fixture determine whether OCC's shape(1) is a genuine HEAL of the declared defect (→ OVERCLAIM: OCC did
+the allowed behavior → reclassify/scrub the "must heal, bug witnessed" verdict) or a silent-ACCEPT that
+preserves the defect in the built shape (→ SOUND: keep). Methodology per fixture: (1) mutate the defect
+bytes and re-run the oracle — if output is INVARIANT under defect mutation (oracle-inert), OCC ignores/heals
+the defect → the "bug" claim is unsupported; if output CHANGES (oracle-active), the defect genuinely affects
+the shape → likely sound. (2) For geometry OCC is known to recompute (pcurves per Gp193; SameParameter;
+FixFace healing), shape(1) = heal → overclaim. Batch by section (Gp/Gn/Gs/Tsh/M/Pmi/A/Xp/Pf/…), worktree
+agents, integrate per batch. **PILOT: the ~29 Gp pcurve fixtures** (highest-confidence overclaim cluster —
+Gp193 already proved OCC recomputes pcurves) to validate the method + measure the overclaim rate before
+scaling. Full list = the 358 `occt=shape` + allowed∌{accept,warn} entries (regenerate with the scratchpad
+detector). This is a multi-session campaign.
 
 ## Fidelity — orphaned-defect-carrier fixes (IN PROGRESS 2026-07-17)
 
