@@ -94,6 +94,30 @@ M033, Lh053 flagged, Twi286. Detector confirms 0 unprocessed risky entries remai
   (Gs040/043/053/044/198 — defect class real, as-shipped value oracle-invisible; strengthen magnitude
   instead of reclassifying).
 
+**(C) EMPTY-CLAIM CAMPAIGN COMPLETE 2026-07-18 (through 063d42fa).** Extended the same method (inverted
+discriminator: SOUND iff repairing the defect makes a shape APPEAR; OVERCLAIM iff empty regardless) to all
+`occt=empty` "Kernel-bug witnessed" claims (allowed∌accept/warn). **275 reclassified; Kernel-bug 581 → 306.**
+Structural router split the population: bare/metadata GEOMETRIC_CURVE_SET or topology-wrapped-in-GCS (OCC
+never builds it) = container-driven empty = OVERCLAIM; only a real shape-representation root can be SOUND.
+Rates: Le pilot 32/32, Twi/Tfa/Tsh 26/27, M/Gn/Fi 28/28, Os/Hea/mixed 19/26, N 33/33, M/Tb/In/A 66/67,
+Ls/U/Wr/Lh 71/76. **5 SOUND preserved** (defect genuinely drives the empty): Tsh002 (OPEN_SHELL→CLOSED
+builds), Gp033 (C0 interior-knot break), A037 (missing PRODUCT), Pf039 (self-loop NAUO excludes from
+TransferRoots), Bo002 (dangling-shell resolves).
+**Flags for maintainer:**
+- **M054** — schema-legal repair (FACETED_BREP→CLOSED_SHELL) SEGFAULTS OCC: a separate GENUINE crash
+  pathology worth filing (stronger than the empty claim it replaced).
+- **~40 adversarial/grammar probes left FLAGGED (not scrubbed)** — 33 Ad (XXE/billion-laughs, stack-
+  overflow, TOCTOU/symlink, type-confusion, cyclic-complex) + 6 Ls (hex/octal ints, empty param lists,
+  malformed binary literals, name overflow) + In001 (empty DATA section). Their "empty+bug" is a
+  parser-strictness assertion, NOT geometry silent-loss — the perturbation method can't adjudicate them.
+  Need a maintainer decision on the right verdict framing for this adversarial-probe sub-class.
+- **Ls010** — internal contradiction: Expected behavior says "accept+warn, do not reject" but its
+  OCC-behavior allowed set is `{reject}`-only. Pre-existing; separate fix.
+**Remaining bug-witness verdicts (306):** the risky residue is now just 45 shape(1) sounds + 45 empty
+sounds/flagged + 24 `occt=signal` crash claims (crashes are defensible — audit in progress/next). The rest
+carry allowed sets that INCLUDE accept/warn (legitimate differential claims, not overclaims). See
+[[project_shape1_bug_reaudit_complete]], [[feedback_worktree_wave_integration]].
+
 ## Fidelity — orphaned-defect-carrier fixes (IN PROGRESS 2026-07-17)
 
 Five fixtures were confirmed (2026-07-06 audit, [[feedback_orphaned_defect_carrier]]) to carry their
