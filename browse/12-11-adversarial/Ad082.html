@@ -32,7 +32,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>ASCII and binary serialisations of the same shape data must produce identical results; both accept or both reject. Throwing in one and accepting in the other is a parser-parity bug.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Ad043. **OCC behavior**: accepts and loads shape(1); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
+<p>**See also**: Ad043. **OCC behavior**: OCC accepts and loads a valid shape(1); the late-bound forward-reference face is unreferenced by the transferred GEOMETRIC_CURVE_SET and the ASCII reader resolves forward references cleanly. The claimed defect is a binary-BREP-reader parity issue not exercised by this ASCII fixture. Base/clean shape-counts and validity are identical; shape(1) does not witness a kernel bug.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

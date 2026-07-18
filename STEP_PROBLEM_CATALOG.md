@@ -2082,12 +2082,13 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Gn015 — Rational `B_SPLINE_SURFACE_WITH_KNOTS` that is actually a `SURFACE_OF_REVOLUTION` (sqrt(2)/2 weights, 360° sweep)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance: base/clean(C-1 gap closed)/huge(gap x100) all give shape-counts (sh1 f0 v0) with BRepCheck valid=False; the face fails to build even with a CLEAN defect (toy topology), and analytic recovery is oracle-invisible.
 - **Category**: §12.2b NURBS/knots
 - **Sources**: 03-occt-tests.md (R013 surface_to_revolution_*)
 - **Description**: A surface stored as a rational `B_SPLINE_SURFACE_WITH_KNOTS` is mathematically a `SURFACE_OF_REVOLUTION`. Common shape: a 3×9 control net rational B-spline standing in for a cylinder/torus revolved 360° (with the canonical sqrt(2)/2 weight pattern of an exact-circle NURBS); exact analytic shape encoded via NURBS. Recognition matters for CAM and unfolding workflows.
 - **Reproducer recipe**: BSpline surface produced by sampling a true revolution (axis + profile), with control net showing the rotational symmetry.
 - **Expected kernel behavior**: heal; detect rotational symmetry in the control net within tolerance; replace with `SURFACE_OF_REVOLUTION` carrying the recovered axis and profile curve.
-- **Notes**: **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "rational B-spline surface is actually surface of revolution", "exact-circle NURBS sqrt(2)/2 weight pattern", "BSpline 360-degree sweep should be SURFACE_OF_REVOLUTION", "cylinder/torus stored as rational BSpline net", "rotational symmetry hidden in NURBS control net".
+- **Notes**: **OCC behavior**: OCC accepts and loads shape(1); the requested analytic recovery (recognise SURFACE_OF_REVOLUTION) is oracle-invisible and the built shell has no face (BRepCheck invalid) whether the defect edge is present, cleaned, or exaggerated — invalid with a CLEAN defect indicates toy topology, not the claimed defect. shape(1) does not witness a kernel bug. Synonyms: "rational B-spline surface is actually surface of revolution", "exact-circle NURBS sqrt(2)/2 weight pattern", "BSpline 360-degree sweep should be SURFACE_OF_REVOLUTION", "cylinder/torus stored as rational BSpline net", "rotational symmetry hidden in NURBS control net".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 0
@@ -2148,13 +2149,14 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Gn020 — Spline approximation of analytic primitive (sender philosophy)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance: base/clean(C-1 gap closed)/huge(gap x100) all give shape-counts (sh1 f0 v0) with BRepCheck valid=False; the face fails to build even with a CLEAN defect (toy topology), and analytic recovery is oracle-invisible.
 - **Category**: §12.2b NURBS/knots
 - **Sources**: 11-translator-vendors.md (W015); 15-academic.md (L042 — Spatial 2024 blog); 17-standards-bodies.md (M006)
 - **Sender**: any kernel that doesn't preserve analytics (especially via IGES)
 - **Description**: A face that started as analytic is exported as a `B_SPLINE_SURFACE_WITH_KNOTS` because the source kernel/exporter doesn't preserve the analytic form. Affects feature recognition, Booleans, mass properties.
 - **Reproducer recipe**: A cylinder of radius 25.0 mm exported as a `B_SPLINE_SURFACE_WITH_KNOTS` of degree (2,1) with rational weights; no `CYLINDRICAL_SURFACE` anywhere in the file.
 - **Expected kernel behavior**: heal by analytic recovery (Spatial "Geometry Simplification" / OCCT canonical recognition).
-- **Notes**: **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "spline approximation of analytic primitive", "cylinder exported as B-spline by sender", "analytic surface lost via NURBS export", "kernel emits B-spline instead of preserving cylinder", "geometry simplification needed to recover analytics".
+- **Notes**: **OCC behavior**: OCC accepts and loads shape(1); the requested analytic recovery (recover CYLINDRICAL_SURFACE from the rational NURBS) is oracle-invisible and the built shell has no face (BRepCheck invalid) whether the defect edge is present, cleaned, or exaggerated — invalid with a CLEAN defect indicates toy topology, not the claimed defect. shape(1) does not witness a kernel bug. Synonyms: "spline approximation of analytic primitive", "cylinder exported as B-spline by sender", "analytic surface lost via NURBS export", "kernel emits B-spline instead of preserving cylinder", "geometry simplification needed to recover analytics".
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 0
@@ -2162,6 +2164,7 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gn021 — `OFFSET_SURFACE` of complex BSpline base fails parsing only when wrapped
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance: base/clean(C-1 gap closed)/huge(gap x100) all give shape-counts (sh1 f0 v0) with BRepCheck valid=False; the face fails to build even with a CLEAN defect (toy topology), and the OFFSET_SURFACE parse is oracle-invisible.
 - **Category**: §12.2b NURBS/knots
 - **Sources**: 18-other-issues.md (I010 — OCCT #994)
 - **Description**: A face referencing `#157=OFFSET_SURFACE('',#288,20.0,.F.)` where `#288` is a complex `(B_SPLINE_SURFACE .. )` aggregate fails to render. Replacing `#157` directly with `#288` succeeds; broken indirection through `OFFSET_SURFACE` over a NURBS base.
@@ -2171,12 +2174,13 @@ _Section summary: 82 entries._
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 0
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC accepts and loads shape(1); OCC parses the OFFSET_SURFACE-of-NURBS wrapper and the built shell has no face (BRepCheck invalid) whether the defect edge is present, cleaned, or exaggerated — invalid with a CLEAN defect indicates toy topology, not the claimed defect. shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Gn023 — STEP→BREP silently injects new `B_SPLINE_CURVE_WITH_KNOTS` (analytic `CIRCLE` cylinder cap edges replaced)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance: base/clean(circle poles tightened)/huge(poles x50) all give shape(1) (f1) valid=True; the 'silent B-spline injection' is a STEP->BREP write-side round-trip artifact not present on read.
 - **Category**: §12.2b NURBS/knots
 - **Sources**: 18-other-issues.md (I045 — pythonocc-core #661)
 - **Description**: After STEP→BREP via OCC `BRepTools` write, `B_SPLINE_CURVE_WITH_KNOTS` instances appear that were never in the source; analytic `CIRCLE` edges bounding a `CYLINDRICAL_SURFACE` are replaced with NURBS approximations. Source signature: a cylinder authored with two `CIRCLE` cap edges where each `EDGE_CURVE` uses the same `VERTEX_POINT` for start and end (a closed circular edge with one self-paired vertex per cap).
@@ -2186,7 +2190,7 @@ _Section summary: 82 entries._
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_faces_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC accepts and loads a valid shape(1) (one cylindrical face with a B-spline cap edge); the declared defect (STEP->BREP writer silently injecting B-splines in place of analytic CIRCLEs) is a write-side round-trip artifact not present in this read path. Perturbing the injected B-spline circle (clean/huge) leaves shape-counts and validity unchanged; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
@@ -13873,6 +13877,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Ad089 — Reader broken parsing on missing last parameter
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance: base/clean(commas removed)/huge(more commas) all give shape(1) (v1 compound) valid=True; the trailing-comma records are unreferenced orphans that never enter the built shape.
 - **Category**: §12.11 adversarial
 - **Sources**: OCCT MANTIS#0031756 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A STEP entity record ends with a trailing comma and missing
@@ -13887,7 +13892,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: Ad088.
 - **Byte assertion**: matches(rb',\s*\)\s*\)\s*;')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silently accepts with diagnostic and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC accepts and loads a valid shape(1) — the transferred model is the referenced GEOMETRIC_CURVE_SET (1-vertex compound); the trailing-comma records are unreferenced orphans, so removing (clean) or exaggerating (huge) the defect leaves shape-counts and BRepCheck validity unchanged. shape(1) does not witness a kernel bug (a parser tolerating a trailing comma still loads the same shape).
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -13934,6 +13939,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Ad092 — Crash reading large STEP file: exception during transfer
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance: base/clean(orphan points removed) both shape(1) (v1) valid=True; the declared defect is a scale DoS (~10^7 entities) that does not reproduce at authorable fixture scale.
 - **Category**: §12.11 adversarial
 - **Sources**: OCCT MANTIS#0028662; OCCT MANTIS#0028256; OCCT MANTIS#0029108; OCCT MANTIS#0033377 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A STEP file containing several million entities exceeds
@@ -13948,12 +13954,13 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 20
 - **Byte assertion**: count(b'#') >= 30
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC accepts and loads a valid shape(1); the 50 point records are unreferenced orphans and the declared crash is a scale-dependent DoS (~millions of entities) that does not reproduce at fixture scale. clean/huge perturbation leaves shape-counts and validity unchanged; shape(1) does not witness a kernel bug.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Ad093 — Empty / null input file path causes crash
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance: base/clean both shape(1) (v1) valid=True; the defect is a runtime empty/null-path API behavior with no representation in these bytes.
 - **Category**: §12.11 adversarial
 - **Sources**: OCCT MANTIS#0024246; OCCT MANTIS#0032115 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A STEP reader is invoked with empty or null filename
@@ -13963,7 +13970,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Reproducer recipe**: invoke reader with empty filename `""` or null path.
 - **Expected kernel behavior**: reader rejects empty / null filenames at
  entry; never crash on bad arguments.
-- **Notes**: **See also**: Ad082. Provenance tier: runtime-only; there is no `.stp` to author; the defect is triggered by an empty or null path passed to the reader API, which fails before any file content is read. Demonstrating this requires invoking the reader with bad arguments, not a fixture file. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
+- **Notes**: **See also**: Ad082. Provenance tier: runtime-only; there is no `.stp` to author; the defect is triggered by an empty or null path passed to the reader API, which fails before any file content is read. Demonstrating this requires invoking the reader with bad arguments, not a fixture file. **OCC behavior**: OCC accepts and loads a valid shape(1); the declared defect is a runtime empty/null-path API behavior (no `.stp` content can embody it), so it cannot survive into the built shape. Base and clean give identical shape-counts and validity; shape(1) does not witness a kernel bug.
 - **Byte assertion**: contains(b'ISO-10303-21')
 - **Byte assertion**: contains(b'END-ISO-10303-21')
 - **Tier-3 assertion**: load == "ok"
@@ -14086,6 +14093,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ad100 — Memory leak reading STEP file into TDocStd_Document
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance: base/clean both shape(1) (v1) valid=True; the defect is a cross-file RSS-growth behavior with no single-file byte signature.
 - **Category**: §12.11 adversarial
 - **Sources**: OCCT MANTIS#0031075; OCCT MANTIS#0022807; OCCT MANTIS#0022941 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A STEP read into an XCAF document leaks ~MB of memory
@@ -14100,7 +14108,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ISO-10303-21')
 - **Byte assertion**: contains(b'END-ISO-10303-21')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC accepts and loads a valid shape(1); the declared defect is cross-file memory-leak behavior (monotonic RSS growth across many reads) with no single-file byte signature, and the orphan vertex records are unreferenced. Base/clean shape-counts and validity are identical; shape(1) does not witness a kernel bug.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -14162,13 +14170,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Ad111 — ZIP bomb inside a 3MF / IFCZIP container that wraps a STEP body
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance: base/clean both shape(1) (v1) valid=True; the ZIP bomb lives in the 3MF/IFCZIP wrapper, not in these Part-21 bytes.
 - **Category**: §12.11 adversarial (sub-class: decompression bomb / ZIP container)
 - **Sources**: bug-reporter language: "3MF zip bomb", "IFCZIP allocates gigs"; CWE-409; 3MF spec §3 (ZIP container); ISO 10303-21 (STEP body inside an IFCZIP-style wrapper)
 - **Sender**: deduced — adversarial input that exercises the ZIP-container decompression path used by 3MF / IFCZIP / similar STEP-adjacent wrappers
 - **Description**: 3MF and IFCZIP are STEP-adjacent container formats: a ZIP archive whose entries include a Part-21 body (or an XML-encoded equivalent) plus auxiliary metadata. A maliciously-crafted ZIP archive carries one entry whose compressed bytes are tiny but whose uncompressed bytes claim gigabytes; the textbook ZIP bomb (`42.zip`-style nested archives, or a single highly-redundant entry). A receiver that extracts entries to a tempdir before parsing exhausts disk; one that decompresses to memory exhausts RAM. Distinct from Ad105 (archive-header lie): in this entry, the ZIP entry actually decompresses to the claimed size. Bug-reporter language: "3MF bomb", "IFCZIP decompression OOM", "ZIP entry blows up CAD loader".
 - **Reproducer recipe**: a 3MF file (ZIP archive) containing a single entry `3D/3dmodel.model` whose compressed-vs-uncompressed ratio is 1:5000; the entry is valid 3MF XML when decompressed but ~2 GB long. Cannot be embodied as a Part-21 fixture; the defect lives in the ZIP wrapper.
 - **Expected kernel behavior**: cap the per-entry decompression budget and abort with a precise diagnostic when exceeded; cap the per-archive total budget; refuse archives with implausible entry-count / total-size combinations; treat the container layer as adversarial.
-- **Notes**: Companion to Ad110 (gzip wrapper) — different container, same defect class. Distinct from Ad105 (archive *header* lies; this entry's bomb actually decompresses). **See also**: Ad027, Ad105, Ad110, Ad112, Pf030. Provenance tier: cross-file-state — bytes alone (a Part-21 body) cannot demonstrate this defect; the bomb is in the ZIP wrapper. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
+- **Notes**: Companion to Ad110 (gzip wrapper) — different container, same defect class. Distinct from Ad105 (archive *header* lies; this entry's bomb actually decompresses). **See also**: Ad027, Ad105, Ad110, Ad112, Pf030. Provenance tier: cross-file-state — bytes alone (a Part-21 body) cannot demonstrate this defect; the bomb is in the ZIP wrapper. **OCC behavior**: OCC accepts and loads a valid shape(1); the declared ZIP bomb lives in the 3MF/IFCZIP container wrapper, not in this embedded Part-21 body. Base and clean give identical shape-counts and validity; shape(1) does not witness a kernel bug.
 - **Byte assertion**: contains(b'3MF') or contains(b'IFCZIP') or contains(b'ZIP')
 - **Byte assertion**: contains(b'bomb') or contains(b'ratio')
 - **Tier-3 assertion**: load == "ok"
@@ -14176,13 +14185,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Ad112 — Nested gzip-of-gzip-of-..stpz triggers N-level recursive decompression
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance: base/clean both shape(1) (v1) valid=True; the nested-gzip recursion lives in the wrapper layering, not in these Part-21 bytes.
 - **Category**: §12.11 adversarial (sub-class: decompression bomb / recursion)
 - **Sources**: bug-reporter language: "stpz inside stpz crashes loader", "recursive gzip stack overflow on STEP"; CWE-674 (uncontrolled recursion); ISO 10303-21 §12 (compressed-archive transfer)
 - **Sender**: deduced — adversarial input that wraps a Part-21 body in N stacked gzip layers
 - **Description**: A receiver that auto-detects gzip framing (magic `1F 8B`) and decompresses transparently before tokenising will, on input that is gzip-of-gzip-of-..-of-Part-21, recurse into each layer. With N stacked layers of trivially-compressible content, the receiver allocates a buffer per layer; if recursion is implemented by recursive function calls the call-stack overflows. The aggregate decompression ratio is the product of per-layer ratios; 8 layers at 1:100 each yields 1:10^16. Distinct from Ad110 (single-layer ratio bomb): this entry attacks the layering depth, not the per-layer ratio. Bug-reporter language: "nested gzip in STEP", "recursive .stpz unwrap", "stack overflow on stpz-of-stpz".
 - **Reproducer recipe**: a Part-21 body wrapped in 8 successive gzip layers (each layer's input is the previous layer's gzip output); compressed final size is a few KB, decompressed final size is 100 MB+, and unwrapping requires 8 sequential gunzip passes.
 - **Expected kernel behavior**: cap the gzip-layer recursion depth at 1 (or a small bounded N) with a precise diagnostic when exceeded; refuse files whose decompressed body still has the gzip magic at offset 0; treat the wrapper layer as adversarial.
-- **Notes**: Companion to Ad110 (single-layer ratio bomb); orthogonal axis (depth, not ratio). **See also**: Ad027, Ad105, Ad110, Ad111, Pf030. Provenance tier: cross-file-state; bytes alone (a Part-21 body) cannot demonstrate this defect; the bomb is in the stack of gzip wrappers. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
+- **Notes**: Companion to Ad110 (single-layer ratio bomb); orthogonal axis (depth, not ratio). **See also**: Ad027, Ad105, Ad110, Ad111, Pf030. Provenance tier: cross-file-state; bytes alone (a Part-21 body) cannot demonstrate this defect; the bomb is in the stack of gzip wrappers. **OCC behavior**: OCC accepts and loads a valid shape(1); the declared nested-gzip recursion bomb lives in the stacked `.stpz` wrapper layers, not in this innermost Part-21 body. Base and clean give identical shape-counts and validity; shape(1) does not witness a kernel bug.
 - **Byte assertion**: contains(b'gzip') or contains(b'nested') or contains(b'recursive')
 - **Byte assertion**: contains(b'.stpz') or contains(b'recursion') or contains(b'depth')
 - **Tier-3 assertion**: load == "ok"
@@ -14278,6 +14288,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ad103 — Coincident VERTEX_POINTs at identical CARTESIAN_POINT coordinates trigger vertex-merge healing throws on already-absorbed vertex
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance: base/clean both shape(1) (v1) valid=True; the defect is a runtime multi-pass vertex-merge use-after-free not exercised by a single load.
 - **Category**: §12.11 adversarial
 - **Sources**: OCCT MANTIS#0027078; OCCT MANTIS#0024919 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A vertex-union step is invoked on two vertices that are
@@ -14295,7 +14306,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'ISO-10303-21')
 - **Byte assertion**: contains(b'END-ISO-10303-21')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC accepts and loads a valid shape(1); the declared use-after-free requires two successive vertex-merge passes (runtime multi-pass state) and the coincident-vertex records sit in an unreferenced GEOMETRIC_CURVE_SET. Base/clean shape-counts and validity are identical; shape(1) does not witness a kernel bug.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -14315,13 +14326,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ad105 — `.stpz` / `.stpx` archive container claims gigabytes of uncompressed data
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance: base/clean both shape(1) (v1) valid=True; the bomb lives in the .stpz/.stpx archive wrapper, not in these Part-21 bytes.
 - **Category**: §12.11 adversarial (sub-class: decompression bomb)
 - **Sources**: bug-reporter language: "STEP archive crashes the loader", "stpz file allocates 4 GB"; CWE-409 (decompression bomb); ISO 10303-21 §12 (compressed-archive transfer)
 - **Sender**: deduced — adversarial input
 - **Description**: The `.stpz` and `.stpx` extensions denote ZIP / gzip-archive variants of STEP transfer. A maliciously-crafted archive can claim gigabytes of uncompressed payload from a few kilobytes of input — the standard ZIP-bomb / gzip-bomb pattern. A receiver that decompresses into memory before parsing exhausts RAM or swap. The defect is at the archive-wrapper layer, not in the STEP bytes. Bug-reporter language: "STEP archive bomb", "stpz allocates gigs", "decompression OOM on STEP". Provenance tier: cross-file-state — bytes alone (a STEP body) cannot demonstrate this; the demonstration is in the archive wrapper plus the receiver's decompression policy.
 - **Reproducer recipe**: a ZIP archive whose entry header advertises uncompressed size of 10 GB but whose compressed bytes are tiny (highly-compressible repeated bytes); the entry contains a 100-character STEP body. Cannot be embodied as a Part-21 fixture; the defect lives in the archive layer.
 - **Expected kernel behavior**: cap the per-archive-entry decompression budget (size, time); refuse to load when the budget is exceeded with a precise diagnostic; treat the archive layer as adversarial.
-- **Notes**: First entry exercising the .stpz / .stpx archive wrapper as an attack surface. **See also**: Ad104. Provenance tier: cross-file-state; bytes alone cannot demonstrate this defect; the bomb lives in the archive header, not the embedded STEP body. The static `.stp` fixture encodes only the embedded body; the receiver-side amplification requires an actual archive wrapper. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
+- **Notes**: First entry exercising the .stpz / .stpx archive wrapper as an attack surface. **See also**: Ad104. Provenance tier: cross-file-state; bytes alone cannot demonstrate this defect; the bomb lives in the archive header, not the embedded STEP body. The static `.stp` fixture encodes only the embedded body; the receiver-side amplification requires an actual archive wrapper. **OCC behavior**: OCC accepts and loads a valid shape(1); the declared decompression bomb lives in the `.stpz`/`.stpx` archive-header wrapper, not in this embedded Part-21 body. Base and clean give identical shape-counts and validity; shape(1) does not witness a kernel bug.
 - **Byte assertion**: contains(b'ISO-10303-21')
 - **Byte assertion**: contains(b'END-ISO-10303-21')
 - **Tier-3 assertion**: load == "ok"
@@ -15965,12 +15977,13 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ad003 — Negative / zero `B_SPLINE` degree or empty knot/multiplicity lists drive `malloc` size confusion
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance: base/clean(bspline removed)/huge(degree -9999) all shape(1) (v2 compound) valid=True; the negative-degree BSPLINE records are unreferenced orphans.
 - **Category**: §12.11 (sub-class: malformed-numeric / heap-overflow)
 - **Sources**: 12-adversarial.md A003, A034; CVE-2024-23133 (ASMDATAX228A.dll on STP); CVE-2025-10021 (ODA SDK uninit-on-bad-index); CVE-2022-39803 (Spatial ACIS)
 - **Description**: A schema-driven binder pre-allocates from an input count without sign / upper-bound checks; `count - 1` underflows when count is zero. Common attack shape: a `B_SPLINE_CURVE_WITH_KNOTS` declared with negative degree (e.g. -1) and negative knot multiplicities, or a `B_SPLINE_SURFACE_WITH_KNOTS` declared with zero degrees and empty knot / multiplicity lists where the schema requires positives.
 - **Reproducer recipe**: aggregate whose declared count is `-1` (sign-extends to `0xFFFFFFFF`) or `0` followed by code expecting ≥1.
 - **Expected kernel behavior**: validate against schema bounds before allocation; reject with `E_AGGREGATE_BOUNDS`.
-- **Notes**: C; CWE-191 sign-confusion repeatedly cited in Spatial/ODA/Autodesk advisories. **See also**: Ad015, Ad077. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
+- **Notes**: C; CWE-191 sign-confusion repeatedly cited in Spatial/ODA/Autodesk advisories. **See also**: Ad015, Ad077. **OCC behavior**: OCC accepts and loads a valid shape(1) — the transferred model is the referenced GEOMETRIC_CURVE_SET (2-vertex compound); the negative-degree/empty-knot BSPLINE records are unreferenced orphans, so removing (clean) or exaggerating (huge, degree -9999) the defect leaves shape-counts and validity unchanged. The CVE class cited targets other libraries; OCC neither crashes nor underflows here. shape(1) does not witness a kernel bug.
 - **Byte assertion**: matches(rb'BSPLINE_(?:CURVE|SURFACE)_WITH_KNOTS\([^;]*,\s*-?(?:0|1)') or matches(rb'BSPLINE_CURVE_WITH_KNOTS\([^;]*,\s*-1')
 - **Byte assertion**: matches(rb'BSPLINE_(?:CURVE|SURFACE)_WITH_KNOTS')
 - **Tier-3 assertion**: load == "ok"
@@ -16290,6 +16303,7 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ad053 — Cyclic / reference-to-reference chain of `SHAPE_REPRESENTATION_RELATIONSHIP`
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance: base/clean(cycle removed) both shape(1) (v1) valid=True; the SRR cycle sits in records unreferenced by the transferred GEOMETRIC_CURVE_SET.
 - **Category**: §12.11 (sub-class: cyclic-reference / DoS)
 - **Sources**: 08-occt-gitlog.md G033 (Mantis 0031568)
 - **Description**: A `SHAPE_REPRESENTATION_RELATIONSHIP` (SRR) is used as the right-hand side (`rep_2`) of another SRR — a "reference to reference" chain — producing an invalid model. Common attack shape: three SRR entities forming a 3-cycle by each referencing the next in `rep_2` (#100→#101→#102→#100); deeper chains are quadratic or cyclic.
@@ -16299,12 +16313,13 @@ _Section summary: 41 entries._
 - **Byte assertion**: count_entity_def(b'SHAPE_REPRESENTATION_RELATIONSHIP') >= 3
 - **Byte assertion**: matches(rb'(?s)#100=SHAPE_REPRESENTATION_RELATIONSHIP[^;]+#101[^;]+;.*#101=SHAPE_REPRESENTATION_RELATIONSHIP[^;]+#102')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC accepts and loads a valid shape(1); the cyclic SHAPE_REPRESENTATION_RELATIONSHIP chain is unreferenced by the transferred GEOMETRIC_CURVE_SET model, so removing it (clean) leaves shape-counts and validity unchanged and OCC does not infinite-loop. shape(1) does not witness a kernel bug.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Ad054 — Mutual-cycle `NEXT_ASSEMBLY_USAGE_OCCURRENCE` chain hangs reader's `Transfer` phase forever
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance: base/clean(cycle removed) both shape(1) (v1) valid=True; the NAUO mutual cycle is unreferenced by the transferred model.
 - **Category**: §12.11 (sub-class: DoS / resource-exhaustion)
 - **Sources**: 18-other-issues.md I002 (OCCT #712)
 - **Description**: A STEP file accepted by Catia and NX hangs the consumer indefinitely during the `Transfer` phase (`ReadFile` completes). Common attack shape: two `NEXT_ASSEMBLY_USAGE_OCCURRENCE` entries form a mutual parent/child cycle (e.g. #30 has parent=#12, child=#22; #31 has parent=#22, child=#12), so the assembly-tree walk loops forever.
@@ -16314,12 +16329,13 @@ _Section summary: 41 entries._
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') >= 2 and matches(rb'(?s)NEXT_ASSEMBLY_USAGE_OCCURRENCE[^;]+#12,#22[^;]+;.*NEXT_ASSEMBLY_USAGE_OCCURRENCE[^;]+#22,#12')
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') >= 2
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC accepts and loads a valid shape(1); the mutual-cycle NEXT_ASSEMBLY_USAGE_OCCURRENCE chain is unreferenced by the transferred GEOMETRIC_CURVE_SET model and OCC does not hang. Removing it (clean) leaves shape-counts and validity unchanged; shape(1) does not witness a kernel bug.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Ad055 — Stack overflow when meshing TBB pool from STEP import
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance: base (144 faces, v1152) and clean (1 face, v8) both valid=True with no crash; the declared stack overflow is scale-dependent (~10^5 faces) and does not reproduce at authorable scale.
 - **Category**: §12.11 (sub-class: stack-overflow / resource-exhaustion)
 - **Sources**: 18-other-issues.md I064 (OCCT #688); 20-general-forums.md J020 (huge-faces-per-shell stack overflow)
 - **Description**: Recursive traversal of `CLOSED_SHELL` with O(10⁵) faces overflows the C stack on Windows defaults; the parallel mesher then stack-overflows on a per-thread 1 MB stack default.
@@ -16329,7 +16345,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') >= 10 or count(b'#') >= 100
 - **Byte assertion**: count(b'#1') >= 5
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC accepts and loads a valid multi-face shell (144 faces, BRepCheck valid=True) with no crash; the declared TBB/stack overflow is scale-dependent (~10^5 faces on a Windows 1 MB default stack) and does not reproduce at authorable fixture scale. Reducing the face count (clean) keeps validity True; shape(1) does not witness a kernel bug at this scale.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1296) ifc=schema_n/a`
@@ -16391,6 +16407,7 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Ad077 — Zero-length aggregates trigger `count-1` underflow / 4 GB loop walk (signed-integer attribute used as unsigned)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance: base/clean(empty shell removed) both shape(1) (v8 f1) valid=True; the empty CLOSED_SHELL is an unreferenced orphan (already noted as non-reproducing on OCCT).
 - **Category**: §12.11 (sub-class: malformed-numeric / DoS)
 - **Sources**: CVE-2024-23133 (Autodesk ASMDATAX228A.dll on STP)
 - **Description**: A signed integer aggregate-count attribute drives `for(i=0; i<n; i++)` where `n = parsed_count - 1`; if `parsed_count==0`, the unsigned interpretation walks 4 GB before wrap. Common attack shape: multiple zero-length aggregates in one file — `COMPOSITE_CURVE` with empty segment list, `B_SPLINE_CURVE_WITH_KNOTS` with empty knot/multiplicity lists, `ADVANCED_FACE` with empty bounds list, `CLOSED_SHELL` with empty face list — each individually exposes the underflow.
@@ -16399,7 +16416,7 @@ _Section summary: 41 entries._
 - **Notes**: C; CVE-2024-23133. **See also**: Ad003. Live-verified (this worktree's OCCT 7.8.1, heal-on and heal-off identical): the zero-length aggregate does NOT reproduce a CVE-2024-23133-style underflow/crash on this reader — the fixture loads cleanly as `shape(1)/shape(1)`. The CVE targets Autodesk's ASMDATAX228A.dll specifically, not OCCT; this catalog entry documents the vulnerability class via a spec-conformant reproducer, not a claim that OCCT itself is vulnerable.
 - **Byte assertion**: matches(rb'\([^()]*\(\)\)') or matches(rb"CLOSED_SHELL\('[^']*',\(\)\)")
 - **Byte assertion**: matches(rb',\(\)') or matches(rb'\(\)\)')
-- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture (pre-validate count > 0 before computing count-1) rather than silently accept a zero-length aggregate that a naive unsigned-cast implementation elsewhere (e.g. the CVE'd Autodesk library) would underflow on.
+- **OCC behavior**: OCC accepts and loads a valid shape(1) (one planar face); the empty-face-list CLOSED_SHELL is an unreferenced orphan and, as already noted, the CVE-2024-23133 underflow does not reproduce on OCCT. Removing it (clean) leaves shape-counts and validity unchanged; shape(1) does not witness a kernel bug (the underflow class is specific to the CVE'd Autodesk library).
 - **Severity**: P2
 - **Model impact**: The zero-length aggregate is silently tolerated by this reader; the underflow/DoS risk this fixture demonstrates is specific to implementations (like the CVE'd library) that compute `count-1` as an unsigned loop bound without validating count > 0 first.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -16448,12 +16465,13 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ad082 — Late-bound forward reference (`FACE_OUTER_BOUND` → `EDGE_LOOP` → `ORIENTED_EDGE` defined later) trips binary BREP indexed-map lookup
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance: base/clean(forward-ref face removed) both shape(1) (v1) valid=True; the forward-referenced FACE_OUTER_BOUND/EDGE_LOOP is unreferenced by the transferred model and the ASCII reader handles it.
 - **Category**: §12.11 (sub-class: schema-validation)
 - **Sources**: 18-other-issues.md I059 (OCCT #844)
 - **Description**: A shape whose entity definition order forces forward references; for example a `FACE_OUTER_BOUND` (#21) references an `EDGE_LOOP` (#22) that itself references an `ORIENTED_EDGE` (#200) defined later in the file. The ASCII reader handles such forward references cleanly, but the binary BREP reader throws an unhandled indexed-map lookup-failure exception on the same canonical content. The two serialisations do not maintain parity.
 - **Reproducer recipe**: shapes attached to issue; load through both readers and observe one accepts, the other throws.
 - **Expected kernel behavior**: ASCII and binary serialisations of the same shape data must produce identical results; both accept or both reject. Throwing in one and accepting in the other is a parser-parity bug.
-- **Notes**: **See also**: Ad043. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
+- **Notes**: **See also**: Ad043. **OCC behavior**: OCC accepts and loads a valid shape(1); the late-bound forward-reference face is unreferenced by the transferred GEOMETRIC_CURVE_SET and the ASCII reader resolves forward references cleanly. The claimed defect is a binary-BREP-reader parity issue not exercised by this ASCII fixture. Base/clean shape-counts and validity are identical; shape(1) does not witness a kernel bug.
 - **Byte assertion**: matches(rb'(?s)#21=FACE_OUTER_BOUND[^;]+#22[^;]+;.*#22=EDGE_LOOP[^;]+#200') or matches(rb'(?s)EDGE_LOOP[^;]*#200')
 - **Byte assertion**: contains(b'EDGE_LOOP') and contains(b'ORIENTED_EDGE') and contains(b'#200')
 - **Tier-3 assertion**: load == "ok"
@@ -16506,6 +16524,7 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ad086 — Translator silently masks segfault-class faults as "transfer failed" on type-confused / overflow attribute references
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance: base/clean(type-confusion records removed)/huge(1.0E+9999) all shape(1) (v1) valid=True; the type-confusion/overflow records are unreferenced orphans.
 - **Category**: §12.11 (sub-class: schema-validation)
 - **Sources**: 04-occt-translation.md Q078; 03-occt-tests.md R073 (`parse.rules` ignores `OSD_Exception_ACCESS_VIOLATION`, `Software error`, `Syntax error`, `Transfer error`)
 - **Description**: A translator catches all exceptions at the per-entity boundary and downgrades them uniformly to a "transfer failed" status, hiding memory-corruption-class faults. Common attack shape: a single file combining several type-confusion / overflow attacks; `AXIS2_PLACEMENT_3D` whose location slot points at a `PRODUCT_DEFINITION` (`#7`) instead of a `CARTESIAN_POINT`; a `CARTESIAN_POINT` whose coordinates list has length 2 (arity mismatch); another point with coordinate `1.0E+999` (numeric overflow); a `LINE` whose direction `VECTOR` references a `CARTESIAN_POINT` (`#15`) where `DIRECTION` is required. CI test infrastructure documents these as "expected to be tolerated", masking actual exploitable conditions.
@@ -16515,7 +16534,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'ISO-10303-21')
 - **Byte assertion**: contains(b'END-ISO-10303-21')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC accepts and loads a valid shape(1); the type-confusion/overflow attribute records (mis-typed AXIS2_PLACEMENT location, 1.0E+999 coordinate, bad direction reference) are unreferenced orphans that never enter the built shape. Removing (clean) or exaggerating (huge, 1.0E+9999) them leaves shape-counts and validity unchanged; the declared 'silent masking of a segfault-class fault' is a runtime diagnostic-stream behavior, not observable here. shape(1) does not witness a kernel bug.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`

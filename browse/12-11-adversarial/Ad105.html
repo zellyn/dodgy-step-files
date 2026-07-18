@@ -36,7 +36,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>cap the per-archive-entry decompression budget (size, time); refuse to load when the budget is exceeded with a precise diagnostic; treat the archive layer as adversarial.</p></section>
 <section><h2>Notes</h2>
-<p>First entry exercising the .stpz / .stpx archive wrapper as an attack surface. **See also**: Ad104. Provenance tier: cross-file-state; bytes alone cannot demonstrate this defect; the bomb lives in the archive header, not the embedded STEP body. The static `.stp` fixture encodes only the embedded body; the receiver-side amplification requires an actual archive wrapper. **OCC behavior**: accepts and loads shape(1); outside catalog&#x27;s allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog&#x27;s stated invariant.</p></section>
+<p>First entry exercising the .stpz / .stpx archive wrapper as an attack surface. **See also**: Ad104. Provenance tier: cross-file-state; bytes alone cannot demonstrate this defect; the bomb lives in the archive header, not the embedded STEP body. The static `.stp` fixture encodes only the embedded body; the receiver-side amplification requires an actual archive wrapper. **OCC behavior**: OCC accepts and loads a valid shape(1); the declared decompression bomb lives in the `.stpz`/`.stpx` archive-header wrapper, not in this embedded Part-21 body. Base and clean give identical shape-counts and validity; shape(1) does not witness a kernel bug.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>
