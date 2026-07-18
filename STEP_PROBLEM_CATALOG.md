@@ -74,6 +74,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=reject`
 
 ### Le002 — Edition-default encoding mismatch (Ed.2 ISO-8859-1 vs Ed.3 UTF-8)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: UTF-8 vs ISO-8859 default)
 - **Sources**: N003/ISO 10303-21 Ed.3 §6.4
 - **Description**: Edition 2 declares ISO-8859-1 as the default character set; non-ASCII octets must be expressed via `\X\`, `\X2\`, or page-shift directives. Edition 3 changes the default to UTF-8 (full ISO/IEC 10646). A file produced under one edition and read by a tool assuming the other interprets non-ASCII bytes incorrectly. Conversely, an Ed.3 file using only Ed.2-style `\X\E9` escapes is lawful but is sometimes mis-decoded by parsers that strictly assume raw UTF-8.
@@ -82,12 +83,13 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: contains(b'\\X\\E9')
 - **Tier-3 assertion**: shape_null == True
 - **Notes**: Synonyms: "STEP file with mixed Ed.2 and Ed.3 encoding", "Edition 2 file read as UTF-8", "raw é byte misread as Latin-1", "non-ASCII byte interpreted by wrong edition", "Edition mismatch on accented characters".
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le004 — `\X\` (single-byte ISO-8859) escape with bad hex digit count or non-hex input
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: `\X\` directive)
 - **Sources**: T005/step-file-parser grammar.py:67-77; A011/control-directive class; N004/ISO 10303-21 Ed.3 §6.4.3.3; S003/SFA-User-Guide-v7
 - **Description**: `\X\HH` must consume exactly two upper-case hex digits to encode an 8-bit ISO-8859-* code point. Real files emit one digit (`\X\F`), three or more (`\X\FFA`), lowercase (`\X\e9`), non-hex (`\X\GG`), or interpose whitespace (`\X\E9 9`). A loose parser may walk past the directive boundary or accept malformed values.
@@ -98,7 +100,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: contains(b'\\X\\009')
 - **Byte assertion**: contains(b'\\X\\F')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Malformed hex escape leaves the affected string attribute either truncated or containing wrong code points; the host entity (PERSON, PRODUCT, etc.) loads with a corrupted name field.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -116,6 +118,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le006 — `\X4\…\X0\` (UCS-4) escape with hex run not divisible by 8 or containing surrogate code points
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: `\X4\` directive)
 - **Sources**: Q065/StepData_StepReaderData.cxx:218-272; N006/ISO 10303-21 Ed.3 §6.4.3.4
 - **Description**: `\X4\` requires hex digit count divisible by eight (one 32-bit code point per group). Tools emit 4-digit or 6-digit groups, embed UTF-16 surrogate halves directly (illegal as UCS-4 code points), or omit `\X0\`.
@@ -125,13 +128,14 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: contains(b'\\X4\\0000D83D\\X0\\')
 - **Byte assertion**: contains(b'\\X4\\00110000\\X0\\')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Notes**: Synonyms: "X4 UCS-4 escape malformed", "supplementary plane character broken", "lone surrogate in X4 escape", "code point above U+10FFFF in STEP", "X4 hex run not divisible by 8". Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
 - **Model impact**: Out-of-range or malformed UCS-4 code points either pass through as invalid UTF-8 or stop the load entirely; downstream consumers see either mojibake or no model.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le007 — `\X2\` endianness confusion / lone-surrogate handling
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: `\X2\` directive)
 - **Sources**: A037/ISO 10303-21 control directive class
 - **Description**: `\X2\` 4-digit groups are big-endian by spec; parsers built on little-endian assumptions may interpret them backwards, producing wrong code points and possibly invalid surrogate pairs. A downstream UTF-8 encoder fed a lone or invalid surrogate then emits invalid UTF-8 that subsequent consumers reject (potentially via SIGABRT).
@@ -139,13 +143,14 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected kernel behavior**: validate surrogate pairing; reject lone surrogates; always interpret hex groups as big-endian.
 - **Byte assertion**: contains(b'\\X2\\D800\\X0\\')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Notes**: Synonyms: "lone surrogate in STEP string", "X2 endianness wrong", "invalid UTF-8 from STEP encoder", "surrogate-half decoded as character", "STEP Unicode endian flipped". Provenance tier: bytes-only — defect is context/metadata OCC does not read at BRep load; mutation-test verified oracle-invisible (2026-07-01).
 - **Model impact**: The `\X2\` block is consumed incorrectly; subsequent bytes leak into the decoded string and the carrying entity attribute records garbled text instead of the intended Unicode.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le008 — `\S\X` (8-bit shift) directive: misuse, chaining, or apostrophe-after-`\S\`
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: `\S\` directive)
 - **Sources**: T007/step-file-parser fixture `pass_page_encoding.ifc`, stepcode Str.cc:150; A012/ISO control-directive class; N007/ISO 10303-21 Ed.3 §6.4.3.5
 - **Description**: `\S\x` adds 0x80 to the next single ASCII character `x` to address the upper half of the active ISO-8859 page. It is a one-character operator. Defects: parser closes the string when the byte after `\S\` is an apostrophe (`'\S\'`), treats the directive as multi-character (`\S\xy`), chains it (`\S\\S\E`), or recurses into nested directive parsing (`\S\\X\41`).
@@ -156,12 +161,13 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: contains(b'\\S\\')
 - **Byte assertion**: count(b'\\S\\') >= 2
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The 8-bit shift directive desynchronizes the string scanner; the host attribute loads with merged or truncated content, and parity tracking for the rest of the DATA section may be off by one apostrophe.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le009 — `\P{X}\` page-shift directive: bad selector / state-machine omission
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: `\P{X}\` directive)
 - **Sources**: Q066/StepData_StepReaderData.cxx:147-160; T040/step-file-parser grammar.py:70; A013/ISO control-directive class; N008/ISO 10303-21 Ed.3 §6.4.3.2 Table 4
 - **Description**: `\PA\` through `\PI\` selects ISO-8859-1 through ISO-8859-9 (one upper-case letter, persistent for the rest of the string). Real files emit lowercase letters (`\Pg\`), digits (`\P1\`), full names (`\PISO\`), or omit/replace the selector (`\P\`, `\P!\`). Many parsers also skip the state machine and ignore the directive entirely, garbling subsequent characters.
@@ -171,12 +177,13 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: contains(b'\\Pg\\') or contains(b'\\P1\\') or contains(b'\\P!\\')
 - **Byte assertion**: count(b'\\P') >= 2
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The page selector is ignored or silently mishandled; characters after the directive decode against the wrong ISO-8859 page so the attribute string carries the wrong glyphs even though the entity is otherwise valid.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le010 — `\F\` font-shift directive consumed wrongly
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: `\F\` directive)
 - **Sources**: N009/ISO 10303-21 Ed.3 §6.4.3 Table 4
 - **Description**: `\F\` introduces a single-character alternate-font selector (used for CJK font shifts); exactly one letter follows. Tools sometimes embed multi-character font tags as if it were an HTML tag (`\F\bold\F\`).
@@ -184,7 +191,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected kernel behavior**: reject with diagnostic; ignoring the directive is safer than over-consuming text.
 - **Byte assertion**: contains(b'\\F\\')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Notes**: Synonyms: "F directive consumes too many bytes", "font-shift escape multi-character", "CJK font tag confused with STEP escape", "F directive treated as HTML tag", "font shift directive runs past one letter". Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
 - **Model impact**: The font-shift directive over-consumes input bytes; trailing characters of the string are eaten and the attribute records a truncated value.
@@ -218,6 +225,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le013 — Apostrophe-doubling escape `''` confused with string terminator
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: doubled apostrophe `''` escape)
 - **Sources**: T010, T038/step-file-parser; A009/lexer pitfall (analogue to SQL); R051/OCCT bug 25171; G043/OCCT 4661dca, Mantis 25171; N011/ISO 10303-21 Ed.3 §6.4.3.1
 - **Description**: ISO 10303-21 escapes a literal apostrophe inside a string by doubling it: `'It''s'` decodes to `It's`. State machines that do not treat the doubled quote as escape mistake mid-string `''` for end-of-string + start-of-next, leading to a misaligned token stream and (in worst cases) heap corruption when a later write uses the wrong length. Parity matters when an even number of consecutive apostrophes appears.
@@ -227,12 +235,13 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: contains(b"O''Brien") or contains(b"a''b") or contains(b"''''")
 - **Byte assertion**: count(b"''") >= 3
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Mistaking `''` for a string terminator desynchronizes the entity-parameter parser; subsequent attributes shift by one position and downstream entity construction either fails type-check or builds the wrong sub-tree.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le014 — Apostrophe inside a `\X2\…\X0\` block decoded as string close
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: directive/quoting interaction)
 - **Sources**: T038/step-file-parser
 - **Description**: Scanner that counts apostrophe parity but does not first identify hex-escape blocks may treat hex digits like `27` (which is the ASCII apostrophe code point) as a closing quote. The recognizer must consume `\X\` (exactly two hex digits), `\X2\…\X0\`, etc. before applying apostrophe parity.
@@ -241,7 +250,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: contains(b'\\X\\27')
 - **Tier-3 assertion**: shape_null == True
 - **Notes**: Synonyms: "hex 27 inside X2 escape closes string", "apostrophe code-point misread as quote", "X2 block contains 27 garbles parser", "string closes inside Unicode escape", "embedded apostrophe code in hex run".
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -261,6 +270,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=schema_n/a`
 
 ### Le016 — Single backslash inside a string literal (Windows path)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: embedded backslash / Windows path)
 - **Sources**: T008/step-file-parser fixtures `fail_reverse_string.ifc`, `pass_double_reverse.ifc`; G045/OCCT 475da0f, Mantis 32310; N012/ISO 10303-21 Ed.3 §6.4.3.1
 - **Description**: The reverse-solidus is the lead-in for Part-21 control directives; a literal backslash must be doubled (`\\`). Generators that copy Windows file paths verbatim emit single backslashes, which then accidentally form what looks like a malformed `\X\` or `\S\` directive (e.g. `\X1\`, `\Use…`).
@@ -270,12 +280,13 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: matches(rb"'C:\\\\[A-Za-z]")
 - **Byte assertion**: count(b'C:\\') >= 1
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P2
 - **Model impact**: The accidental directive consumes following bytes; the loaded path string is shorter than the source bytes, and round-trip writers may emit a different value than they read.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le017 — Raw control character (U+0000.U+001F) in string body
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: control characters in strings)
 - **Sources**: N014/ISO 10303-21 Ed.3 §6.4.3.4; A029/lexer CR/LF pitfall; R053/OCCT bug 33815; W031/CAD Exchanger CHANGES v3.24.13
 - **Description**: Control characters (tab, LF, CR, NUL, etc.) must be encoded as `\X\hh` (e.g. tab = `\X\09`); raw bytes in a string literal are illegal even under the Ed.3 UTF-8 default. Files written by tools using "binary write" of attribute strings often contain raw `\t`, `\n`, or `\0`. Some parsers tolerate raw `\n` and then index past the line buffer when computing line/column for diagnostics. Round-tripping names with quotes, backslashes, and control chars must be preserved (per OCCT bug 33815).
@@ -285,12 +296,13 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: matches(rb"'[^']*[\x00-\x08\x0b\x0c\x0e-\x1f][^']*'")
 - **Byte assertion**: matches(rb"'[^']*\t[^']*'")
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Raw control bytes either abort the lexer at the offending offset or silently concatenate split content; either way the attribute value differs from the producer's intended bytes.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le018 — Inline newline inside an unterminated literal silently concatenated
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: control characters / framing)
 - **Sources**: N048/ISO 10303-21 Ed.3 §5.2; Q072/StepFile/step.lex:109-113
 - **Description**: Per §5.2, LF and CR are ignored characters even inside string literals, so a literal `'first line<LF>second line'` parses to `'first linesecond line'`. This produces surprising silent concatenation when round-tripping descriptions written across physical lines.
@@ -300,7 +312,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: matches(rb"FILE_DESCRIPTION\(\('first line\nsecond line'")
 - **Byte assertion**: matches(rb"PERSON\(\s*'p1','para1\s*\n")
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Raw control bytes either abort the lexer at the offending offset or silently concatenate split content; either way the attribute value differs from the producer's intended bytes.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=reject`
@@ -320,6 +332,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=schema_n/a`
 
 ### Le021 — Component name in non-UTF-8 locale encoding (GB18030 / Shift-JIS / cp1251 / DOS850)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: locale-specific GB18030 / Shift-JIS / Russian cp1251 / Chinese GB2312)
 - **Sources**: J004/FreeCAD GH#7987 + Autodesk "STEP files converted in Inventor, do not display Asian characters"; G041/OCCT git log; R052/OCCT bug 25440; G042/OCCT git log; N044/ISO 10303-21 Issue 043
 - **Sender**: SolidWorks (Chinese locale), Inventor (Japanese/Korean locales), Russian Windows toolchains, German DOS850 toolchains
@@ -330,13 +343,14 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: matches(rb"'[^']*[\\x80-\\xff][^']*'")
 - **Byte assertion**: matches(rb"PRODUCT\([^;]*[\x80-\xff]")
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The 8-bit shift directive desynchronizes the string scanner; the host attribute loads with merged or truncated content, and parity tracking for the rest of the DATA section may be off by one apostrophe.
 - **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le022 — Non-ASCII / Japanese / Greek Unicode in PRODUCT.name via `\X2\…\X0\`
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: Unicode in PMI/names)
 - **Sources**: R052/OCCT bug 25440; G040/OCCT git log; S065/sfa-step.tcl:838,1007,1156
 - **Description**: STEP names and PMI annotation strings carry Unicode using the spec-conformant `\X2\…\X0\` directive. Older OCCT did not decode the directives at all and emitted question-mark replacements. Some downstream tools (Excel, legacy ANSI receivers) cannot render the result because they lack full Unicode font support, but the file itself is conformant.
@@ -346,12 +360,13 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: contains(b'\\X2\\03B1\\X0\\')
 - **Byte assertion**: count(b'\\X2\\') >= 1
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Non-ASCII characters are dropped, replaced with `?`, or mojibaked; the entity loads but its name/description attribute carries different glyphs than the producer wrote.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le023 — Locale-dependent decimal separator inside numeric attribute
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: locale handling)
 - **Sources**: A038/numeric-parser pitfall; N019/ISO 10303-21 Ed.3 REAL grammar
 - **Description**: The REAL grammar uses `.` only. A parser using `strtod` without `setlocale("C")` on a host with `LC_NUMERIC=de_DE` reads `1,5` as `1234`-style integers separated by a comma, or worse, two integer tokens. Producers using locale-aware `printf` on European locales emit `1,5` for one-and-a-half. Geometry then has wildly wrong coordinates; downstream tessellation can crash on degenerate triangles.
@@ -361,12 +376,13 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: matches(rb"CARTESIAN_POINT\('[^']*',\([0-9]+,[0-9]+,")
 - **Byte assertion**: matches(rb'\(0,\s*0,\s*0,\s*0,\s*0\)')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in orphan CARTESIAN_POINTs that the GEOMETRIC_CURVE_SET never references. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Numeric or character data is parsed against the wrong locale rules; coordinates or attribute strings load with values different from those the producer wrote, potentially producing degenerate geometry downstream.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le025 — Empty / blank / single-space NAME silently emptied
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: trim/whitespace)
 - **Sources**: G044/OCCT 0911d06, Mantis 27169
 - **Description**: A `PRODUCT(' ',…)` with a NAME consisting only of a single space becomes an empty XCAF attribute name after trim, losing the original sender's intent.
@@ -376,7 +392,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: count(b"PRODUCT('") >= 1
 - **Tier-3 assertion**: shape_null == True
 - **Notes**: Synonyms: "empty PRODUCT name silently dropped", "single-space NAME becomes empty", "blank string trimmed in STEP", "whitespace-only NAME loses content", "STEP attribute becomes empty after import".
-- **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P2
 - **Model impact**: A whitespace-only attribute is silently emptied during normalization; the loaded entity records `''` where the source carried `' '`, losing the producer's intent.
 - **Structural assertion**: struct == DANGLING_REF
@@ -397,6 +413,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le027 — 8-bit characters and case-insensitive keyword tolerance in lexer
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: lexer 8-bit handling)
 - **Sources**: Q069/StepFile/step.lex:30-35
 - **Description**: OCCT's lex grammar explicitly tolerates 8-bit characters and case-insensitive keywords. A schema-loader (e.g. stepcode `expscan.l`) that rewrites every byte ≥ 0x80 to space and reports an error rejects EXPRESS schemas containing Latin-1 in comments (e.g. `°C`).
@@ -407,7 +424,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: contains(b'iso-10303-21;') or contains(b'EndSec;') or contains(b'End-Iso-10303-21;')
 - **Byte assertion**: matches(rb'[\x80-\xff]')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: produces an empty shape (silent loss); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Bytes ≥ 0x80 in comments or keywords are rewritten or rejected; the schema/file either fails to load entirely or loads with corrupted comment/keyword tokens.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=reject`
@@ -430,6 +447,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=reject`
 
 ### Le029 — Header `FILE_DESCRIPTION` strings containing commas or parentheses (regex-split bug)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: header string lexing)
 - **Sources**: T041/step-file-parser #8
 - **Description**: Header parsers implemented as regex-split-on-comma fail when a description string contains literal commas or balanced parentheses. Real IFC and STEP headers commonly carry both.
@@ -438,12 +456,13 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: Synonyms: "FILE_DESCRIPTION with comma trips header parser", "regex header parser breaks on parens", "comma inside string splits header wrong", "IFC header parens confuse split", "header description with embedded comma".
 - **Byte assertion**: matches(rb"FILE_DESCRIPTION\(\(\s*'[^']*\([^)]+\)")
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in a HEADER FILE_DESCRIPTION string. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The header parameter parser splits on punctuation inside string literals; FILE_DESCRIPTION fields load with the wrong number of strings and producer metadata is misattributed or lost.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le030 — `\PE\` selector and `\Q\x` directive support
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: lesser-known directives)
 - **Sources**: S003/SFA-User-Guide-v7 Fig. 90 (`\PE\`, `\Q\x`)
 - **Description**: ISO 10303-21 also defines `\PE\` (UCS extended) and `\Q\x` (alternate-quote) directives that some legacy generators emit. Few parsers implement these, so the bytes pass through to the user as literal `\PE\` or `\Q'`.
@@ -453,7 +472,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: contains(b'\\PE\\') or contains(b'\\Q\\')
 - **Byte assertion**: contains(b'\\Q\\') or contains(b'\\PE\\')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P2
 - **Model impact**: Unimplemented directive bytes pass through as literal text; the loaded attribute string contains raw `\PE\` or `\Q\` sequences instead of decoded characters.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -472,6 +491,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=reject`
 
 ### Le032 — `\X2\…\X0\` or `\N\` escape spanning a physical line break
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: directive whitespace handling)
 - **Sources**: W032/CAD Exchanger CHANGES v3.24.12, v3.24.13
 - **Description**: A pretty-printer or broken splice writes a hex run across a `\r\n` boundary, e.g. `\X2\30A2 30A4\X0\` where the space is actually a CR LF. Per Part-21 §5.2 those bytes are ignored, so a tolerant lexer must accept the split; but many implementations consume the directive byte-greedily and fail on the line-end.
@@ -481,12 +501,13 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: matches(rb'\\X2\\[^\\\\]*\r?\n[^\\\\]*\\X0\\')
 - **Byte assertion**: count(b'\\X2\\') >= 1
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P2
 - **Model impact**: A whitespace-only attribute is silently emptied during normalization; the loaded entity records `''` where the source carried `' '`, losing the producer's intent.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le035 — Encoding directives emitted in Ed.3 UTF-8 file unnecessarily
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: edition mismatch)
 - **Sources**: N003/ISO 10303-21 Ed.3 §6.4; N007/§6.4.3.5
 - **Description**: An Ed.3 producer that retains Ed.2 codepaths emits `\S\`/`\P\`/`\X\` even though the body is UTF-8 by default. Strict Ed.3 readers that assume raw multi-byte UTF-8 may then double-decode (interpret `\X\C3 \X\A9` and the byte sequence `0xC3 0xA9` as two different characters when both were intended as `é`).
@@ -495,12 +516,13 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Notes**: **See also**: Le021. Synonyms: "unnecessary X escapes in UTF-8 file", "Ed.2 escapes in Ed.3 STEP", "double-decoded UTF-8", "redundant control directives in modern STEP", "X escape in UTF-8 file double-decodes". Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
 - **Byte assertion**: contains(b'\\X\\') and matches(rb"'[^']*[\xc0-\xff][\x80-\xbf]")
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Bytes are decoded twice or against the wrong edition default; the resulting string carries either double-encoded UTF-8 or replacement characters where the producer intended a specific code point.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le036 — Round-trip loss of `\X2\` content through XML / DB layer
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: pass-through)
 - **Sources**: W031/CAD Exchanger CHANGES v3.24.18; G045/OCCT 475da0f
 - **Description**: A toolchain that decodes `\X2\…\X0\` into UTF-8 internally and re-encodes for export must round-trip the original Unicode characters. Several vendors lost backslashes (OCCT 7.5 regression) or replaced rare code points with `?` when the storage layer (XML, SQL VARCHAR(..)) silently truncated.
@@ -513,7 +535,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: contains(b'\\X2\\')
 - **Byte assertion**: contains(b'\\\\')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Round-trip through the kernel's storage layer drops or replaces rare code points; re-exported files differ from the original Unicode content even though both instances are individually valid.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -18324,6 +18346,7 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le038 — Bare `\PE\` directive at end-of-string with no operand letter
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: lesser-known directives)
 - **Sources**: 16-iso-spec ISO 10303-21 Ed.3 §6.4.3 (`\PE\` alphabet extension)
 - **Description**: Edition-3 `\PE\` requires a single ASCII letter (the page selector A.I) immediately following the slashes. A producer that truncates a string at the directive boundary or copy/pastes incorrectly emits a bare `\PE\` with no follow-byte before the closing apostrophe. A naive parser may consume the closing `'` as the page operand and lose string termination, walking off into the rest of the entity.
@@ -18332,7 +18355,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Le037, Le039. Synonyms: "bare PE at end of string", "PE directive without operand letter", "PE truncated at apostrophe", "PE escape with no follow byte", "STEP PE with missing selector".
 - **Byte assertion**: matches(rb"\\PE\\'")
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P2
 - **Model impact**: Unimplemented directive bytes pass through as literal text; the loaded attribute string contains raw `\PE\` or `\Q\` sequences instead of decoded characters.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -18435,6 +18458,7 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=schema_n/a`
 
 ### Le046 — String literal containing every legal printable ASCII character
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: lexer correctness)
 - **Sources**: 16-iso-spec ISO 10303-21 Ed.3 §6.4.4 (printable-ASCII string body)
 - **Description**: A kernel that does not handle every printable-ASCII byte (0x20.0x7E) correctly inside a single string literal will mis-parse one of: embedded apostrophe (must be doubled as `''`), backslash (legal literal in Ed.2 but begins a directive in Ed.3), `=` / `#` / `;` (token boundary characters at outer scope but legal in strings).
@@ -18445,12 +18469,13 @@ _Section summary: 41 entries._
 - **Byte assertion**: matches(rb"'[^']* !\"#")
 - **Byte assertion**: contains(b"#$%&")
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le047 — REAL literal at IEEE-754 subnormal / minimum-normal / maximum boundaries
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: numeric literal)
 - **Sources**: 16-iso-spec ISO 10303-21 Ed.3 §6.4.5 (REAL); IEEE-754-2019 §3.4
 - **Description**: ISO 10303-21 specifies REAL as a decimal floating-point representation but most implementations parse into IEEE-754 binary64. Inputs at the subnormal boundary (smallest positive subnormal ~4.94E-324; smallest positive normal ~2.225E-308; largest finite ~1.798E+308) test for two failure modes: readers that round to zero and silently drop the value, and readers that flag underflow and reject the file. A coordinate emitted at this magnitude often arises in BSpline weight values from buggy producers normalising weights through very small denominators.
@@ -18460,12 +18485,13 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Le048. Synonyms: "REAL at IEEE-754 subnormal", "smallest normal double in STEP", "max double 1.798E+308 in REAL", "subnormal value loses precision", "REAL at IEEE boundary". Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
 - **Byte assertion**: contains(b'4.9406564584124654E-324') or contains(b'2.2250738585072014E-308') or contains(b'-0.0')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in orphan CARTESIAN_POINTs that the GEOMETRIC_CURVE_SET never references. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le048 — REAL literal exceeding double range (overflow → +Inf / underflow → 0)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: numeric literal)
 - **Sources**: 16-iso-spec ISO 10303-21 Ed.3 §6.4.5 (REAL has no infinity form)
 - **Description**: ISO 10303-21 REAL has no syntactic form for non-finite values (no `+Inf`, `-Inf`, `NaN`). Producers that internally hold IEEE-754 doubles and serialise via `printf %g` may emit `1.0E+999` (which on parse overflows to `+Inf`) or `1.0E-999` (which underflows to 0). A receiver must decide whether to reject, snap to a finite sentinel, or propagate the non-finite value through downstream computations.
@@ -18475,7 +18501,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'1.0E+999') or contains(b'1.0E-999')
 - **Byte assertion**: matches(rb'1\.0E[+-]999')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in orphan CARTESIAN_POINTs that the GEOMETRIC_CURVE_SET never references. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -18483,6 +18509,7 @@ _Section summary: 41 entries._
 ---
 
 ### Le049 — Carriage-return stripping during STEP file write
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings
 - **Sources**: OCCT MANTIS#0033602; OCCT MANTIS#0028454 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A STEP writer normalises line endings by stripping all
@@ -18498,12 +18525,13 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b"line1\r\nline2")
 - **Byte assertion**: contains(b"\\X\\0D")
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le050 — Unicode characters in STEP export silently dropped
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings
 - **Sources**: OCCT MANTIS#0031851; OCCT MANTIS#0031670; OCCT MANTIS#0030694 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A document name contains non-ASCII characters (Cyrillic,
@@ -18519,7 +18547,7 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Le022, Le001. Provenance tier: requires-sibling-pair; bytes alone cannot demonstrate the writer-side dropping; the defect is the differential between the in-memory document name and the bytes the writer emits. Demonstrating this requires both the producer-input state (document with non-ASCII name) and the corrupted output it produces. Synonyms: "Unicode dropped in STEP export", "Cyrillic name lost on write", "non-ASCII silently stripped by writer", "STEP writer drops accented chars", "Unicode characters lost during export".
 - **Byte assertion**: contains(b'ISO-10303-21')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -18552,6 +18580,7 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le053 — `\X2\…\X0\` (UCS-2) escape: nested `\X2\` opened without closing the prior
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: `\X2\` directive)
 - **Sources**: Q065/StepData_StepReaderData.cxx:218-272; N005/ISO 10303-21 Ed.3 §6.4.3.4
 - **Description**: `\X2\.\X0\` directives are not re-entrant. Opening a fresh `\X2\` while another is still active is malformed; a naive scanner may merge the two hex runs or lose the inner content.
@@ -18561,12 +18590,13 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'\\X2\\30A2\\X2\\30A4\\X0\\')
 - **Byte assertion**: count(b'\\X2\\') >= 2
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The `\X2\` block is consumed incorrectly; subsequent bytes leak into the decoded string and the carrying entity attribute records garbled text instead of the intended Unicode.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le054 — High-bit byte ambiguous between Windows-1252 and ISO-8859-1
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: 8-bit page selection)
 - **Sources**: bug-reporter language: "Word-quotes garbage in STEP", "smart-quote in STEP file"; deduced from Edition-2 §6.4.3.5 + Windows-CAD vendor practice
 - **Sender**: Windows-hosted writers that paste user-input text through a Win32 ANSI codepage without converting to ISO-8859-1
@@ -18577,7 +18607,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'\\X\\91') or contains(b'\\X\\92') or contains(b'\\X\\80') or contains(b'\\X\\97')
 - **Byte assertion**: matches(rb'\\X\\(80|91|92|93|94|97|99)')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The page selector is ignored or silently mishandled; characters after the directive decode against the wrong ISO-8859 page so the attribute string carries the wrong glyphs even though the entity is otherwise valid.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -18613,6 +18643,7 @@ _Section summary: 41 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le057 — Records terminated with `;\n` plus extra blank lines between records
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: end-of-record / non-canonical EOR)
 - **Sources**: ISO 10303-21 §6.2 (record syntax: `;` terminates a record, intervening whitespace is allowed); bug-reporter language: "STEP file has blank lines between records", "extra newlines confuse parser"
 - **Sender**: deduced — producers that hand-format Part-21 for human readability, post-process with text editors, or round-trip through tools that auto-insert blank lines (some VCS line-ending normalisers, some pretty-printers)
@@ -18623,12 +18654,13 @@ _Section summary: 41 entries._
 - **Byte assertion**: matches(rb';\n\n') or matches(rb';\n#')
 - **Byte assertion**: count(b';\n\n') >= 1 or count(b';\n') >= 3
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The string-encoding defect either causes the lexer to abort or to record an attribute value different from the producer's bytes; no geometric data is corrupted but identifiers/descriptions on the carrying entity are wrong.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Le058 — Final record before `ENDSEC;` lacks trailing newline at EOF
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base/clean/huge all empty); toy `GEOMETRIC_CURVE_SET`(single point) topology yields no shape even when well-formed, so the silent-empty is not defect-driven and no kernel bug is proven.
 - **Category**: §12.1a encoding/strings (sub-class: end-of-record / EOF framing)
 - **Sources**: ISO 10303-21 §6.2 (record terminator is `;`); ISO 10303-21 §5 (file framing — `END-ISO-10303-21;` is the file terminator); bug-reporter language: "STEP file missing newline before ENDSEC", "no trailing newline at EOF"
 - **Sender**: deduced — producers that write the file body byte-for-byte without an explicit final newline; some streaming writers that flush before the trailing `\n` is queued
@@ -18639,7 +18671,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: matches(rb'\);ENDSEC;END-ISO-10303-21;\Z') or matches(rb'\);ENDSEC;')
 - **Byte assertion**: not_contains(b'ENDSEC;\nEND-ISO-10303-21;\n') or contains(b';ENDSEC;END-ISO-10303-21;')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty result is not caused by the declared defect: base=empty, clean (defect repaired to a well-formed equivalent)=empty, huge (defect exaggerated)=empty. The fixture's only model-root geometry is a bare `GEOMETRIC_CURVE_SET` holding a single `CARTESIAN_POINT`, which OCC's STEP transfer maps to no TopoDS shape even when well-formed (no shape-representation root to transfer); the declared defect sits in unreferenced PERSON/PRODUCT metadata strings OCC does not read at BRep load. The empty is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Raw control bytes either abort the lexer at the offending offset or silently concatenate split content; either way the attribute value differs from the producer's intended bytes.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
