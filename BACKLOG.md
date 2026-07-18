@@ -1331,6 +1331,30 @@ Two GAPs targeted; the buildable one closed, the other double-confirmed unreacha
 non-kernel structural linter (v2, DANGLING_REF + brepcheck-style structural predicates) would make them
 observable. This is the highest-leverage remaining coverage work.
 
+**TIER-3 IN PROGRESS — structural-oracle v2 `DANGLING_REF` (2026-07-17, scope=text-structural per maintainer):**
+Prototyped a string-aware Part-21 tokenizer to replace v1's naive `;`-split (which under-counts
+definitions → false-positives, the reason v1 deferred DANGLING_REF). Approach that WORKS for the common
+case (prototype in session scratchpad `dangling_probe2.py`):
+  - `split_statements(data)`: split DATA on top-level `;` while tracking `'...'` string state (`''`=escaped
+    quote), after `/* */` comment strip.
+  - `defined` = any top-level stmt matching `^\s*#(\d+)\s*=` (LOOSE — accepts lowercase types like
+    `Cartesian_Point` and malformed RHS like `#10=@foundation#20`; v1's uppercase `TYPE(args)` regex missed
+    these → FPs on Lh018/Lh044).
+  - refs = `#N` from each stmt's RHS with string literals stripped first (avoid `#N`-in-string FPs).
+Result: detects ~43 genuine dangling-ref fixtures (Ad*/A*/M*/Le*/Xp*/Tb* with round undefined ids like
+9999/9003/42). **NOT YET SAFE TO WIRE IN** — residual tail needs zero-FP proof:
+  - Exotic Part-21 (`SCOPE`/`ENDSCOPE`/`EXPORT` scoped defs in Ls027/031/055/056; `@`-prefix + duplicate
+    in Lh033) — a GUARD (skip files containing these) is the fail-safe fix but wasn't fully validated.
+  - Contradictory verification on M136 (#46/#9055) and Ls055/Ls031 — one check says "genuinely dangling",
+    another says "defined-but-tokenizer-missed". MUST reconcile per-file (read the actual bytes) before
+    trusting, because a single FP reds the whole corpus once DANGLING_REF is in `CODES`.
+Next steps to finish: (1) reconcile the M136/Ls contradiction; (2) confirm the exotic-construct guard
+drives true-FP to 0 across all 2681 files; (3) add `DANGLING_REF` to `_structural_oracle.CODES` +
+`lint_text`; (4) add a test asserting the ~43 dangling fixtures flag and 0 clean files do; (5) flip the
+relevant scoreboard verdicts. The 8 detect-only `bc-*` classes are a SEPARATE Tier-3 question — most are
+OCCT-topology conditions not expressible in Part-21 bytes, so a text linter likely can't grade them (only
+DANGLING_REF + possibly invalid-tolerance-literal are truly text-structural).
+
 **MAINTENANCE — mutation snapshot refresh due (2026-07-17):** `tests/data/mutation_snapshot.json` is from
 2026-07-02 (166 fixtures behind). The `test_snapshot_covers_current_corpus` floor was lowered 95%→93% to
 unblock (growing non-mutatable §12.15 `Ip*`/§12.14 `Me*` fixtures structurally can't be in a STEP-byte
