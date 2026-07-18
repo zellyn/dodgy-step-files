@@ -96249,7 +96249,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-4-tolerance/N050.stp",
     "id": "N050",
-    "notes": "**See also**: N019, U033. Umbrella over N019 (which is the offset-surface specific manifestation). Synonyms: \"STEP UNCERTAINTY_MEASURE_WITH_UNIT ignored\", \"importer hard-codes 1e-3 tolerance\", \"distance_accuracy_value not consumed\", \"BRL-CAD step-g ignores file uncertainty everywhere\", \"tight-precision authoring downgraded to working precision\". **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.",
+    "notes": "**See also**: N019, U033. Umbrella over N019 (which is the offset-surface specific manifestation). Synonyms: \"STEP UNCERTAINTY_MEASURE_WITH_UNIT ignored\", \"importer hard-codes 1e-3 tolerance\", \"distance_accuracy_value not consumed\", \"BRL-CAD step-g ignores file uncertainty everywhere\", \"tight-precision authoring downgraded to working precision\". **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): this empty is not caused by the declared defect — the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET`, which OCC's STEP transfer never builds (control: identical GCS with bare `LINE` geometry builds an edge; with `EDGE_CURVE` topology yields empty), so the silent-empty is container/toy-driven, not a proven kernel bug.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -96269,7 +96269,7 @@
     ],
     "structural_assertions": [],
     "taxonomy": [
-      "silent-loss"
+      "units"
     ],
     "tier3_assertions": [
       "shape_null == True"

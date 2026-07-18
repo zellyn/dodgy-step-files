@@ -4513,6 +4513,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 _Section summary: 70 entries._
 
 ### N001 — Vertex `UNCERTAINTY_MEASURE_WITH_UNIT` larger than edge / face value (tolerance hierarchy violation)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: hierarchy)
 - **Sources**: 03-occt-tests R028 (OCC329); 05-occt-shapefix F038, F039; 08-occt-gitlog G093 (Mantis 0028601)
 - **Sender**: any (post-healing regression)
@@ -4524,12 +4525,13 @@ _Section summary: 70 entries._
 - **Byte assertion**: contains(b'1.0E-7') and contains(b'1.0E-3') and contains(b'1.0E-2')
 - **Byte assertion**: contains(b'GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N002 — Wireframe gap-fix inflates tolerance instead of bridging the gap
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: tolerance ballooning by healing)
 - **Sources**: 03-occt-tests R029 (OCC14846)
 - **Description**: A wireframe gap-fixing pass increases the maximum tolerance carried by edges and vertices to encompass the gap, rather than adjusting the underlying geometry to actually close it. The shape passes a topology check only because tolerance discs now overlap, hiding the real defect. The user-visible symptom is a "fixed" model whose vertex tolerance balls have ballooned to swallow gaps that were never repaired.
@@ -4540,12 +4542,13 @@ _Section summary: 70 entries._
 - **Byte assertion**: contains(b'1.0E-6') and contains(b'2.0E-3')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 2
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N003 — Same-domain face merge inflates shared-vertex tolerance to worst input
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: tolerance ballooning by healing)
 - **Sources**: 03-occt-tests R030 (OCC26642, OCC26656)
 - **Description**: When two adjacent faces with the same supporting surface are merged into one (their shared edge is dissolved), the resulting shared vertex inherits a tolerance equal to the worst-case vertex among the merged inputs; e.g. `1e-1` even though one input vertex was `2e-7`. Downstream algorithms then treat points as fuzzy-equal where they were previously precise.
@@ -4556,12 +4559,13 @@ _Section summary: 70 entries._
 - **Byte assertion**: count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 2
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 2
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N004 — Edge same-parameter flag asserted but 3D curve and pcurve disagree at sampled parameters (`SameParameter=.T.` lie)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: sameparameter)
 - **Sources**: 03-occt-tests R014; 05-occt-shapefix F009; 13-quaoar B018; 09-healing-menus H057
 - **Description**: An `EDGE_CURVE` declares the same-parameter invariant (3D curve and pcurve share parameterisation, `SameParameter=.T.`), but a sampling check shows the maximum point-wise deviation exceeds the declared edge tolerance. Typical pattern: a 3D `LINE` from (0,0,0) to (10,0,0) plus a pcurve `LINE` on a `PLANE` running at v=0.005; the pcurve lifts to a curve offset by 0.005 mm from the 3D curve, but the edge tolerance is only 1e-6. The flag was set without re-validation after a geometry edit, so the metadata claims an invariant the data no longer satisfies; the same-parameter flag is true but curves disagree at sampled values.
@@ -4572,12 +4576,13 @@ _Section summary: 70 entries._
 - **Byte assertion**: contains(b'PLANE') and count_entity_def(b'EDGE_CURVE') == 1
 - **Byte assertion**: contains(b'1.0E-6')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N005 — Splitting a closed periodic face leaves new edges with reversed pcurve vs 3D curve parameterisation
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: sameparameter)
 - **Sources**: 13-quaoar B008
 - **Description**: Splitting a closed periodic shape (full `CYLINDRICAL_SURFACE`, `TOROIDAL_SURFACE`) along its seam produces new edges whose 3D-curve and pcurve parameterisations no longer match — they were inherited from the unsplit edge but split independently. Common signature: a seam `EDGE_CURVE` on a cylinder with a 3D `LINE` from z=0 to z=10 (sense `.T.`) but its pcurve running from v=10 down to v=0 along −V (the `EDGE_CURVE` sense or pcurve direction inverted, e.g. `.F.`) — pcurve and 3D curve have opposite parameterisations across the seam. A topology checker reports invalid edges until a follow-up same-parameter recomputation runs.
@@ -4588,12 +4593,13 @@ _Section summary: 70 entries._
 - **Byte assertion**: contains(b'PCURVE') and contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'1.0E-7')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N006 — Pcurve drifts out of sync with 3D-curve parameterisation (geometric flavour)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: sameparameter)
 - **Sources**: 13-quaoar B017, B018
 - **Description**: A pcurve was reprojected at non-uniform sampling without rebasing its parameter range, so parameter-by-parameter evaluation against the 3D curve drifts. Some receivers compensate by silently inflating edge tolerance to cover the residual deviation, which hides a real geometric gap; the affected edges show up as "hot" (unusually large tolerance) on a tolerance-summary check.
@@ -4604,12 +4610,13 @@ _Section summary: 70 entries._
 - **Byte assertion**: contains(b'PCURVE') and contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'1.0E-3')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N007 — Vertex tolerance bump factor hard-coded `1.000001 *` on disagreement
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: vertex tolerance bumps)
 - **Sources**: 04-occt-translation Q010 (PRO8845)
 - **Sender**: Pro/E PRO8845
@@ -4620,7 +4627,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: contains(b'1.0E-6') and contains(b'EDGE_CURVE')
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 2
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -4639,6 +4646,7 @@ _Section summary: 70 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(32) ifc=schema_n/a`
 
 ### N009 — Vertex 3D point lies far from incident-edge curve endpoints (dispersion exceeds tolerance)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: vertex tolerance bumps)
 - **Sources**: 05-occt-shapefix F078; 15-academic L049
 - **Description**: A vertex's stored 3D point is far enough from the evaluated parametric endpoints of its incident edges that the would-be vertex-tolerance disc spans the entire local feature. The vertex says "I am at point P", but every edge ending at it claims the edge actually ends somewhere else.
@@ -4648,12 +4656,13 @@ _Section summary: 70 entries._
 - **Byte assertion**: contains(b'1.0E-4')
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 2 and count_entity_def(b'EDGE_CURVE') == 1
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N010 — `EDGE_CURVE` shorter than vertex tolerance (tiny edge covered by vertices, `distance_accuracy` exceeds edge length)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: hierarchy / sub-tolerance)
 - **Sources**: 08-occt-gitlog G025 (Mantis 0028694); 13-quaoar B021
 - **Sender**: IGES (also affects STEP)
@@ -4661,7 +4670,7 @@ _Section summary: 70 entries._
 - **Reproducer recipe**: Edge with vertices nearly coincident (gap < tol) and short non-degenerate 3D curve. `IsUClosed`/`IsVClosed` previously returned wrong without a midpoint distance check.
 - **Expected kernel behavior**: heal — detect by `len(curve) < tol(V1) + tol(V2)`; remove edge or merge endpoints; preserve adjacent edge wires.
 - **Notes**: **See also**: N011. Synonyms: "edge shorter than its endpoint tolerance", "edge length below vertex range", "vertex sphere covers entire edge", "tiny edge under tolerance disc", "edge geometry adds nothing because vertices already merge".
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Byte assertion**: contains(b'1.0E-4')
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 2 and count_entity_def(b'EDGE_CURVE') == 1
@@ -4670,13 +4679,14 @@ _Section summary: 70 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N011 — Seam edge inserted inside an existing vertex tolerance ball produces zero-length edge
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: hierarchy / seam)
 - **Sources**: 08-occt-gitlog G075 (Mantis 0031202)
 - **Description**: A periodic face needs a seam edge inserted to close its UV bound, but the seam would lie entirely inside an already-existing vertex tolerance ball. Inserting the seam anyway creates a "real" edge of length zero whose endpoints are tolerance-equivalent; violating the invariant that the vertex tolerance ball does not cover any real edge.
 - **Reproducer recipe**: Cylindrical face whose seam falls inside vertex tolerance ball.
 - **Expected kernel behavior**: skip the seam insertion when it would be tolerance-collapsed and bridge with vertex tolerance instead, or rebuild with a smaller vertex tolerance so the seam can exist as a real edge.
 - **Notes**: **See also**: N010. Synonyms: "zero-length seam edge inserted", "seam ends at coincident vertices", "real edge fits inside vertex tolerance disc", "seam insertion produces zero-length edge".
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
 - **Byte assertion**: contains(b'1.0E-3')
@@ -4686,12 +4696,13 @@ _Section summary: 70 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N012 — Setting face tolerance to a tiny value then ShapeFix produces vertex/vertex intersections
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: tolerance overflow / hierarchy)
 - **Sources**: 08-occt-gitlog G094 (Mantis 0028157)
 - **Description**: Programmatically reducing a face tolerance below the actual geometric defect, then running `ShapeFix`, makes the fix algorithm interpret coincident vertex tolerance balls as separate vertices, producing vertex/vertex intersection diagnostics.
 - **Reproducer recipe**: Set face tolerance to `1e-9` on a face whose actual edge gap is `1e-5`, then `ShapeFix_Shape::Perform`.
 - **Expected kernel behavior**: heal; recompute tolerance from current geometry rather than trusting user-set sub-resolution tolerance.
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Notes**: Synonyms: "lowering face tolerance creates vertex/vertex intersection", "ShapeFix sees coincident vertices as separate", "shrinking tolerance triggers spurious intersections".
 - **Byte assertion**: contains(b'1.0E-9')
@@ -4701,12 +4712,13 @@ _Section summary: 70 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N013 — Boolean cascade vertex deviation (independently computed pairwise intersections)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: boolean-drift / floating-point accumulation)
 - **Sources**: 15-academic L029, L030, L031 (arXiv 2310.10351); 21-patents X010 (EP 0690416 A2 Computervision)
 - **Description**: When three or more surfaces meet at a single mathematical vertex, OCCT computes each pairwise edge-edge intersection independently. Floating-point error makes the three candidate vertex coordinates disagree by 1e-9 to 1e-5, so the boolean output emits three almost-coincident vertices and three short edges (or a tiny triangle face) in place of one shared vertex.
 - **Reproducer recipe**: Boolean-intersect three half-spaces meeting in one vertex with rotated frames so each pairwise intersection suffers small numerical perturbation.
 - **Expected kernel behavior**: heal; compute the desired vertex by edge-face intersection (one dimension lower) and snap candidate vertices to it; carry an accumulated-error tolerance budget per topological entity.
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Notes**: Synonyms: "three-surface meet point splits into three vertices", "pairwise intersections disagree by 1e-9", "boolean cascade introduces vertex jitter", "single mathematical vertex becomes three near-coincident vertices", "tiny triangle face appears where one vertex should be".
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 3
@@ -4717,12 +4729,13 @@ _Section summary: 70 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N014 — Spurious tiny `EDGE_CURVE` that should have collapsed: vertex separation below declared tolerance
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: boolean-drift)
 - **Sources**: 15-academic L030 (arXiv 2310.10351)
 - **Description**: An intersection edge that ought to be zero-length persists due to misclassification at the topological filtering step. Both endpoints lie within tolerance of a single corrected position, but the filter treats them as distinct. Typical signature: an `EDGE_CURVE` between vertices at (2e-8,0,0) and (-2e-8,0,0) — length 4e-8 mm — with declared `distance_accuracy` 1e-7 mm, so the two vertices are several times closer than the tolerance and the edge should collapse to a single vertex.
 - **Reproducer recipe**: Two surfaces tangent along a curve with a single contact point; numerical noise produces a short crossing edge near that point.
 - **Expected kernel behavior**: heal; detect that both endpoints are within tolerance of one common corrected position; collapse the edge to a vertex.
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Notes**: Synonyms: "tiny edge that should have collapsed", "vertex separation below declared tolerance but edge survives", "intersection edge that should be zero-length", "filter doesn't merge near-coincident vertices into one".
 - **Byte assertion**: contains(b'1.0E-7')
@@ -4732,13 +4745,14 @@ _Section summary: 70 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N015 — `xstep.cascade.unit M` meters setting inflates tolerance and corrupts geometry
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: working precision / unit drift)
 - **Sources**: 03-occt-tests R040 (OCC24549); 08-occt-gitlog G055 (Mantis 0023746); 18-other-issues I005 (OCCT #512)
 - **Description**: Setting OCCT's cascade unit to meters during STEP/IGES read inflates max-tolerance >0.001 (some files balloon AABB to ±1e+100). With unit=`M`, too-small distances are not detected during edge reordering and BSpline segments are missed. Other unit selections (INCH/MIL/UIN/CM/MM/UM) work; `M` does not because the working tolerance scales below kernel resolution.
 - **Reproducer recipe**: `param xstep.cascade.unit M; ReadStep D multi_solids.stp; bounding -dump`. Compare with `MM` import scaled by 1000.
 - **Expected kernel behavior**: heal; compute working tolerance from vertex resolution + surface resolution at each entity, not from a single kernel-wide constant; produce finite geometry equivalent to `MM` import scaled by 1000.
 - **Notes**: Synonyms: "meters cascade unit inflates tolerance", "unit set to M corrupts geometry", "OCCT meters mode produces 1e+100 bbox", "BSpline segments missed under M unit setting".
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Byte assertion**: contains(b'1.0E-7')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 1
@@ -4747,6 +4761,7 @@ _Section summary: 70 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N016 — Edge tolerance 2-3 orders of magnitude > file tolerance (CATIA per-edge precision)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: working precision / per-entity tolerance)
 - **Sources**: 14-brlcad-rhino K018 (Chuck Welsh, McNeel); 21-patents X003 (Computervision EP 0690416)
 - **Sender**: CATIA V5/V6
@@ -4754,7 +4769,7 @@ _Section summary: 70 entries._
 - **Reproducer recipe**: CATIA-emitted STEP with file tolerance 0.0001 mm but specific edges using 0.005 mm tolerance metadata.
 - **Expected kernel behavior**: heal; respect per-edge tolerance metadata; do not collapse to a single document tolerance. Tag every edge/vertex with its own tolerance budget.
 - **Notes**: **See also**: U028. Synonyms: "CATIA per-edge tolerance much larger than file default", "edges carry their own precision values", "shell looks open because reader missed per-edge tolerance", "global tolerance too tight vs per-edge values".
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Byte assertion**: count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 3
 - **Byte assertion**: contains(b'1.0E-4') and contains(b'1.0E-2') and contains(b'5.0E-3')
@@ -4763,13 +4778,14 @@ _Section summary: 70 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N017 — `UNCERTAINTY_MEASURE_WITH_UNIT` populated with a fixed field-default value (untrustworthy)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: uncertainty context)
 - **Sources**: 14-brlcad-rhino K020 (McNeel forum); 17-standards-bodies M020; 04-occt-translation Q044
 - **Description**: Many STEP exporters emit `UNCERTAINTY_MEASURE_WITH_UNIT` with a constant field-default value (e.g. 0.027352…) rather than a true measure of producer-side precision. Receivers that take this value as document tolerance get bad joins and false gaps when the real geometry is accurate to 1e-6.
 - **Reproducer recipe**: STEP with `UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.027352…), …, 'distance_accuracy_value', '')` on geometry actually accurate to 1e-6.
 - **Expected kernel behavior**: heal; cap reported tolerance against geometric tightness measured from the actual model; offer override; default to `read.precision.val` parameter when uncertainty is missing or implausible.
 - **Notes**: **See also**: N019. Synonyms: "uncertainty value looks like template default", "constant 0.027352 tolerance from exporter", "uncertainty is fixed default not real precision", "writer emits placeholder tolerance value".
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Byte assertion**: matches(rb'LENGTH_MEASURE\(\s*0\.027352')
 - **Byte assertion**: count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 1
@@ -4792,13 +4808,14 @@ _Section summary: 70 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N019 — `OFFSET_SURFACE` with sub-tolerance offset (fixed-tolerance importer hard-codes 1e-3)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: working precision)
 - **Sources**: 14-brlcad-rhino K008
 - **Description**: An `OFFSET_SURFACE` built on a `PLANE` (or other base surface) whose offset distance is below the importer's working tolerance; typical signature: offset 5e-5 mm with the face's `EDGE_CURVE`s sitting at z=5e-5 to lift onto the offset surface. BRL-CAD's `step-g` importer hard-codes `m_tolerance = 1e-3` for edges and trims rather than reading the file's `UNCERTAINTY_MEASURE_WITH_UNIT` / `representation_context.length_measure`. Models requiring tighter tolerance lose feature fidelity; offset surfaces barely separated from their base plane are crushed back into the base plane.
 - **Reproducer recipe**: AP203 file with `UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.000001), …, 'distance_accuracy_value', '')` imported via step-g.
 - **Expected kernel behavior**: heal — read accuracy from `geometric_representation_context_with_uncertainty` and propagate to edge/trim tolerances; never hard-code.
 - **Notes**: **See also**: N017. Synonyms: "importer hard-codes 1e-3 tolerance ignoring file", "offset surface flattens into base", "BRL-CAD step-g ignores file uncertainty", "tiny offset surface lost because hard tolerance".
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Byte assertion**: contains(b'OFFSET_SURFACE')
 - **Byte assertion**: contains(b'PLANE')
@@ -4841,6 +4858,7 @@ _Section summary: 70 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N023 — `EDGE_CURVE` based on `LINE` displaced from true vertex position
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: working precision / edge geometry inconsistency)
 - **Sources**: 08-occt-gitlog G001 (OCCT 5939991, Mantis 0025415); 04-occt-translation Q011
 - **Sender**: FPX Expert 2013 (PCB design system)
@@ -4848,7 +4866,7 @@ _Section summary: 70 entries._
 - **Reproducer recipe**: VERTEX_POINT A at `(0,0,0)`, VERTEX_POINT B at `(10,0,0)`, EDGE_CURVE referring to LINE whose `pnt`/`dir` give a parallel line offset by 0.001 mm.
 - **Expected kernel behavior**: heal; replace the line so it passes through both vertices, preserving original direction.
 - **Notes**: **See also**: Gs021. Synonyms: "edge LINE doesn't pass through its vertices", "line direction correct but offset", "translator must shift line to vertex points", "underlying line parallel to actual edge".
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 1
 - **Byte assertion**: count_entity_def(b'LINE') == 1
@@ -4858,13 +4876,14 @@ _Section summary: 70 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N024 — `EDGE_CURVE` 3D `LINE` stale relative to translated host `PLANE` (rebuild-edge case)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: working precision / geometry-topology drift)
 - **Sources**: 13-quaoar B025 (Analysis Situs `rebuild-edge`)
 - **Description**: After local edits (face translation, blend suppression, partial defeaturing), an edge's stored 3D curve no longer matches the geometric intersection of its two host faces. Typical signature: two `PLANE` instances exist — the original at z=0 and the edited one at z=0.01 — but an `EDGE_CURVE` between them still references a 3D `LINE` at z=0, the pre-edit plane. The edge survives as topology but its curve is stale, leading to large tolerances or visible cracks.
 - **Reproducer recipe**: Translate one host face of an edge by a small offset without rebuilding the edge; compare `BRepAdaptor_Curve(edge)` to `IntPatch_Intersection(s1, s2)` — they diverge.
 - **Expected kernel behavior**: heal; `rebuild-edge` re-intersects host faces and rebuilds vertices; vertex-freezing flag handles near-tangential cases.
 - **Notes**: **See also**: Gs030. Synonyms: "edge curve stale after face moved", "LINE is at old position after face translate", "edit moved face but edge geometry didn't follow", "two planes exist but edge still on old one", "edge curve doesn't match host face intersection".
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Byte assertion**: count_entity_def(b'PLANE') == 2
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 1
@@ -4874,13 +4893,14 @@ _Section summary: 70 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N025 — Coincident-but-not-shared vertices/edges (cross-translator round-off)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: working precision / cross-kernel)
 - **Sources**: 21-patents X005 (US 9,607,422 B1 MSC/Hexagon); 21-patents X003; 11-translator-vendors W003 (crack); W045 (duplicate vertices)
 - **Description**: Imported B-reps regularly contain pairs of vertices and edges that the designer intended to be the same but which sit a few microns apart due to translator round-off. Coordinates agree to 1e-4 but topology stores them as distinct entities; a "crack" rather than a "gap" because geometric distance is zero by some metrics yet topology is broken.
 - **Reproducer recipe**: STEP file from translator A whose two adjacent `ADVANCED_FACE`s each instantiate their own `VERTEX_POINT` for the corner; coordinates agree to 1e-4.
 - **Expected kernel behavior**: heal; stitch by spatial proximity within tolerance; merge duplicate vertices and split/reconcile edges.
 - **Notes**: **See also**: N007. Synonyms: "vertices coincide spatially but topology distinct", "coincident edges not shared after translation", "topology cracks despite zero distance", "coordinates equal but vertices not the same entity".
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 4
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 2
@@ -4890,13 +4910,14 @@ _Section summary: 70 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N026 — Cross-kernel topology rejection: source-valid, target-invalid by tolerance bookkeeping
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: working precision / mixed precisions)
 - **Sources**: 21-patents X003 (EP 0690416 A2 Computervision); 11-translator-vendors W001, W003, W013; 13-quaoar B009
 - **Description**: The three production kernels (Parasolid, ACIS, CGM) define validity differently. ACIS may export a body with a tolerant edge of tolerance 5e-4; Parasolid demands geometric intersection within 1e-6 and rejects the edge. What was a single shared vertex in the source becomes two vertices in the target — or vice versa — depending on the receiving kernel's snap rules.
 - **Reproducer recipe**: Export an ACIS body that uses a tolerant edge with tolerance 5e-4 to STEP; import into a Parasolid pipeline that demands geometric intersection within 1e-6.
 - **Expected kernel behavior**: heal; tag every edge and vertex with a per-entity tolerance; rebuild face/edge adjacencies up to that tolerance; only error if re-intersection demonstrates the relation cannot be established.
 - **Notes**: **See also**: Tsh001. Synonyms: "body valid in ACIS but rejected by Parasolid", "kernel-specific tolerance bookkeeping", "tolerant edge accepted in source rejected in target", "kernels disagree on what counts as one vertex".
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect (canonical-recognition tolerance): the fixture's only model root is a lone `B_SPLINE_SURFACE_WITH_KNOTS` placed inside a `GEOMETRIC_CURVE_SET` under a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION`. `GEOMETRIC_CURVE_SET` is a curve/point-only aggregate, so OCC's STEP transfer never maps a surface held there to a face (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, whereas non-curve contents build nothing. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Byte assertion**: count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 2
 - **Byte assertion**: contains(b'1.0E-6') and contains(b'5.0E-4')
@@ -4905,13 +4926,14 @@ _Section summary: 70 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N027 — Small-mm `CYLINDRICAL_SURFACE` with target-unit mismatch (gmsh `OCCTargetUnit` silently ignored on `importShapesNativePointer` path)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: working precision / unit conversion)
 - **Sources**: 22-niche-forums Y012 (gmsh #3288, #2571)
 - **Description**: gmsh user sets `Geometry.OCCTargetUnit = "M"`, but a STEP `CYLINDRICAL_SURFACE` of r=1 h=10 in MILLI-METRE units gets imported as r=1000 h=10000 (the ×1000 scaling is applied unexpectedly). Common signature: a small 1 mm-radius cylinder with vertex coordinates like (0, 0.001, 0) and declared `UNCERTAINTY_MEASURE_WITH_UNIT` 1e-6 mm; relative precision is at the working-tolerance boundary, so any unit conversion glitch is immediately visible. The setting is honored when the file enters via `importShapes` but skipped when via `importShapesNativePointer`. Different geometries from the same producer require different `OCCTargetUnit` values to mesh.
 - **Reproducer recipe**: STEP with `LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.)`; load via OCC C++ then hand to gmsh via pointer interface.
 - **Expected kernel behavior**: heal; always apply target-unit conversion at the OCC→consumer boundary, regardless of the entry path.
 - **Notes**: Synonyms: "gmsh OCCTargetUnit silently ignored", "small mm cylinder imported with x1000 scale", "different geometries need different OCCTargetUnit settings", "importShapesNativePointer skips unit conversion".
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Byte assertion**: contains(b'CYLINDRICAL_SURFACE')
 - **Byte assertion**: contains(b'.MILLI.')
@@ -4921,13 +4943,14 @@ _Section summary: 70 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N028 — `GEOMETRIC_REPRESENTATION_CONTEXT` missing `LENGTH_UNIT` (only angle units present) → user-configured cascade.unit ignored
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: working precision)
 - **Sources**: 08-occt-gitlog G053 (Mantis 0032748)
 - **Description**: When the STEP model's `GEOMETRIC_REPRESENTATION_CONTEXT` carries no `LENGTH_UNIT` in its `GLOBAL_UNIT_ASSIGNED_CONTEXT` — for example only `PLANE_ANGLE_UNIT` and `SOLID_ANGLE_UNIT` are present, and no `UNCERTAINTY_MEASURE_WITH_UNIT` is attached — the user-configured `xstep.cascade.unit` is silently ignored. The reader uses an internal default and the model arrives at unexpected scale.
 - **Reproducer recipe**: STEP file lacking explicit unit declaration; set user `xstep.cascade.unit` and observe the effect (or lack thereof).
 - **Expected kernel behavior**: heal; apply user-provided unit as fallback when the model itself does not declare one.
 - **Notes**: Synonyms: "model has only angle units no length unit", "length unit missing from context", "cascade.unit ignored when LENGTH_UNIT absent", "GEOMETRIC_REPRESENTATION_CONTEXT has no length unit".
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Byte assertion**: not_contains(b'LENGTH_UNIT()')
 - **Byte assertion**: contains(b'PLANE_ANGLE_UNIT') and contains(b'SOLID_ANGLE_UNIT')
@@ -4937,6 +4960,7 @@ _Section summary: 70 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N029 — Inch-units silent treatment as mm (25.4× scale error)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: working precision / unit conversion)
 - **Sources**: 17-standards-bodies M020 (PrePoMax forum); 11-translator-vendors W030 (Spatial blog); 10-vendor-kbs V001, V006, V056
 - **Sender**: SolidWorks (inch units), Onshape (workspace inches)
@@ -4944,7 +4968,7 @@ _Section summary: 70 entries._
 - **Reproducer recipe**: SolidWorks STEP with `( LENGTH_UNIT() NAMED_UNIT(*) SI_UNIT($,.METRE.) )` plus a conversion-based wrapper for inches; receiver reads the wrapper as identity.
 - **Expected kernel behavior**: heal; resolve full unit-conversion chain to a single SI scale factor; reject if ambiguous; never default silently.
 - **Notes**: **See also**: U006. Synonyms: "inches silently treated as mm", "25.4x scale error on import", "inch model arrives 25.4 times too small", "LENGTH_UNIT inch parsed as default mm".
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Byte assertion**: contains(b'CONVERSION_BASED_UNIT') or contains(b'.METRE.')
 - **Byte assertion**: matches(rb'0\.0254')
@@ -4954,13 +4978,14 @@ _Section summary: 70 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N030 — Quarter `CYLINDRICAL_SURFACE` stored as `B_SPLINE_SURFACE_WITH_KNOTS` (canonical recognition tolerance budget)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty); the fixture's only model root is a lone `B_SPLINE_SURFACE_WITH_KNOTS` placed inside a `GEOMETRIC_CURVE_SET` (a curve/point-only container) under a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` — no buildable shape-representation root — which OCC's STEP transfer never maps to a face even when the surface is well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: canonical recognition tolerance)
 - **Sources**: 05-occt-shapefix F076; 13-quaoar B030; 21-patents X025; 11-translator-vendors W015
 - **Description**: A surface that mathematically is a `PLANE` / `CYLINDRICAL_SURFACE` / `CONICAL_SURFACE` / `SPHERICAL_SURFACE` / `TOROIDAL_SURFACE` / `SURFACE_OF_LINEAR_EXTRUSION` is stored as a generic `B_SPLINE_SURFACE_WITH_KNOTS`. Common shape: a quarter cylinder modelled as a degree-2-by-1 B-spline with a 3×2 control net plus a small declared canonicalisation tolerance (e.g. 1e-6). Feature recognition (hole/shaft detection), unfolding, CAM tool-axis derivation, DXF/SVG export, and GD&T tools all degrade silently because they cannot ask the surface for its radius or axis. Canonical-recognition tolerance (how tightly the BSpline must fit the analytic form) is rarely exposed.
 - **Reproducer recipe**: Import a STEP from a system that always writes NURBS; query a "cylindrical" face's `BRepAdaptor_Surface::GetType()` — returns `GeomAbs_BSplineSurface` instead of `GeomAbs_Cylinder`.
 - **Expected kernel behavior**: heal; `convert-to-canonical` / `ShapeCustom_BSplineRestriction` with a tolerance recovers the analytic form; reject canonicalization if recovered surface deviates beyond user-supplied tolerance, since otherwise watertightness is lost.
 - **Notes**: **See also**: Pmi041, Gn014. Synonyms: "cylinder stored as B-spline instead of analytic", "feature recognition can't find hole as B-spline", "analytic surface lost as NURBS", "kernel doesn't recognize quarter cylinder", "B-spline that should be cylinder or plane". Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Byte assertion**: contains(b'B_SPLINE_SURFACE_WITH_KNOTS')
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') == 8
@@ -5058,13 +5083,14 @@ _Section summary: 70 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### N036 — Centroid validation breaks down when relative threshold goes below modeling tolerance
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: validation / numerical precision)
 - **Sources**: 02-caxif (GVP §4.13.1)
 - **Description**: The relative centroid threshold (deviation / model size) breaks down when the bounding-box space diagonal is below ~20 mm at 0.02 mm model accuracy: a 0.1% threshold becomes smaller than the modeling tolerance, so even valid round-trips fail validation.
 - **Reproducer recipe**: Build a part whose bounding-box space diagonal is 5 mm. Provide a centroid GVP. Apply both relative and absolute thresholds.
 - **Expected kernel behavior**: heal; select the absolute-mm centroid threshold whenever model size is below 20 mm.
 - **Notes**: Synonyms: "centroid check fails on small models", "0.1 percent threshold below modeling tolerance", "valid round-trips fail centroid validation", "centroid validation too strict for small parts".
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Byte assertion**: contains(b'2.0E-2')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 1
@@ -5074,12 +5100,13 @@ _Section summary: 70 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N037 — Curve gaps between adjacent segments after format conversion (LOTAR exchange defect)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: cross-kernel translation drift)
 - **Sources**: 17-standards-bodies M004 (LOTAR); 21-patents X001 (Telesis Group US 2004/0174362)
 - **Description**: After format conversion the endpoints of adjacent 3D curve segments along a wire no longer meet within geometric tolerance; a class introduced *by translation*, not present in the native model. Source seam tolerance 1e-3 through a kernel that demands 1e-5 leaves position, cross-tangent, and cross-curvature gaps.
 - **Reproducer recipe**: Concatenated `B_SPLINE_CURVE_WITH_KNOTS` segments where end control points of segment N do not equal start control points of segment N+1 within `geometric_representation_context` tolerance.
 - **Expected kernel behavior**: bridge the segment endpoints by adjusting curve endpoints (or inserting connecting curves) so the wire is geometrically connected within the receiving kernel's working tolerance; or reject as a translation-fidelity issue.
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Notes**: Synonyms: "curve segments don't meet after conversion", "wire gaps introduced by translation", "tangent gaps after kernel translation", "LOTAR exchange leaves wire breaks".
 - **Byte assertion**: count_entity_def(b'B_SPLINE_CURVE_WITH_KNOTS') == 2
@@ -5111,6 +5138,7 @@ _Section summary: 70 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 
 ### N039 — Healing pass over-eagerly inflates tolerances 1000× on sub-shapes that needed no fix (post-fix `UNCERTAINTY_MEASURE_WITH_UNIT` bloat)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: tolerance ballooning by healing)
 - **Sources**: 08-occt-gitlog G093 (Mantis 0028601); 03-occt-tests R031 (OCC24658)
 - **Description**: A healing pass touches every sub-shape and inflates edge/vertex tolerances even on those whose existing tolerance already covers the actual deviation. Common file signature: `GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT` carries two `UNCERTAINTY_MEASURE_WITH_UNIT` entries — a native 1e-6 mm precision and a post-fix "over-bumped" 1e-3 mm — a 1000× bump applied across the whole model after a healing pass on two consecutive edges sharing a single vertex. Combined with an in-place mutation mode, the input shape itself is silently bloated. The user-visible symptom is a healed model whose tolerance discs grew across every feature, even features that were valid to begin with.
@@ -5120,19 +5148,20 @@ _Section summary: 70 entries._
 - **Byte assertion**: count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 2
 - **Byte assertion**: contains(b'1.0E-6') and contains(b'1.0E-3')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N040 — `Limit Tolerance` clamp re-exposes gaps that bloated tolerances were hiding (Salome)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: tolerance reset / hierarchy)
 - **Sources**: 09-healing-menus H065 (Salome GEOM)
 - **Description**: Salome's "Limit Tolerance" forces the tolerance of a shape's vertices/edges/faces back down to a user-given value. When tolerances were inflated by upstream tools to hide real gaps, clamping back down re-exposes those gaps as topology defects (now-disconnected vertices, open wires). Typical file signature: two `GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT` `UNCERTAINTY_MEASURE_WITH_UNIT` entries — a bloated 1e-3 mm pre-clamp tolerance and a tight 1e-6 mm post-clamp value — together with two consecutive edges whose shared `VERTEX_POINT` coordinates differ by ~5e-4 mm (e.g. (10.0005,0,0) vs (10,0,0)), so the gap was within the bloated tolerance but exceeds the clamped one.
 - **Reproducer recipe**: STEP with bloated tolerances after multi-tool import; apply Limit Tolerance with target equal to original `uncertainty_measure_with_unit`.
 - **Expected kernel behavior**: heal cautiously; clamp tolerances; re-run validity checks; report newly-exposed gaps to the user before continuing.
 - **Notes**: **See also**: N002, N003, N039. Synonyms: "clamping tolerance re-exposes gaps", "Limit Tolerance breaks supposedly healed model", "open wires reappear after tolerance clamp", "vertices that were merged drift apart at lower tolerance".
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Byte assertion**: count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 2
 - **Byte assertion**: contains(b'1.0E-3') and contains(b'1.0E-6')
@@ -5142,13 +5171,14 @@ _Section summary: 70 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N041 — Manifold ε-validity contract: cumulative transform error inflates ε beyond input scale
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: working precision / boolean drift)
 - **Sources**: 09-healing-menus H043, H044 (Manifold elalish library)
 - **Description**: Manifold tracks an ε (the maximum vertex-perturbation that would suffice to make the mesh strictly non-overlapping). Cumulative transform / Boolean error inflates ε beyond the input scale. Subsequent Booleans become unstable. User must either rebuild from cleaner data or call `SetTolerance` to widen and `Simplify`.
 - **Reproducer recipe**: Apply a chain of 50 Boolean operations to a Manifold mesh; query `GetEpsilon()` between operations; observe monotone growth.
 - **Expected kernel behavior**: heal; track per-mesh ε explicitly; expose to caller; refuse Boolean when ε exceeds a fraction of model size.
 - **Notes**: **See also**: Pf021, Pf023. Synonyms: "epsilon grows past input scale", "Manifold validity epsilon balloons", "cumulative transform error inflates epsilon", "boolean unstable after epsilon grew".
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 4
 - **Byte assertion**: contains(b'1.0E-7') and contains(b'4.2E-3')
@@ -5171,6 +5201,7 @@ _Section summary: 70 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 
 ### N043 — Shape-to-shape distance reports nonzero gap for clearly intersecting parts
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 (sub-class: working precision / extrema)
 - **Sources**: 18-other-issues I056 (OCCT #1123, FreeCAD #25158)
 - **Description**: For two shapes that demonstrably intersect (their volumes clearly overlap), the minimum-distance query returns a small but nonzero value (e.g. 6e-5 or 0.083) instead of zero. The distance algorithm samples corner points and edge endpoints but does not verify true intersection, so a transverse intersection between two interior surfaces is missed.
@@ -5181,7 +5212,7 @@ _Section summary: 70 entries._
 - **Byte assertion**: count_entity_def(b'UNCERTAINTY_MEASURE_WITH_UNIT') == 3
 - **Byte assertion**: contains(b'6.3E-5') and contains(b'8.3E-2')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -5943,6 +5974,7 @@ End of file. 44 distinct entries.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 
 ### N048 — Walk-line initial step unrelated to tolerance during surface intersection
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 tolerance
 - **Sources**: OCCT MANTIS#0026554 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A surface-surface intersection algorithm walks along the
@@ -5959,7 +5991,7 @@ End of file. 44 distinct entries.
 - **Byte assertion**: count_entity_def(b'CYLINDRICAL_SURFACE') == 2
 - **Byte assertion**: count_entity_def(b'PCURVE') == 2
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows this empty is not caused by the declared defect: base=empty and clean (defect repaired to a well-formed equivalent)=empty. The fixture's only model root is a `GEOMETRICALLY_BOUNDED_WIREFRAME_SHAPE_REPRESENTATION` over a `GEOMETRIC_CURVE_SET` holding topology (`EDGE_CURVE`/`VERTEX_POINT`), which OCC's STEP transfer never maps to a TopoDS shape (no buildable root); control: the identical GCS container holding bare geometry (`LINE`) builds an edge, but holding `EDGE_CURVE` topology yields empty. The silent-empty is container/toy-driven, not defect-driven, so no kernel bug is proven.
 - **Severity**: P1
 - **Model impact**: Coordinate or tolerance values trigger numerical degeneracy in kernel predicates; edges merge or split at the wrong vertex, and the resulting topology disagrees with what the producer encoded.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -32487,13 +32519,14 @@ Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-ax
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### N050 — File-supplied `UNCERTAINTY_MEASURE_WITH_UNIT` parsed but never consumed (BRL-CAD step-g)
+- **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
 - **Category**: §12.4 tolerance & numerical precision (sub-class: importer ignores file tolerance)
 - **Sources**: BRL-CAD `src/conv/step/step-g/UncertaintyMeasureWithUnit.cpp` Load stores value with no consumer; AdvancedFace hard-codes `m_tolerance = 1e-3`; bug-reporter language: "STEP file declares 1e-6 mm tolerance, importer uses 1e-3", "UNCERTAINTY_MEASURE_WITH_UNIT ignored", "kernel hard-codes its own tolerance ignoring the file's distance_accuracy_value".
 - **Sender**: Aerospace, optics, and metrology producers that emit `UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(<tight value>), MM, …, 'distance_accuracy_value', '')` in `GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT` to declare that they author at sub-micrometre precision.
 - **Description**: `UncertaintyMeasureWithUnit::Load` parses the file's declared tolerance (e.g. 1.0E-6 mm) into the in-memory model, but no downstream BRL-CAD consumer ever reads it back: `AdvancedFace` and the trim/edge tolerance machinery uses a hard-coded `m_tolerance = 1e-3`. This umbrellas the specific manifestation N019 (offset-surface case) into the broader rule: **every** tolerance-sensitive operation in step-g uses the same hard-coded constant, regardless of what the file says. Sub-tolerance features collapse, slivers get crushed, and tight-precision authoring intent is silently downgraded to the importer's working precision.
 - **Reproducer recipe**: `#13=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6), #10, 'distance_accuracy_value', '');` plus `#14=(GEOMETRIC_REPRESENTATION_CONTEXT(3) GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#13)) GLOBAL_UNIT_ASSIGNED_CONTEXT((#10,#11,#12)) REPRESENTATION_CONTEXT('','3D'));`. step-g treats every edge with 1e-3 tolerance, ignoring the 1e-6 declared by the file.
 - **Expected kernel behavior**: heal-and-accept; every importer must consult the active `GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT` and pass the file's tolerance into all edge/face/healing tolerance slots; emit `W_TOLERANCE_FROM_FILE` so users can confirm the value used.
-- **Notes**: **See also**: N019, U033. Umbrella over N019 (which is the offset-surface specific manifestation). Synonyms: "STEP UNCERTAINTY_MEASURE_WITH_UNIT ignored", "importer hard-codes 1e-3 tolerance", "distance_accuracy_value not consumed", "BRL-CAD step-g ignores file uncertainty everywhere", "tight-precision authoring downgraded to working precision". **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **Notes**: **See also**: N019, U033. Umbrella over N019 (which is the offset-surface specific manifestation). Synonyms: "STEP UNCERTAINTY_MEASURE_WITH_UNIT ignored", "importer hard-codes 1e-3 tolerance", "distance_accuracy_value not consumed", "BRL-CAD step-g ignores file uncertainty everywhere", "tight-precision authoring downgraded to working precision". **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): this empty is not caused by the declared defect — the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET`, which OCC's STEP transfer never builds (control: identical GCS with bare `LINE` geometry builds an edge; with `EDGE_CURVE` topology yields empty), so the silent-empty is container/toy-driven, not a proven kernel bug.
 - **Byte assertion**: contains(b'UNCERTAINTY_MEASURE_WITH_UNIT')
 - **Byte assertion**: contains(b'1.0E-6') or contains(b'1e-6')
 - **Tier-3 assertion**: shape_null == True
