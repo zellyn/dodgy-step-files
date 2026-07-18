@@ -45,6 +45,21 @@ with `_fixture_source_check --fix`, never hand-edit the `.stp` (round-trip check
 (Tfa129, Tfa210 were on the original list but are ALREADY honestly reclaimed by the 2026-07-16
 truth-in-labeling audit — no action needed.)
 
+**CORPUS-WIDE REACHABILITY AUDIT 2026-07-18 (reachability scanner + oracle-verified triage): class is
+NOT clean beyond the 5.** Scanner (`scratchpad/orphan_scan.py`: root shape-rep → transitive `#N` closure,
+flag trivial-reachable-shape + unreachable-rich-geometry) over 2682 .stp → 31 flags. After excluding the
+4 already-resolved + 1 quarantine-copy + 7 verified false-flags, **18 fixtures still OVERCLAIM** with the
+"**OCC behavior**: … Kernel-bug witnessed: receivers … must heal this fixture" prose (the exact framing
+scrubbed from the resolved 5), all oracle-confirmed 1-vertex stubs with the defect geometry physically
+unreachable. Fix each like the resolved 5 (honest disclosure + `**Status**: honest reclassification` line +
+scrub "must heal" prose + correct any stale builder comment):
+- [ ] **P017** — free wires (EDGE_CURVE×3) dropped; **WIRE-ABLE to genuine demo** (wires→n_edges>0, like Gn002). Highest value.
+- [ ] **P027** — degenerate hole-loop pcurves (PCURVE/SURFACE_CURVE/B_SPLINE_SURFACE); **WIRE-ABLE** (face load/throw). High value.
+- [ ] **Pf002/003/006/007/009/014/021/023/024/025** (§12.10-perf) — RECLASSIFY: perf/scale-dependent pathologies (huge-B-spline, quadratic-cost, stack-overflow, near-apex crash, VERTEX_LOOP loop) invisible to shape_counts even if wired. Pf006/023/024 already carry a partial disclaimer (lowest priority).
+- [ ] **P026** (§12.6) — coords pre-scaled ×1000; RECLASSIFY (scale invisible to shape_counts even wired).
+- [ ] **Tier B — P019 (transparency STYLED_ITEM) + Pmi014/015/031/054/068** — RECLASSIFY: defect is a non-geometry PMI/presentation property, oracle-invisible by nature (overlaps Q5 oracle-invisible-PMI backlog).
+- **Verified GENUINE (no action, false-flags):** Ad005/Ad051/Ad087 (dangling-ref → occt=empty, defect witnessed), Ad082 (fwd-ref parser-parity byte-level), Pmi049 (genuine signal(11) crash), Pmi019 (gmsh signal(11)), P013 (AP203/AP214 header schema, byte-level). Live copy of Tsh058 is genuine (2 faces).
+
 ## Active initiatives
 
 ### B5 — New-source mining (2026-07 survey) — IN PROGRESS
