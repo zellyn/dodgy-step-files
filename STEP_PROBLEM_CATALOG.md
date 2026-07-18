@@ -1952,6 +1952,7 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ### Gn007 — Under-sampled `B_SPLINE_CURVE_WITH_KNOTS` for long helical thread (Creo relative-accuracy tessellation)
+- **Status**: honest reclassification (2026-07-18) — the defect is byte-present but sits in an unreferenced curve set, so OCC loads only a 1-vertex stub (`shape(1)`); the input is oracle-invisible at load and does NOT demonstrate a repair. A genuine load-demonstrating variant is deferred (BACKLOG). Retained as byte-level/provenance coverage of the defect class.
 - **Category**: §12.2b NURBS/knots
 - **Sources**: 10-vendor-kbs.md (V035)
 - **Sender**: PTC Creo with default relative accuracy
@@ -1968,6 +1969,7 @@ _Section summary: 82 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Gn008 — High-curvature curves: knot multiplicity at full degree producing near-cusps
+- **Status**: honest reclassification (2026-07-18) — the defect is byte-present but sits in an unreferenced curve set, so OCC loads only a 1-vertex stub (`shape(1)`); the input is oracle-invisible at load and does NOT demonstrate a repair. A genuine load-demonstrating variant is deferred (BACKLOG). Retained as byte-level/provenance coverage of the defect class.
 - **Category**: §12.2b NURBS/knots
 - **Sources**: 17-standards-bodies.md (M005)
 - **Description**: BSpline curves with multi-knots at full-degree multiplicity (cusp-producing) or rational BSpline with control-point weight ratio above ~1e3 cause downstream meshers to over-resolve or fail. Often artifacts of NURBS knot insertion or approximation during translation.
@@ -7250,6 +7252,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### P014 — `PCURVE` start point shifted in V from 3D `EDGE_CURVE` lift (UV drift beyond tolerance after Boolean)
+- **Status**: honest reclassification (2026-07-18) — the defect is byte-present but sits in an unreferenced curve set, so OCC loads only a 1-vertex stub (`shape(1)`); the input is oracle-invisible at load and does NOT demonstrate a repair. A genuine load-demonstrating variant is deferred (BACKLOG). Retained as byte-level/provenance coverage of the defect class.
 - **Category**: §12.2 pcurve
 - **Source**: FreeCAD #21216
 - **Sender**: FreeCAD post-Boolean
@@ -7363,6 +7366,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 
 ### P022 — Helical seam degeneracy from arc-by-3-points + 360° revolve
+- **Status**: honest reclassification (2026-07-18) — the defect is byte-present but sits in an unreferenced curve set, so OCC loads only a 1-vertex stub (`shape(1)`); the input is oracle-invisible at load and does NOT demonstrate a repair. A genuine load-demonstrating variant is deferred (BACKLOG). Retained as byte-level/provenance coverage of the defect class.
 - **Category**: §12.2 geometric / seam
 - **Source**: FreeCAD #16681
 - **Sender**: FreeCAD

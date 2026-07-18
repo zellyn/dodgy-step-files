@@ -53,7 +53,7 @@
 <details>
 <summary>Show fixture bytes (with defect highlighting)</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Gn007: Under-sampled <mark>B_SPLINE_CURVE</mark>_WITH_KNOTS for helical thread: Creo default relative accuracy exports a 2500 mm shaft helix with only ~16 control points; poles zig-zag in X sign and barely move radially; far fewer poles per turn than a faithful helix needs; heal: writers preserve authored degree/knot structure; consumers warn-and-accept on geometric_validation_property mismatch; GEOMETRIC_CURVE_SET IS model entity â OCC yields empty */
+<span class="lineno">2</span>/* Gn007: Under-sampled <mark>B_SPLINE_CURVE</mark>_WITH_KNOTS for helical thread: Creo default relative accuracy exports a 2500 mm shaft helix with only ~16 control points; poles zig-zag in X sign and barely move radially; far fewer poles per turn than a faithful helix needs; heal: writers preserve authored degree/knot structure; consumers warn-and-accept on geometric_validation_property mismatch. The under-sampled curve sits in an unreferenced GEOMETRIC_CURVE_SET, so OCC loads only a 1-vertex stub; the under-sampling is byte-present but is a geometry-QUALITY property invisible to the load-time shape-count oracles (shape(1)), not a genuine load-time demonstration */
 <span class="lineno">3</span>HEADER;
 <span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Gn007&#x27;),&#x27;2;1&#x27;);
 <span class="lineno">5</span>FILE_NAME(&#x27;Gn007.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);

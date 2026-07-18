@@ -32,12 +32,15 @@ with `_fixture_source_check --fix`, never hand-edit the `.stp` (round-trip check
 - [x] **Gn002** — DONE + CI-green (dfad4f92). Spec violation (NbWeights≠NbControlPoints): wired both
       malformed rational entities into a `GEOMETRIC_SET`; OCC transfer THROWS on the mismatch → empty
       (deterministic), vs well-formed control → edge+face. `occt=shape(1)`→`occt=empty/empty gmsh=empty`.
-- [ ] **Gn007, Gn008** — geometric-QUALITY (under-sampled helix / near-cusp). Wiring proven INSUFFICIENT
-      (shape-counts byte-identical under pole perturbation). Fix = RECLASSIFY honestly (retitle + honest
-      Notes that OCC accepts silently / quality defect is oracle-invisible), like Tfa129/Tfa210.
-- [ ] **P014, P022** — bad pcurve V-drift / helical seam degeneracy. Live-test individually: a bad
-      surface/pcurve wired into a real face MAY change face count or reject (visible) unlike a pure
-      quality defect → wire-vs-reclassify decided per live result.
+- [x] **Gn007, Gn008** — DONE (reclassified 2026-07-18). Geometric-QUALITY (under-sampled helix /
+      near-cusp): wiring proven insufficient (shape-counts blind). Added prominent honest **Status** line
+      + corrected the stale "OCC yields empty" builder comment (OCC actually loads a 1-vertex stub,
+      `shape(1)`). Byte-level/provenance coverage; genuine load-demo deferred (needs geometry-quality oracle).
+- [x] **P014, P022** — DONE (reclassified 2026-07-18). Live-tested: P014 (pcurve V-drift) wired → OCC
+      silently accepts the drift (builds edge, no flag) = oracle-invisible; P022 (seam degeneracy) not
+      cleanly wireable (surface swap → parse error). Both got the honest **Status** line + builder-comment
+      fix. Genuine variants deferred: P014 = a "documents OCC's silent tolerance of pcurve drift" wired
+      fixture (edge:1) is a real future improvement; P022 needs a careful seam construction.
 
 (Tfa129, Tfa210 were on the original list but are ALREADY honestly reclaimed by the 2026-07-16
 truth-in-labeling audit — no action needed.)

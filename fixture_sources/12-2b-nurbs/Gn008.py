@@ -19,8 +19,11 @@ f = StepFile(
         "(B) RATIONAL_B_SPLINE_CURVE with weights (1,1000,1,1) — ratio ~1e3 causes "
         "mesher over-resolution or failure; "
         "accept geometrically; flag as quality warning; downstream meshers must detect "
-        "and refuse/refit before meshing; "
-        "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty"
+        "and refuse/refit before meshing. The cusp/high-weight curves sit in an "
+        "unreferenced GEOMETRIC_CURVE_SET, so OCC loads only a 1-vertex stub; the "
+        "near-cusp / weight-ratio is byte-present but is a geometry-QUALITY property "
+        "invisible to the load-time shape-count oracles (shape(1)), not a genuine "
+        "load-time demonstration"
     ),
 )
 

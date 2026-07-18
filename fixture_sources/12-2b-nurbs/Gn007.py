@@ -17,8 +17,11 @@ f = StepFile(
         "relative accuracy exports a 2500 mm shaft helix with only ~16 control points; "
         "poles zig-zag in X sign and barely move radially; far fewer poles per turn than "
         "a faithful helix needs; heal: writers preserve authored degree/knot structure; "
-        "consumers warn-and-accept on geometric_validation_property mismatch; "
-        "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty"
+        "consumers warn-and-accept on geometric_validation_property mismatch. "
+        "The under-sampled curve sits in an unreferenced GEOMETRIC_CURVE_SET, so OCC "
+        "loads only a 1-vertex stub; the under-sampling is byte-present but is a "
+        "geometry-QUALITY property invisible to the load-time shape-count oracles "
+        "(shape(1)), not a genuine load-time demonstration"
     ),
 )
 

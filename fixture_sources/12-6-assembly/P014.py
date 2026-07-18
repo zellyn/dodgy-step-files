@@ -25,8 +25,12 @@ f = StepFile(
         "whose 2D start point has v=0.5 drift from the 3D edge lift on the plane; "
         "PCURVE seed (0.0, 0.5) disagrees with 3D edge at (0.0, 0.0) by 0.5 mm; "
         "round-trip introduces UV drift beyond tolerance; "
-        "importer flags every face/edge as 'invalid curve on surface'; "
-        "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty"
+        "importer flags every face/edge as 'invalid curve on surface'. The drifted "
+        "SURFACE_CURVE sits in an unreferenced GEOMETRIC_CURVE_SET, so OCC loads only a "
+        "1-vertex stub; and even when the SURFACE_CURVE is made reachable, OCC silently "
+        "accepts the 0.5 mm pcurve drift (builds the edge, no flag) — the drift is "
+        "byte-present but oracle-invisible to the load-time shape-count oracles (shape(1)), "
+        "not a genuine load-time demonstration"
     ),
     schema="AP242",
 )

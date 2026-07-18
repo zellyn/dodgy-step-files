@@ -1,5 +1,5 @@
 ISO-10303-21;
-/* P022: SURFACE_OF_REVOLUTION with generatrix TRIMMED_CURVE(CIRCLE) whose start/end-parameter encoding produces a self-touching meridian at the rotation axis — seam degeneracy from arc-by-3-points + 360-degree revolve; finite seam edges meet at rotation axis instead of collapsing to degenerate point; kernel must auto-degenerate seam edge or reject with clear error; GEOMETRIC_CURVE_SET IS model entity — OCC yields empty */
+/* P022: SURFACE_OF_REVOLUTION with generatrix TRIMMED_CURVE(CIRCLE) whose start/end-parameter encoding produces a self-touching meridian at the rotation axis — seam degeneracy from arc-by-3-points + 360-degree revolve; finite seam edges meet at rotation axis instead of collapsing to degenerate point; kernel must auto-degenerate seam edge or reject with clear error. The SURFACE_OF_REVOLUTION sits unreferenced (only the generatrix TRIMMED_CURVE is in a curve set), so OCC loads only a 1-vertex stub; the seam degeneracy is byte-present but oracle-invisible to the load-time shape-count oracles (shape(1)), not a genuine load-time demonstration */
 HEADER;
 FILE_DESCRIPTION(('P022'),'2;1');
 FILE_NAME('P022.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');

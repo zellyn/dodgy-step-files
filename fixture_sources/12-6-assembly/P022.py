@@ -29,8 +29,11 @@ f = StepFile(
         "start/end-parameter encoding produces a self-touching meridian at the "
         "rotation axis — seam degeneracy from arc-by-3-points + 360-degree revolve; "
         "finite seam edges meet at rotation axis instead of collapsing to degenerate point; "
-        "kernel must auto-degenerate seam edge or reject with clear error; "
-        "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty"
+        "kernel must auto-degenerate seam edge or reject with clear error. The "
+        "SURFACE_OF_REVOLUTION sits unreferenced (only the generatrix TRIMMED_CURVE is in "
+        "a curve set), so OCC loads only a 1-vertex stub; the seam degeneracy is byte-present "
+        "but oracle-invisible to the load-time shape-count oracles (shape(1)), not a genuine "
+        "load-time demonstration"
     ),
     schema="AP242",
 )
