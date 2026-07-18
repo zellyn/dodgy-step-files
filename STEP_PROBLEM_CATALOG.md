@@ -1094,7 +1094,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: matches(rb'#\d+\s*=\s*\(\s*[A-Z_]+\(')
 - **Byte assertion**: count(b'NAMED_UNIT(*)') >= 1 or contains(b'PLANE_ANGLE_UNIT()')
 - **Tier-3 assertion**: shape_null == True
-- **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: silently accepts (no diagnostic, empty result); the catalog contract here is accept-with-warning, NOT reject — non-alphabetic leaf order is a recoverable ordering issue the reader should normalize internally (per Expected kernel behavior above), and the strict Part-21 validator confirms this, returning accept-with-warnings (`W_COMPLEX_ORDER`) rather than an error. OCC falls outside that allowed set ({accept+warn}) by surfacing NO diagnostic at all: silent acceptance defeats the warn requirement. The units-only record builds no geometry, so the empty result is expected regardless of leaf order — the missing warning, not the empty load, is the witnessed defect.
 - **Severity**: P1
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -14627,7 +14627,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1) reflecting the fixture's scale (status=accept, shape non-null). The pathology is a RUNTIME property — quadratic auto-mesh time on files with many small faces — not a shape-level defect: the shape-count oracle sees a normal valid load and witnesses no kernel bug here. Value is as a runtime/scale stressor, realized only at production scale (inflate the face count per the reproducer), not as a shape-count-visible defect at fixture scale.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1296) ifc=schema_n/a`
@@ -15608,7 +15608,7 @@ _Section summary: 28 entries._
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_edges_total == 15
 - **Tier-3 assertion**: n_vertices_total == 15
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1) reflecting the fixture's scale (status=accept, shape non-null). The pathology is a RUNTIME property — quadratic (linear-scan) import time on geometric-set-heavy input — not a shape-level defect: the shape-count oracle sees a normal valid load and witnesses no kernel bug here. Value is as a runtime/scale stressor, realized only at production scale (inflate the entry count per the reproducer), not as a shape-count-visible defect at fixture scale.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
@@ -15676,7 +15676,7 @@ _Section summary: 28 entries._
 - **Tier-3 assertion**: n_faces_total == 100
 - **Tier-3 assertion**: n_edges_total == 400
 - **Tier-3 assertion**: n_vertices_total == 800
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1) reflecting the fixture's scale (status=accept, shape non-null). The pathology is a RUNTIME property — C-stack recursion depth on a single shell with ~10^5 faces — not a shape-level defect: the shape-count oracle sees a normal valid load and witnesses no kernel bug here. Value is as a runtime/scale stressor, realized only at production scale (inflate the face count per the reproducer), not as a shape-count-visible defect at fixture scale.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(900) ifc=schema_n/a`
@@ -15775,7 +15775,7 @@ _Section summary: 28 entries._
 - **Notes**: **See also**: A001, Pf001, Ad027.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 10
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1) reflecting the fixture's scale (status=accept, shape non-null). The pathology is a RUNTIME property — resident-memory amplification (O(N) instance and back-reference tables) — not a shape-level defect: the shape-count oracle sees a normal valid load and witnesses no kernel bug here. Value is as a runtime/scale stressor, realized only at production scale (inflate the entity count per the reproducer), not as a shape-count-visible defect at fixture scale.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
@@ -15822,7 +15822,7 @@ _Section summary: 28 entries._
 - **Closure intent**: solid
 - **Closure defect**: gap
 - **Notes**: **See also**: M023, Pf027. Provenance tier: runtime-only; bytes alone cannot demonstrate this defect; the catalogued symptoms (quadratic-time stitching, Boolean failures, resource exhaustion at ~10k+ faces) are runtime resource consumption that scales with mesh size. A fixture-scale `OPEN_SHELL` does not embody the production-scale exhaustion; a behavioral test on the stitching/Boolean pipeline at scale is the appropriate venue.
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1) reflecting the fixture's scale (status=accept, shape non-null; the `OPEN_SHELL` loads as-is). The catalogued pathology — quadratic-time stitching, Boolean-cut failures, resource exhaustion at ~10k+ faces — is a RUNTIME/scale property, not a shape-level defect the shape-count oracle witnesses; at fixture scale OCC simply accepts. Value is as a runtime/scale stressor, realized only at production scale (per the reproducer), not as a shape-count-visible defect at fixture scale.
 - **Severity**: P2
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 8
 - **Byte assertion**: contains(b'OPEN_SHELL')
@@ -15872,7 +15872,7 @@ _Section summary: 28 entries._
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 8
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1) reflecting the fixture's scale (status=accept, shape non-null). The pathology is a RUNTIME property — unbounded multi-pass healing time/memory on a huge single shell — not a shape-level defect: the shape-count oracle sees a normal valid load and witnesses no kernel bug here. Value is as a runtime/scale stressor, realized only at production scale (inflate the shell size per the reproducer), not as a shape-count-visible defect at fixture scale.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(441) ifc=schema_n/a`
@@ -16104,7 +16104,7 @@ _Section summary: 28 entries._
 - **Expected kernel behavior**: Heal and accept: configurable join cutoff with a quiet mode for non-interactive callers; coerce the join policy.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1) reflecting the fixture's scale (status=accept, shape non-null). The pathology is a RUNTIME property — O(n^2) join time on >10k-face polysurfaces — not a shape-level defect: the shape-count oracle sees a normal valid load and witnesses no kernel bug here. Value is as a runtime/scale stressor, realized only at production scale (inflate the face count per the reproducer), not as a shape-count-visible defect at fixture scale.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(900) ifc=schema_n/a`
@@ -19296,7 +19296,7 @@ _Section summary: 41 entries._
 - **Description**: A `MANIFOLD_SOLID_BREP` (or `BREP_WITH_VOIDS`) references a `CLOSED_SHELL` whose face list is empty. The "solid" therefore has no boundary at all; there is no surface to act as the inside/outside divider. Producers occasionally emit this when an upstream filter strips every face of a body but leaves the wrapper entities intact.
 - **Reproducer recipe**: A `MANIFOLD_SOLID_BREP` whose `outer` attribute references a `CLOSED_SHELL` with `cfs_faces=()`.
 - **Expected kernel behavior**: Detect the empty-shell case before any topological reasoning is attempted; reject the solid as malformed, or unwind the solid wrapper and report nothing was loaded.
-- **Notes**: Synonyms: "empty shell", "shell has no faces", "solid with zero faces". **See also**: Bo002. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
+- **Notes**: Synonyms: "empty shell", "shell has no faces", "solid with zero faces". **See also**: Bo002. **OCC behavior**: accepts and loads shape(1) — a `CLOSED_SHELL` with 0 faces (heal_on ≡ heal_off: v0/e0/f0/shell1) — instead of rejecting the boundary-less solid; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant; the acceptance is oracle-visible as occt=shape(1) diverging from gmsh=empty. Structural note: this defect is binary/verbatim — the shell's face list is empty by construction, so there is no clean/huge perturbation axis (a shell either has faces or it does not); the fixture carries the malformed structure directly rather than a tunable magnitude.
 - **Byte assertion**: matches(rb'CLOSED_SHELL\s*\(\s*\x27[^\x27]*\x27\s*,\s*\(\s*\)\s*\)')
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 0
@@ -21198,7 +21198,7 @@ _Section summary: 41 entries._
 - **Description**: Analogous to Sw007 but for edges: an edge's lookup key (endpoints + curve type) does not hit a unique entry in the global edge table. Bug-reporter language: "edge not matched", "fast sew edge collision".
 - **Reproducer recipe**: Two faces meet on what should be a shared edge, but the edge's underlying 3D curves differ slightly (one is a `LINE`, one is a degree-1 `B_SPLINE_CURVE` between the same points). Hash mismatches.
 - **Expected kernel behavior**: Heal and accept: normalize matching by geometric coincidence within tolerance, not by curve-type identity.
-- **Notes**: **See also**: Sw007. Synonyms: "edge not matched in fast sew", "fast sew edge collision", "LINE vs B_SPLINE on same endpoints", "same endpoints but different 3D curves", "edge lookup key collides between curve types".
+- **Notes**: **See also**: Sw007. Honesty note: the title's "fast-sewing edge-table miss" names a runtime `BRepBuilderAPI_FastSewing` lookup path that plain STEP import does not exercise; on import OCC builds a valid shape(1) (heal_on ≡ heal_off, both v4/e2/w1/f1), so the witnessed behavior is looser than — and does not directly demonstrate — the named edge-table-collision mechanism. Retained SOUND as a coincident-endpoint / mixed curve-type (LINE vs degree-1 B-spline) stressor. Synonyms: "edge not matched in fast sew", "fast sew edge collision", "LINE vs B_SPLINE on same endpoints", "same endpoints but different 3D curves", "edge lookup key collides between curve types".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE_WITH_KNOTS')
 - **Byte assertion**: contains(b'LINE')
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') == 2

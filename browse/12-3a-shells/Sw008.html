@@ -35,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: normalize matching by geometric coincidence within tolerance, not by curve-type identity.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Sw007. Synonyms: &quot;edge not matched in fast sew&quot;, &quot;fast sew edge collision&quot;, &quot;LINE vs B_SPLINE on same endpoints&quot;, &quot;same endpoints but different 3D curves&quot;, &quot;edge lookup key collides between curve types&quot;.</p></section>
+<p>**See also**: Sw007. Honesty note: the title&#x27;s &quot;fast-sewing edge-table miss&quot; names a runtime `BRepBuilderAPI_FastSewing` lookup path that plain STEP import does not exercise; on import OCC builds a valid shape(1) (heal_on ≡ heal_off, both v4/e2/w1/f1), so the witnessed behavior is looser than — and does not directly demonstrate — the named edge-table-collision mechanism. Retained SOUND as a coincident-endpoint / mixed curve-type (LINE vs degree-1 B-spline) stressor. Synonyms: &quot;edge not matched in fast sew&quot;, &quot;fast sew edge collision&quot;, &quot;LINE vs B_SPLINE on same endpoints&quot;, &quot;same endpoints but different 3D curves&quot;, &quot;edge lookup key collides between curve types&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
