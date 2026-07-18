@@ -49522,7 +49522,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn010.stp",
     "id": "Gn010",
-    "notes": "**See also**: Gs036. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant. Synonyms: \"NURBS control point coordinates out of range\", \"NaN in B-spline surface poles\", \"huge coordinate values 1e100 in NURBS\", \"NURBS pole has impossible coordinates\", \"NaN propagation from B-spline control points\".",
+    "notes": "**See also**: Gs036. **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (out-of-range (1e100) NURBS control point): the model is one hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL that OCC's STEP transfer never builds into a TopoDS face. Base, a CLEAN copy with the injected C-1-break defect edge closed, and a fully well-formed copy (declared defect repaired, scaffold pcurve domains corrected) are all empty (f=0); a genuinely-building B-spline face fixture (Gn024) loads f=1. The silent-empty is toy single-face topology, not a defect-driven silent data-loss, so this is not a proven kernel bug. Synonyms: \"NURBS control point coordinates out of range\", \"NaN in B-spline surface poles\", \"huge coordinate values 1e100 in NURBS\", \"NURBS pole has impossible coordinates\", \"NaN propagation from B-spline control points\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -49642,7 +49642,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn013.stp",
     "id": "Gn013",
-    "notes": "**OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"convert elementary surface to B-spline\", \"convert NURBS to analytic primitive\", \"downstream needs uniform NURBS for every face\", \"exact algebraic conversion between cylinder and BSpline\", \"kernel must convert plane/cylinder to NURBS on demand\".",
+    "notes": "**OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (elementary<->BSpline conversion requirement): the model is one hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL that OCC's STEP transfer never builds into a TopoDS face. Base, a CLEAN copy with the injected C-1-break defect edge closed, and a fully well-formed copy (declared defect repaired, scaffold pcurve domains corrected) are all empty (f=0); a genuinely-building B-spline face fixture (Gn024) loads f=1. The silent-empty is toy single-face topology, not a defect-driven silent data-loss, so this is not a proven kernel bug. Synonyms: \"convert elementary surface to B-spline\", \"convert NURBS to analytic primitive\", \"downstream needs uniform NURBS for every face\", \"exact algebraic conversion between cylinder and BSpline\", \"kernel must convert plane/cylinder to NURBS on demand\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -49679,7 +49679,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn014.stp",
     "id": "Gn014",
-    "notes": "**See also**: Gs024, N030. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: \"BSpline surface should be canonical plane\", \"B-spline that is actually a cylinder/cone/sphere/torus\", \"canonical recognition needed on NURBS\", \"feature recognition cannot find axis on B-spline cylinder\", \"analytic primitive lost in NURBS form\".",
+    "notes": "**See also**: Gs024, N030. **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (canonical recognition (NURBS that is exactly a PLANE)): the model is one hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL that OCC's STEP transfer never builds into a TopoDS face. Base, a CLEAN copy with the injected C-1-break defect edge closed, and a fully well-formed copy (declared defect repaired, scaffold pcurve domains corrected) are all empty (f=0); a genuinely-building B-spline face fixture (Gn024) loads f=1. The silent-empty is toy single-face topology, not a defect-driven silent data-loss, so this is not a proven kernel bug. Synonyms: \"BSpline surface should be canonical plane\", \"B-spline that is actually a cylinder/cone/sphere/torus\", \"canonical recognition needed on NURBS\", \"feature recognition cannot find axis on B-spline cylinder\", \"analytic primitive lost in NURBS form\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -49700,7 +49700,6 @@
     ],
     "structural_assertions": [],
     "taxonomy": [
-      "silent-loss",
       "round-trip",
       "geometry"
     ],
@@ -49800,7 +49799,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn017.stp",
     "id": "Gn017",
-    "notes": "**OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"split B-spline surface at interior knots into Bezier patches\", \"convert NURBS to Bezier for legacy receiver\", \"Bezier conversion needed for downstream tool\", \"exact split at interior knots produces Bezier patches\", \"legacy receiver expects Bezier not arbitrary NURBS\".",
+    "notes": "**OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (split-at-interior-knots Bezier conversion): the model is one hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL that OCC's STEP transfer never builds into a TopoDS face. Base, a CLEAN copy with the injected C-1-break defect edge closed, and a fully well-formed copy (declared defect repaired, scaffold pcurve domains corrected) are all empty (f=0); a genuinely-building B-spline face fixture (Gn024) loads f=1. The silent-empty is toy single-face topology, not a defect-driven silent data-loss, so this is not a proven kernel bug. Synonyms: \"split B-spline surface at interior knots into Bezier patches\", \"convert NURBS to Bezier for legacy receiver\", \"Bezier conversion needed for downstream tool\", \"exact split at interior knots produces Bezier patches\", \"legacy receiver expects Bezier not arbitrary NURBS\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -50302,7 +50301,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2b-nurbs/Gn034.stp",
     "id": "Gn034",
-    "notes": "Same defect on surface knot vectors should be flagged identically. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: \"B-spline knots packed below parametric resolution\", \"consecutive knots differ by less than working epsilon\", \"near-equal knots produce NaN derivatives\", \"knot interval rounds to zero\", \"BSpline ill-conditioned at near-coincident knot pair\".",
+    "notes": "Same defect on surface knot vectors should be flagged identically. **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (knots packed below parametric resolution): the model is one hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL that OCC's STEP transfer never builds into a TopoDS face. Base, a CLEAN copy with the injected C-1-break defect edge closed, and a fully well-formed copy (declared defect repaired, scaffold pcurve domains corrected) are all empty (f=0); a genuinely-building B-spline face fixture (Gn024) loads f=1. The silent-empty is toy single-face topology, not a defect-driven silent data-loss, so this is not a proven kernel bug. Synonyms: \"B-spline knots packed below parametric resolution\", \"consecutive knots differ by less than working epsilon\", \"near-equal knots produce NaN derivatives\", \"knot interval rounds to zero\", \"BSpline ill-conditioned at near-coincident knot pair\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -50317,7 +50316,6 @@
     ],
     "structural_assertions": [],
     "taxonomy": [
-      "silent-loss",
       "geometry"
     ],
     "tier3_assertions": [
@@ -114118,7 +114116,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-8-mixed/Fi004.stp",
     "id": "Fi004",
-    "notes": "Synonyms: \"broken contour\", \"fillet input not chainable\", \"fillet contour invalid\", \"fillet edges don't connect\", \"fillet contour self-crosses\". **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either.",
+    "notes": "Synonyms: \"broken contour\", \"fillet input not chainable\", \"fillet contour invalid\", \"fillet edges don't connect\", \"fillet contour self-crosses\". **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (geometrically inconsistent fillet contour): the model root is a GEOMETRIC_CURVE_SET that wraps an ADVANCED_FACE, and OCC's geometric_set transfer does not build a face from a face embedded in a GEOMETRIC_CURVE_SET. Base, a CLEAN copy (edge loop repaired to a simple contour) and a HUGE copy are all empty, whereas the identical face placed in an OPEN_SHELL loads f=1. Container-level schema-abuse, not a defect-driven silent data-loss, so this is not a proven kernel bug.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -114133,7 +114131,7 @@
     ],
     "structural_assertions": [],
     "taxonomy": [
-      "silent-loss"
+      "topology"
     ],
     "tier3_assertions": [
       "shape_null == True"
@@ -114191,7 +114189,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-8-mixed/Fi006.stp",
     "id": "Fi006",
-    "notes": "Synonyms: \"fillet 4-edge corner unsupported\", \"fillet at high-valence corner fails\", \"four-way corner fillet not handled\", \"fillet termination vertex too many edges\". **See also**: Fi002. Distinct: Fi002 is about *walking-into*; Fi006 is about *terminating-at*. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.",
+    "notes": "Synonyms: \"fillet 4-edge corner unsupported\", \"fillet at high-valence corner fails\", \"four-way corner fillet not handled\", \"fillet termination vertex too many edges\". **See also**: Fi002. Distinct: Fi002 is about *walking-into*; Fi006 is about *terminating-at*. **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (fillet at a 4-edge corner): the model root is a GEOMETRIC_CURVE_SET that wraps an ADVANCED_FACE, and OCC's geometric_set transfer does not build a face from a face embedded in a GEOMETRIC_CURVE_SET. Base, a CLEAN copy (edge loop repaired to a simple contour) and a HUGE copy are all empty, whereas the identical face placed in an OPEN_SHELL loads f=1. Container-level schema-abuse, not a defect-driven silent data-loss, so this is not a proven kernel bug.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",

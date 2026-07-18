@@ -15,7 +15,6 @@
 <h1>Gn014 <span class="sep">—</span> <span class="entry-title">`B_SPLINE_SURFACE_WITH_KNOTS` that fits a `PLANE` / `CYLINDRICAL_SURFACE` / `CONICAL_SURFACE` / `SPHERICAL_SURFACE` / `TOROIDAL_SURFACE` (canonical recognition)</span></h1>
 <p class="category">§12.2b NURBS/knots</p>
 <p class="tag-pills">
-<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-round-trip" href="../by-tag/round-trip/index.html">round-trip</a>
 <a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
 </p>
@@ -37,7 +36,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>heal; fit candidate primitive within user-specified tolerance, replace surface; reject canonicalization if recovered surface deviates beyond tolerance (otherwise watertightness may be lost).</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Gs024, N030. **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog&#x27;s allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: &quot;BSpline surface should be canonical plane&quot;, &quot;B-spline that is actually a cylinder/cone/sphere/torus&quot;, &quot;canonical recognition needed on NURBS&quot;, &quot;feature recognition cannot find axis on B-spline cylinder&quot;, &quot;analytic primitive lost in NURBS form&quot;.</p></section>
+<p>**See also**: Gs024, N030. **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (canonical recognition (NURBS that is exactly a PLANE)): the model is one hand-authored ADVANCED_FACE (B-spline surface with per-edge SURFACE_CURVE/PCURVE) in an OPEN_SHELL that OCC&#x27;s STEP transfer never builds into a TopoDS face. Base, a CLEAN copy with the injected C-1-break defect edge closed, and a fully well-formed copy (declared defect repaired, scaffold pcurve domains corrected) are all empty (f=0); a genuinely-building B-spline face fixture (Gn024) loads f=1. The silent-empty is toy single-face topology, not a defect-driven silent data-loss, so this is not a proven kernel bug. Synonyms: &quot;BSpline surface should be canonical plane&quot;, &quot;B-spline that is actually a cylinder/cone/sphere/torus&quot;, &quot;canonical recognition needed on NURBS&quot;, &quot;feature recognition cannot find axis on B-spline cylinder&quot;, &quot;analytic primitive lost in NURBS form&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
@@ -47,7 +46,7 @@
 <li><code>shape_null == True</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
-<p><a href="../12-2c-surfaces/Gs024.html">Gs024</a>, <a href="../12-4-tolerance/N030.html">N030</a></p>
+<p><a href="../12-2c-surfaces/Gs024.html">Gs024</a>, <a href="../12-4-tolerance/N030.html">N030</a>, <a href="Gn024.html">Gn024</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
