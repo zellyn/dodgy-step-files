@@ -7113,6 +7113,7 @@ End of file. Total: 38 entries (A001.A038).
 ### P-prefix entries (original FreeCAD-derived findings)
 
 ### P001 — Schema variant: CONFIG_CONTROL_DESIGN with no PRODUCT entity
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle test — base loads shape(1) = a 1-vertex compound stub (valid=True); the missing-PRODUCT / CONFIG_CONTROL_DESIGN schema-variant condition is non-geometric metadata that leaves no oracle trace, so shape(1) is oracle-invisible and does not witness a kernel bug.
 - **Category**: §12.1 file-format/schema-variant
 - **Source**: FreeCAD #15685
 - **Sender**: re-export from unspecified application (original was AUTOMOTIVE_DESIGN)
@@ -7125,13 +7126,14 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: count_entity_def(b'PRODUCT') == 0
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) — a 1-vertex compound stub (v1 c1), valid=True (BRepCheck), identical heal_on/heal_off. The missing-PRODUCT / CONFIG_CONTROL_DESIGN schema-variant condition leaves no trace in the built shape, so shape(1) is oracle-invisible (shape_counts): byte-verifiable but not demonstrable by the load-time shape-count/validity oracles. Not a proven kernel bug; no reject/heal is provably owed on the built shape.
 - **Severity**: P1
 - **Model impact**: Defect causes the loader to either abort, silently drop the affected entity, or accept it with corrupted attributes; downstream operations on the affected sub-shape produce results inconsistent with the producer's intent.
 - **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### P002 — Non-UTF-8 (GB18030 / locale code page) in string literals
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle test — base loads shape(1) = a 1-vertex compound stub (valid=True); the non-UTF-8 / code-page encoding of name-string literals is non-geometric metadata that leaves no oracle trace, so shape(1) is oracle-invisible and does not witness a kernel bug.
 - **Category**: §12.1 encoding
 - **Source**: FreeCAD #7987, #22123
 - **Sender**: SolidWorks (Chinese-locale install) and any non-Western Windows export
@@ -7142,7 +7144,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'\\X2\\') or matches(rb"[\x80-\xff]")
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads shape(1) — a 1-vertex compound stub (v1 c1), valid=True (BRepCheck), identical heal_on/heal_off. The non-UTF-8 / code-page encoding of name-string literals leaves no trace in the built shape, so shape(1) is oracle-invisible (shape_counts): byte-verifiable but not demonstrable by the load-time shape-count/validity oracles. Not a proven kernel bug; no reject/heal is provably owed on the built shape.
 - **Severity**: P1
 - **Model impact**: Defect causes the loader to either abort, silently drop the affected entity, or accept it with corrupted attributes; downstream operations on the affected sub-shape produce results inconsistent with the producer's intent.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -7195,6 +7197,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
 
 ### P006 — 360° revolution of arc-of-ellipse produces self-intersecting solid
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle test — base loads shape(1) = a lone ELLIPSE edge (v2 e1, valid=True); the SURFACE_OF_REVOLUTION lives in a GEOMETRIC_CURVE_SET and never builds into a solid, so the seam self-intersection is oracle-invisible and does not witness a kernel bug.
 - **Category**: §12.2 geometric (parametric curve at seam)
 - **Source**: FreeCAD #14447
 - **Sender**: FreeCAD (Part Revolve)
@@ -7208,7 +7211,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_edges_total == 1
 - **Tier-3 assertion**: n_vertices_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (loads a non-null shape, `shape_null == False`); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture (correct the self-intersecting/mirrored surface near the seam) rather than silently accept it.
+- **OCC behavior**: accepts and loads shape(1) — a single ELLIPSE edge (v2 e1), valid=True. The SURFACE_OF_REVOLUTION sits inside a GEOMETRIC_CURVE_SET, so OCC never builds the revolved solid and the claimed seam self-intersection never manifests. shape(1) is oracle-invisible (shape_counts) for the defect: byte-verifiable but not demonstrable by the load-time oracles. Not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The revolved ellipse's seam-adjacent self-intersection/mirroring is silently accepted; downstream operations on the affected sub-shape produce results inconsistent with the producer's intent.
 - **Tier-3 assertion**: edge[0].curve_type == "ellipse"
@@ -7232,6 +7235,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### P008 — Long helix represented as huge B-spline causes catastrophic import time
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle test — base loads shape(1) = one B-spline edge (v2 e1, valid=True, loads instantly); catastrophic import time is a performance claim not observable through shape-count/validity oracles, so shape(1) is oracle-invisible and does not witness a kernel bug.
 - **Category**: §12.10 scale/performance
 - **Source**: FreeCAD #18735, #18151
 - **Sender**: SolidWorks (`EixoY.STEP`); thread-profile tools
@@ -7243,7 +7247,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_edges_total == 1
 - **Tier-3 assertion**: n_vertices_total == 2
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads shape(1) — a single B-spline edge (v2 e1), valid=True. The curve sits in a GEOMETRIC_CURVE_SET and loads instantly as one edge; the claimed catastrophic-import-time / quadratic-scaling behaviour is a performance property the load-time shape-count/validity oracles cannot observe. shape(1) is oracle-invisible for the defect; not a proven kernel bug.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
@@ -7298,6 +7302,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### P012 — STEP-XML (`.stpx`) and compressed (`.stpz`) variants unsupported
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle test — base loads shape(1) = a 1-vertex compound stub (valid=True); the .stpx/.stpz file-format-variant wrapper is non-geometric metadata that leaves no oracle trace, so shape(1) is oracle-invisible and does not witness a kernel bug.
 - **Category**: §12.1 file-format
 - **Source**: FreeCAD #12678 (.stpx), #8218 (.stpZ)
 - **Sender**: PTC Creo, Siemens NX (.stpx); compression is generic
@@ -7309,7 +7314,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'DOCUMENT_FILE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) — a 1-vertex compound stub (v1 c1), valid=True (BRepCheck), identical heal_on/heal_off. The .stpx/.stpz file-format-variant wrapper leaves no trace in the built shape, so shape(1) is oracle-invisible (shape_counts): byte-verifiable but not demonstrable by the load-time shape-count/validity oracles. Not a proven kernel bug; no reject/heal is provably owed on the built shape.
 - **Severity**: P1
 - **Model impact**: Defect causes the loader to either abort, silently drop the affected entity, or accept it with corrupted attributes; downstream operations on the affected sub-shape produce results inconsistent with the producer's intent.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -7363,13 +7368,14 @@ End of file. Total: 38 entries (A001.A038).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### P016 — Pre-Boolean operands shipped alongside result solid
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle test — base loads shape(1) = a 1-vertex compound stub (valid=True); the extra pre-Boolean operand solids / assembly scaffolding is non-geometric metadata that leaves no oracle trace, so shape(1) is oracle-invisible and does not witness a kernel bug.
 - **Category**: §12.6 assembly / topology
 - **Source**: FreeCAD #8476
 - **Sender**: FreeCAD with OpenSCAD workbench
 - **Description**: An OpenSCAD-produced model with `difference(){ outer; inner; }` exports STEP containing the difference result PLUS the original argument cylinders as separate solids. On re-import the user sees the union of the operands instead of the hollow.
 - **Reproducer recipe**: STEP file with multiple `MANIFOLD_SOLID_BREP` instances representing pre-Boolean operands, no indication that they were CSG inputs.
 - **Expected kernel behavior**: Producers should emit only final result solid; receivers can't fix this without provenance hints.
-- **OCC behavior**: silently accepts with diagnostic and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) — a 1-vertex compound stub (v1 c1), valid=True (BRepCheck), identical heal_on/heal_off. The extra pre-Boolean operand solids / assembly scaffolding leaves no trace in the built shape, so shape(1) is oracle-invisible (shape_counts): byte-verifiable but not demonstrable by the load-time shape-count/validity oracles. Not a proven kernel bug; no reject/heal is provably owed on the built shape.
 - **Severity**: P1
 - **Notes**: Synonyms: "pre-Boolean operands left in file alongside result", "duplicate solids: original plus boolean output", "writer ships both inputs and output of cut/union", "extra geometry left over from history".
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') == 3
@@ -7396,13 +7402,14 @@ End of file. Total: 38 entries (A001.A038).
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### P018 — Improper rotation (negative determinant) in `AXIS2_PLACEMENT_3D`
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle test — base loads shape(1) = a 1-vertex compound stub (valid=True); the improper-rotation (negative-determinant) placement matrix is non-geometric metadata that leaves no oracle trace, so shape(1) is oracle-invisible and does not witness a kernel bug.
 - **Category**: §12.2 geometric / placement transform
 - **Source**: FreeCAD #29209
 - **Sender**: FreeCAD (Link with -1 scale)
 - **Description**: A `MAPPED_ITEM` whose `transformation_operator` `AXIS2_PLACEMENT_3D` encodes a left-handed coordinate system (improper rotation, det = -1) doesn't round-trip; receiver loses the reflection.
 - **Reproducer recipe**: STEP `MAPPED_ITEM` with `AXIS2_PLACEMENT_3D` direction vectors that form a left-handed frame.
 - **Expected kernel behavior**: Reader handles non-orthonormal-but-orthogonal placements explicitly, or rejects with clear error.
-- **OCC behavior**: silently accepts with diagnostic and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) — a 1-vertex compound stub (v1 c1), valid=True (BRepCheck), identical heal_on/heal_off. The improper-rotation (negative-determinant) placement matrix leaves no trace in the built shape, so shape(1) is oracle-invisible (shape_counts): byte-verifiable but not demonstrable by the load-time shape-count/validity oracles. Not a proven kernel bug; no reject/heal is provably owed on the built shape.
 - **Severity**: P1
 - **Notes**: Synonyms: "AXIS2_PLACEMENT_3D has negative determinant", "improper rotation in placement matrix", "left-handed frame in axis placement", "mirror transform encoded as rotation".
 - **Byte assertion**: contains(b'MAPPED_ITEM')
@@ -7480,6 +7487,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 
 ### P024 — Flattened sub-assembly hierarchy after merge
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle test — base loads shape(1) = a 1-vertex compound stub (valid=True); the flattened sub-assembly NAUO hierarchy is non-geometric metadata that leaves no oracle trace, so shape(1) is oracle-invisible and does not witness a kernel bug.
 - **Category**: §12.6 assembly
 - **Source**: FreeCAD #11441
 - **Sender**: pcb-3d.com (KiCad-adjacent component library) re-exported through FreeCAD
@@ -7491,12 +7499,13 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: count_entity_def(b'MAPPED_ITEM') == 2
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads shape(1) — a 1-vertex compound stub (v1 c1), valid=True (BRepCheck), identical heal_on/heal_off. The flattened sub-assembly NAUO hierarchy leaves no trace in the built shape, so shape(1) is oracle-invisible (shape_counts): byte-verifiable but not demonstrable by the load-time shape-count/validity oracles. Not a proven kernel bug; no reject/heal is provably owed on the built shape.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### P025 — Body name overwritten by last-operation label on export
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle test — base loads shape(1) = a 1-vertex compound stub (valid=True); the body-name-vs-feature-label metadata is non-geometric metadata that leaves no oracle trace, so shape(1) is oracle-invisible and does not witness a kernel bug.
 - **Category**: §12.6 assembly metadata
 - **Source**: FreeCAD #24962
 - **Sender**: FreeCAD itself (regression late 2025)
@@ -7508,7 +7517,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads shape(1) — a 1-vertex compound stub (v1 c1), valid=True (BRepCheck), identical heal_on/heal_off. The body-name-vs-feature-label metadata leaves no trace in the built shape, so shape(1) is oracle-invisible (shape_counts): byte-verifiable but not demonstrable by the load-time shape-count/validity oracles. Not a proven kernel bug; no reject/heal is provably owed on the built shape.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -19198,13 +19207,14 @@ _Section summary: 41 entries._
 - **Fixture path**: step-examples/12-3a-shells/Bo025.stp
 
 ### Bo027 — Per-vertex normals supplied for a triangulated face are inconsistent across smooth edges
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle test: base/clean(matching normals)/huge(wild normals) all load shape(1) = an empty OPEN_SHELL (v0 f0 sh1, valid=False, invariant); OCC never lifts the COMPLEX_TRIANGULATED_FACEs into BRep faces, so per-node normal inconsistency is oracle-invisible and the invalid empty shell does not witness the declared normals defect.
 - **Category**: §12.3a (sub-class: triangulation normals)
 - **Sources**: OCCT BRepLib::EnsureNormalConsistency (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
 - **Description**: A triangulated face (AP242 ed.2 `TRIANGULATED_FACE`) declares per-node normals, and at a smooth-edge node shared with the neighbour face, the two face's per-node normals point in noticeably different directions. Bug-reporter language: "vertex normals don't match across edge", "normal inconsistency", "lighting seam in tessellation".
 - **Reproducer recipe**: Two adjacent `TRIANGULATED_FACE`s sharing a node `#N`; face A reports normal (0,0,1) at that node, face B reports (0.7,0,0.7).
 - **Expected kernel behavior**: Average normals across smooth edges, or recompute from surface gradients.
-- **Notes**: Shows up as visible shading seams in renderers. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "vertex normals don't match across edge", "normal inconsistency", "lighting seam in tessellation", "per-vertex normal mismatch on shared node", "triangulation has shading discontinuity".
+- **Notes**: Shows up as visible shading seams in renderers. **OCC behavior**: accepts and loads shape(1) — an empty OPEN_SHELL (v0 f0 sh1), valid=False, identically for base, clean (faceB normals set to (0,0,1)) and huge (wild normals): OCC never builds the COMPLEX_TRIANGULATED_FACEs into BRep faces, so the per-node normal inconsistency is oracle-invisible (shape_counts) and the empty invalid shell is unrelated to the normals claim; not a proven kernel bug for the declared defect. Synonyms: "vertex normals don't match across edge", "normal inconsistency", "lighting seam in tessellation", "per-vertex normal mismatch on shared node", "triangulation has shading discontinuity".
 - **Byte assertion**: contains(b'COMPLEX_TRIANGULATED_FACE')
 - **Byte assertion**: contains(b'COORDINATES_LIST')
 - **Byte assertion**: declared_schema == b'AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'
@@ -23944,6 +23954,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Wr020 — Re-export drops feature labels and product names
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle test — base loads shape(1) = one valid planar face (valid=True); the dropped feature-label / product-name strings is non-geometric round-trip metadata that leaves no oracle trace, so shape(1) is oracle-invisible and does not witness a kernel bug.
 - **Category**: §12.13 writer-pathology (sub-class: round-trip data loss)
 - **Sources**: OCCT name-round-trip tests; CAx-IF round-trip notes; bug-reporter language: "feature names disappeared"
 - **Sender**: Writers without a label/name propagation layer
@@ -23954,7 +23965,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: contains(b"PRODUCT('BREP_")
 - **Byte assertion**: count(b"BREP_001") >= 1 or contains(b'BREP_')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) — one valid planar face (v8 e4 f1 sh1), valid=True (BRepCheck). The dropped feature-label / product-name strings is round-trip metadata with no geometric footprint, so shape(1) is oracle-invisible (shape_counts): byte-verifiable but not demonstrable by the load-time shape-count/validity oracles. Not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Feature labels and product names load as empty strings; geometry is intact but human-readable identifiers on every entity are gone.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -23975,6 +23986,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Wr022 — Saved-view / camera metadata lost on re-export
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle test — base loads shape(1) = one valid planar face (valid=True); the dropped saved-view / camera metadata is non-geometric round-trip metadata that leaves no oracle trace, so shape(1) is oracle-invisible and does not witness a kernel bug.
 - **Category**: §12.13 writer-pathology (sub-class: round-trip data loss)
 - **Sources**: prostep ivip "saved views in AP242"; bug-reporter language: "lost saved views"
 - **Sender**: Writers without a `CAMERA_MODEL_D3` / `PRESENTATION_VIEW` handling layer
@@ -23984,7 +23996,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: AP242-specific; AP203 has no saved-view representation. Bytes alone are insufficient to demonstrate this defect;. Tagged provenance_tier: writer-side.
 - **Byte assertion**: count_entity_def(b'CAMERA_MODEL_D3') == 0 and count_entity_def(b'PRESENTATION_VIEW') == 0
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) — one valid planar face (v8 e4 f1 sh1), valid=True (BRepCheck). The dropped saved-view / camera metadata is round-trip metadata with no geometric footprint, so shape(1) is oracle-invisible (shape_counts): byte-verifiable but not demonstrable by the load-time shape-count/validity oracles. Not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Saved-view/camera entities are absent; the loaded model has no preferred view associations, so PMI that depended on a view orientation displays at default.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -24005,6 +24017,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Wr024 — NAUO assembly-tree flattened on re-export
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle test — base loads shape(1) = one valid planar face (valid=True); the flattened NAUO assembly-tree depth is non-geometric round-trip metadata that leaves no oracle trace, so shape(1) is oracle-invisible and does not witness a kernel bug.
 - **Category**: §12.13 writer-pathology (sub-class: round-trip data loss)
 - **Sources**: OCCT MANTIS#0028xxx assembly round-trip; bug-reporter language: "assembly became one part", "STEP lost subassembly structure" (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Sender**: Writers whose internal assembly model is flat (one-level), forced to flatten multi-level assembly trees on export
@@ -24015,12 +24028,13 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: count(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') >= 4
 - **Byte assertion**: count_entity_def(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE') >= 4
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) — one valid planar face (v8 e4 f1 sh1), valid=True (BRepCheck). The flattened NAUO assembly-tree depth is round-trip metadata with no geometric footprint, so shape(1) is oracle-invisible (shape_counts): byte-verifiable but not demonstrable by the load-time shape-count/validity oracles. Not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The NAUO assembly tree flattens; multi-level parent/child links collapse into a single tier; sub-components that should have appeared at depth load at the assembly root.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Wr025 — NAUO chain re-rooted incorrectly (component becomes top)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle test — base loads shape(1) = one valid planar face (valid=True); the re-rooted NAUO assembly chain is non-geometric round-trip metadata that leaves no oracle trace, so shape(1) is oracle-invisible and does not witness a kernel bug.
 - **Category**: §12.13 writer-pathology (sub-class: round-trip data loss)
 - **Sources**: OCCT bug forum "STEP re-export changed the assembly root"; bug-reporter language: "wrong part is now top-level"
 - **Sender**: Writers whose internal assembly representation does not distinguish "top product" from "subcomponent" and emit the first-encountered product as top
@@ -24031,7 +24045,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: contains(b'screw->plate')
 - **Byte assertion**: contains(b"'screw") or contains(b"'plate")
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) — one valid planar face (v8 e4 f1 sh1), valid=True (BRepCheck). The re-rooted NAUO assembly chain is round-trip metadata with no geometric footprint, so shape(1) is oracle-invisible (shape_counts): byte-verifiable but not demonstrable by the load-time shape-count/validity oracles. Not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: The assembly graph re-roots so a former component becomes the top product; sub-components attach to the wrong parent and the loaded assembly tree differs structurally from the producer's intent.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -24128,6 +24142,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Wr032 — Schema upgrade on export (AP203 input emitted as AP242 with synthesised stubs)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle test — base loads shape(1) = one valid planar face (valid=True); the synthesised empty AP242 PMI stub containers is non-geometric round-trip metadata that leaves no oracle trace, so shape(1) is oracle-invisible and does not witness a kernel bug.
 - **Category**: §12.13 writer-pathology (sub-class: schema downgrade / upgrade)
 - **Sources**: CAx-IF "AP203→AP242 promotion"; bug-reporter language: "synthesized PMI is empty"
 - **Sender**: Writers that always emit the highest-supported schema and synthesise empty PMI / metadata stubs to satisfy schema requirements
@@ -24137,7 +24152,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Notes**: Inverse of Wr031. Provenance tier: writer-side (Q5 reclassification 2026-07-01).
 - **Byte assertion**: contains(b'AP242') and (count_entity_def(b'GEOMETRIC_TOLERANCE_RELATIONSHIP') >= 1 or contains(b"GEOMETRIC_TOLERANCE_RELATIONSHIP('','',$,$)"))
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads shape(1) — one valid planar face (v8 e4 f1 sh1), valid=True (BRepCheck). The synthesised empty AP242 PMI stub containers is round-trip metadata with no geometric footprint, so shape(1) is oracle-invisible (shape_counts): byte-verifiable but not demonstrable by the load-time shape-count/validity oracles. Not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Synthesized AP242 stubs for AP203 input load as empty PMI/kinematics entities; the loaded model has placeholder structure with no actual annotation data.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -24189,6 +24204,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Wr036 — Re-export inverts solid orientation (inside becomes outside)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle test — base (.F.) and clean (.T.) both load shape(1) = one valid planar face with identical counts (v8 e4 f1) and valid=True; the same_sense orientation flag on a lone sheet face leaves no oracle trace (no solid to invert), so shape(1) is oracle-invisible and does not witness a kernel bug.
 - **Category**: §12.13 writer-pathology (sub-class: round-trip data loss)
 - **Sources**: OCCT MANTIS#0028xxx; bug-reporter language: "STEP solid is inside-out after re-export", "normals flipped" (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: The input had a `MANIFOLD_SOLID_BREP` whose face normals point outward (kernel convention: solid material is on the negative side of the face normals, exterior is positive). The re-emitted file has all face normals reversed: the solid is topologically intact but represents an infinite material region with a single hole (the original solid's volume). Bug-reporter language: "STEP solid inside out", "normals flipped on re-export", "solid is inverted".
@@ -24199,7 +24215,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: matches(rb'ADVANCED_FACE\([^;]*\.F\.\)')
 - **Byte assertion**: count(b'.F.') >= 1
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) — one valid planar sheet face (v8 e4 f1 sh1), valid=True. Perturbation test: flipping the ADVANCED_FACE same_sense from .F. to .T. gives byte-identical shape-counts (v8 e4 f1) and valid=True — the orientation flag on a single sheet face (no solid is present) is oracle-invisible in shape-counts and BRepCheck validity. Not a proven kernel bug.
 - **Severity**: P2
 - **Model impact**: Solid orientation flips on re-export; loaded shells have inward-facing normals where outward was intended, and downstream booleans/rendering treat the inside as the outside.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -24253,6 +24269,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Wr040 — Empty `name` strings on every entity (writer pre-fills `''` instead of omitting)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle test — base loads shape(1) = one valid planar face (valid=True); the blanket empty-'' name strings is non-geometric round-trip metadata that leaves no oracle trace, so shape(1) is oracle-invisible and does not witness a kernel bug.
 - **Category**: §12.13 writer-pathology (sub-class: header / vendor metadata)
 - **Sources**: OCCT name-round-trip tests; bug-reporter language: "every entity name is empty"
 - **Sender**: Writers that always populate the `name` attribute (mandatory in EXPRESS) with `''` rather than carrying through the original `name` if any
@@ -24265,7 +24282,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Byte assertion**: count(b"=DIRECTION('',") >= 1
 - **Byte assertion**: count(b"=CARTESIAN_POINT('',") + count(b"=DIRECTION('',") + count(b"=PLANE('',") >= 3
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) — one valid planar face (v8 e4 f1 sh1), valid=True (BRepCheck). The blanket empty-'' name strings is round-trip metadata with no geometric footprint, so shape(1) is oracle-invisible (shape_counts): byte-verifiable but not demonstrable by the load-time shape-count/validity oracles. Not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Every entity loads with empty `name` attribute; geometry is intact but human-readable names that the producer left implicit are now explicitly empty strings.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`

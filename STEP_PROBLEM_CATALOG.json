@@ -63226,7 +63226,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Bo027.stp",
     "id": "Bo027",
-    "notes": "Shows up as visible shading seams in renderers. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: \"vertex normals don't match across edge\", \"normal inconsistency\", \"lighting seam in tessellation\", \"per-vertex normal mismatch on shared node\", \"triangulation has shading discontinuity\".",
+    "notes": "Shows up as visible shading seams in renderers. **OCC behavior**: accepts and loads shape(1) — an empty OPEN_SHELL (v0 f0 sh1), valid=False, identically for base, clean (faceB normals set to (0,0,1)) and huge (wild normals): OCC never builds the COMPLEX_TRIANGULATED_FACEs into BRep faces, so the per-node normal inconsistency is oracle-invisible (shape_counts) and the empty invalid shell is unrelated to the normals claim; not a proven kernel bug for the declared defect. Synonyms: \"vertex normals don't match across edge\", \"normal inconsistency\", \"lighting seam in tessellation\", \"per-vertex normal mismatch on shared node\", \"triangulation has shading discontinuity\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
