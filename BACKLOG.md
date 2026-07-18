@@ -22,6 +22,33 @@ Conventions:
   a quality concern. The only requirement: if we defer expansion work, log the
   deferred items here so they aren't forgotten. (User invariant 2026-06-19.)
 
+## Fidelity — "Kernel-bug witnessed" boilerplate audit (2026-07-18)
+
+**Finding.** 859 catalog entries (~26% of the corpus) carry a hand-written `- **OCC behavior**: … outside
+catalog's allowed set ({heal|reject|warn-and-proceed}). Kernel-bug witnessed: receivers … must {…} this
+fixture.` line. This prose is NOT machine-generated (nothing in `validation/src/` emits it) and NOT synced
+to the machine-verified `Expected validation` line — so it drifts. Two problem classes:
+
+- **(A) OBJECTIVE — 89 fixtures: the OCC-behavior prose CONTRADICTS the fixture's own Expected line**
+  (the Expected line is CI-DRIFT-checked = current truth, so the prose is provably stale/wrong):
+  - 56× prose says "empty result / must reject" but machine `occt=shape(1)` (OCC actually loads a shape) — e.g. Gp002/005/007/008/011-031, Gn012/015/016/020/024, Gs002…
+  - 17× prose says "empty" but machine `occt=signal(11)` (OCC actually CRASHES — prose understates)
+  - 11× prose says "crash/signal" but machine `occt=shape(1)` (OCC loads cleanly — prose OVERCLAIMS a crash)
+  - 3× prose "empty" vs machine `reject`; 2× prose "shape" vs machine `empty`
+  → FIX: correct each OCC-behavior line to match the machine token (careful, per-class: crash-vs-shape
+  overclaims may indicate a fixture that no longer demonstrates and needs live re-check, not just a prose swap).
+  Detector: `scratchpad` python comparing OCC-behavior prose keyword vs Expected occt token.
+- **(B) SOUNDNESS (maintainer judgment) — 358 fixtures: `occt=shape(1)` ("OCC loaded a valid shape")
+  labelled a kernel bug against `{heal}`/`{reject}` (allowed set excludes accept/warn).** The concern
+  (from the Gp193 finding that OCC unconditionally recomputes pcurves = it *heals*): "loaded shape(1)" may
+  be OCC doing the ALLOWED behavior (heal), which the shape-count oracle cannot distinguish from
+  silent-accept — so calling it a "bug witnessed" may overclaim. None carry an oracle-invisibility
+  disclosure. Spread across A(54) Tsh(42) Gs(41) M(38) Pmi(34) Gp(29) Xp(25) Pf(19) Ad(16)… Needs a
+  maintainer decision on the verdict philosophy (is "OCC loaded shape(1) when the defect needed heal/reject,
+  and heal-vs-accept is indistinguishable" a witnessed bug or an overclaim?) before a bulk remediation.
+
+**Status:** (A)'s 89-fixture prose-correction batch delegated 2026-07-18. (B) awaits maintainer philosophy call.
+
 ## Fidelity — orphaned-defect-carrier fixes (IN PROGRESS 2026-07-17)
 
 Five fixtures were confirmed (2026-07-06 audit, [[feedback_orphaned_defect_carrier]]) to carry their
