@@ -53,8 +53,8 @@ flag trivial-reachable-shape + unreachable-rich-geometry) over 2682 .stp → 31 
 scrubbed from the resolved 5), all oracle-confirmed 1-vertex stubs with the defect geometry physically
 unreachable. Fix each like the resolved 5 (honest disclosure + `**Status**: honest reclassification` line +
 scrub "must heal" prose + correct any stale builder comment):
-- [ ] **P017** — free wires (EDGE_CURVE×3) dropped; **WIRE-ABLE to genuine demo** (wires→n_edges>0, like Gn002). Highest value.
-- [ ] **P027** — degenerate hole-loop pcurves (PCURVE/SURFACE_CURVE/B_SPLINE_SURFACE); **WIRE-ABLE** (face load/throw). High value.
+- [x] **P017** — DONE 2026-07-18 (09da0f9c): WIRED to a genuine demo. Loose EDGE_CURVE wires made reachable in the GEOMETRIC_CURVE_SET → OCC silently drops them (ISO 10303-42: curve-set members must be geometric, not topological) → `occt=empty`; control with the same wires as TRIMMED_CURVE geometry → 3 edges + 6 vertices. Mutation-visible.
+- [x] **P027** — DONE 2026-07-18 (09da0f9c): RECLASSIFIED (not wire-able after all). Live-tested wiring into a real ADVANCED_FACE hole loop → OCC recomputes the pcurve from 3D (Gp193 mechanism) → byte-identical to a valid control → oracle-invisible. Honest Status line added.
 - [ ] **Pf002/003/006/007/009/014/021/023/024/025** (§12.10-perf) — RECLASSIFY: perf/scale-dependent pathologies (huge-B-spline, quadratic-cost, stack-overflow, near-apex crash, VERTEX_LOOP loop) invisible to shape_counts even if wired. Pf006/023/024 already carry a partial disclaimer (lowest priority).
 - [ ] **P026** (§12.6) — coords pre-scaled ×1000; RECLASSIFY (scale invisible to shape_counts even wired).
 - [ ] **Tier B — P019 (transparency STYLED_ITEM) + Pmi014/015/031/054/068** — RECLASSIFY: defect is a non-geometry PMI/presentation property, oracle-invisible by nature (overlaps Q5 oracle-invisible-PMI backlog).
