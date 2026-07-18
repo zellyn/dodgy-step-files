@@ -30,8 +30,13 @@ f = StepFile(
         "hole-loop pcurve maps outside the surface's natural domain; "
         "STEP writer dereferences null on face-emission pass and crashes; "
         "reader must reject malformed pcurves with clear message; "
-        "B_SPLINE_SURFACE + PCURVE + SURFACE_CURVE are the defect entities; "
-        "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty"
+        "B_SPLINE_SURFACE + PCURVE + SURFACE_CURVE are the defect entities. "
+        "The degenerate hole-loop pcurve sits unreachable from the shape-rep root, "
+        "so OCC loads a 1-vertex stub (shape(1)); and even when the pcurve is wired "
+        "into a real ADVANCED_FACE hole loop, OCC recomputes every pcurve from the "
+        "3D curve during transfer (per Gp193), so the zero-length pcurve domain is "
+        "absorbed and the face rebuilds byte-identically to a valid-pcurve control — "
+        "the defect is oracle-invisible (shape_counts), not a load-time demonstration"
     ),
     schema="AP242",
 )

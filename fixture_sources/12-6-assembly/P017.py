@@ -4,10 +4,22 @@ Catalog claim: STEP file with a top-level COMPOUND mixing solids and free
 EDGE_CURVE / WIRE items at the same level. With importer's "compound merge"
 preference OFF, loose edges are dropped silently.
 
-The defect: a SHAPE_REPRESENTATION containing both a solid-like entity and
-free-standing EDGE_CURVE / VERTEX_POINT items at the same level. Compliant
-importers must preserve free wires in the top-level COMPOUND; silent drop
-is the bug.
+The defect: three free wires are represented as loose *topological* EDGE_CURVE
+items (with their VERTEX_POINTs) and wired as members of the GEOMETRIC_CURVE_SET
+that IS the shape-representation item (reachable from the SHAPE root). Per
+ISO 10303-42 a GEOMETRIC_CURVE_SET's members are geometric point|curve|surface
+selects, NOT topological EDGE_CURVE; OCCT's STEP transfer walks the reachable
+set, cannot make geometry from the loose edge topology, and silently drops the
+whole set — producing an EMPTY shape (accept_silent, shape_null). A well-formed
+control that carries the same three wires as bounded geometric curves
+(TRIMMED_CURVE of the same LINE) is preserved: OCCT builds 3 edges + 6 vertices.
+The empty result is therefore caused by the loose-wire defect, not the
+construction — a genuine, oracle-distinguishable demonstration of free wires
+being silently dropped.
+
+Verified live (OCCT 7.8.1, 2026-07-18):
+  defect  occt_heal_on/off = empty (accept_silent, shape_null); gmsh = empty
+  control (same wires as TRIMMED_CURVE) = occt shape(6 vertex,3 edge); gmsh 9
 
 Byte assertions:
   count_entity_def(b'EDGE_CURVE') >= 2
@@ -17,72 +29,52 @@ Tier-3 assertion: shape_null == True
 
 Expected: occt=empty/empty gmsh=empty ifc=schema_n/a
 """
+import math
+
 from step_corpus.step_builder import StepFile
 
 f = StepFile(
     catalog_id="P017",
     defect=(
-        "SHAPE_REPRESENTATION at top-level mixes free-standing EDGE_CURVE + "
-        "VERTEX_POINT wire entities alongside a geometric body; "
-        "importers with 'compound merge' ON silently drop the free wires; "
-        "compliant receiver must preserve all wire items in top-level COMPOUND; "
-        "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty"
+        "three free wires represented as loose topological EDGE_CURVE + "
+        "VERTEX_POINT items are wired as members of the GEOMETRIC_CURVE_SET "
+        "that IS the shape-representation item (reachable from the SHAPE root); "
+        "GEOMETRIC_CURVE_SET members must be geometric point/curve/surface, not "
+        "topological EDGE_CURVE, so OCCT's transfer silently drops the loose "
+        "wires and yields an empty shape; a control carrying the same wires as "
+        "bounded TRIMMED_CURVE geometry is preserved (3 edges + 6 vertices) — "
+        "compliant receivers must preserve free wires in the top-level COMPOUND"
     ),
     schema="AP242",
 )
 
-# ── Minimal geometry payload so shape is empty ────────────────────────────────
-origin_pt = f.cartesian_point((0.0, 0.0, 0.0))
-gcs = f._emit_raw(f"GEOMETRIC_CURVE_SET('',(#{origin_pt.eid}))")
+# ── The defect: three free wires as loose EDGE_CURVE topology ─────────────────
+# Each wire = CARTESIAN_POINT x2 -> VERTEX_POINT x2 -> LINE -> EDGE_CURVE.
+WIRES = [
+    ((0.0, 0.0, 0.0), (5.0, 0.0, 0.0)),  # wire 1
+    ((0.0, 1.0, 0.0), (3.0, 1.0, 0.0)),  # wire 2
+    ((1.0, 0.0, 0.0), (4.0, 3.0, 0.0)),  # wire 3 (diagonal)
+]
+
+edge_refs = []
+for idx, (a, b) in enumerate(WIRES, start=1):
+    pa = f.cartesian_point(a, name=f"wire{idx}_p0")
+    pb = f.cartesian_point(b, name=f"wire{idx}_p1")
+    va = f.vertex_point(pa, name=f"wire{idx}_v0")
+    vb = f.vertex_point(pb, name=f"wire{idx}_v1")
+    dx, dy, dz = (b[0] - a[0], b[1] - a[1], b[2] - a[2])
+    length = math.sqrt(dx * dx + dy * dy + dz * dz)
+    d = f.direction((dx / length, dy / length, dz / length), name=f"wire{idx}_dir")
+    vec = f.vector(d, length)
+    line = f.line(pa, vec, name=f"wire{idx}_line")
+    edge = f.edge_curve(va, vb, line, True, name=f"wire{idx}_edge")
+    edge_refs.append(edge)
+
+# GEOMETRIC_CURVE_SET holding the loose EDGE_CURVE wires, made the shape-rep
+# item so the defect carriers are REACHABLE from the SHAPE root (the wiring fix).
+refs = ",".join(f"#{e.eid}" for e in edge_refs)
+gcs = f._emit_raw(f"GEOMETRIC_CURVE_SET('free_wires',({refs}))")
 f.add_product_chain(gcs)
-
-# ── Free-standing VERTEX_POINT + EDGE_CURVE entities (the defect) ─────────────
-# Wire 1: a free edge from (0,0,0) to (5,0,0).
-w1_p0 = f._emit_raw("CARTESIAN_POINT('wire1_p0',(0.0,0.0,0.0))")
-w1_p1 = f._emit_raw("CARTESIAN_POINT('wire1_p1',(5.0,0.0,0.0))")
-w1_v0 = f._emit_raw(f"VERTEX_POINT('wire1_v0',#{w1_p0.eid})")
-w1_v1 = f._emit_raw(f"VERTEX_POINT('wire1_v1',#{w1_p1.eid})")
-w1_dir = f._emit_raw("DIRECTION('wire1_dir',(1.0,0.0,0.0))")
-w1_vec = f._emit_raw(f"VECTOR('',#{w1_dir.eid},5.0)")
-w1_line = f._emit_raw(f"LINE('wire1_line',#{w1_p0.eid},#{w1_vec.eid})")
-w1_edge = f._emit_raw(
-    f"EDGE_CURVE('wire1_edge',#{w1_v0.eid},#{w1_v1.eid},#{w1_line.eid},.T.)"
-)
-
-# Wire 2: a free edge from (0,1,0) to (3,1,0).
-w2_p0 = f._emit_raw("CARTESIAN_POINT('wire2_p0',(0.0,1.0,0.0))")
-w2_p1 = f._emit_raw("CARTESIAN_POINT('wire2_p1',(3.0,1.0,0.0))")
-w2_v0 = f._emit_raw(f"VERTEX_POINT('wire2_v0',#{w2_p0.eid})")
-w2_v1 = f._emit_raw(f"VERTEX_POINT('wire2_v1',#{w2_p1.eid})")
-w2_dir = f._emit_raw("DIRECTION('wire2_dir',(1.0,0.0,0.0))")
-w2_vec = f._emit_raw(f"VECTOR('',#{w2_dir.eid},3.0)")
-w2_line = f._emit_raw(f"LINE('wire2_line',#{w2_p0.eid},#{w2_vec.eid})")
-w2_edge = f._emit_raw(
-    f"EDGE_CURVE('wire2_edge',#{w2_v0.eid},#{w2_v1.eid},#{w2_line.eid},.T.)"
-)
-
-# Wire 3: a diagonal free edge from (1,0,0) to (4,3,0).
-w3_p0 = f._emit_raw("CARTESIAN_POINT('wire3_p0',(1.0,0.0,0.0))")
-w3_p1 = f._emit_raw("CARTESIAN_POINT('wire3_p1',(4.0,3.0,0.0))")
-w3_v0 = f._emit_raw(f"VERTEX_POINT('wire3_v0',#{w3_p0.eid})")
-w3_v1 = f._emit_raw(f"VERTEX_POINT('wire3_v1',#{w3_p1.eid})")
-import math as _math
-diag_len = _math.sqrt(9.0 + 9.0)
-w3_dir = f._emit_raw(
-    f"DIRECTION('wire3_dir',({3.0/diag_len:.6f},{3.0/diag_len:.6f},0.0))"
-)
-w3_vec = f._emit_raw(f"VECTOR('',#{w3_dir.eid},{diag_len:.6f})")
-w3_line = f._emit_raw(f"LINE('wire3_line',#{w3_p0.eid},#{w3_vec.eid})")
-w3_edge = f._emit_raw(
-    f"EDGE_CURVE('wire3_edge',#{w3_v0.eid},#{w3_v1.eid},#{w3_line.eid},.T.)"
-)
-
-# GEOMETRIC_CURVE_SET grouping the free wire edges — simulates free wires
-# at top-level COMPOUND alongside the model body.
-wire_gcs = f._emit_raw(
-    f"GEOMETRIC_CURVE_SET('free_wires',"
-    f"(#{w1_edge.eid},#{w2_edge.eid},#{w3_edge.eid}))"
-)
 
 # ── NAUO scaffolding for §12.6 assembly-presence lint ─────────────────────────
 sub_pdc = f._emit_raw("PRODUCT_CONTEXT('sub',#9000,'mechanical')")

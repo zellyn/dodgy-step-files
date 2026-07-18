@@ -7310,12 +7310,11 @@ End of file. Total: 38 entries (A001.A038).
 - **Notes**: Synonyms: "free wires in top-level COMPOUND silently dropped", "loose curves in compound stripped on write", "wireframe-only entities lost on export", "construction wires not exported".
 - **Byte assertion**: count_entity_def(b'EDGE_CURVE') >= 2
 - **Byte assertion**: count_entity_def(b'VERTEX_POINT') >= 2
-- **Tier-3 assertion**: shape_null == False
-- **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **Tier-3 assertion**: shape_null == True
+- **OCC behavior**: the three free wires are loose topological EDGE_CURVE members of the reachable GEOMETRIC_CURVE_SET; per ISO 10303-42 a curve set's members must be geometric point/curve/surface, not EDGE_CURVE, so OCCT's transfer silently DROPS the whole set and produces no shape (accept_silent / empty). A control carrying the same three wires as bounded TRIMMED_CURVE geometry is preserved (3 edges + 6 vertices), so the empty result is genuinely caused by the loose-wire defect — the claimed 'free wires silently dropped', demonstrated live.
 - **Severity**: P1
 - **Model impact**: The assembly graph loads with broken parent/child links or with the wrong transform on a MAPPED_ITEM/NEXT_ASSEMBLY_USAGE_OCCURRENCE; affected sub-components either fail to instance or appear at the wrong position relative to the assembly origin.
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### P018 — Improper rotation (negative determinant) in `AXIS2_PLACEMENT_3D`
 - **Category**: §12.2 geometric / placement transform
@@ -7453,13 +7452,14 @@ End of file. Total: 38 entries (A001.A038).
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### P027 — Boolean-history Faces with degenerate hole-loop pcurves crash writer
+- **Status**: honest reclassification (2026-07-18) — the degenerate hole-loop pcurve is byte-present but sits unreachable from the shape-rep root, so OCC loads only a 1-vertex stub (`shape(1)`). Wiring it into a real ADVANCED_FACE hole loop was tested and does NOT yield a distinguishing signal: OCC recomputes every pcurve from the 3D curve during transfer (per Gp193), so the zero-length pcurve domain is absorbed and the face rebuilds byte-identically to a valid-pcurve control (both occt=face:1, edge:8, vertex:16). The defect class is oracle-invisible (shape_counts) and does NOT demonstrate a repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.2 pcurve
 - **Source**: FreeCAD #5783; OCCT issue #80
 - **Sender**: FreeCAD-internal shape graph
 - **Description**: With "write parametric pcurves" enabled, certain BSpline-surface faces with a hole loop whose pcurve domain is degenerate (zero length) or maps outside the surface's natural domain cause the STEP writer's face-emission pass to dereference null and crash. When such files are nonetheless emitted, they contain malformed pcurves on read.
 - **Reproducer recipe**: face on a BSpline surface with a hole loop whose pcurve domain is degenerate or extends outside the surface's natural domain.
 - **Expected kernel behavior**: Detect and skip / fix the bad pcurve before writing; reader should reject malformed pcurves with clear message.
-- **OCC behavior**: silently accepts with diagnostic and loads shape(1); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: oracle-invisible (shape_counts) — the degenerate hole-loop pcurve is unreachable from the shape-rep root, so OCC loads a 1-vertex stub (shape(1)); even wired into a real face OCC recomputes the pcurve from 3D and rebuilds identically to a valid control. The defect is byte-present but not demonstrable by the load-time shape-count oracles.
 - **Severity**: P1
 - **Notes**: Synonyms: "Boolean-history face with degenerate hole-loop pcurve crashes writer", "writer dies on degenerate inner-loop pcurve", "STEP write crash from boolean leftover".
 - **Byte assertion**: contains(b'PCURVE')

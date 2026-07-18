@@ -107336,7 +107336,7 @@
     "cross_oracle_note": null,
     "description": "STEP file with a top-level `COMPOUND` mixing solids and free `EDGE_CURVE`/`WIRE` items at the same level: with importer's \"compound merge\" preference OFF, loose edges are dropped silently.",
     "expected_kernel_behavior": "Heal and accept: the default setting must preserve free wires in a top-level COMPOUND.",
-    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-6-assembly/P017.stp",
     "id": "P017",
@@ -107359,8 +107359,7 @@
       "assembly"
     ],
     "tier3_assertions": [
-      "shape_null == False",
-      "n_vertices_total == 1"
+      "shape_null == True"
     ],
     "title": "Free wires in a top-level COMPOUND silently dropped"
   },
