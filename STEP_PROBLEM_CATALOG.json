@@ -55414,7 +55414,7 @@
     "fixture_kind": "receiver-behavior",
     "fixture_path": "step-examples/12-2c-surfaces/Gb001.stp",
     "id": "Gb001",
-    "notes": "Synonyms: \"fit didn't converge\". Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: accepts and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.",
+    "notes": "Synonyms: \"fit didn't converge\". Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: OCC loads a non-null shape(1) that is BRepCheck-invalid because the ADVANCED_FACE uses a LINE as its face_geometry and carries a single-edge loop (toy topology); giving it a real PLANE surface (clean) stays invalid, so the invalidity is not the claimed approximation failure. The B-spline approximation convergence (Approx_Status) is runtime-only and never exercised on import — not a witnessed kernel bug.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "runtime-only",
