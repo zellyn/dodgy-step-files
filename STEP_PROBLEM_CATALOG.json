@@ -2336,7 +2336,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-11-adversarial/Ad047.stp",
     "id": "Ad047",
-    "notes": "**See also**: Ad043. **OCC behavior**: silently accepts (no diagnostic, empty result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic.",
+    "notes": "**See also**: Ad043. **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the valid square `ADVANCED_FACE` is left orphan (no shape-representation root references it). Given a rooted `SHELL_BASED_SURFACE_MODEL` it builds shape(1 face) identically with `same_sense=.F.` and `.T.`, so the declared orientation defect does not drive the empty; base/clean=empty. Orphaned defect carrier, not a defect-driven silent data-loss; not a proven kernel bug.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -2353,7 +2353,6 @@
     ],
     "structural_assertions": [],
     "taxonomy": [
-      "silent-loss",
       "adversarial"
     ],
     "tier3_assertions": [
