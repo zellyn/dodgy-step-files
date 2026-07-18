@@ -123,6 +123,20 @@ malformed `.LENGTH_MEASURE(1.0E-7).` (enum-dot-wrapped typed real) that emits a 
 `ERR StepFile : Incorrect Syntax` before the segfault — builder-hygiene scrub worth doing (does NOT affect
 the crash or the verdict).
 
+**(E) HYGIENE PASS DONE 2026-07-18 (through 5e98244c).** (i) 9 signal fixtures' spurious
+`.LENGTH_MEASURE(1.0E-7).` parse-error scrubbed via additive `Raw`/`uncertainty_literal` builder kwarg —
+crash preserved, 0 drift. (ii) Ls010 allowed-set contradiction fixed (`part21_strict` confirms accept+warn,
+not reject). (iii) 7 Pf sounds' runtime-vs-shape-level overstatement softened. (iv) Sw008/Bo001 honesty
+notes; Twi052/Lh053/Gs006/Gs049 confirmed already-accurate.
+**OPEN PROPOSALS from the hygiene pass:**
+- **Corpus-wide `.LENGTH_MEASURE(1.0E-7).` scrub (~1832 files)** — the `add_product_chain` builder default
+  still wraps the uncertainty typed-real in enum dots, emitting a spurious `ERR StepFile : Incorrect Syntax`
+  on load across ~1832 fixtures. Non-load-bearing but a real hygiene defect. Fix = flip the builder default
+  to the corrected literal + full regen (a ~1832-file byte change; DRIFT-clean, mechanical). Deferred as a
+  large-but-mechanical maintainer-approval change — NOT done unprompted.
+- **Pf017** — carries a separate stale `Cross-oracle` Notes line claiming "OCCT silently accepts (load is
+  empty)" that contradicts the measured shape(1) load (an E_REAL_NO_DOT concern); worth a small targeted fix.
+
 **BUG-WITNESS FIDELITY SWEEP COMPLETE (all 3 verdict classes): shape(1) ✓ · empty ✓ · signal ✓.**
 "Kernel-bug witnessed" 801 → 306 (495 reclassified). The remaining 306 = risky-but-genuine residue
 (50 sounds + ~40 flagged adversarial probes + 24 confirmed crashes) + verdicts whose allowed set INCLUDES
