@@ -31921,6 +31921,22 @@ Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-ax
 - **Model impact**: A reader that accepts a backward (w1>w2) pcurve range literally on a periodic surface produces a negative-length or wildly mis-oriented 2D trim; re-basing via periodic adjustment is required to recover the intended forward span.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 
+### Gp193 — Pcurve 2D seed drifts in V from the 3D edge geometry; OCC heals by recomputing the pcurve from the 3D curve
+- **Category**: §12.2a pcurve
+- **Sources**: Synthesized 2026-07-18 from FreeCAD-origin P014's pcurve-UV-drift claim, upgraded to a genuine face-hosted construction after live investigation (OCP/OCCT 7.8.1).
+- **Description**: An `EDGE_CURVE` bounding a real `ADVANCED_FACE` on a planar surface (P(u,v)=(u,v,0)) carries a `SURFACE_CURVE` whose sole `PCURVE` is a 2D `LINE` seeded at `(0.0, 0.5)` — v=0.5 — while the edge's 3D `LINE` genuinely lies at v=0.0 on the plane. The declared 2D parameter curve thus disagrees with the 3D geometry by 0.5 in the surface's V direction, far beyond the file's 1e-7 uncertainty. A strict "curve on surface" validator would reject this as an invalid pcurve.
+- **Reproducer recipe**: `PLANE` at origin (axis +Z, ref +X); 3D `LINE` edge (0,0,0)→(1,0,0); `PCURVE` on the plane whose 2D `LINE` seed is `(0.0, 0.5)` (drifted +0.5 in V); `SURFACE_CURVE` binding the two on one `EDGE_CURVE`; a single `ADVANCED_FACE`/`OPEN_SHELL`/`SHELL_BASED_SURFACE_MODEL`.
+- **Expected kernel behavior**: OCC's `STEPControl_Reader` discards the grossly-disagreeing declared pcurve and recomputes it from the 3D curve during transfer; the face builds cleanly with a pcurve at v=0. A strict validator instead rejects "invalid curve on surface".
+- **Notes**: **Live-verified (2026-07-18, OCP/OCCT 7.8.1)** by reading the built edge's stored curve-on-surface: the recomputed pcurve is `(0,0)→(1,0)` (v=0, matching the 3D curve — NOT the declared v=0.5), with edge tolerance unchanged at 1e-7 (no tolerance inflation). Swept declared drift v=0.5/5/50/500 — **all** recompute to v=0 with `face:1`; there is **no tolerance boundary**, and the behaviour is identical under `heal_on` (`read.surfacecurve.mode=3`) and `heal_off` (`mode=0`). So OCC's STEP reader does not trust declared pcurves at all — it recomputes every one from the 3D curve, silently correcting producer-side pcurve errors on read. **Honest scope caveat:** because OCC absorbs the drift by recompute, this file builds `face:1` *identically to a clean face* — the heal is genuine and directly verifiable (by reading the built pcurve) but is INVISIBLE to the shape-count oracles; it is not mutation-visible. Retained as a genuine, directly-verified documentation of OCC's pcurve-recompute-on-read robustness for kernel grading (a grader should confirm its kernel builds the face AND recomputes the pcurve to v=0), and as the genuine face-hosted counterpart to P014 (which is byte-level provenance only). **See also**: P014, Gp010, Gp002.
+- **Byte assertion**: contains(b'SURFACE_CURVE')
+- **Byte assertion**: contains(b'EDGE_CURVE')
+- **Byte assertion**: count_entity_def(b'PCURVE') >= 1
+- **Byte assertion**: contains(b'(0.0,0.5)')
+- **Tier-3 assertion**: shape_null == False
+- **Tier-3 assertion**: n_faces_total == 1
+- **Model impact**: A reader that trusts the declared pcurve literally would place the edge's 2D trace 0.5 off the 3D curve, corrupting the face's parametrisation; OCC sidesteps this entirely by recomputing the pcurve from 3D, so the producer's pcurve error never reaches the built model.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
+
 ### A105 — Regression OCC 6.9.1 → 7.4.0: colours stop appearing on certain STEP files
 - **Category**: §12.6 assembly hierarchy (sub-class: appearance regression across kernel versions)
 - **Sources**: OCCT MANTIS#0031809; bug-reporter language: "regression v.6.9.1-7.4.0 colors no longer showing on certain STEP files", "files that displayed colour in 6.9.1 are grey in 7.4.0", "appearance regression". (OCCT MANTIS tracker 502 as of 2026-05-02)

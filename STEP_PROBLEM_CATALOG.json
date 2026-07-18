@@ -49205,6 +49205,50 @@
   },
   {
     "byte_assertions": [
+      "contains(b'SURFACE_CURVE')",
+      "contains(b'EDGE_CURVE')",
+      "count_entity_def(b'PCURVE') >= 1",
+      "contains(b'(0.0,0.5)')"
+    ],
+    "category": "§12.2a pcurve",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "An `EDGE_CURVE` bounding a real `ADVANCED_FACE` on a planar surface (P(u,v)=(u,v,0)) carries a `SURFACE_CURVE` whose sole `PCURVE` is a 2D `LINE` seeded at `(0.0, 0.5)` — v=0.5 — while the edge's 3D `LINE` genuinely lies at v=0.0 on the plane. The declared 2D parameter curve thus disagrees with the 3D geometry by 0.5 in the surface's V direction, far beyond the file's 1e-7 uncertainty. A strict \"curve on surface\" validator would reject this as an invalid pcurve.",
+    "expected_kernel_behavior": "OCC's `STEPControl_Reader` discards the grossly-disagreeing declared pcurve and recomputes it from the 3D curve during transfer; the face builds cleanly with a pcurve at v=0. A strict validator instead rejects \"invalid curve on surface\".",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp193.stp",
+    "id": "Gp193",
+    "notes": "**Live-verified (2026-07-18, OCP/OCCT 7.8.1)** by reading the built edge's stored curve-on-surface: the recomputed pcurve is `(0,0)→(1,0)` (v=0, matching the 3D curve — NOT the declared v=0.5), with edge tolerance unchanged at 1e-7 (no tolerance inflation). Swept declared drift v=0.5/5/50/500 — **all** recompute to v=0 with `face:1`; there is **no tolerance boundary**, and the behaviour is identical under `heal_on` (`read.surfacecurve.mode=3`) and `heal_off` (`mode=0`). So OCC's STEP reader does not trust declared pcurves at all — it recomputes every one from the 3D curve, silently correcting producer-side pcurve errors on read. **Honest scope caveat:** because OCC absorbs the drift by recompute, this file builds `face:1` *identically to a clean face* — the heal is genuine and directly verifiable (by reading the built pcurve) but is INVISIBLE to the shape-count oracles; it is not mutation-visible. Retained as a genuine, directly-verified documentation of OCC's pcurve-recompute-on-read robustness for kernel grading (a grader should confirm its kernel builds the face AND recomputes the pcurve to v=0), and as the genuine face-hosted counterpart to P014 (which is byte-level provenance only). **See also**: P014, Gp010, Gp002.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`PLANE` at origin (axis +Z, ref +X); 3D `LINE` edge (0,0,0)→(1,0,0); `PCURVE` on the plane whose 2D `LINE` seed is `(0.0, 0.5)` (drifted +0.5 in V); `SURFACE_CURVE` binding the two on one `EDGE_CURVE`; a single `ADVANCED_FACE`/`OPEN_SHELL`/`SHELL_BASED_SURFACE_MODEL`.",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [
+      "P014",
+      "Gp010",
+      "Gp002"
+    ],
+    "sender": "",
+    "severity": null,
+    "sources": [
+      "Synthesized 2026-07-18 from FreeCAD-origin P014's pcurve-UV-drift claim, upgraded to a genuine face-hosted construction after live investigation (OCP/OCCT 7.8.1)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1"
+    ],
+    "title": "Pcurve 2D seed drifts in V from the 3D edge geometry; OCC heals by recomputing the pcurve from the 3D curve"
+  },
+  {
+    "byte_assertions": [
       "contains(b'B_SPLINE_SURFACE')"
     ],
     "category": "§12.2b NURBS/knots",

@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1><span class="tag tag-geometry">geometry</span></h1>
 <p class="blurb">B-rep / NURBS / surface / curve defect.</p>
-<p class="meta">576 entries</p>
+<p class="meta">577 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Section</th><th>Expected validation</th></tr></thead><tbody>
@@ -379,6 +379,7 @@
 <tr><td><a href="../../12-2a-pcurves/Gp190.html"><code>Gp190</code></a></td><td>CATIA-style pseudo-seam split ACROSS TWO DIFFERENT FACES (IsLikeSeam&#x27;s cross-wire domain)</td><td><a href="../../12-2a-pcurves/index.html">§12.2a Pcurve defects</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2a-pcurves/Gp191.html"><code>Gp191</code></a></td><td>Pcurve whose 2D trim parameters literally collapse to a point (w1==w2) on a real, non-degenerate 3D edge</td><td><a href="../../12-2a-pcurves/index.html">§12.2a Pcurve defects</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2a-pcurves/Gp192.html"><code>Gp192</code></a></td><td>Pcurve range straddles a U-periodic surface&#x27;s seam in the wrong order (w1&gt;w2)</td><td><a href="../../12-2a-pcurves/index.html">§12.2a Pcurve defects</a></td><td><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-2a-pcurves/Gp193.html"><code>Gp193</code></a></td><td>Pcurve 2D seed drifts in V from the 3D edge geometry; OCC heals by recomputing the pcurve from the 3D curve</td><td><a href="../../12-2a-pcurves/index.html">§12.2a Pcurve defects</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2c-surfaces/Gs001.html"><code>Gs001</code></a></td><td>TOROIDAL_SURFACE with negative MajorRadius (SolidWorks/Pro-E orientation marker)</td><td><a href="../../12-2c-surfaces/index.html">§12.2c Surface / curve degeneracies</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2c-surfaces/Gs002.html"><code>Gs002</code></a></td><td>Degenerate (lemon/apple) torus where minor_radius &gt;= major_radius</td><td><a href="../../12-2c-surfaces/index.html">§12.2c Surface / curve degeneracies</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2c-surfaces/Gs005.html"><code>Gs005</code></a></td><td>Surface periodicity not declared but actually closed</td><td><a href="../../12-2c-surfaces/index.html">§12.2c Surface / curve degeneracies</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
