@@ -14310,6 +14310,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Pf031 — STEP read parsing slow due to single-pass tokenisation
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — the declared single-pass tokenisation scale (extra `CARTESIAN_POINT`s) is orphaned from / unreachable by the shape-rep root, so OCC transfers only a 1-vertex stub (`shape(1)`, valid=True); base / CLEAN (defect removed) / HUGE (defect exaggerated) all yield identical `v:1` counts and validity. Oracle-invisible at load; does NOT demonstrate a kernel bug or repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.10 performance
 - **Sources**: OCCT MANTIS#0033350; OCCT MANTIS#0027570; OCCT MANTIS#0023979 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A STEP reader's parser reads each character in single-byte
@@ -14322,12 +14323,13 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: Pf032.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 29
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1). OCC transfers a 1-vertex stub (valid=True); the declared single-pass tokenisation scale (extra `CARTESIAN_POINT`s) is orphaned/runtime-only and unreachable from the shape-rep root, so OCC silently accepts with no distinguishing signal versus a clean file. Perturbing the defect (base/clean/huge) leaves shape-counts and BRepCheck validity invariant. Not a proven kernel bug at shape-count level.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pf032 — Reader hangs during XCAF tree build on deep assembly
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — the declared deep-assembly XCAF fan-out is orphaned from / unreachable by the shape-rep root, so OCC transfers only a 1-vertex stub (`shape(1)`, valid=True); base / CLEAN (defect removed) / HUGE (defect exaggerated) all yield identical `v:1` counts and validity. Oracle-invisible at load; does NOT demonstrate a kernel bug or repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.10 performance
 - **Sources**: OCCT GitHub#733; OCCT MANTIS#0026871; OCCT MANTIS#0026627 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: An XCAF document is built from a large STEP file with a
@@ -14341,7 +14343,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: **See also**: A067.
 - **Byte assertion**: contains(b'NEXT_ASSEMBLY_USAGE_OCCURRENCE')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1). OCC transfers a 1-vertex stub (valid=True); the declared deep-assembly XCAF fan-out is orphaned/runtime-only and unreachable from the shape-rep root, so OCC silently accepts with no distinguishing signal versus a clean file. Perturbing the defect (base/clean/huge) leaves shape-counts and BRepCheck validity invariant. Not a proven kernel bug at shape-count level.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -14366,6 +14368,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1296) ifc=schema_n/a`
 
 ### Pf034 — Shape-divide pass raises end-of-iteration on large shape
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — the shape-rep root references only a single planar `OPEN_SHELL` face; the orphaned cube `MANIFOLD_SOLID_BREP`s that carry the >10^5-face shape-divide scale are unreachable, so OCC transfers `shape(1)` (n_faces==1, valid=True) regardless of the cube count. Oracle-invisible; does NOT demonstrate a kernel bug or repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.10 performance
 - **Sources**: OCCT MANTIS#0030593 (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Description**: A shape-divide pass on a large shape iterates faces
@@ -14379,7 +14382,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
 - **Byte assertion**: contains(b'MANIFOLD_SOLID_BREP')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1). OCC transfers a single-face model (n_faces==1, valid=True); the many-face scale that would trigger the shape-divide `NoMoreObject` sits in orphaned cube BReps unreachable from the shape-rep root, so the count is invariant to the declared defect. Not a proven kernel bug at shape-count level.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -15420,6 +15423,7 @@ _Section summary: 28 entries._
  stack management.
 
 ### Pf010 — Cyclic / self-referential reference graph causes infinite recursion
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — the declared cyclic `COMPOSITE_CURVE` self-reference is orphaned from / unreachable by the shape-rep root, so OCC transfers only a 1-vertex stub (`shape(1)`, valid=True); base / CLEAN (defect removed) / HUGE (defect exaggerated) all yield identical `v:1` counts and validity. Oracle-invisible at load; does NOT demonstrate a kernel bug or repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.10 (sub-class: cyclic)
 - **Sources**: 12-adversarial.md A004; 08-occt-gitlog.md G031, G032, G033;
  04-occt-translation.md Q023; 16-iso-spec.md (cycle handling)
@@ -15434,7 +15438,7 @@ _Section summary: 28 entries._
  - `COMPOSITE_CURVE_SEGMENT` whose parent_curve is the composite
 - **Expected kernel behavior**: Tarjan SCC during bind; reject with
 - **Notes**: **See also**: A012, Pf011, Pf030, Ad085.
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1). OCC transfers a 1-vertex stub (valid=True); the declared cyclic `COMPOSITE_CURVE` self-reference is orphaned/runtime-only and unreachable from the shape-rep root, so OCC silently accepts with no distinguishing signal versus a clean file. Perturbing the defect (base/clean/huge) leaves shape-counts and BRepCheck validity invariant. Not a proven kernel bug at shape-count level.
 - **Severity**: P2
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 2
 - **Tier-3 assertion**: load == "ok"
@@ -15444,6 +15448,7 @@ _Section summary: 28 entries._
  cap recursion depth and resolve transitively.
 
 ### Pf011 — `EntityCluster` infinite recursion / leak on pathological deep chain
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — the declared pathological `StepData_EntityCluster` chain is orphaned from / unreachable by the shape-rep root, so OCC transfers only a 1-vertex stub (`shape(1)`, valid=True); base / CLEAN (defect removed) / HUGE (defect exaggerated) all yield identical `v:1` counts and validity. Oracle-invisible at load; does NOT demonstrate a kernel bug or repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.10 (sub-class: cyclic / dependency-depth)
 - **Sources**: 08-occt-gitlog.md G031 (Mantis 0031435; OCCT e00b8ed)
 - **Description**: Internal `StepData_EntityCluster` chain allows cyclic
@@ -15455,7 +15460,7 @@ _Section summary: 28 entries._
 - **Notes**: **See also**: Pf010. Validation observed: this is a deliberately scaled-down representative; the structural pattern is present but the production-scale resource exhaustion / catastrophic timing is not exercised at fixture size. To trigger the documented kernel-crash, multiply the entity-replication factor by ~10^N as noted in the reproducer recipe. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: length > 100
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1). OCC transfers a 1-vertex stub (valid=True); the declared pathological `StepData_EntityCluster` chain is orphaned/runtime-only and unreachable from the shape-rep root, so OCC silently accepts with no distinguishing signal versus a clean file. Perturbing the defect (base/clean/huge) leaves shape-counts and BRepCheck validity invariant. Not a proven kernel bug at shape-count level.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -15549,6 +15554,7 @@ _Section summary: 28 entries._
  `ShapeFix_Shell`; configurable join cutoff.
 
 ### Pf016 — STEP assembly reader hangs in Transfer on cyclic `SHAPE_REPRESENTATION_RELATIONSHIP` web (Catia/NX-emitted file, OCCT 7.9)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — the declared cyclic `SHAPE_REPRESENTATION_RELATIONSHIP` web is orphaned from / unreachable by the shape-rep root, so OCC transfers only a 1-vertex stub (`shape(1)`, valid=True); base / CLEAN (defect removed) / HUGE (defect exaggerated) all yield identical `v:1` counts and validity. Oracle-invisible at load; does NOT demonstrate a kernel bug or repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.10 (sub-class: dependency-depth / pathological loop)
 - **Sources**: 18-other-issues.md I002 (OCCT #712)
 - **Sender**: CATIA / NX (file `250709r8000_asm-all`)
@@ -15566,7 +15572,7 @@ _Section summary: 28 entries._
 - **Notes**: distinct from #417 (huge-shell ShapeFix slowness). **See also**: A026. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1). OCC transfers a 1-vertex stub (valid=True); the declared cyclic `SHAPE_REPRESENTATION_RELATIONSHIP` web is orphaned/runtime-only and unreachable from the shape-rep root, so OCC silently accepts with no distinguishing signal versus a clean file. Perturbing the defect (base/clean/huge) leaves shape-counts and BRepCheck validity invariant. Not a proven kernel bug at shape-count level.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -15594,6 +15600,7 @@ _Section summary: 28 entries._
  shell-fix step at large counts; bound iteration count.
 
 ### Pf018 — Memory not released after STEP assembly read (Linux / Docker)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — the declared multi-product assembly (glibc arena retention) is orphaned from / unreachable by the shape-rep root, so OCC transfers only a 1-vertex stub (`shape(1)`, valid=True); base / CLEAN (defect removed) / HUGE (defect exaggerated) all yield identical `v:1` counts and validity. Oracle-invisible at load; does NOT demonstrate a kernel bug or repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.10 (sub-class: OOM / leak)
 - **Sources**: 18-other-issues.md I018 (OCCT #534)
 - **Description**: Reader leaves ~900 MB resident on glibc after a
@@ -15604,7 +15611,7 @@ _Section summary: 28 entries._
 - **Expected kernel behavior**: Heal and accept: allocator-tuned working-set release after STEP assembly read; coerce resident memory back to baseline. Must not OOM across repeated reads.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 5
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1). OCC transfers a 1-vertex stub (valid=True); the declared multi-product assembly (glibc arena retention) is orphaned/runtime-only and unreachable from the shape-rep root, so OCC silently accepts with no distinguishing signal versus a clean file. Perturbing the defect (base/clean/huge) leaves shape-counts and BRepCheck validity invariant. Not a proven kernel bug at shape-count level.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -15612,6 +15619,7 @@ _Section summary: 28 entries._
  optional `malloc_trim` after large reads.
 
 ### Pf019 — Memory leaks in STEP/IGES controller initialisation enum tables
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — the declared controller static enum-table leak is orphaned from / unreachable by the shape-rep root, so OCC transfers only a 1-vertex stub (`shape(1)`, valid=True); base / CLEAN (defect removed) / HUGE (defect exaggerated) all yield identical `v:1` counts and validity. Oracle-invisible at load; does NOT demonstrate a kernel bug or repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.10 (sub-class: leak)
 - **Sources**: 18-other-issues.md I019 (OCCT #1024)
 - **Description**: LeakSanitizer flags allocations originating from the
@@ -15624,7 +15632,7 @@ _Section summary: 28 entries._
 - **Expected kernel behavior**: Heal and accept: free typed-value tables on library teardown; coerce to bounded resident memory.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 1
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1). OCC transfers a 1-vertex stub (valid=True); the declared controller static enum-table leak is orphaned/runtime-only and unreachable from the shape-rep root, so OCC silently accepts with no distinguishing signal versus a clean file. Perturbing the defect (base/clean/huge) leaves shape-counts and BRepCheck validity invariant. Not a proven kernel bug at shape-count level.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -15769,6 +15777,7 @@ _Section summary: 28 entries._
  strictly over wires; bound iteration count.
 
 ### Pf027 — Mixed-scale features produce millions of tiny faces post-tessellation
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — OCC transfers the 21-face open shell but BRepCheck reports invalid; the invalidity comes from the toy topology (each fillet face is a single-circle `EDGE_LOOP` on a disconnected `OPEN_SHELL`), not from the declared mixed-scale defect: base / CLEAN (fillet minor-radius 0.05->5.0) / HUGE (0.05->0.0005) all yield identical counts and stay invalid. The sub-tolerance scale is oracle-invisible; does NOT demonstrate a kernel bug or repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.10 (sub-class: mesh-converted / pathological)
 - **Sources**: 17-standards-bodies.md M023; 19-datasets.md D020
 - **Description**: Mixed length scales (1500 mm shaft with 0.05 mm
@@ -15783,7 +15792,7 @@ _Section summary: 28 entries._
 - **Notes**: **See also**: Pf015, Pmi062.
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 4
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1) loading a 21-face open shell that BRepCheck reports invalid, but the invalidity is toy topology (single-circle `EDGE_LOOP` faces in a disconnected `OPEN_SHELL`), invariant to the declared mixed-scale defect (fillet minor-radius 0.05/5.0/0.0005 all give identical counts, all invalid). The sub-tolerance scale itself produces no distinguishing shape-count or validity signal. Not a proven kernel bug at shape-count level.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Tier-3 assertion**: face[0].surface_type == "torus"
@@ -15841,6 +15850,7 @@ _Section summary: 28 entries._
  resource caps that surface as exceptions, not signals.
 
 ### Pf030 — Schema-EXPRESS WHERE-rule evaluation bomb (billion-laughs analogue)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — the declared EXPRESS WHERE-rule fan-out (billion-laughs analogue) is orphaned from / unreachable by the shape-rep root, so OCC transfers only a 1-vertex stub (`shape(1)`, valid=True); base / CLEAN (defect removed) / HUGE (defect exaggerated) all yield identical `v:1` counts and validity. Oracle-invisible at load; does NOT demonstrate a kernel bug or repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.10 (sub-class: cyclic / dependency-depth)
 - **Sources**: 12-adversarial.md A032
 - **Description**: ISO 10303-11 EXPRESS WHERE-rule evaluation can be
@@ -15853,7 +15863,7 @@ _Section summary: 28 entries._
 - **Notes**: **See also**: Ad032, Pf010. Provenance tier: runtime-only (Q5 reclassification 2026-07-01).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 3
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1). OCC transfers a 1-vertex stub (valid=True); the declared EXPRESS WHERE-rule fan-out (billion-laughs analogue) is orphaned/runtime-only and unreachable from the shape-rep root, so OCC silently accepts with no distinguishing signal versus a clean file. Perturbing the defect (base/clean/huge) leaves shape-counts and BRepCheck validity invariant. Not a proven kernel bug at shape-count level.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -29352,6 +29362,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Pf036 — `STEPCAFControl_Reader` hangs in infinite loop on cyclic `MAPPED_ITEM` reference
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — the declared cyclic `MAPPED_ITEM` reference is orphaned from / unreachable by the shape-rep root, so OCC transfers only a 1-vertex stub (`shape(1)`, valid=True); base / CLEAN (defect removed) / HUGE (defect exaggerated) all yield identical `v:1` counts and validity. Oracle-invisible at load; does NOT demonstrate a kernel bug or repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.10 scale & performance (sub-class: hang / DoS)
 - **Sources**: OCCT MANTIS#0031711; bug-reporter language: "STEPCAFControl_Reader hangs on attached file in an infinite loop", "reader never returns", "STEP import hangs on cyclic mapped item". (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Sender**: Producers that emit cyclic / self-referential `MAPPED_ITEM` chains, often the result of a bug in an assembly-flatten pass that reuses the same `REPRESENTATION_MAP` as both source and target.
@@ -29362,12 +29373,13 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Byte assertion**: contains(b'MAPPED_ITEM')
 - **Byte assertion**: contains(b'REPRESENTATION_MAP')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silent-accept observed (catalog allowed: {reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1). OCC transfers a 1-vertex stub (valid=True); the declared cyclic `MAPPED_ITEM` reference is orphaned/runtime-only and unreachable from the shape-rep root, so OCC silently accepts with no distinguishing signal versus a clean file. Perturbing the defect (base/clean/huge) leaves shape-counts and BRepCheck validity invariant. Not a proven kernel bug at shape-count level.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pf037 — Two-pass loader: dangling forward-ref subgraph silently truncated (BRL-CAD step-g)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — the dangling `#999` forward-ref `EDGE_CURVE` is orphaned from the shape-rep root; OCC transfers only the toy single-edge planar face (n_faces==1, invalid from that toy topology). base / CLEAN (dangling ref removed) / HUGE (+30 dangling refs) all yield identical counts and validity. The declared silent-truncation defect is oracle-invisible; does NOT demonstrate a kernel bug or repair. Retained as byte-level/provenance coverage.
 - **Category**: §12.10 scale & performance (sub-class: silent partial subgraph elision)
 - **Sources**: BRL-CAD `src/conv/step/STEPWrapper.cpp` `WARNING: <name> is not valid` diagnostic; `entity_status[id] = STEP_LOAD_ERROR` set during pass-2 but never consulted by shell/solid consumers; bug-reporter language: "step-g imports a 50 MB STEP file and the resulting .g lacks a subassembly with no obvious error", "WARNING is not valid scrolled past in the import log", "step-g entity_status STEP_LOAD_ERROR not propagated".
 - **Sender**: Large-assembly STEP files where one entity record is structurally well-formed (so pass-1 instantiates a stub object) but references a downstream entity that itself failed to instantiate (e.g. a malformed complex-entity record). Common in fuzzed inputs and in CAD-system exports that emit forward references the writer never validated.
@@ -29378,7 +29390,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: matches(rb'EDGE_CURVE\([^)]*#999')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: silent-accept observed (catalog allowed: {reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: oracle-invisible (shape_counts) — occt=shape(1)/shape(1). OCC transfers a toy single-edge planar face (invalid from that toy topology); the declared dangling `#999` forward-ref sits in an orphaned `EDGE_CURVE` unreachable from the shape-rep root. base / CLEAN (ref removed) / HUGE (+30 dangling refs) leave shape-counts and validity invariant. Not a proven kernel bug at shape-count level.
 - **Severity**: P2
 - **Model impact**: Parser/loader resource usage scales pathologically with the input size; load time grows quadratically or memory blows up, and on bounded systems the load is killed before completing.
 - **Structural assertion**: struct == DANGLING_REF
