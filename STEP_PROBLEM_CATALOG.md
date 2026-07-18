@@ -17419,6 +17419,7 @@ _Section summary: 41 entries._
 
 ### Xp005 — NURBS knot vector × control-point weight × tolerance-boundary cusp
 
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(orphan NURBS entity removed)/huge(weights ±1e30) all give identical shape-counts (v8 e4 f1) and BRepCheck valid=True; the defective `RATIONAL_B_SPLINE_CURVE` is unreferenced by the loaded shape, so it is oracle-invisible.
 - **Category**: §12.12 cross-product (NURBS × tolerance)
 - **Builds on**: Gn001 (knot/multiplicity inconsistency), Gn010 (out-of-range
  weights / control points), N001 (tolerance-boundary geometry).
@@ -17439,7 +17440,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: Heal and accept, or reject with E_NURBS_INVARIANT diagnostic: each NURBS invariant is inspected independently; the cusp-at-tolerance-boundary case is decided by the kernel's working precision policy.
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: both heal modes accept and load the SAME shape(1) — a valid planar face (v8 e4 f1, BRepCheck valid) built from the well-formed square geometry. The declared NURBS defects (knot vector `(4,2,4)`, tolerance-boundary cusp point, degenerate weight `0.0`) live in an orphan `RATIONAL_B_SPLINE_CURVE` (#9063) that no representation references, so they are oracle-invisible: removing the entity or exaggerating it (weights ±1e30) leaves shape-counts and validity unchanged. shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -17480,6 +17481,7 @@ _Section summary: 41 entries._
 
 ### Xp007 — Cyclic complex-entity reference × deeply-nested aggregate
 
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(cyclic relationship + nested aggregate removed)/huge(300-level nest) all give identical shape-counts (v8 e4 f1) and BRepCheck valid=True; the defect entities are orphan (unreferenced by the loaded shape), so oracle-invisible.
 - **Category**: §12.12 cross-product (syntax × adversarial)
 - **Builds on**: Ad-cyclic-class (self-referencing entity loop),
  Ad-deeply-nested-class (parenthesis nesting).
@@ -17498,7 +17500,7 @@ _Section summary: 41 entries._
  kernel's choice.
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: both heal modes accept and load the SAME shape(1) — a valid planar face (v8 e4 f1, BRepCheck valid). The declared cross-product defects (self-referential `REPRESENTATION_RELATIONSHIP` #9063 and the deeply-nested aggregate #9064) are orphan entities the loaded shape never references; removing them or deepening the nest to 300 levels leaves shape-counts and validity unchanged. shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -17557,6 +17559,7 @@ _Section summary: 41 entries._
 
 ### Xp010 — Negative torus radius × pcurve disagreement × tiny edge
 
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: clean(major radius +10)/huge(major radius -1e6) both give identical shape-counts (v8 e4 f1) and BRepCheck valid=True under heal_on and heal_off; the negative torus radius does not survive into the built shape, and the sub-tolerance edge is intrinsic to the inner-equator geometry (the only x=9,z=0 point on the torus is y=0), not a separable defect.
 - **Category**: §12.12 cross-product (surfaces × pcurves × tolerance)
 - **Builds on**: Gs001 (negative torus MajorRadius), Gp-disagree-class
  (pcurve and 3D curve disagree), N010 (edge shorter than vertex tolerance).
@@ -17575,7 +17578,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads shape(1) — a valid toroidal face (v8 e4 f1, BRepCheck valid under both heal_on and heal_off). The negative major radius is oracle-invisible: clean (radius +10) and grossly exaggerated (radius -1e6) both build the identical valid face. The sub-tolerance edge is intrinsic to the inner-equator geometry (the only x=9,z=0 point on the torus is y=0), not a separable defect. shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Tier-3 assertion**: face[0].surface_type == "torus"
@@ -17645,6 +17648,7 @@ _Section summary: 41 entries._
 
 ### Xp013 — Cone apex pcurve × surface-folded × non-manifold vertex
 
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: clean(cone half-angle 0.3, B-spline surface unfolded)/huge(half-angle 1.4, grossly folded) both give identical shape-counts (v16 e8 f2) and BRepCheck valid=True; the surface fold is oracle-invisible and the non-manifold vertex is an orphan comment (its edges #75/#79 sit in no shell).
 - **Category**: §12.12 cross-product (pcurves × surfaces × shells)
 - **Builds on**: Gp005 (pcurve through cone apex singularity),
  Gs010 (folded B-spline surface), Tsh-nonmanifold-vertex-class.
@@ -17663,7 +17667,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) — two valid faces (v16 e8 f2, BRepCheck valid). The declared defects are oracle-invisible: perturbing the cone half-angle (0.3 vs 1.4) and the fold of the B-spline surface (unfolded vs grossly folded) leaves shape-counts and validity unchanged, and the non-manifold vertex is an orphan comment (edges #75/#79 sit in no shell). shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Tier-3 assertion**: face[0].surface_type == "bspline"
@@ -17733,6 +17737,7 @@ _Section summary: 41 entries._
 
 ### Xp016 — Forward reference × cyclic reference × invalid axis-placement
 
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(orphan zero-magnitude direction + cyclic axis-placement removed) give identical shape-counts (v8 e4 f1) and BRepCheck valid=True; the defect entities are unreferenced by the loaded shape, so oracle-invisible.
 - **Category**: §12.12 cross-product (references × syntax)
 - **Builds on**: Ls-forward-ref-class, Ad-cyclic-class,
  Ls-invalid-direction-class (direction with zero magnitude).
@@ -17750,7 +17755,7 @@ _Section summary: 41 entries._
  direction-degeneracy each independently rejected/repaired.
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: both heal modes accept and load the SAME shape(1) — a valid planar face (v8 e4 f1, BRepCheck valid). The declared defects (zero-magnitude `DIRECTION` #9063 and the mutually-cyclic `AXIS2_PLACEMENT_3D` pair #9064/#9065) are orphan entities the loaded shape never references; removing them leaves shape-counts and validity unchanged. shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -17810,6 +17815,7 @@ _Section summary: 41 entries._
 
 ### Xp019 — Multiple DATA sections × duplicated entity ID × cross-section reference
 
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(second anonymous DATA section removed)/huge(duplicate coordinate 1e30) all give identical shape-counts (v8 e4 f1) and BRepCheck valid=True; the cross-section duplicate `#10` / `@s2#10` reference is orphan/unresolved relative to the loaded shape, so oracle-invisible.
 - **Category**: §12.12 cross-product (header × references × adversarial)
 - **Builds on**: Ad-multi-data-class, Ls-duplicate-id-class,
  Ad-cross-section-ref-class.
@@ -17824,7 +17830,7 @@ _Section summary: 41 entries._
 - **Expected kernel behavior**: Heal and accept, or reject with E_DUPLICATE_ID / E_BAD_CROSS_REF diagnostic: multi-DATA policy normalizes the section choice, duplicate-ID resolution coerces / repairs IDs, cross-section-ref handling resolves references. Each independent.
 - **Byte assertion**: contains(b'FILE_SCHEMA')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: emits a diagnostic but loads shape(1); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1) — a valid planar face (v8 e4 f1, BRepCheck valid). The duplicate `#10` in the second anonymous DATA section (and its `@s2#10` cross-reference) is orphan/unresolved relative to the loaded shape; removing the second section or exaggerating the duplicate coordinate to 1e30 leaves shape-counts and validity unchanged. shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -17864,6 +17870,7 @@ _Section summary: 41 entries._
 
 ### Xp021 — Disconnected EDGE_LOOP × pcurve missing × wire bypassing seam
 
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(loop closed)/huge(3D gap enlarged) all give identical shape-counts (v6 e3 f1) and BRepCheck valid=False; the fragment is a toy topology (straight-LINE chord edges on a `CYLINDRICAL_SURFACE` with no pcurves) that BRepCheck flags invalid regardless of the disconnection, so shape(1) does not witness a kernel bug.
 - **Category**: §12.12 cross-product (wires × pcurves × surfaces)
 - **Builds on**: Twi003 (EDGE_LOOP edges not head-to-tail), Gp001 (missing
  pcurve), Twi-seam-class (wire spans surface period without seam).
@@ -17880,7 +17887,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: contains(b'ADVANCED_FACE')
 - **Tier-3 assertion**: load == "ok"
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads shape(1), but the shape is BRepCheck-INVALID (v6 e3 f1) regardless of the declared defect: closing the disconnected loop (clean) and enlarging its 3D gap (huge) both leave it invalid. It is a toy fragment — straight-`LINE` chord edges on a `CYLINDRICAL_SURFACE` with no pcurves are inherently inconsistent — so the invalidity is not caused by the specific disconnection and shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
