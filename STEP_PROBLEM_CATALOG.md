@@ -10699,6 +10699,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M073.stp
 
 ### M074 — AP238 left-handed setup coordinate frame on multi-axis machine
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (1-0-0-0-0-0-1) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 mixed (sub-class: AP238 axis system handedness)
 - **Sources**: deduced from ISO 10303-42 axis2_placement_3d implicit-Y rule
 - **Sender**: deduced — STEP-NC publisher with axis-direction sign error
@@ -10721,13 +10722,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'SETUP')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the AP238 SETUP coordinate-frame handedness, a machining-setup semantic OCC's geometry transfer never builds, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 1-0-0-0-0-0-1) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M074.stp
 
 ### M075 — AP238 selective control-flow references unresolved branch executable
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (8-4-1-1-1-0-0) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 mixed (sub-class: AP238 program control flow)
 - **Sources**: deduced from AP238 §7 program structure (selective / parallel /
  if_statement)
@@ -10745,7 +10747,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "missing subroutine", "STEP-NC dangling executable", "selective branch unresolved", "control-flow target not declared".
 - **Byte assertion**: contains(b'SELECTIVE')
 - **Tier-3 assertion**: n_faces_total == 1
-- **OCC behavior**: silently accepts with diagnostic and loads shape(1); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the AP238 SELECTIVE control-flow reference, a process-executable semantic OCC's geometry transfer never builds (the face/shell is inert scaffold), so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 8-4-1-1-1-0-0) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Structural assertion**: struct == DANGLING_REF
@@ -11006,6 +11008,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M085.stp
 
 ### M086 — AP210 via drilled outside the conductor / board outline
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (3-1-0-0-0-0-1) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 mixed (sub-class: AP210 via geometry)
 - **Sources**: deduced from AP210 §6 via_definition geometric containment
 - **Sender**: deduced — ECAD exporter writing via at design-grid coordinates
@@ -11027,7 +11030,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_edges_total == 1
 - **Tier-3 assertion**: n_vertices_total == 3
-- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the AP210 VIA_DEFINITION position, an electrical/PCB semantic OCC's geometry transfer never builds, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 3-1-0-0-0-0-1) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`
@@ -11136,6 +11139,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M090.stp
 
 ### M091 — AP210 conductor trace exits the board outline
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (6-2-0-0-0-0-1) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 mixed (sub-class: AP210 trace geometry)
 - **Sources**: deduced from AP210 §6 conductor_track_profile geometric
  containment
@@ -11155,7 +11159,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_edges_total == 2
 - **Tier-3 assertion**: n_vertices_total == 6
-- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the AP210 CONDUCTOR_TRACK_PROFILE geometry, an electrical/PCB semantic OCC's geometry transfer never builds, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 6-2-0-0-0-0-1) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
@@ -11467,6 +11471,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M102.stp
 
 ### M103 — AP238 tool trajectory passes through workpiece body before designated cut
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (2-1-0-0-0-0-1) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 mixed (sub-class: AP238 toolpath collision)
 - **Sources**: deduced from ISO 10303-238 §6.2 toolpath safety / clearance
  invariants
@@ -11492,7 +11497,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_edges_total == 1
 - **Tier-3 assertion**: n_vertices_total == 2
-- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the AP238 TRAJECTORY path, a machining semantic OCC's geometry transfer never builds, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 2-1-0-0-0-0-1) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -11662,6 +11667,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M109.stp
 
 ### M110 — AP209 ply orientation vector not normalized
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (1-0-0-0-0-0-1) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 mixed (sub-class: AP209 material orientation)
 - **Sources**: deduced from AP209 §8 composite ply orientation; ISO 10303-42
  direction normalization convention
@@ -11685,7 +11691,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'(2.0,0.0,0.0)')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the AP209 ply-orientation DIRECTION, a composite-analysis semantic OCC's geometry transfer never builds, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 1-0-0-0-0-0-1) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -11934,6 +11940,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M119.stp
 
 ### M120 — AP209 symmetry plane not perpendicular to a coordinate axis
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (1-0-0-0-0-0-1) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 mixed (sub-class: AP209 symmetry boundary condition)
 - **Sources**: deduced from AP209 §7 symmetry_plane DOF-restriction semantics
 - **Sender**: deduced — FEA preprocessor permitting arbitrary symmetry plane
@@ -11959,7 +11966,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'(0.5,0.5,0.707)')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the AP209 symmetry-plane DIRECTION, an analysis-constraint semantic OCC's geometry transfer never builds, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 1-0-0-0-0-0-1) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -12396,6 +12403,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M135.stp
 
 ### M136 — AP203 APPROVED_ITEM points to a product not in the design pool
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (8-4-1-1-1-0-0) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 (sub-class: AP203 approval cycle integrity)
 - **Sources**: 16-iso-spec ISO 10303-203 §4.4 (approval / approved_item);
  bug-reporter language: "AP203 approval phantom product",
@@ -12416,7 +12424,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'CC_DESIGN_APPROVAL')
 - **Byte assertion**: contains(b'#999')
 - **Tier-3 assertion**: n_faces_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the AP203 CC_DESIGN_APPROVAL reference, an approval/administrative semantic OCC's geometry transfer never builds (the face/shell is inert scaffold), so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 8-4-1-1-1-0-0) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
@@ -12684,6 +12692,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M145.stp
 
 ### M146 — AP210 drill diameter exceeds pad diameter (annular ring inverted)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (1-0-0-0-0-0-1) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 mixed (sub-class: AP210 via geometry)
 - **Sources**: 16-iso-spec ISO 10303-210 §6 (via_definition drill_diameter
  vs pad_diameter); IPC-2222 annular-ring rules; bug-reporter language:
@@ -12709,13 +12718,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'pad_diameter')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the AP210 pad/drill diameter properties, PCB semantics OCC's geometry transfer never builds, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 1-0-0-0-0-0-1) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M146.stp
 
 ### M147 — AP210 surface-mount component oriented on wrong board side
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (1-0-0-0-0-0-1) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 mixed (sub-class: AP210 component placement orientation)
 - **Sources**: 16-iso-spec ISO 10303-210 §6 (component placement
  constraints); bug-reporter language: "AP210 SMD wrong side",
@@ -12740,7 +12750,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'TOP_ONLY')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the AP210 board-side DESCRIPTIVE_REPRESENTATION_ITEM, a PCB placement semantic OCC's geometry transfer never builds, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 1-0-0-0-0-0-1) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -12774,6 +12784,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M148.stp
 
 ### M149 — AP210 component pin numbering doesn't match physical pin sequence
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (4-0-0-0-0-0-1) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 mixed (sub-class: AP210 pin-order CW vs CCW)
 - **Sources**: 16-iso-spec ISO 10303-210 §6 (terminal physical_location
  ordering); bug-reporter language: "AP210 pin order swapped", "PCB pin
@@ -12795,7 +12806,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'TERMINAL') >= 4
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 4
-- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the AP210 TERMINAL pin-numbering, a PCB connectivity semantic OCC's geometry transfer never builds, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 4-0-0-0-0-0-1) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
@@ -12917,6 +12928,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M153.stp
 
 ### M154 — AP210 placement footprint pin count conflicts with library footprint
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (4-0-0-0-0-0-1) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 mixed (sub-class: AP210 component package mismatch)
 - **Sources**: 16-iso-spec ISO 10303-210 §6 (component vs library
  consistency); bug-reporter language: "AP210 footprint pin count wrong",
@@ -12938,13 +12950,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'library_pin_count')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 4
-- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the AP210 library_pin_count property, a PCB semantic OCC's geometry transfer never builds, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 4-0-0-0-0-0-1) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M154.stp
 
 ### M155 — AP210 net connectivity ends at a non-pin element
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (2-0-0-0-0-0-1) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 mixed (sub-class: AP210 net endpoint type)
 - **Sources**: 16-iso-spec ISO 10303-210 §7 (network_node referenced
  endpoint type); bug-reporter language: "AP210 net ends at point",
@@ -12967,13 +12980,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'CARTESIAN_POINT')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 2
-- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the AP210 NETWORK_NODE reference, a PCB connectivity semantic OCC's geometry transfer never builds, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 2-0-0-0-0-0-1) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M155.stp
 
 ### M156 — AP210 power net carries only mechanical placement constraint
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (1-0-0-0-0-0-1) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 mixed (sub-class: AP210 net constraint completeness)
 - **Sources**: 16-iso-spec ISO 10303-210 §7 (electrical net constraint
  completeness); bug-reporter language: "AP210 power net no electrical
@@ -12997,13 +13011,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'mechanical_placement_constraint')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the AP210 NETWORK/constraint semantic OCC's geometry transfer never builds, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 1-0-0-0-0-0-1) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M156.stp
 
 ### M157 — AP210 solder mask covers a pad that should be exposed
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (1-0-0-0-0-0-1) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 mixed (sub-class: AP210 solder-mask layer association)
 - **Sources**: 16-iso-spec ISO 10303-210 §5 (solder_mask_layer / pad
  exposure); bug-reporter language: "AP210 solder mask over pad",
@@ -13028,7 +13043,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'PLY_BOUNDARY_REPRESENTATION')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the AP210 solder-mask LAMINATE_OR_PLY_DEFINITION, a PCB semantic OCC's geometry transfer never builds, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 1-0-0-0-0-0-1) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -13063,6 +13078,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M158.stp
 
 ### M159 — AP210 connector keying / polarization missing
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (4-0-0-0-0-0-1) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 mixed (sub-class: AP210 connector keying attribute)
 - **Sources**: 16-iso-spec ISO 10303-210 §6 (connector polarization
  attributes); bug-reporter language: "AP210 connector no key",
@@ -13085,7 +13101,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'TERMINAL') >= 4
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 4
-- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the AP210 connector-keying PRODUCT metadata, a PCB semantic OCC's geometry transfer never builds, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 4-0-0-0-0-0-1) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
@@ -13111,6 +13127,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M060.stp
 
 ### M061 — Scaling-factor encoded as non-unit DIRECTION ratios in AXIS2_PLACEMENT_3D / ITEM_DEFINED_TRANSFORMATION skipped on write
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (3-0-0-0-0-0-1) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 (sub-class: assembly transformation scale)
 - **Sources**: OCCT STEPControl_ActorWrite.cxx:1811 ("scaling factor, skipped") (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -13122,7 +13139,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: matches(rb'DIRECTION\(\'not_unit_length\',\(2\.0,0\.0,0\.0\)\)')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 3
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the non-unit DIRECTION magnitudes (OCC normalizes directions, so the encoded scale is discarded); the three vertices come from the CARTESIAN_POINTs, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 3-0-0-0-0-0-1) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
@@ -13146,6 +13163,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M062.stp
 
 ### M063 — Entity has no unit context; defaults silently applied
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (3-0-0-0-0-0-1) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 (sub-class: missing unit context)
 - **Sources**: OCCT STEPControl_ActorRead.cxx:1579, 1882 ("Entity with no unit context; default units taken") (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -13157,13 +13175,14 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: matches(rb'GEOMETRIC_REPRESENTATION_CONTEXT\(\'no_units\',\$,3\)')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 3
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the missing unit-context metadata (OCC applies defaults); it never changes the built topology, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 3-0-0-0-0-0-1) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M063.stp
 
 ### M064 — GEOMETRIC_REPRESENTATION_CONTEXT lacks UNCERTAINTY_MEASURE_WITH_UNIT; reader-side default precision substituted
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (4-1-0-0-0-0-1) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 (sub-class: missing tolerance context)
 - **Sources**: OCCT STEPControl_ActorRead.cxx:2116 ("No Length Uncertainty, value of read.precision.val is taken") (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -13177,7 +13196,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: n_faces_total == 0
 - **Tier-3 assertion**: n_edges_total >= 1
 - **Tier-3 assertion**: parametric.uncertainty_values == []
-- **OCC behavior**: silently accepts (no diagnostic, wire-only result); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the missing UNCERTAINTY_MEASURE metadata (OCC applies a default precision); it never changes the built topology, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 4-1-0-0-0-0-1) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Appearance/style attributes detach from their target shape; the geometry loads correctly but colors, layers, or material assignments are dropped or attached to the wrong sub-shape.
 - **Tier-3 assertion**: edge[0].curve_type == "circle"
@@ -13186,6 +13205,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Fixture path**: step-examples/12-8-mixed/M064.stp
 
 ### M065 — Product has both sub-assemblies and a directly-assigned shape
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (3-0-0-0-0-0-1) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 (sub-class: assembly hybrid hierarchy)
 - **Sources**: OCCT STEPControl_ActorRead.cxx:736 ("Product has both sub-assemblies and directly assigned shape") (uncovered class evidence)
 - **Sender**: deduced — OCCT uncovered-class sweep
@@ -13197,7 +13217,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'SHAPE_DEFINITION_REPRESENTATION')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 3
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the assembly-structure NEXT_ASSEMBLY_USAGE_OCCURRENCE semantic OCC's geometry transfer never builds into the loaded shape, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 3-0-0-0-0-0-1) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
@@ -14377,6 +14397,7 @@ _Section summary: 52 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### M003 — Free-edge tessellated shell cannot use tessellated_connecting_edge
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (0-0-0-0-1-0-1) and BRepCheck valid=False under heal_on; the shape is invalid from surfaceless tessellated toy topology (invalid even when clean), not the declared defect, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 (sub-class: tessellation)
 - **Sources**: 02-caxif.md; Tessellated Geometry §5.4.2
 - **Description**: `tessellated_connecting_edge` requires both `face1` and `face2` to be set, so it cannot represent edges on the free boundary of an open shell. Writers either fall back to plain `tessellated_edge` (losing connectivity) or, incorrectly, point `face2` at an arbitrary face. Receivers may then think the shell is closed.
@@ -14386,12 +14407,13 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'TESSELLATED_CONNECTING_EDGE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 0
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and transfers to a shape(1) that BRepCheck reports invalid, but the invalidity comes from the surfaceless tessellated toy topology, not the declared defect (a TESSELLATED_CONNECTING_EDGE on a free boundary): a clean, defect-removed variant is equally invalid with identical shape-counts (v-e-w-f-shell-solid-compound = 0-0-0-0-1-0-1). Perturbing the defect clean-to-exaggerated leaves shape-counts and validity unchanged; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### M004 — Watertightness lost when each tessellated face has its own coordinates_list
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (0-0-0-0-1-0-1) and BRepCheck valid=False under heal_on; the shape is invalid from surfaceless tessellated toy topology (invalid even when clean), not the declared defect, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 (sub-class: tessellation)
 - **Sources**: 02-caxif.md; Tessellated Geometry §5.4.3, §6
 - **Description**: Defining each `tessellated_face` with an independent `coordinates_list` produces duplicate vertices along shared edges. Floating-point quantization may make those duplicates non-equal, leaving sub-tolerance gaps along every shared edge. Recommendation: one `coordinates_list` per solid plus `tessellated_connecting_edge` per topological edge.
@@ -14401,7 +14423,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: count_entity_def(b'COORDINATES_LIST') == 6
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 0
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and transfers to a shape(1) that BRepCheck reports invalid, but the invalidity comes from the surfaceless tessellated toy topology, not the declared defect (per-face COORDINATES_LIST watertightness gaps): a clean, defect-removed variant is equally invalid with identical shape-counts (v-e-w-f-shell-solid-compound = 0-0-0-0-1-0-1). Perturbing the defect clean-to-exaggerated leaves shape-counts and validity unchanged; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
@@ -14420,6 +14442,7 @@ _Section summary: 52 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### M006 — integer_representation_item serialized without trailing decimal point
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (6-0-0-0-0-0-1) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 (sub-class: validation-property encoding)
 - **Sources**: 02-caxif.md; GVP §7.1; Tessellated §8.4.1.1; PMI v4.1 §10.1; UDA §7.2
 - **Description**: `integer_representation_item.the_value` is logically INTEGER but Part 21 emits it as REAL because the attribute was redeclared from NUMBER. Files where it appears without a trailing dot are non-conforming, and many writers do exactly that. Strict-parse-as-REAL fails; falling back to INTEGER works but cannot validate.
@@ -14430,7 +14453,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: matches(rb"INTEGER_REPRESENTATION_ITEM\('number of faces',6\)")
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 6
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the INTEGER_REPRESENTATION_ITEM metadata (the six vertices come from the CARTESIAN_POINTs, not the integer items), so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 6-0-0-0-0-0-1) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Appearance/style attributes detach from their target shape; the geometry loads correctly but colors, layers, or material assignments are dropped or attached to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
@@ -14448,6 +14471,7 @@ _Section summary: 52 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 
 ### M010 — Bound vs. unbound supplemental elements (planes, lines)
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (0-1-0-0-0-0-1) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 (sub-class: supplemental)
 - **Sources**: 02-caxif.md; Supplemental Geometry v1.3 §5.2
 - **Description**: NX-style preprocessors emit reference planes as unbounded `plane` and centerlines as unbounded `line`. CATIA-style preprocessors emit bounded `face_surface`/`edge_curve`. Round-tripping fails when a bounded reader receives an unbounded element with no fallback, or when name-bearing elements lose their name during the bound→unbound conversion.
@@ -14459,7 +14483,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'LINE')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_edges_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the bound-vs-unbound supplemental-geometry semantic; the single edge is invariant to it, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 0-1-0-0-0-0-1) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -14477,6 +14501,7 @@ _Section summary: 52 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 
 ### M012 — tessellated_constructive_geometry_representation requires AP242 Ed.4
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (0-0-0-0-1-0-1) and BRepCheck valid=False under heal_on; the shape is invalid from surfaceless tessellated toy topology (invalid even when clean), not the declared defect, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 (sub-class: tessellation + supplemental)
 - **Sources**: 02-caxif.md; Supplemental Geometry v1.3 §4 and Annex A.6
 - **Description**: TCGR (tessellated supplemental geometry) was added in AP242 Ed.4. Files using it under earlier AP242 schemas fail validation.
@@ -14486,7 +14511,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'TESSELLATED_CONSTRUCTIVE_GEOMETRY_REPRESENTATION')
 - **Byte assertion**: contains(b'442 2 1 4')
 - **Tier-3 assertion**: shape_null == False
-- **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and transfers to a shape(1) that BRepCheck reports invalid, but the invalidity comes from the surfaceless tessellated toy topology, not the declared defect (a TESSELLATED_CONSTRUCTIVE_GEOMETRY_REPRESENTATION schema-version violation): a clean, defect-removed variant is equally invalid with identical shape-counts (v-e-w-f-shell-solid-compound = 0-0-0-0-1-0-1). Perturbing the defect clean-to-exaggerated leaves shape-counts and validity unchanged; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
@@ -14880,6 +14905,7 @@ _Section summary: 52 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 
 ### M040 — STYLED_ITEM.item is NULL or unresolved
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (1-0-0-0-0-0-1) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 (sub-class: appearance)
 - **Sources**: 08-occt-gitlog.md (G027, G063); OCCT aff1875, b80d766, f0bef12; Mantis 0028147, 0028797, 0029633
 - **Description**: STEP file has `STYLED_ITEM` with NULL `item` reference, or `PRESENTATION_STYLE_ASSIGNMENT` with NULL elements in its `styles` set; OCCT's IsKind() call dereferenced NULL.
@@ -14890,7 +14916,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b"STYLED_ITEM('null_item_style',(#606),$)")
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the STYLED_ITEM presentation reference, a styling semantic OCC's geometry transfer never builds into the loaded shape, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 1-0-0-0-0-0-1) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Appearance/style attributes detach from their target shape; the geometry loads correctly but colors, layers, or material assignments are dropped or attached to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -14926,6 +14952,7 @@ _Section summary: 52 entries._
 - **Expected validation**: `occt=empty/empty gmsh=signal(11) ifc=schema_n/a`
 
 ### M043 — Layer with empty/duplicate name colliding with another
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (3-0-0-0-0-0-1) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 (sub-class: appearance)
 - **Sources**: 08-occt-gitlog.md (G110); OCCT 96049f2; Mantis 0032049
 - **Description**: Multiple `PRESENTATION_LAYER_ASSIGNMENT` entries with the same name caused conflict; OCCT didn't differentiate them by visibility.
@@ -14935,12 +14962,13 @@ _Section summary: 52 entries._
 - **Byte assertion**: count_entity_def(b'PRESENTATION_LAYER_ASSIGNMENT') >= 2
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 3
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the PRESENTATION_LAYER_ASSIGNMENT layer-name metadata OCC's geometry transfer never builds into the loaded shape, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 3-0-0-0-0-0-1) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 
 ### M044 — Empty DRAUGHTING_MODEL / PRESENTATION_LAYER_ASSIGNMENT
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (1-0-0-0-0-0-1) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 (sub-class: appearance)
 - **Sources**: 08-occt-gitlog.md (G049); OCCT 9063f1e; Mantis 0030870
 - **Description**: STEP file with empty presentation entities (no assigned items) caused reader exception.
@@ -14952,7 +14980,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: matches(rb'PRESENTATION_LAYER_ASSIGNMENT\([^)]*,\(\)\)')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the empty PRESENTATION_LAYER_ASSIGNMENT/DRAUGHTING_MODEL metadata OCC's geometry transfer never builds into the loaded shape, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 1-0-0-0-0-0-1) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Appearance/style attributes detach from their target shape; the geometry loads correctly but colors, layers, or material assignments are dropped or attached to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -14985,6 +15013,7 @@ _Section summary: 52 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 
 ### M047 — Texture / bitmap (IMAGE_TEXTURE / TEXTURE_MAPPING) loss on translation
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (4-0-0-0-0-0-1) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 (sub-class: appearance + raster textures)
 - **Sources**: 11-translator-vendors.md (W025); HOOPS Exchange 2025.1.0 SDHE-21230
 - **Description**: Image textures and UV mappings lost when exporting to a tessellated format that supposedly supports them. Out-of-scope for pure-STEP kernels but indicates expected coverage.
@@ -14995,7 +15024,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'TEXTURE_MAPPING')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 4
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the IMAGE_TEXTURE/TEXTURE_MAPPING presentation metadata OCC's geometry transfer never builds into the loaded shape, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 4-0-0-0-0-0-1) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
@@ -15033,6 +15062,7 @@ _Section summary: 52 entries._
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### M050 — Composite material LLAI (Limited Length / Area Indicator) gaps
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (4-0-0-0-0-0-1) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 (sub-class: composite materials extension)
 - **Sources**: 17-standards-bodies.md (M033); prostep ivip MBx-IF status update; CAx-IF Composites RP v4.4
 - **Description**: Composite-ply geometry that requires "limited length or area indicators" to mark plies extending only over part of a base surface is not yet uniformly implemented; older AP242 implementations either drop the LLAI metadata or encode it inconsistently across vendors. LLAI extension targeted at AP242 Ed.4.
@@ -15043,7 +15073,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'LIMITED_AREA_INDICATOR')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 4
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the composite-ply LIMITED_AREA_INDICATOR property, a material semantic OCC's geometry transfer never builds into the loaded shape, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 4-0-0-0-0-0-1) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a`
@@ -15126,6 +15156,7 @@ _Section summary: 52 entries._
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### M056 — Tessellation export missing or conflicting with B-rep representation
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (1-0-0-0-1-0-1) and BRepCheck valid=False under heal_on; the shape is invalid from surfaceless tessellated toy topology (invalid even when clean), not the declared defect, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 (sub-class: tessellation)
 - **Sources**: 10-vendor-kbs.md (V041 SW2022 SP1/SP2 regression); 11-translator-vendors.md (W035); 06-nist-sfa.md (S068); 17-standards-bodies.md (M031 JT/STEP)
 - **Description**: For some assemblies tessellation data is omitted on save (downstream tools relying on STEP AP242 graphical_pmi tessellated representation see no preview mesh). Conversely, files providing only tessellation when a B-rep consumer expects B-rep appear empty. Mixing `tessellated_annotation_occurrence` with curve-style annotation occurrences for the same callout is not interoperable.
@@ -15137,7 +15168,7 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'GEOMETRIC_CURVE_SET')
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
-- **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
+- **OCC behavior**: accepts and transfers to a shape(1) that BRepCheck reports invalid, but the invalidity comes from the surfaceless tessellated toy topology, not the declared defect (tessellation conflicting with the B-rep representation): a clean, defect-removed variant is equally invalid with identical shape-counts (v-e-w-f-shell-solid-compound = 1-0-0-0-1-0-1). Perturbing the defect clean-to-exaggerated leaves shape-counts and validity unchanged; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -33121,6 +33152,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### M161 — Reader does not validate cross-references; dangling references silently accepted
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (0-0-0-1-1-0-0) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 mixed / auxiliary (sub-class: missing input validation)
 - **Sources**: OCCT MANTIS#0025602; bug-reporter language: "important for IGES and STEP file format to add check if wrong data are read from the file", "reader silently accepts cross-references that don't resolve", "no input validation in STEP reader". (OCCT MANTIS tracker 502 as of 2026-05-02)
 - **Sender**: Hand-edited fixtures, fuzzers, and a handful of corruption-on-write producers that emit references to entity IDs that never appear in the file body.
@@ -33131,7 +33163,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **Byte assertion**: contains(b'EDGE_CURVE')
 - **Byte assertion**: matches(rb'#9999')
 - **Tier-3 assertion**: n_faces_total == 1
-- **OCC behavior**: silent-accept, warn-and-proceed observed (catalog allowed: {reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the dangling #9999 cross-reference: a clean resolved reference yields an identical, equally-valid shape, so the silent-accept is oracle-invisible, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 0-0-0-1-1-0-0) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -37042,6 +37074,7 @@ exercised against CGAL PMP / MeshFix.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
 
 ### M193 — Tessellated face's declared exact-geometry link points at a real but never-built face, reader substitutes a surfaceless mesh face
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (0-0-0-1-0-0-0) and BRepCheck valid=False under heal_on; the shape is invalid from surfaceless tessellated toy topology (invalid even when clean), not the declared defect, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 (sub-class: tessellation / mesh-as-brep)
 - **Sources**: 04-occt-translation.md; StepToTopoDS_TranslateFace.cxx:718-738 (unresolved geometric_link falls back to a fresh empty face with the has-geometry flag cleared, via a lookup against the transient-process binder map rather than a recursive translate of the linked entity); BRepCheck_Face.cxx:106 (NoSurface status).
 - **Description**: A tessellated face declares a link to its exact-geometry counterpart, but that counterpart, while a real and well-formed face entity present in the file, is never itself built as part of the model because nothing else in the model's shell/solid structure reaches it. The declared link therefore resolves to nothing at read time, and the reader quietly substitutes an empty face carrying only the mesh data in its place — a face with triangle geometry attached but no underlying continuous surface at all.
@@ -37055,13 +37088,14 @@ exercised against CGAL PMP / MeshFix.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "other"
 - **Tier-3 assertion**: brepcheck.valid == False
-- **OCC behavior**: accepts and transfers to a single face carrying the mesh triangle but no surface (validity check reports invalid for the missing surface); the independent mesh-processing oracle crashes on this input. Kernel-bug witnessed: a face with no surface at all is delivered without a diagnostic that distinguishes it from a legitimately empty mesh.
+- **OCC behavior**: accepts and transfers to a shape(1) that BRepCheck reports invalid, but the invalidity comes from the surfaceless tessellated toy topology, not the declared defect (a TRIANGULATED_FACE geometric_link pointing at a never-built ADVANCED_FACE): a clean, defect-removed variant is equally invalid with identical shape-counts (v-e-w-f-shell-solid-compound = 0-0-0-1-0-0-0). Perturbing the defect clean-to-exaggerated leaves shape-counts and validity unchanged; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: A downstream operation that assumes every face carries a continuous surface (offsetting, filleting, boolean, curvature analysis) receives a face it cannot evaluate; silent substitution means the failure surfaces far from its actual cause.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M193.stp
 
 ### M194 — Tessellated shell's declared topological-geometry link points at a real but never-built shell, reader substitutes a fresh shell
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (0-0-0-1-1-0-0) and BRepCheck valid=False under heal_on; the shape is invalid from surfaceless tessellated toy topology (invalid even when clean), not the declared defect, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 (sub-class: tessellation / mesh-as-brep)
 - **Sources**: 04-occt-translation.md; StepToTopoDS_TranslateShell.cxx:140-157 (unresolved topological_link falls back to a fresh shell built from the shell's own tessellated items, has-geometry flag cleared).
 - **Description**: A tessellated shell declares a link to its exact-topology counterpart, but that counterpart, though a real and well-formed shell entity present in the file, is never itself built as part of the model because it is not wired into anything the model's shape representation reaches. The declared link resolves to nothing at read time, and the reader quietly builds a brand-new shell from the tessellated shell's own mesh items instead of substituting the intended precise topology.
@@ -37074,13 +37108,14 @@ exercised against CGAL PMP / MeshFix.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "other"
 - **Tier-3 assertion**: brepcheck.valid == False
-- **OCC behavior**: accepts and transfers to a fresh single-face shell carrying the mesh triangle but no surface (validity check reports invalid); the independent mesh-processing oracle crashes on this input. Kernel-bug witnessed: a freshly-fabricated shell substituted for the declared exact-topology counterpart is delivered without a diagnostic distinguishing it from the intended precise shell.
+- **OCC behavior**: accepts and transfers to a shape(1) that BRepCheck reports invalid, but the invalidity comes from the surfaceless tessellated toy topology, not the declared defect (a TESSELLATED_SHELL topological_link pointing at a never-built OPEN_SHELL): a clean, defect-removed variant is equally invalid with identical shape-counts (v-e-w-f-shell-solid-compound = 0-0-0-1-1-0-0). Perturbing the defect clean-to-exaggerated leaves shape-counts and validity unchanged; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: A consumer expecting the shell to carry the producer's precise topology instead receives a rebuilt shell with none of the original surface data, silently diverging from the source model.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M194.stp
 
 ### M195 — Tessellated solid's declared exact-geometry link points at a real but never-built solid, reader substitutes a fresh shell-plus-solid
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (0-0-0-1-1-1-0) and BRepCheck valid=False under heal_on; the shape is invalid from surfaceless tessellated toy topology (invalid even when clean), not the declared defect, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 (sub-class: tessellation / mesh-as-brep)
 - **Sources**: 04-occt-translation.md; StepToTopoDS_TranslateSolid.cxx:67-82 (unresolved geometric_link, checked both for presence and for binding before lookup, falls back to a fresh shell wrapped in a fresh solid, has-geometry flag cleared).
 - **Description**: A tessellated solid declares a link to its exact-geometry counterpart, but that counterpart, though a real and well-formed solid entity present in the file, is never itself built as part of the model because it is not wired into anything the model's shape representation reaches. The declared link resolves to nothing at read time, and the reader quietly fabricates a brand-new shell-and-solid pair from the tessellated solid's own mesh items instead of substituting the intended precise geometry.
@@ -37093,13 +37128,14 @@ exercised against CGAL PMP / MeshFix.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "other"
 - **Tier-3 assertion**: brepcheck.valid == False
-- **OCC behavior**: accepts and transfers to a fresh solid whose sole face carries the mesh triangle but no surface (validity check reports invalid); the independent mesh-processing oracle crashes on this input. Kernel-bug witnessed: a freshly-fabricated shell-and-solid pair substituted for the declared exact-geometry counterpart is delivered without a diagnostic distinguishing it from the intended precise solid.
+- **OCC behavior**: accepts and transfers to a shape(1) that BRepCheck reports invalid, but the invalidity comes from the surfaceless tessellated toy topology, not the declared defect (a TESSELLATED_SOLID geometric_link pointing at a never-built MANIFOLD_SOLID_BREP): a clean, defect-removed variant is equally invalid with identical shape-counts (v-e-w-f-shell-solid-compound = 0-0-0-1-1-1-0). Perturbing the defect clean-to-exaggerated leaves shape-counts and validity unchanged; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: A consumer expecting the solid to carry the producer's precise geometry instead receives a rebuilt solid with none of the original surface data; volume, mass, and manufacturing calculations run against a fabricated stand-in.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M195.stp
 
 ### M196 — Bare geometric set mixing a supported curve with an unsupported placement entity: the placement is silently skipped, the curve translates normally
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (2-1-0-0-0-0-1) and BRepCheck valid=True under heal_on; the declared defect is oracle-invisible, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 (sub-class: mesh-as-brep / wireframe)
 - **Sources**: 04-occt-translation.md (Q030); StepToTopoDS_Builder.cxx:636-775 (per-item type dispatch inside the geometric-set builder: curve/point/surface each get a dedicated path; anything else that is still a generic geometry-representation item is routed through a last-resort general-purpose transfer, and a bare placement entity produces no shape there, so it is silently omitted from the result with only a warning).
 - **Description**: A bare geometric set aggregates items beyond curve/surface/point — here a placement entity alongside an ordinary curve. Per-item type dispatch inside the reader recognizes the curve and builds a live edge from it; the placement entity matches none of the directly-supported kinds, falls through to a last-resort general path that has no way to turn a bare placement into geometry, and is silently dropped with nothing surfaced to the consumer about the item that went missing.
@@ -37114,7 +37150,7 @@ exercised against CGAL PMP / MeshFix.
 - **Tier-3 assertion**: n_edges_total == 1
 - **Tier-3 assertion**: edge[0].curve_type == "circle"
 - **Tier-3 assertion**: brepcheck.valid == True
-- **OCC behavior**: accepts and transfers to a single free edge from the circle; the placement entity contributes nothing to the result and no diagnostic distinguishes "item silently unsupported" from "item legitimately absent". Kernel-bug witnessed: partial transfer is reported as a plain success.
+- **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the unsupported AXIS2_PLACEMENT_3D item silently skipped from the geometric set; the single edge from the CIRCLE is invariant whether the placement is present, absent, or duplicated, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 2-1-0-0-0-0-1) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P2
 - **Model impact**: A producer that relied on the placement entity carrying meaning (a reference frame, a datum) loses it silently; a consumer comparing item counts between source and transferred model has no signal that anything was dropped.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`
@@ -37162,6 +37198,7 @@ exercised against CGAL PMP / MeshFix.
 - **Fixture path**: step-examples/12-8-mixed/M198.stp
 
 ### M199 — Tessellated face's per-face normal row has the wrong number of components; the reader silently leaves every node's normal unset rather than misreading the row
+- **Status**: honest reclassification (2026-07-18, fidelity re-audit) — oracle-invariance test: base/clean(defect removed)/huge(defect exaggerated) all give identical shape-counts (0-0-0-1-0-0-0) and BRepCheck valid=False under heal_on; the shape is invalid from surfaceless tessellated toy topology (invalid even when clean), not the declared defect, so shape(1) does not witness a kernel bug. Expected/byte/Tier-3/.stp unchanged; retained as byte-level / provenance coverage.
 - **Category**: §12.8 (sub-class: tessellation)
 - **Sources**: 04-occt-translation.md; StepToTopoDS_TranslateFace.cxx:123-131 (the normals table's row width is checked once, up front, against the required three components; any other width returns immediately, before the per-node assignment loop that would otherwise copy the row's values into the mesh ever runs).
 - **Description**: A tessellated face can declare a single per-face normal (one row, applied to every node) instead of one normal per node. When that one row does not have exactly the three components an XYZ vector needs, the reader does not try to interpret whatever values are present, nor does it reject the face — it simply leaves the mesh's per-node normal storage allocated but never actually filled with the row's values, so every node keeps its zero-initialized default rather than the malformed vector.
@@ -37174,7 +37211,7 @@ exercised against CGAL PMP / MeshFix.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "other"
 - **Tier-3 assertion**: brepcheck.valid == False
-- **OCC behavior**: accepts and transfers to a single mesh-bearing face whose triangle geometry is intact but whose per-node normals report as present while every value is the zero-initialized default (not the malformed row's values). Kernel-bug witnessed: a "has normals" flag that lies about whether usable normal data actually exists.
+- **OCC behavior**: accepts and transfers to a shape(1) that BRepCheck reports invalid, but the invalidity comes from the surfaceless tessellated toy topology, not the declared defect (a TRIANGULATED_FACE normal-row arity mismatch): a clean, defect-removed variant is equally invalid with identical shape-counts (v-e-w-f-shell-solid-compound = 0-0-0-1-0-0-0). Perturbing the defect clean-to-exaggerated leaves shape-counts and validity unchanged; shape(1) does not witness a kernel bug.
 - **Severity**: P2
 - **Model impact**: A renderer or analysis tool that trusts the has-normals flag without validating individual values gets zero vectors passed to shading or curvature calculations, producing black/undefined results instead of a clear "no normals" fallback.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a`
