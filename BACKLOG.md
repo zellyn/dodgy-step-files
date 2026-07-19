@@ -138,6 +138,19 @@ notes; Twi052/Lh053/Gs006/Gs049 confirmed already-accurate.
 - **Pf017** — carries a separate stale `Cross-oracle` Notes line claiming "OCCT silently accepts (load is
   empty)" that contradicts the measured shape(1) load (an E_REAL_NO_DOT concern); worth a small targeted fix.
 
+**(F) INCIDENTAL-PARSE-ERROR HYGIENE SWEEP — DONE 2026-07-18 (through 8d3688d0).** Ran `part21_strict`
+corpus-wide (2682 files, 292 hits) to find fixtures throwing a parse error UNRELATED to their declared
+defect (the LENGTH_MEASURE flavor). Fixed all incidental-artifact clusters, every fix verified
+behavior-preserving (occt tokens identical before/after): **LENGTH_MEASURE** — 1819 builder + 29 static +
+2 .py-backed = complete, 0 remaining; **E_NON_ASCII_MINUS (7)** Gn126/Tsh084/Tsh085/Twi214/Tfa125/Tfa136/
+Tfa146 (all were U+2212 in comments/strings, not coordinates — cosmetic); **E_REAL_NO_DOT (3)** Gp078/Gp156/
+Gs142 (dot-less exponent reals). Wr005 left LEGIT (its declared defect IS the float-format inconsistency).
+**Remaining lower-priority clusters (reported, NOT actioned — need a triage decision):** W_COMPLEX_ORDER (6:
+Pf036/Wr027/U008/U009/Pmi009/M076 — soft warning, realistic writer behavior); W_BARE_BACKSLASH (2: M002/
+M067); structural rejects needing per-fixture review (U001 E_PAREN_NEGATIVE, M136 E_STRING_OPEN cascade);
+and 70 E_UNRESOLVED_REFS which are the already-tracked Q6 dangling-ref audit class. 103 hits were BENIGN
+(legal W_FORWARD_REF/W_BOM), ~68 LEGIT (defect IS the syntax error).
+
 **BUG-WITNESS FIDELITY SWEEP COMPLETE (all 3 verdict classes): shape(1) ✓ · empty ✓ · signal ✓.**
 "Kernel-bug witnessed" 801 → 306 (495 reclassified). The remaining 306 = risky-but-genuine residue
 (50 sounds + ~40 flagged adversarial probes + 24 confirmed crashes) + verdicts whose allowed set INCLUDES
