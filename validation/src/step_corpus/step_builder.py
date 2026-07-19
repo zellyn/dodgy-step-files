@@ -591,16 +591,17 @@ class StepFile:
         )
         unc_literal = f"LENGTH_MEASURE({uncertainty:.6E})" if uncertainty != 1.0E-7 else "LENGTH_MEASURE(1.0E-7)"
         # ``measure_value`` is a SELECT slot: the correct Part-21 form is a bare
-        # typed real ``LENGTH_MEASURE(...)``. The historical default wraps it in
-        # enum dots (``.LENGTH_MEASURE(...).``) — a syntax error OCCT reports as
-        # "Incorrect Syntax" before recovering. Kept as the default for byte
-        # compatibility across the corpus; fixtures that must be free of the
-        # spurious parse error pass ``uncertainty_literal`` to opt into the
-        # well-formed bare-typed-real form.
+        # typed real ``LENGTH_MEASURE(...)``. A historical bug wrapped it in enum
+        # dots (``.LENGTH_MEASURE(...).``) — a syntax error OCCT reports as
+        # "Incorrect Syntax" before recovering. The default now emits the
+        # well-formed bare-typed-real form for every caller. The
+        # ``uncertainty_literal`` override remains supported for callers that
+        # need to inject a fully custom literal (it is redundant for fixtures
+        # that previously used it only to opt into the corrected form).
         if uncertainty_literal is not None:
             unc_arg: Any = Raw(uncertainty_literal)
         else:
-            unc_arg = Enum_(unc_literal)
+            unc_arg = Raw(unc_literal)
         uncertainty_ent = self._emit(
             "UNCERTAINTY_MEASURE_WITH_UNIT",
             unc_arg,

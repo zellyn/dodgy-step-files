@@ -168,7 +168,7 @@
 <span class="lineno">124</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 <span class="lineno">125</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 <span class="lineno">126</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">127</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">127</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
 <span class="lineno">128</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
 <span class="lineno">129</span>#9061=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;&#x27;,(#108),#9060);
 <span class="lineno">130</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);

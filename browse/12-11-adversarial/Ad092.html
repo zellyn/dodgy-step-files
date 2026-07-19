@@ -75,7 +75,7 @@
 <span class="lineno">18</span><mark>#</mark>9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 <span class="lineno">19</span><mark>#</mark>9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 <span class="lineno">20</span><mark>#</mark>9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">21</span><mark>#</mark>9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,<mark>#</mark>9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">21</span><mark>#</mark>9059=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),<mark>#</mark>9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
 <span class="lineno">22</span><mark>#</mark>9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((<mark>#</mark>9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((<mark>#</mark>9056,<mark>#</mark>9057,<mark>#</mark>9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
 <span class="lineno">23</span><mark>#</mark>9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(<mark>#</mark>2),<mark>#</mark>9060);
 <span class="lineno">24</span><mark>#</mark>9062=SHAPE_DEFINITION_REPRESENTATION(<mark>#</mark>9055,<mark>#</mark>9061);

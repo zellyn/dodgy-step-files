@@ -37,7 +37,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>OCCT ≥ 8.0&#x27;s `STEPControl_Writer` must split oversized raw strings across multiple 72-column lines even when the indentation prefix consumes most of the available columns; the writer advance-pointer must never be 0 regardless of indent depth.</p></section>
 <section><h2>Notes</h2>
-<p>OCCT #1318. B4 wave-8 DEF-CCC. Confidence: MEDIUM — mechanism fully described in PR but exact trip conditions depend on OCCT writer&#x27;s indent policy; the fixture encodes the INPUT file (the defect surfaces only on write→reread against pre-fix OCCT ≤ 7.9). Since we cannot run the pre-fix OCCT writer&#x27;s infinite loop inside CI without hanging, the fixture is a WRITER-INTENT specimen: any downstream tool re-exporting this file through pre-fix OCCT would hang forever. Post-fix / current OCCT reads shape(1); the defect is invisible on the input side. Live-oracle diagnostics carry &quot;Incorrect Syntax : Fails Count : 2&quot;. Synonyms: &quot;OCCT #1318 writer infinite loop&quot;, &quot;STEPControl_Writer oversized string hang&quot;, &quot;72-column line-wrap zero-advance bug&quot;, &quot;DESCRIPTIVE_REPRESENTATION_ITEM oversized string writer hang&quot;, &quot;STEP writer indentation prefix loop&quot;.</p></section>
+<p>OCCT #1318. B4 wave-8 DEF-CCC. Confidence: MEDIUM — mechanism fully described in PR but exact trip conditions depend on OCCT writer&#x27;s indent policy; the fixture encodes the INPUT file (the defect surfaces only on write→reread against pre-fix OCCT ≤ 7.9). Since we cannot run the pre-fix OCCT writer&#x27;s infinite loop inside CI without hanging, the fixture is a WRITER-INTENT specimen: any downstream tool re-exporting this file through pre-fix OCCT would hang forever. Post-fix / current OCCT reads shape(1); the defect is invisible on the input side. Synonyms: &quot;OCCT #1318 writer infinite loop&quot;, &quot;STEPControl_Writer oversized string hang&quot;, &quot;72-column line-wrap zero-advance bug&quot;, &quot;DESCRIPTIVE_REPRESENTATION_ITEM oversized string writer hang&quot;, &quot;STEP writer indentation prefix loop&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
@@ -290,7 +290,7 @@
 <span class="lineno">234</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
 <span class="lineno">235</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
 <span class="lineno">236</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
-<span class="lineno">237</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(.LENGTH_MEASURE(1.0E-7).,#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">237</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
 <span class="lineno">238</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
 <span class="lineno">239</span>#9061=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;&#x27;,(#218),#9060);
 <span class="lineno">240</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
