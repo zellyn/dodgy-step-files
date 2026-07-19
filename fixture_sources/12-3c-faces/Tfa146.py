@@ -27,7 +27,7 @@ f = StepFile(
     catalog_id="Tfa146",
     defect=(
         "CLOSED_SHELL: 10×10×1 box; "
-        "top face (z=1) has PLANE axis with x-direction reversed (−X) so "
+        "top face (z=1) has PLANE axis with x-direction reversed (-X) so "
         "parametric (u,v) winding is CW while 3D wire is CCW; "
         "FixOrientation parametric-winding test incorrectly flags wire as "
         "reversed; 3D test would confirm correct winding; "
@@ -81,15 +81,15 @@ bot_loop = f.edge_loop([
 ax_bot = f.axis2_placement_3d(p_A, f.direction((0.0, 0.0, -1.0)), f.direction((1.0, 0.0, 0.0)))
 face_bot = f.advanced_face([f.face_outer_bound(bot_loop)], f.plane(ax_bot))
 
-# ── Top face: THE DEFECT — PLANE axis has x-dir reversed (−X) ───────────────
+# ── Top face: THE DEFECT — PLANE axis has x-dir reversed (-X) ───────────────
 # 3D winding is CCW (E→F→G→H→E viewed from above).
-# PLANE xdir = (−1,0,0): parametric u runs right-to-left, making (u,v)
+# PLANE xdir = (-1,0,0): parametric u runs right-to-left, making (u,v)
 # winding appear CW. FixOrientation's parametric test would reverse the wire.
 top_loop = f.edge_loop([
     f.oriented_edge(eEF, True), f.oriented_edge(eFG, True),
     f.oriented_edge(eGH, True), f.oriented_edge(eHE, True),
 ])
-# Normal = zdir × xdir_reversed: zdir=(0,0,1), xdir=(−1,0,0) → still valid plane
+# Normal = zdir × xdir_reversed: zdir=(0,0,1), xdir=(-1,0,0) → still valid plane
 # but parametric cross-product gives CW appearance
 ax_top = f.axis2_placement_3d(p_G, f.direction((0.0, 0.0, 1.0)), f.direction((-1.0, 0.0, 0.0)))
 face_top = f.advanced_face([f.face_outer_bound(top_loop)], f.plane(ax_top))

@@ -1,5 +1,5 @@
 ISO-10303-21;
-/* Tfa146: CLOSED_SHELL: 10×10×1 box; top face (z=1) has PLANE axis with x-direction reversed (−X) so parametric (u,v) winding is CW while 3D wire is CCW; FixOrientation parametric-winding test incorrectly flags wire as reversed; 3D test would confirm correct winding; defect IS on live CLOSED_SHELL traversal path */
+/* Tfa146: CLOSED_SHELL: 10×10×1 box; top face (z=1) has PLANE axis with x-direction reversed (-X) so parametric (u,v) winding is CW while 3D wire is CCW; FixOrientation parametric-winding test incorrectly flags wire as reversed; 3D test would confirm correct winding; defect IS on live CLOSED_SHELL traversal path */
 HEADER;
 FILE_DESCRIPTION(('Tfa146'),'2;1');
 FILE_NAME('Tfa146.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');

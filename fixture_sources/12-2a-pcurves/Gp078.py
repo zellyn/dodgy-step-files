@@ -27,6 +27,20 @@ from step_corpus.step_builder import StepFile
 
 NEAR_DEGEN = 1e-8   # just above Confusion threshold
 
+
+def _r(x: float) -> str:
+    """repr() but guaranteeing a decimal point in the mantissa so the emitted
+    STEP REAL is well-formed (e.g. 1e-08 -> 1.0e-08); value is unchanged."""
+    s = repr(x)
+    if "e" in s or "E" in s:
+        mant, _, exp = s.replace("E", "e").partition("e")
+        if "." not in mant:
+            mant += ".0"
+        return f"{mant}e{exp}"
+    if "." not in s:
+        s += ".0"
+    return s
+
 f = StepFile(
     catalog_id="Gp078",
     defect=(
@@ -57,8 +71,8 @@ prc = f._emit_raw(
 # We use the entire bottom of the face for the defect edge for clarity,
 # but the actual endpoints ARE at the near-degenerate separation.
 p_bl = f.cartesian_point((0.0,      0.0, 0.0))
-p_br = f._emit_raw(f"CARTESIAN_POINT('',({NEAR_DEGEN!r},0.0,0.0))")
-p_tr = f._emit_raw(f"CARTESIAN_POINT('',({NEAR_DEGEN!r},1.0,0.0))")
+p_br = f._emit_raw(f"CARTESIAN_POINT('',({_r(NEAR_DEGEN)},0.0,0.0))")
+p_tr = f._emit_raw(f"CARTESIAN_POINT('',({_r(NEAR_DEGEN)},1.0,0.0))")
 p_tl = f.cartesian_point((0.0, 1.0, 0.0))
 v_bl = f.vertex_point(p_bl)
 v_br = f._emit_raw(f"VERTEX_POINT('',#{p_br.eid})")
@@ -69,11 +83,11 @@ v_tl = f.vertex_point(p_tl)
 # CP[2]=(0.3e-8, 0, 0) before break; CP[3]=(0.8e-8, 0, 0) after break: 0.5e-8 gap.
 HALF = NEAR_DEGEN * 0.5
 cp0 = f.cartesian_point((0.0,           0.0, 0.0))
-cp1 = f._emit_raw(f"CARTESIAN_POINT('',({NEAR_DEGEN*0.2!r},0.0,0.0))")
-cp2 = f._emit_raw(f"CARTESIAN_POINT('',({NEAR_DEGEN*0.3!r},0.0,0.0))")   # before break
-cp3 = f._emit_raw(f"CARTESIAN_POINT('',({NEAR_DEGEN*0.8!r},0.0,0.0))")   # after break: 0.5e-8 gap
-cp4 = f._emit_raw(f"CARTESIAN_POINT('',({NEAR_DEGEN*0.9!r},0.0,0.0))")
-cp5 = f._emit_raw(f"CARTESIAN_POINT('',({NEAR_DEGEN!r},0.0,0.0))")
+cp1 = f._emit_raw(f"CARTESIAN_POINT('',({_r(NEAR_DEGEN*0.2)},0.0,0.0))")
+cp2 = f._emit_raw(f"CARTESIAN_POINT('',({_r(NEAR_DEGEN*0.3)},0.0,0.0))")   # before break
+cp3 = f._emit_raw(f"CARTESIAN_POINT('',({_r(NEAR_DEGEN*0.8)},0.0,0.0))")   # after break: 0.5e-8 gap
+cp4 = f._emit_raw(f"CARTESIAN_POINT('',({_r(NEAR_DEGEN*0.9)},0.0,0.0))")
+cp5 = f._emit_raw(f"CARTESIAN_POINT('',({_r(NEAR_DEGEN)},0.0,0.0))")
 
 bspline_3d = f._emit_raw(
     f"B_SPLINE_CURVE_WITH_KNOTS('near_degen',2,"

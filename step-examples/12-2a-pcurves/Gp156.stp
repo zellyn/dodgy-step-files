@@ -67,7 +67,7 @@ DATA;
 #58=CARTESIAN_POINT('',(0.0,0.0));
 #59=CARTESIAN_POINT('',(0.5,0.0));
 #60=CARTESIAN_POINT('',(1.0,0.0));
-#61=B_SPLINE_CURVE_WITH_KNOTS('param_degeneracy_pc',2,(#58,#59,#60),.UNSPECIFIED.,.F.,.F.,(3,3),(0.0,1e-8),.UNSPECIFIED.);
+#61=B_SPLINE_CURVE_WITH_KNOTS('param_degeneracy_pc',2,(#58,#59,#60),.UNSPECIFIED.,.F.,.F.,(3,3),(0.0,1.0e-8),.UNSPECIFIED.);
 #62=DEFINITIONAL_REPRESENTATION('param_degeneracy_pc_def',(#61),#6);
 #63=PCURVE('param_degeneracy_pc_ent',#5,#62);
 #64=SURFACE_CURVE('param_degeneracy_sc',#57,(#63),.PCURVE_S1.);

@@ -58,7 +58,7 @@ nested = ",".join("(" + ",".join(f"#{p.eid}" for p in row) + ")" for row in cp_r
 # Weight array must be LIST OF LIST matching control point grid order (rows x cols)
 # Row 0: (1.0, 1e-6, 1.0), Row 1: (1.0, 1e-6, 1.0), Row 2: (1.0, 1e-6, 1.0)
 w_normal = 1.0
-w_singular = 1e-6
+w_singular = "1.0e-6"
 weights = (
     f"(({w_normal},{w_singular},{w_normal}),"
     f"({w_normal},{w_singular},{w_normal}),"

@@ -1,5 +1,5 @@
 ISO-10303-21;
-/* Gn126: TRIMMED_CURVE(CIRCLE radius=1.0); trim1=0.001, trim2=6.2822 (2π−0.001); IS defect edge SURFACE_CURVE.curve_3d; GetSamplePoints 360-degree grid skips tiny gap near 2π → shape_null=True */
+/* Gn126: TRIMMED_CURVE(CIRCLE radius=1.0); trim1=0.001, trim2=6.2822 (2π-0.001); IS defect edge SURFACE_CURVE.curve_3d; GetSamplePoints 360-degree grid skips tiny gap near 2π → shape_null=True */
 HEADER;
 FILE_DESCRIPTION(('Gn126'),'2;1');
 FILE_NAME('Gn126.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');

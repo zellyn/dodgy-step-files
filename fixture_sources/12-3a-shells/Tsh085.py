@@ -1,16 +1,16 @@
 """Tsh085 — ShapeFix_Shell.FixFaceOrientation transition-point.
 
 Catalog claim: Shell containing two adjacent faces meeting at shared edge
-with opposing normal vectors (one +Z, one −Z at seam). Edge-traversal
+with opposing normal vectors (one +Z, one -Z at seam). Edge-traversal
 neighbor selection fails to detect normal discontinuity; fixer chooses wrong
 orientation branch during iteration.
 
 Mechanism IS the shell structure: OPEN_SHELL contains 2 ADVANCED_FACEs
 sharing a single EDGE_CURVE entity at x=1. Face A (x=0..1) has plane normal
-+Z (same_sense=True); Face B (x=1..2) has plane normal −Z (same_sense=False).
++Z (same_sense=True); Face B (x=1..2) has plane normal -Z (same_sense=False).
 The shared EDGE_CURVE IS wired into both EDGE_LOOPs: Face A uses it reversed
 (oriented_edge .F.), Face B uses it forward (oriented_edge .T.). At the
-shared seam the outward normals are anti-parallel (+Z on left, −Z on right);
+shared seam the outward normals are anti-parallel (+Z on left, -Z on right);
 this normal discontinuity IS the mechanism directly embedded in the ADVANCED_FACE
 same_sense flags. FixFaceOrientation's edge-traversal at line 1428 picks a
 neighbor branch at the seam but cannot distinguish which face is correctly
@@ -28,7 +28,7 @@ f = StepFile(
         "OPEN_SHELL with 2 ADVANCED_FACEs; "
         "one EDGE_CURVE IS shared between both faces at x=1; "
         "Face A (x=0..1) IS wired same_sense=True (normal +Z); "
-        "Face B (x=1..2) IS wired same_sense=False (normal −Z, i.e. inward); "
+        "Face B (x=1..2) IS wired same_sense=False (normal -Z, i.e. inward); "
         "opposing same_sense flags at shared seam IS the mechanism; "
         "anti-parallel normals at transition point IS directly in ADVANCED_FACE topology; "
         "ShapeFix_Shell.FixFaceOrientation at line 1428 traverses seam; "
@@ -69,7 +69,7 @@ loopA = f.edge_loop([
 ])
 face_A = f.advanced_face([f.face_outer_bound(loopA)], pl_A, same_sense=True)
 
-# ── Face B: right quad x=1..2, normal −Z (same_sense=False) IS the defect ─
+# ── Face B: right quad x=1..2, normal -Z (same_sense=False) IS the defect ─
 pl_B = f.plane(f.axis2_placement_3d(p10, dir3(0, 0, 1), dir3(1, 0, 0)))
 eB_bot   = led(v10, v20, p10,  1, 0, 0)
 eB_right = led(v20, v21, p20,  0, 1, 0)

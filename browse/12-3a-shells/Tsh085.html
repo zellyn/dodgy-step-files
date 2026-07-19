@@ -43,7 +43,7 @@
 <details>
 <summary>Show fixture bytes</summary>
 <pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
-<span class="lineno">2</span>/* Tsh085: OPEN_SHELL with 2 ADVANCED_FACEs; one EDGE_CURVE IS shared between both faces at x=1; Face A (x=0..1) IS wired same_sense=True (normal +Z); Face B (x=1..2) IS wired same_sense=False (normal âZ, i.e. inward); opposing same_sense flags at shared seam IS the mechanism; anti-parallel normals at transition point IS directly in ADVANCED_FACE topology; ShapeFix_Shell.FixFaceOrientation at line 1428 traverses seam; cannot distinguish which side is correctly oriented; fix: compare face normals at shared edge before choosing orientation branch; emit E_NORMAL_DISCONTINUITY at transition edges */
+<span class="lineno">2</span>/* Tsh085: OPEN_SHELL with 2 ADVANCED_FACEs; one EDGE_CURVE IS shared between both faces at x=1; Face A (x=0..1) IS wired same_sense=True (normal +Z); Face B (x=1..2) IS wired same_sense=False (normal -Z, i.e. inward); opposing same_sense flags at shared seam IS the mechanism; anti-parallel normals at transition point IS directly in ADVANCED_FACE topology; ShapeFix_Shell.FixFaceOrientation at line 1428 traverses seam; cannot distinguish which side is correctly oriented; fix: compare face normals at shared edge before choosing orientation branch; emit E_NORMAL_DISCONTINUITY at transition edges */
 <span class="lineno">3</span>HEADER;
 <span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tsh085&#x27;),&#x27;2;1&#x27;);
 <span class="lineno">5</span>FILE_NAME(&#x27;Tsh085.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);

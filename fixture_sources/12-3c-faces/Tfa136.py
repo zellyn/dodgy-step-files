@@ -7,7 +7,7 @@ error.
 
 Mechanism: CLOSED_SHELL box (10×5×1 mm). The top face (z=1) carries an
 inner FACE_BOUND wire representing a splitter LINE that lies entirely outside
-the 10×5 boundary — at x=−2 (left of origin). The splitter does not
+the 10×5 boundary — at x=-2 (left of origin). The splitter does not
 intersect the face perimeter; FixSplitFace's intersection check should
 reject it but silently returns an empty result instead.
 
@@ -26,8 +26,8 @@ f = StepFile(
     catalog_id="Tfa136",
     defect=(
         "CLOSED_SHELL: rectangular box 10×5×1 mm; "
-        "top face (z=1) has inner FACE_BOUND wire with a single edge at x=−2 "
-        "(from (−2,0,1) to (−2,5,1)) — fully outside the 10×5 face bounds; "
+        "top face (z=1) has inner FACE_BOUND wire with a single edge at x=-2 "
+        "(from (-2,0,1) to (-2,5,1)) — fully outside the 10×5 face bounds; "
         "FixSplitFace fails to detect the out-of-range splitter and silently "
         "returns an empty split result with no diagnostic; "
         "defect IS on live CLOSED_SHELL traversal path"
@@ -85,7 +85,7 @@ top_outer_loop = f.edge_loop([
     f.oriented_edge(eEF, True), f.oriented_edge(eFG, True),
     f.oriented_edge(eGH, True), f.oriented_edge(eHE, True),
 ])
-# Splitter line at x=−2, completely outside the 10×5 face bounds
+# Splitter line at x=-2, completely outside the 10×5 face bounds
 p_s0 = f.cartesian_point((-2.0, 0.0, H))
 p_s1 = f.cartesian_point((-2.0, W,   H))
 vs0 = f.vertex_point(p_s0); vs1 = f.vertex_point(p_s1)
