@@ -129,11 +129,12 @@ crash preserved, 0 drift. (ii) Ls010 allowed-set contradiction fixed (`part21_st
 not reject). (iii) 7 Pf sounds' runtime-vs-shape-level overstatement softened. (iv) Sw008/Bo001 honesty
 notes; Twi052/Lh053/Gs006/Gs049 confirmed already-accurate.
 **OPEN PROPOSALS from the hygiene pass:**
-- **Corpus-wide `.LENGTH_MEASURE(1.0E-7).` scrub (~1832 files)** — the `add_product_chain` builder default
-  still wraps the uncertainty typed-real in enum dots, emitting a spurious `ERR StepFile : Incorrect Syntax`
-  on load across ~1832 fixtures. Non-load-bearing but a real hygiene defect. Fix = flip the builder default
-  to the corrected literal + full regen (a ~1832-file byte change; DRIFT-clean, mechanical). Deferred as a
-  large-but-mechanical maintainer-approval change — NOT done unprompted.
+- **Corpus-wide `.LENGTH_MEASURE(1.0E-7).` scrub — DONE 2026-07-18 (f4000784).** Flipped the
+  `add_product_chain` builder default to the bare typed real; 1819 builder-generated fixtures regenerated.
+  Value-preserving (1e-7 = OCC Precision::Confusion): **0 oracle drift** verified across all 31
+  non-default-uncertainty fixtures (the entire risk surface) + a 323-fixture broad sample; fast-tier gate
+  610 passed. ~31 STATIC hand-authored files remain (separate scrub in progress) + a corpus-wide
+  part21_strict "unintended parse-error" discovery sweep to surface other artifact classes of the same kind.
 - **Pf017** — carries a separate stale `Cross-oracle` Notes line claiming "OCCT silently accepts (load is
   empty)" that contradicts the measured shape(1) load (an E_REAL_NO_DOT concern); worth a small targeted fix.
 
