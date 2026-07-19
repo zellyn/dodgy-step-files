@@ -108,7 +108,7 @@ bspline_pc = f._emit_raw(
     f"B_SPLINE_CURVE_WITH_KNOTS('param_degeneracy_pc',2,"
     f"(#{pd0.eid},#{pd1.eid},#{pd2.eid}),"
     f".UNSPECIFIED.,.F.,.F.,"
-    f"(3,3),(0.0,1e-8),.UNSPECIFIED.)"
+    f"(3,3),(0.0,1.0e-8),.UNSPECIFIED.)"
 )
 
 defrep = f._emit_raw(

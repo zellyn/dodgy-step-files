@@ -16,7 +16,7 @@ STEP mechanism (literal):
 
 Mechanism vs driver:
   - CATALOG MECHANISM: TRIMMED_CURVE(CIRCLE radius=1.0); trim1=0.001,
-    trim2=6.2822 (2π−0.001); IS defect edge SURFACE_CURVE.curve_3d;
+    trim2=6.2822 (2π-0.001); IS defect edge SURFACE_CURVE.curve_3d;
     GetSamplePoints 360-degree grid skips tiny gap → shape_null=True.
   - C-1 DRIVER: near-2π trim → sampling gap → shape analysis failure
     → shape_null=True.
@@ -29,7 +29,7 @@ TWO_PI = 2.0 * math.pi
 f = StepFile(
     catalog_id="Gn126",
     defect=(
-        "TRIMMED_CURVE(CIRCLE radius=1.0); trim1=0.001, trim2=6.2822 (2π−0.001); "
+        "TRIMMED_CURVE(CIRCLE radius=1.0); trim1=0.001, trim2=6.2822 (2π-0.001); "
         "IS defect edge SURFACE_CURVE.curve_3d; "
         "GetSamplePoints 360-degree grid skips tiny gap near 2π → shape_null=True"
     ),

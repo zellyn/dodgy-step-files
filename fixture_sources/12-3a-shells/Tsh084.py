@@ -7,7 +7,7 @@ tier-3 lint class.
 
 Mechanism IS the shell structure: CLOSED_SHELL contains a single unit-cube
 ADVANCED_FACE (z=0 square) with same_sense=False, causing the face's surface
-normal to point inward (−Z into the solid interior) rather than outward (+Z).
+normal to point inward (-Z into the solid interior) rather than outward (+Z).
 The CLOSED_SHELL wraps this face with its inward-pointing geometry — the
 same_sense=False wired into the ADVANCED_FACE IS the mechanism. OCCT's
 CheckOrientedShells must detect this reversed normal before propagating
@@ -24,7 +24,7 @@ f = StepFile(
     catalog_id="Tsh084",
     defect=(
         "CLOSED_SHELL containing one ADVANCED_FACE (unit square at z=0); "
-        "face IS wired with same_sense=False causing inward-pointing normal (−Z); "
+        "face IS wired with same_sense=False causing inward-pointing normal (-Z); "
         "inside-out normal IS the mechanism directly in ADVANCED_FACE topology; "
         "CLOSED_SHELL references this inward-normal face as its sole face; "
         "ShapeAnalysis_Shell.CheckOrientedShells must detect reversed orientation; "
@@ -59,7 +59,7 @@ loop = f.edge_loop([
     f.oriented_edge(e2, True), f.oriented_edge(e3, True),
 ])
 
-# Plane with +Z axis; same_sense=False makes surface normal point −Z (inward)
+# Plane with +Z axis; same_sense=False makes surface normal point -Z (inward)
 pl = f.plane(f.axis2_placement_3d(p00, dir3(0, 0, 1), dir3(1, 0, 0)))
 
 # same_sense=False IS the inward-normal mechanism wired into ADVANCED_FACE

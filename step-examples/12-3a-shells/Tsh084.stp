@@ -1,5 +1,5 @@
 ISO-10303-21;
-/* Tsh084: CLOSED_SHELL containing one ADVANCED_FACE (unit square at z=0); face IS wired with same_sense=False causing inward-pointing normal (−Z); inside-out normal IS the mechanism directly in ADVANCED_FACE topology; CLOSED_SHELL references this inward-normal face as its sole face; ShapeAnalysis_Shell.CheckOrientedShells must detect reversed orientation; fixture passes structural validate2 but is geometrically inside-out; fix: detect same_sense=False in closed-shell context; emit E_INWARD_NORMAL or re-orient before propagating fixes */
+/* Tsh084: CLOSED_SHELL containing one ADVANCED_FACE (unit square at z=0); face IS wired with same_sense=False causing inward-pointing normal (-Z); inside-out normal IS the mechanism directly in ADVANCED_FACE topology; CLOSED_SHELL references this inward-normal face as its sole face; ShapeAnalysis_Shell.CheckOrientedShells must detect reversed orientation; fixture passes structural validate2 but is geometrically inside-out; fix: detect same_sense=False in closed-shell context; emit E_INWARD_NORMAL or re-orient before propagating fixes */
 HEADER;
 FILE_DESCRIPTION(('Tsh084'),'2;1');
 FILE_NAME('Tsh084.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');

@@ -34,7 +34,7 @@ f = StepFile(
         "sphere radius=5.0, centred at origin; "
         "face has degenerate south-pole loop: single edge with coincident start/end vertex; "
         "south pole at (0,0,-5) — all U values map to same 3D point; "
-        "U parametric direction degenerate at v=0 (south pole, v=−π/2 in natural params); "
+        "U parametric direction degenerate at v=0 (south pole, v=-π/2 in natural params); "
         "FixPeriodicDegenerated assumes U non-degenerate; leaves face unresolvable; "
         "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; "
         "no orphaned entities"

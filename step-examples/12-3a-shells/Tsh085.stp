@@ -1,5 +1,5 @@
 ISO-10303-21;
-/* Tsh085: OPEN_SHELL with 2 ADVANCED_FACEs; one EDGE_CURVE IS shared between both faces at x=1; Face A (x=0..1) IS wired same_sense=True (normal +Z); Face B (x=1..2) IS wired same_sense=False (normal −Z, i.e. inward); opposing same_sense flags at shared seam IS the mechanism; anti-parallel normals at transition point IS directly in ADVANCED_FACE topology; ShapeFix_Shell.FixFaceOrientation at line 1428 traverses seam; cannot distinguish which side is correctly oriented; fix: compare face normals at shared edge before choosing orientation branch; emit E_NORMAL_DISCONTINUITY at transition edges */
+/* Tsh085: OPEN_SHELL with 2 ADVANCED_FACEs; one EDGE_CURVE IS shared between both faces at x=1; Face A (x=0..1) IS wired same_sense=True (normal +Z); Face B (x=1..2) IS wired same_sense=False (normal -Z, i.e. inward); opposing same_sense flags at shared seam IS the mechanism; anti-parallel normals at transition point IS directly in ADVANCED_FACE topology; ShapeFix_Shell.FixFaceOrientation at line 1428 traverses seam; cannot distinguish which side is correctly oriented; fix: compare face normals at shared edge before choosing orientation branch; emit E_NORMAL_DISCONTINUITY at transition edges */
 HEADER;
 FILE_DESCRIPTION(('Tsh085'),'2;1');
 FILE_NAME('Tsh085.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');

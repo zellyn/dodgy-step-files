@@ -28,7 +28,7 @@ f = StepFile(
         "GEOMETRIC_CURVE_SET containing EDGE_LOOP with single B-spline edge; "
         "fig8_edge: degree-3 B_SPLINE_CURVE_WITH_KNOTS from (5,5,0) to (5,-5,0) "
         "crossing itself at origin (0,0,0) IS the figure-8 self-intersection; "
-        "control points: (5,5,0),(−10,5,0),(−10,−5,0),(5,−5,0) via (0,0,0) crossing; "
+        "control points: (5,5,0),(-10,5,0),(-10,-5,0),(5,-5,0) via (0,0,0) crossing; "
         "FixSelfIntersection split produces two wires not topological fault IS defect; "
         "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; "
         "fig8_edge IS wired into EDGE_LOOP; never orphaned"
