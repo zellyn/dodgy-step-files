@@ -2145,6 +2145,39 @@ Do not trust those sweeps; they under-sampled.
 - `_bytes_tier3_audit` and the mutation snapshot consume `validate.py` counts and would need
   re-checking.
 
+**BLAST RADIUS NOW MEASURED (2026-08-01) — it is effectively zero.** The unknown that blocked
+this item has been resolved. Every one of the 2547 `.stp` fixtures was read in BOTH modes through
+a runner carrying the `Init_s()` fix (one subprocess per read, validate2's exact token mapping),
+and the resulting tokens compared against the catalog's `Expected validation` lines:
+
+```
+fixtures measured                        2547
+with a catalog Expected line             2529
+heal_on  token would change                 1   <- artifact, see below
+heal_off token would change                 1   <- same fixture
+ANY change (real DRIFT)                     0
+fixtures where fixed heal_on != heal_off    0
+```
+
+The single hit is **Twi282**, whose catalog line is `signal(11)/signal(11)` and which my runner
+recorded as `timeout`. Not attributable to the fix: Twi282 hangs past 300s under the CURRENT
+oracle too, on this machine, unloaded. It is a pre-existing pathological fixture that segfaults
+on CI-Linux and hangs on macOS-ARM. Excluding it, **the corrected oracle reproduces the existing
+baseline exactly.**
+
+**So the fix is token-neutral — but it does NOT restore a second signal.** The more important
+result is the last row: even with the settings genuinely applied, `heal_on == heal_off` for all
+2529 fixtures. `read.surfacecurve.mode` 0-vs-3 is invisible at shape-token granularity for every
+fixture in this corpus. (It is not invisible at *count* granularity — Gp177 goes from 6 faces to
+1 — but `n_roots`, which is what the token reports, stays 1.) Repairing the plumbing therefore
+does not make `occt_heal_off` informative; the honest options are to drop the second column, or
+to drive real healing (ShapeFix/ShapeProcess) instead of a reader preference.
+
+**Remaining unverified before landing the code change (narrow):** consumers of `validate.py`'s
+`shape_counts` rather than the token — `_bytes_tier3_audit` and the mutation snapshot — since
+counts DO shift for some fixtures. Tier-3 assertions are safe (`tier3_geometric.py` never touches
+`Interface_Static`). Everything else is measured.
+
 **Recommended sequence if actioned:** (1) add `STEPControl_Controller.Init_s()` before the first
 `Interface_Static.Set*` in BOTH `_oracle_workers.oracle_occt` and `validate.parse_occt`;
 (2) full `_run_corpus` on CI with the patched oracle; (3) diff every fixture's summary against
