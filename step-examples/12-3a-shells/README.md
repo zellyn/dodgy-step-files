@@ -22,6 +22,7 @@ See [`../../STEP_PROBLEM_CATALOG.md`](../../STEP_PROBLEM_CATALOG.md) (§12.3a) f
 | [Bo027](Bo027.stp) | Per-vertex normals supplied for a triangulated face are inconsistent across smooth edges |
 | [Bo028](Bo028.stp) | Two adjacent faces meet C1-discontinuously across a shared edge |
 | [Bo030](Bo030.stp) | EDGE_CURVE start VERTEX_POINT lies off the underlying LINE: inner-vertex tolerance smaller than the deviation it bounds |
+| [Bo031](Bo031.stp) | Void shell of a solid that translates to nothing at all: the solid is still built from the outer shell and the surviving void |
 | [Ps001](Ps001.stp) | Negative-volume cube: every face normal points inward |
 | [Ps002](Ps002.stp) | FACE_OUTER_BOUND traversed CW; inner loop traversed CCW |
 | [Ps003](Ps003.stp) | Single ADVANCED_FACE with same_sense flipped on outer skin |
@@ -298,3 +299,4 @@ See [`../../STEP_PROBLEM_CATALOG.md`](../../STEP_PROBLEM_CATALOG.md) (§12.3a) f
 | [Tsh257](Tsh257.stp) | RECTANGULAR_COMPOSITE_SURFACE drops one failing patch (illegal-type parent_surface), builds the rest |
 | [Tsh258](Tsh258.stp) | Closed OPEN_SHELL tetrahedron promoted to a genuine solid under non-manifold read mode (tier-3-confirmed, not just shape(N)) |
 | [Tsh259](Tsh259.stp) | Small-area internal hole wire removal cascades into removing a whole neighboring face built on the same edges |
+| [Tsh260](Tsh260.stp) | Non-conformal T-junction: free edge's endpoints hang on the interior of an unrelated longer edge, split by sewing's Cutting node insertion |

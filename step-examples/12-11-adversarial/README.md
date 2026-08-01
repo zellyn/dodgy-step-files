@@ -100,3 +100,4 @@ See [`../../STEP_PROBLEM_CATALOG.md`](../../STEP_PROBLEM_CATALOG.md) (§12.11) f
 | [Ad135](Ad135.stp) | Degenerate AXIS2_PLACEMENT_3D: axis parallel to ref_direction (x-axis undefined) |
 | [Ad136](Ad136.stp) | Duplicate entity id: `#30` defined twice in DATA |
 | [Ad137](Ad137.stp) | COMPOSITE_CURVE with one numerically degenerate segment (non-monotonic B-spline knots): segment-dropped-not-whole-curve-aborted catch site |
+| [Ad138](Ad138.stp) | Curve element of a curve set whose construction throws is logged and skipped; the rest of the set still translates |
