@@ -114,6 +114,20 @@ class BugIndex:
         self.idf: dict[str, float] = {
             term: math.log(1 + (n - freq + 0.5) / (freq + 0.5)) for term, freq in df.items()
         }
+        # Length normalisation is a per-DOC constant, but the naive scorer
+        # recomputed it once per (query, doc) pair. Hoist it.
+        self._norm: list[float] = [
+            (1 - self.B + self.B * (dl / self.avgdl)) if self.avgdl else 1.0
+            for dl in self.doc_lens
+        ]
+        # Postings list: term -> [(doc_idx, tf), ...]. Lets search() score only
+        # the docs that actually contain a query term; every other doc
+        # contributes exactly 0.0 to the BM25 sum, so skipping them cannot
+        # change any score.
+        self.postings: dict[str, list[tuple[int, int]]] = {}
+        for i, counter in enumerate(self.tf):
+            for term, f in counter.items():
+                self.postings.setdefault(term, []).append((i, f))
 
     @classmethod
     def load(cls, path: str | None = None) -> "BugIndex":
@@ -124,7 +138,7 @@ class BugIndex:
         dl = self.doc_lens[doc_idx]
         if dl == 0:
             return 0.0
-        norm = 1 - self.B + self.B * (dl / self.avgdl) if self.avgdl else 1.0
+        norm = self._norm[doc_idx]
         score = 0.0
         for term in query_tokens:
             f = tf.get(term, 0)
@@ -143,11 +157,19 @@ class BugIndex:
         q = _tokenize(query)
         if not q:
             return []
-        scored: list[tuple[float, int]] = []
-        for i in range(len(self.docs)):
-            s = self._score(q, i)
-            if s > 0:
-                scored.append((s, i))
+        # Term-at-a-time over the postings lists. Identical arithmetic to
+        # scoring every doc with _score(); it just never visits docs where
+        # every query term has tf=0 (which sum to 0.0 and are dropped anyway).
+        k1 = self.K1
+        norms = self._norm
+        acc: dict[int, float] = {}
+        for term in q:
+            idf = self.idf.get(term)
+            if not idf:
+                continue
+            for i, f in self.postings.get(term, ()):
+                acc[i] = acc.get(i, 0.0) + idf * (f * (k1 + 1)) / (f + k1 * norms[i])
+        scored = [(s, i) for i, s in acc.items() if s > 0 and self.doc_lens[i]]
         scored.sort(key=lambda t: (-t[0], t[1]))
         return [(s, self.entries[i]) for s, i in scored[:k]]
 
