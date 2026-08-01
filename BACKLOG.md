@@ -2095,3 +2095,60 @@ Tfa241 Tfa242 Tfa243 Tfa244 Tfa245
       batch-rewrite titles without per-fixture live-oracle verification.
       This is a large campaign (117 fixtures) — likely deserving its own dedicated session(s), analogous
       to the Wave-B/mesh-wave sessions in the maintainer's memory.
+
+---
+
+## (G) ORACLE BUG — reader settings never applied; `occt_heal_off` is not a second signal
+
+**Found 2026-08-01. Verified, NOT fixed — the fix needs a full-corpus rebaseline, so it is a
+maintainer decision, not a drive-by. Code was deliberately left unchanged.**
+
+**The bug.** `_oracle_workers.oracle_occt` and `validate.parse_occt` both configure the reader
+with `Interface_Static.SetIVal_s(...)` — `read.surfacecurve.mode` 0 vs 3 is what separates
+`occt_heal_on` from `occt_heal_off`, plus the precision tunables. Those calls **silently do
+nothing**. The `read.*` parameters are registered by the STEP controller, and until
+`STEPControl_Controller.Init_s()` has run, every `SetIVal_s`/`SetRVal_s` returns `False` and
+stores nothing.
+
+Measured directly (OCP/OCCT 7.8.1, macOS ARM):
+
+```
+read.surfacecurve.mode      set 0/1/2/3/-3 -> ok=False, readback=0 every time
+read.precision.mode         set 0/1        -> ok=False, readback=0
+read.maxprecision.mode      set 0/1        -> ok=False, readback=0
+read.stdsameparameter.mode  set 0/1        -> ok=False, readback=0
+read.step.nonmanifold       set 0/1        -> ok=False, readback=0
+read.step.ideas             set 0/1        -> ok=False, readback=0
+
+after STEPControl_Controller.Init_s():   ALL of the above ok=True, readback==value
+```
+
+**Consequence.** Both branches read with OCCT defaults, so `occt_heal_off` has always been a
+second copy of `occt_heal_on`. Independently corroborated by the catalog itself: of 2530
+`Expected validation` lines, the number where `heal_on != heal_off` is **zero** (the single
+apparent hit is the `{heal_on}/{heal_off}` authoring template). The corpus advertises a
+two-mode OCCT comparison and is publishing one mode twice.
+
+**Why it was not fixed here.** Adding `Init_s()` makes the settings real, which changes results.
+Blast radius is genuinely unknown and my sampling was misleading — a 25-fixture and then a
+72-fixture stratified sweep (4 per section, all 20 sections) both reported **0** behavioural
+differences, but both sampled `head -N` per section and therefore missed Gp177, which **does**
+change: `heal_on` goes from 6 faces to 1 face once `read.surfacecurve.mode=3` actually applies.
+Do not trust those sweeps; they under-sampled.
+
+**What is known about the blast radius:**
+- `Expected validation` tokens may be unaffected in many cases — the token is `shape(n_roots)`,
+  and for Gp177 `n_roots` stays 1 in both modes even though the face count changes. Unverified
+  corpus-wide.
+- Tier-3 assertions are **not** affected: `tier3_geometric.py` never touches `Interface_Static`
+  (it is the only oracle module that doesn't), so it already reads with defaults.
+- `_bytes_tier3_audit` and the mutation snapshot consume `validate.py` counts and would need
+  re-checking.
+
+**Recommended sequence if actioned:** (1) add `STEPControl_Controller.Init_s()` before the first
+`Interface_Static.Set*` in BOTH `_oracle_workers.oracle_occt` and `validate.parse_occt`;
+(2) full `_run_corpus` on CI with the patched oracle; (3) diff every fixture's summary against
+the current baseline — expect real DRIFT, triage rather than bulk-accept; (4) decide separately
+whether `read.surfacecurve.mode` is even the right knob to call "healing off" (it controls
+pcurve-vs-3D-curve preference, not ShapeFix), or whether the honest fix is to drop the second
+column and document the oracle as single-mode.
