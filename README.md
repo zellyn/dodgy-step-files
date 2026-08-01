@@ -4,6 +4,17 @@ A catalogued corpus of STEP-file (ISO 10303-21 / -42 / -214 / -242) input pathol
 
 The goal is to give CAD-kernel and STEP-tooling authors a license-clean, citable, reproducible reference for "what real STEP files look like in the wild when they go wrong": BOMs, half-escaped strings, near-period pcurves, knot-vector mistakes, schema mash-ups, unit confusions, PMI corner cases, and adversarial inputs that production parsers grow tolerance for over time.
 
+> ### 👷 Writing a CAD kernel? Start at [**IMPLEMENTERS_ROADMAP.md**](IMPLEMENTERS_ROADMAP.md).
+>
+> This README describes the repository. The roadmap describes **the work**: the same
+> corpus re-cut into the ~170 distinct repair mechanisms it exercises, ordered so the
+> failures that hurt users most come first (35 mechanisms have a fixture that *aborts*
+> the reference engine), each pointing at the fixtures that prove you got it right.
+>
+> Two fields do different jobs and it matters which you read:
+> `Expected kernel behavior` is the spec for what a **correct** kernel should do;
+> `Expected validation` records what **OCCT 7.8.1 was measured doing**, bugs included.
+
 ## Repository layout
 
 ```
