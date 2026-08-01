@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gp194 — Like-seam edge on a host that wraps around in U yet declares no period AND is not a B-spline (extrusion of a closed non-periodic curve)</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2a Pcurve defects</a> <span class="sep">/</span> <span class="current">Gp194</span>
+</nav>
+<header class="title-bar">
+<h1>Gp194 <span class="sep">—</span> <span class="entry-title">Like-seam edge on a host that wraps around in U yet declares no period AND is not a B-spline (extrusion of a closed non-periodic curve)</span></h1>
+<p class="category">§12.2a pcurves (sub-class: `tkshh-nonperiodic-bspline-seamlike-edge`, subvariant &quot;non-B-spline base surface requiring approximation before periodicity can be set&quot;)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2a-pcurves/Gp194.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2a-pcurves/Gp194.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>occt-coverage PARTIAL audit, `tkshhealing/problems.json` `tkshh-nonperiodic-bspline-seamlike-edge` subvariant 3. `ShapeUpgrade_UnifySameDomain::IntUnifyFaces` — `ShapeUpgrade_UnifySameDomain.cxx` @ `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`: `Uperiod` derived from `aBaseSurface-&gt;IsUPeriodic()` at `:2946`, seam/like-seam classification at `:3204-3218`, branch gate `myConcatBSplines &amp;&amp; !EdgeWith2pcurves.IsNull() &amp;&amp; !SeamFound` at `:3221`, `Uperiod == 0.` test at `:3243`, `aBSplineSurface.IsNull()` test at `:3252`, `GeomConvert_ApproxSurface` at `:3258`, `SetUPeriodic`/`SetVPeriodic` at `:3264`/`:3269`.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>The CATIA like-seam idiom (a single `EDGE_CURVE` whose `SURFACE_CURVE` carries TWO `PCURVE`s on one and the same host surface, used twice with opposite orientations in one `EDGE_LOOP`) hosted on a `SURFACE_OF_LINEAR_EXTRUSION` swept 1.0 along +Z from a CLOSED but NON-PERIODIC `B_SPLINE_CURVE_WITH_KNOTS` — 9 control points around a unit circle with the first pole equal to the last, degree 2, clamped knots. An extrusion inherits its periodicity from its basis curve, so this host wraps around in U while declaring no period, and it is not a B-spline surface. That combination is precisely what the subvariant names and what none of the existing fixtures can present: Gp013 and Gp181 are B-spline hosts (so no approximation is needed, and the reader has already periodized them by the time a shape exists), and Gp182&#x27;s `CYLINDRICAL_SURFACE` is inherently periodic, so it can never require the approximation either.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`SURFACE_OF_LINEAR_EXTRUSION(&#x27;&#x27;,#closed_nonperiodic_bspline_curve,#vector)` as the surface of an `ADVANCED_FACE`; one `EDGE_CURVE` whose `SURFACE_CURVE` lists TWO `PCURVE`s, both with `basis_surface` = that extrusion, one a 2D line at u=0 and one at u=1; that `EDGE_CURVE` referenced twice, with opposite `ORIENTED_EDGE` senses, in the face&#x27;s single `EDGE_LOOP`, closed off by the two wrap-around `CIRCLE` edges at v=0 and v=1.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>recognise that the host is closed in U but carries no declared period and cannot be periodized in place because it is not a B-spline; approximate it to a B-spline surface first, declare that surface periodic in U, migrate every pcurve to it, and merge across the like-seam edge — rather than treating the two pcurve banks as an ordinary non-seam duplication.</p></section>
+<section><h2>Notes</h2>
+<p>Live-verified (2026-07-31, this worktree, OCP/OCCT 7.8.1) against this fixture&#x27;s own bytes: the face reads back on a `Geom_SurfaceOfLinearExtrusion` with `IsUPeriodic() == False`, `IsUClosed() == True`, U bounds [0,1], and the reader does NOT periodize it — the direct contrast with Gp013 (`IsUPeriodic == True` straight out of the reader) and Gp181 (`IsVPeriodic == True`), both live-rechecked here, and with Gp182&#x27;s cylinder (`IsUPeriodic == True` by construction). **Control**: the byte-identical construction with only the basis curve swapped for a `CIRCLE` reads back on a `Geom_SurfaceOfLinearExtrusion` with `IsUPeriodic() == True`, isolating the closed-but-non-periodic basis curve as the sole cause of the missing period. **HONEST LIMITATION — what this fixture does NOT show**: it supplies the input precondition (and is the only fixture in the class that genuinely does), but it does not independently demonstrate the unify-level repair firing, and no STEP file appears able to. That branch additionally needs `faces.Length() &gt; 1` in one same-domain group plus an `EdgeWith2pcurves` — an edge carrying two pcurves on the reference face while NOT being really-closed in that face (`ShapeUpgrade_UnifySameDomain.cxx:3206-3214`) — and the two ways a STEP file can produce two pcurves are mutually exclusive with that. Route (a), the true-seam route, requires the same edge to appear TWICE in one `EDGE_LOOP` (`StepToTopoDS_GeometricTool.cxx:99-104`), which is what makes the reader call the two-pcurve `BRep_Builder::UpdateEdge` overload (`StepToTopoDS_TranslateEdgeLoop.cxx:611`, `:621`) — but an edge appearing twice in a face IS really-closed there, so `:3206` classifies it as a seam, `:3218` sets `SeamFound`, and `:3221` disables the branch. Route (b), the like-seam route, requires the edge to appear exactly ONCE (`StepToTopoDS_GeometricTool.cxx:136-146`) and stores only the SINGLE-pcurve overload per face (`StepToTopoDS_TranslateEdgeLoop.cxx:615`, `:625`); with both faces on the same surface and identity location the second call replaces the first, so no `BRep_CurveOnClosedSurface` is ever built and `BRep_Tool::IsClosed(edge, face)` stays false. Live-confirmed: a two-face variant of exactly this idiom (two half-faces on one shared host, the like-seam edge used once in each) was built and read in this worktree and came back with ZERO edges carrying two pcurves on their face, and `ShapeUpgrade_UnifySameDomain` with ConcatBSplines on and off produced identical output. **See also**: Gp013 (U-direction B-spline host), Gp181 (V-direction B-spline host), Gp182 (the earlier non-B-spline attempt, whose cylinder is inherently periodic — this fixture is its corrected successor and does not replace it). Synonyms: &quot;extrusion of closed non-periodic curve&quot;, &quot;surface wraps but declares no period&quot;, &quot;like-seam on non-bspline host&quot;, &quot;two pcurve banks non-periodic extrusion&quot;, &quot;CATIA seam surface needs approximation&quot;. Provenance tier: bytes-sufficient.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;SURFACE_OF_LINEAR_EXTRUSION&#x27;) == 1</code></li>
+<li><code>count_entity_def(b&#x27;B_SPLINE_CURVE_WITH_KNOTS&#x27;) == 1</code></li>
+<li><code>contains(b&#x27;extrusion_like_seam&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>face[0].surface_type == &quot;extrusion&quot;</code></li>
+<li><code>n_faces_total == 1</code></li>
+<li><code>n_edges_total == 4</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Gp013.html">Gp013</a>, <a href="Gp181.html">Gp181</a>, <a href="Gp182.html">Gp182</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gp194: OPEN_SHELL with one ADVANCED_FACE hosted on a SURFACE_OF_LINEAR_EXTRUSION whose basis is a CLOSED but NON-PERIODIC B_SPLINE_CURVE_WITH_KNOTS (9 control points around a unit circle, first == last, degree 2, clamped knots) swept 1.0 along +Z: the surface wraps around in U yet reports no period, and is not a B-spline surface. A single like-seam EDGE_CURVE (&#x27;<mark>extrusion_like_seam</mark>&#x27;) whose SURFACE_CURVE carries TWO PCURVEs on that same host -- one bank at u=0, one at u=1 -- is used twice with opposite orientations in the face&#x27;s only EDGE_LOOP, the CATIA idiom. Unlike Gp182&#x27;s CYLINDRICAL_SURFACE (inherently periodic) and unlike Gp013/Gp181&#x27;s B-spline hosts (which the reader periodizes on the way in), this host genuinely satisfies both preconditions of the approximate-before-periodize repair: no declared period, and not already a B-spline */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Gp194&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Gp194.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(0.707106781187,0.707106781187,0.0));
+<span class="lineno">12</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">13</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(-0.707106781187,0.707106781187,0.0));
+<span class="lineno">14</span>#5=CARTESIAN_POINT(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(-0.707106781187,-0.707106781187,0.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(0.707106781187,-0.707106781187,0.0));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">19</span><mark>#10=B_SPLINE_CURVE_WITH_KNOTS(</mark>&#x27;&#x27;,2,(#1,#2,#3,#4,#5,#6,#7,#8,#9),.UNSPECIFIED.,.F.,.F.,(3,1,1,1,1,1,1,3),(0.0,0.125,0.25,0.375,0.5,0.625,0.75,1.0),.UNSPECIFIED.);
+<span class="lineno">20</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">21</span>#12=VECTOR(&#x27;&#x27;,#11,1.0);
+<span class="lineno">22</span><mark>#13=SURFACE_OF_LINEAR_EXTRUSION(</mark>&#x27;extrusion_host&#x27;,#10,#12);
+<span class="lineno">23</span>#14=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT(&#x27;UV&#x27;,&#x27;2D&#x27;));
+<span class="lineno">24</span>#15=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">25</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,1.0));
+<span class="lineno">26</span>#17=VERTEX_POINT(&#x27;&#x27;,#15);
+<span class="lineno">27</span>#18=VERTEX_POINT(&#x27;&#x27;,#16);
+<span class="lineno">28</span>#19=VECTOR(&#x27;&#x27;,#11,1.0);
+<span class="lineno">29</span>#20=LINE(&#x27;&#x27;,#15,#19);
+<span class="lineno">30</span>#21=CARTESIAN_POINT(&#x27;&#x27;,(0.000000000000,0.000000000000));
+<span class="lineno">31</span>#22=DIRECTION(&#x27;&#x27;,(0.000000000000,1.000000000000));
+<span class="lineno">32</span>#23=VECTOR(&#x27;&#x27;,#22,1.000000000000);
+<span class="lineno">33</span>#24=LINE(&#x27;&#x27;,#21,#23);
+<span class="lineno">34</span>#25=DEFINITIONAL_REPRESENTATION(&#x27;seam_bank_u0&#x27;,(#24),#14);
+<span class="lineno">35</span>#26=PCURVE(&#x27;seam_bank_u0&#x27;,#13,#25);
+<span class="lineno">36</span>#27=CARTESIAN_POINT(&#x27;&#x27;,(1.000000000000,0.000000000000));
+<span class="lineno">37</span>#28=DIRECTION(&#x27;&#x27;,(0.000000000000,1.000000000000));
+<span class="lineno">38</span>#29=VECTOR(&#x27;&#x27;,#28,1.000000000000);
+<span class="lineno">39</span>#30=LINE(&#x27;&#x27;,#27,#29);
+<span class="lineno">40</span>#31=DEFINITIONAL_REPRESENTATION(&#x27;seam_bank_u1&#x27;,(#30),#14);
+<span class="lineno">41</span>#32=PCURVE(&#x27;seam_bank_u1&#x27;,#13,#31);
+<span class="lineno">42</span>#33=SURFACE_CURVE(&#x27;<mark>extrusion_like_seam</mark>&#x27;,#20,(#26,#32),.PCURVE_S1.);
+<span class="lineno">43</span>#34=EDGE_CURVE(&#x27;seam&#x27;,#17,#18,#33,.T.);
+<span class="lineno">44</span>#35=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">45</span>#36=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">46</span>#37=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#35,#11,#36);
+<span class="lineno">47</span>#38=CIRCLE(&#x27;&#x27;,#37,1.0);
+<span class="lineno">48</span>#39=CARTESIAN_POINT(&#x27;&#x27;,(0.000000000000,0.000000000000));
+<span class="lineno">49</span>#40=DIRECTION(&#x27;&#x27;,(1.000000000000,0.000000000000));
+<span class="lineno">50</span>#41=VECTOR(&#x27;&#x27;,#40,1.000000000000);
+<span class="lineno">51</span>#42=LINE(&#x27;&#x27;,#39,#41);
+<span class="lineno">52</span>#43=DEFINITIONAL_REPRESENTATION(&#x27;bot_arc_pc&#x27;,(#42),#14);
+<span class="lineno">53</span>#44=PCURVE(&#x27;bot_arc_pc&#x27;,#13,#43);
+<span class="lineno">54</span>#45=SURFACE_CURVE(&#x27;bot_arc&#x27;,#38,(#44),.PCURVE_S1.);
+<span class="lineno">55</span>#46=EDGE_CURVE(&#x27;bot_arc&#x27;,#17,#17,#45,.T.);
+<span class="lineno">56</span>#47=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">57</span>#48=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">58</span>#49=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#47,#11,#48);
+<span class="lineno">59</span>#50=CIRCLE(&#x27;&#x27;,#49,1.0);
+<span class="lineno">60</span>#51=CARTESIAN_POINT(&#x27;&#x27;,(0.000000000000,1.000000000000));
+<span class="lineno">61</span>#52=DIRECTION(&#x27;&#x27;,(1.000000000000,0.000000000000));
+<span class="lineno">62</span>#53=VECTOR(&#x27;&#x27;,#52,1.000000000000);
+<span class="lineno">63</span>#54=LINE(&#x27;&#x27;,#51,#53);
+<span class="lineno">64</span>#55=DEFINITIONAL_REPRESENTATION(&#x27;top_arc_pc&#x27;,(#54),#14);
+<span class="lineno">65</span>#56=PCURVE(&#x27;top_arc_pc&#x27;,#13,#55);
+<span class="lineno">66</span>#57=SURFACE_CURVE(&#x27;top_arc&#x27;,#50,(#56),.PCURVE_S1.);
+<span class="lineno">67</span>#58=EDGE_CURVE(&#x27;top_arc&#x27;,#18,#18,#57,.T.);
+<span class="lineno">68</span>#59=ORIENTED_EDGE(&#x27;&#x27;,$,$,#46,.T.);
+<span class="lineno">69</span>#60=ORIENTED_EDGE(&#x27;&#x27;,$,$,#34,.T.);
+<span class="lineno">70</span>#61=ORIENTED_EDGE(&#x27;&#x27;,$,$,#58,.F.);
+<span class="lineno">71</span>#62=ORIENTED_EDGE(&#x27;&#x27;,$,$,#34,.F.);
+<span class="lineno">72</span>#63=EDGE_LOOP(&#x27;&#x27;,(#59,#60,#61,#62));
+<span class="lineno">73</span>#64=FACE_OUTER_BOUND(&#x27;&#x27;,#63,.T.);
+<span class="lineno">74</span>#65=ADVANCED_FACE(&#x27;&#x27;,(#64),#13,.T.);
+<span class="lineno">75</span>#66=OPEN_SHELL(&#x27;&#x27;,(#65));
+<span class="lineno">76</span>#67=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#66));
+<span class="lineno">77</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">78</span>#9051=PRODUCT(&#x27;Gp194&#x27;,&#x27;Gp194&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">79</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">80</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">81</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">82</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">83</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">84</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">85</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">86</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">87</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">88</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#67),#9060);
+<span class="lineno">89</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">90</span>ENDSEC;
+<span class="lineno">91</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gp193.html">&larr; Gp193</a> <a class="up" href="index.html">§12.2a Pcurve defects</a> <a class="next" href="Gp195.html">Gp195 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

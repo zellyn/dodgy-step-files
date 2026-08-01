@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tsh261 — Two hanging vertices project onto the same interior stretch of one boundary edge a hair&#x27;s breadth apart: only one cut node is created</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3a Shells / orientation</a> <span class="sep">/</span> <span class="current">Tsh261</span>
+</nav>
+<header class="title-bar">
+<h1>Tsh261 <span class="sep">—</span> <span class="entry-title">Two hanging vertices project onto the same interior stretch of one boundary edge a hair&#x27;s breadth apart: only one cut node is created</span></h1>
+<p class="category">§12.3a shells (sub-class: sewing hanging-vertex / T-junction conformalization — `sew-cutting-hanging-vertex-split`)</p>
+<p class="severity-badge severity-p3">P3 — cosmetic / metadata-only</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3a-shells/Tsh261.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3a-shells/Tsh261.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>occt-coverage PARTIAL audit, `exchange/problems.json` `sew-cutting-hanging-vertex-split` subvariant &quot;snap-to-existing-cut-vertex vs create-new-cut-vertex threshold&quot; (`BRepBuilderAPI_Sewing::CreateCuttingNodes`, `BRepBuilderAPI_Sewing.cxx:4449-4481`: `if (distMin &lt;= Max(disProj*0.1, MinTolerance()))` binds the projected point to the existing cutting/endpoint vertex, otherwise a brand-new cutting vertex is built and inserted into the parameter-ordered sequence). Companion to Tsh260, which demonstrates the base T-junction split but has both hanging vertices far apart, so only the create-new branch fires there.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An `OPEN_SHELL` with THREE planar triangular `ADVANCED_FACE`s. Face LONG (plane z=0) carries the reference `EDGE_CURVE` running x=1, y:[0,2] (apex off at (-3,1,0)). Face UP (plane z=+0.4) has a vertex at (1,0.9,0.4) hanging 0.4 above the reference edge&#x27;s interior, plus an edge from (1,0.9,0.4) to (1,2,0.4) running parallel to the reference edge. Face DOWN (plane z=-0.4) has a vertex at (1,0.92,-0.4) hanging 0.4 below the reference edge. Both hanging vertices project onto the SAME reference edge, at y=0.9 and y=0.92 — 0.02 apart, i.e. inside 10% of their own 0.4 projection distance. Putting them on OPPOSITE sides of the reference edge is what makes the case reachable: the two vertices are 0.8 apart, more than the 0.6 sewing tolerance, so the tolerance-driven vertex gluing that precedes the split leaves them as two distinct nodes, while both still project onto the same tiny stretch of the edge. No pcurves; 3D-`EDGE_CURVE`-only convention as in Tsh260.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`OPEN_SHELL` with three planar triangular `ADVANCED_FACE`s: one hosting a long straight `EDGE_CURVE` (x=1, y:[0,2], z=0); a second, offset +0.4 in z, whose first vertex hangs over that edge&#x27;s interior at y=0.9 and whose first edge runs parallel to it spanning y:[0.9,2.0]; a third, offset −0.4 in z, whose first vertex hangs under the same edge at y=0.92. Sew at tolerance 0.6 (both hanging vertices within tolerance of the reference edge, the two vertices 0.8 apart so they are not glued to each other).</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>when the shape is passed through the standard shell-sewing pass, the first hanging vertex creates a cut node at its projection (y=0.9) and the second, whose projection is a hair&#x27;s breadth away (0.02, within 10% of its own 0.4 projection distance), is bound to that same node instead of producing a redundant second cut 0.02 further along; the reference edge is therefore replaced by exactly TWO collinear sub-edges, not three, and the upper section stays span-matched to Face UP&#x27;s parallel edge so the boundary is genuinely conformalized.</p></section>
+<section><h2>Notes</h2>
+<p>Why we believe this test is valid — RUNTIME-SCAFFOLD verified against this fixture&#x27;s own bytes (this worktree&#x27;s `validation/.venv`, OCP/OCCT 7.8.1). `STEPControl_Reader.ReadFile` → `TransferRoots` loads shape_null=False with 3 faces and 9 unique edges (`TopTools_IndexedMapOfShape`), the reference edge `[(1,0,0),(1,2,0)]` intact. Feeding the read shape to `BRepBuilderAPI_Sewing(0.6, sew=True, analysis=True, cutting=True, nonmanifold=False)` and calling `Perform()` replaces the reference edge with exactly TWO collinear sub-edges — `[(1,0,0),(1,0.9,·)]` and `[(1,0.9,·),(1,2,·)]` — cut ONLY at y=0.9. There is no cut at y=0.92: the second hanging vertex was snapped onto the node the first created. `NbContigousEdges()==1` (the upper section merges with Face UP&#x27;s parallel edge), `NbMultipleEdges()==0`. Threshold sweep on the DOWN vertex&#x27;s y (its projection distance held at 0.4, so the predicted flip is at 0.1×0.4 = 0.04): y=0.90 / 0.92 / 0.935 / 0.939 / 0.9400 all give `NbContigousEdges()==1`; y=0.9401 / 0.941 / 0.945 / 0.96 / 1.00 all give `NbContigousEdges()==0` — past the threshold a redundant second cut appears at the second vertex&#x27;s own projection, the reference edge is split into three sections, none matches Face UP&#x27;s span, nothing merges, and the conformalization is lost. The flip is exactly at 0.0400 → 0.0401, matching `disProj*0.1` to four digits. Sewing is NOT on the default STEP read path (a default read leaves both T-junctions non-conformal), so this fixture is oracle-invisible to the shape-count oracle and requires the sewing scaffold to observe. Synonyms: &quot;two hanging vertices same edge one cut node&quot;, &quot;redundant cut vertex suppressed sewing&quot;, &quot;adaptive snap tolerance projected node STEP&quot;, &quot;CreateCuttingNodes snap to existing cutting vertex&quot;, &quot;T-junction near-duplicate projection conformalize&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(21) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;PLANE&#x27;) == 3</code></li>
+<li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 3</code></li>
+<li><code>count_entity_def(b&#x27;EDGE_CURVE&#x27;) == 9</code></li>
+<li><code>count_entity_def(b&#x27;OPEN_SHELL&#x27;) == 1</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 3</code></li>
+<li><code>n_edges_total == 9</code></li>
+<li><code>face[0].surface_type == &quot;plane&quot;</code></li>
+<li><code>face[1].surface_type == &quot;plane&quot;</code></li>
+<li><code>face[2].surface_type == &quot;plane&quot;</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tsh261: OPEN_SHELL with THREE planar ADVANCED_FACEs. Face LONG (z=0) carries the reference edge x=1, y:[0,2]. Face UP (z=+0.4) has a vertex hanging over the reference edge&#x27;s interior at y=0.9 and an edge spanning y:[0.9,2.0] parallel to it. Face DOWN (z=-0.4) has a vertex hanging under the reference edge at y=0.92 -- 0.02 from the first hanging vertex&#x27;s projection, inside 10% of its own 0.4 projection distance. Both hanging vertices project onto the same interior stretch of one edge a hair&#x27;s breadth apart; the second must be bound to the cut node the first created rather than adding a redundant second cut 0.02 away */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tsh261&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Tsh261.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">11</span>#2=VERTEX_POINT(&#x27;&#x27;,#1);
+<span class="lineno">12</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(1.0,2.0,0.0));
+<span class="lineno">13</span>#4=VERTEX_POINT(&#x27;&#x27;,#3);
+<span class="lineno">14</span>#5=CARTESIAN_POINT(&#x27;&#x27;,(-3.0,1.0,0.0));
+<span class="lineno">15</span>#6=VERTEX_POINT(&#x27;&#x27;,#5);
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">17</span>#8=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">18</span>#9=VECTOR(&#x27;&#x27;,#8,2.0);
+<span class="lineno">19</span>#10=LINE(&#x27;&#x27;,#7,#9);
+<span class="lineno">20</span><mark>#11=EDGE_CURVE(</mark>&#x27;&#x27;,#2,#4,#10,.T.);
+<span class="lineno">21</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(1.0,2.0,0.0));
+<span class="lineno">22</span>#13=DIRECTION(&#x27;&#x27;,(-0.970142500145,-0.242535625036,0.0));
+<span class="lineno">23</span>#14=VECTOR(&#x27;&#x27;,#13,4.12310562562);
+<span class="lineno">24</span>#15=LINE(&#x27;&#x27;,#12,#14);
+<span class="lineno">25</span><mark>#16=EDGE_CURVE(</mark>&#x27;&#x27;,#4,#6,#15,.T.);
+<span class="lineno">26</span>#17=CARTESIAN_POINT(&#x27;&#x27;,(-3.0,1.0,0.0));
+<span class="lineno">27</span>#18=DIRECTION(&#x27;&#x27;,(0.970142500145,-0.242535625036,0.0));
+<span class="lineno">28</span>#19=VECTOR(&#x27;&#x27;,#18,4.12310562562);
+<span class="lineno">29</span>#20=LINE(&#x27;&#x27;,#17,#19);
+<span class="lineno">30</span><mark>#21=EDGE_CURVE(</mark>&#x27;&#x27;,#6,#2,#20,.T.);
+<span class="lineno">31</span>#22=ORIENTED_EDGE(&#x27;&#x27;,$,$,#11,.T.);
+<span class="lineno">32</span>#23=ORIENTED_EDGE(&#x27;&#x27;,$,$,#16,.T.);
+<span class="lineno">33</span>#24=ORIENTED_EDGE(&#x27;&#x27;,$,$,#21,.T.);
+<span class="lineno">34</span>#25=EDGE_LOOP(&#x27;&#x27;,(#22,#23,#24));
+<span class="lineno">35</span>#26=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">36</span>#27=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">37</span>#28=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">38</span>#29=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#26,#27,#28);
+<span class="lineno">39</span><mark>#30=PLANE(</mark>&#x27;&#x27;,#29);
+<span class="lineno">40</span>#31=FACE_OUTER_BOUND(&#x27;&#x27;,#25,.T.);
+<span class="lineno">41</span><mark>#32=ADVANCED_FACE(</mark>&#x27;&#x27;,(#31),#30,.T.);
+<span class="lineno">42</span>#33=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.9,0.4));
+<span class="lineno">43</span>#34=VERTEX_POINT(&#x27;&#x27;,#33);
+<span class="lineno">44</span>#35=CARTESIAN_POINT(&#x27;&#x27;,(1.0,2.0,0.4));
+<span class="lineno">45</span>#36=VERTEX_POINT(&#x27;&#x27;,#35);
+<span class="lineno">46</span>#37=CARTESIAN_POINT(&#x27;&#x27;,(4.0,1.5,0.4));
+<span class="lineno">47</span>#38=VERTEX_POINT(&#x27;&#x27;,#37);
+<span class="lineno">48</span>#39=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.9,0.4));
+<span class="lineno">49</span>#40=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">50</span>#41=VECTOR(&#x27;&#x27;,#40,1.1);
+<span class="lineno">51</span>#42=LINE(&#x27;&#x27;,#39,#41);
+<span class="lineno">52</span><mark>#43=EDGE_CURVE(</mark>&#x27;&#x27;,#34,#36,#42,.T.);
+<span class="lineno">53</span>#44=CARTESIAN_POINT(&#x27;&#x27;,(1.0,2.0,0.4));
+<span class="lineno">54</span>#45=DIRECTION(&#x27;&#x27;,(0.986393923832,-0.164398987305,0.0));
+<span class="lineno">55</span>#46=VECTOR(&#x27;&#x27;,#45,3.04138126515);
+<span class="lineno">56</span>#47=LINE(&#x27;&#x27;,#44,#46);
+<span class="lineno">57</span><mark>#48=EDGE_CURVE(</mark>&#x27;&#x27;,#36,#38,#47,.T.);
+<span class="lineno">58</span>#49=CARTESIAN_POINT(&#x27;&#x27;,(4.0,1.5,0.4));
+<span class="lineno">59</span>#50=DIRECTION(&#x27;&#x27;,(-0.980580675691,-0.196116135138,0.0));
+<span class="lineno">60</span>#51=VECTOR(&#x27;&#x27;,#50,3.05941170816);
+<span class="lineno">61</span>#52=LINE(&#x27;&#x27;,#49,#51);
+<span class="lineno">62</span><mark>#53=EDGE_CURVE(</mark>&#x27;&#x27;,#38,#34,#52,.T.);
+<span class="lineno">63</span>#54=ORIENTED_EDGE(&#x27;&#x27;,$,$,#43,.T.);
+<span class="lineno">64</span>#55=ORIENTED_EDGE(&#x27;&#x27;,$,$,#48,.T.);
+<span class="lineno">65</span>#56=ORIENTED_EDGE(&#x27;&#x27;,$,$,#53,.T.);
+<span class="lineno">66</span>#57=EDGE_LOOP(&#x27;&#x27;,(#54,#55,#56));
+<span class="lineno">67</span>#58=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.9,0.4));
+<span class="lineno">68</span>#59=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">69</span>#60=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">70</span>#61=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#58,#59,#60);
+<span class="lineno">71</span><mark>#62=PLANE(</mark>&#x27;&#x27;,#61);
+<span class="lineno">72</span>#63=FACE_OUTER_BOUND(&#x27;&#x27;,#57,.T.);
+<span class="lineno">73</span><mark>#64=ADVANCED_FACE(</mark>&#x27;&#x27;,(#63),#62,.T.);
+<span class="lineno">74</span>#65=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.92,-0.4));
+<span class="lineno">75</span>#66=VERTEX_POINT(&#x27;&#x27;,#65);
+<span class="lineno">76</span>#67=CARTESIAN_POINT(&#x27;&#x27;,(4.0,0.92,-0.4));
+<span class="lineno">77</span>#68=VERTEX_POINT(&#x27;&#x27;,#67);
+<span class="lineno">78</span>#69=CARTESIAN_POINT(&#x27;&#x27;,(4.0,1.5,-0.4));
+<span class="lineno">79</span>#70=VERTEX_POINT(&#x27;&#x27;,#69);
+<span class="lineno">80</span>#71=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.92,-0.4));
+<span class="lineno">81</span>#72=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">82</span>#73=VECTOR(&#x27;&#x27;,#72,3.0);
+<span class="lineno">83</span>#74=LINE(&#x27;&#x27;,#71,#73);
+<span class="lineno">84</span><mark>#75=EDGE_CURVE(</mark>&#x27;&#x27;,#66,#68,#74,.T.);
+<span class="lineno">85</span>#76=CARTESIAN_POINT(&#x27;&#x27;,(4.0,0.92,-0.4));
+<span class="lineno">86</span>#77=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">87</span>#78=VECTOR(&#x27;&#x27;,#77,0.58);
+<span class="lineno">88</span>#79=LINE(&#x27;&#x27;,#76,#78);
+<span class="lineno">89</span><mark>#80=EDGE_CURVE(</mark>&#x27;&#x27;,#68,#70,#79,.T.);
+<span class="lineno">90</span>#81=CARTESIAN_POINT(&#x27;&#x27;,(4.0,1.5,-0.4));
+<span class="lineno">91</span>#82=DIRECTION(&#x27;&#x27;,(-0.981819220437,-0.189818382618,0.0));
+<span class="lineno">92</span>#83=VECTOR(&#x27;&#x27;,#82,3.05555232323);
+<span class="lineno">93</span>#84=LINE(&#x27;&#x27;,#81,#83);
+<span class="lineno">94</span><mark>#85=EDGE_CURVE(</mark>&#x27;&#x27;,#70,#66,#84,.T.);
+<span class="lineno">95</span>#86=ORIENTED_EDGE(&#x27;&#x27;,$,$,#75,.T.);
+<span class="lineno">96</span>#87=ORIENTED_EDGE(&#x27;&#x27;,$,$,#80,.T.);
+<span class="lineno">97</span>#88=ORIENTED_EDGE(&#x27;&#x27;,$,$,#85,.T.);
+<span class="lineno">98</span>#89=EDGE_LOOP(&#x27;&#x27;,(#86,#87,#88));
+<span class="lineno">99</span>#90=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.92,-0.4));
+<span class="lineno">100</span>#91=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">101</span>#92=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">102</span>#93=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#90,#91,#92);
+<span class="lineno">103</span><mark>#94=PLANE(</mark>&#x27;&#x27;,#93);
+<span class="lineno">104</span>#95=FACE_OUTER_BOUND(&#x27;&#x27;,#89,.T.);
+<span class="lineno">105</span><mark>#96=ADVANCED_FACE(</mark>&#x27;&#x27;,(#95),#94,.T.);
+<span class="lineno">106</span><mark>#97=OPEN_SHELL(</mark>&#x27;tsh261_snap_to_existing_cut_node_shell&#x27;,(#32,#64,#96));
+<span class="lineno">107</span>#98=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#97));
+<span class="lineno">108</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">109</span>#9051=PRODUCT(&#x27;Tsh261&#x27;,&#x27;Tsh261&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">110</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">111</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">112</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">113</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">114</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">115</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">116</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">117</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">118</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">119</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#98),#9060);
+<span class="lineno">120</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">121</span>ENDSEC;
+<span class="lineno">122</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tsh260.html">&larr; Tsh260</a> <a class="up" href="index.html">§12.3a Shells / orientation</a> <a class="next" href="Tsh262.html">Tsh262 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

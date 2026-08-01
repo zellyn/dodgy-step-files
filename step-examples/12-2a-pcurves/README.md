@@ -182,7 +182,7 @@ See [`../../STEP_PROBLEM_CATALOG.md`](../../STEP_PROBLEM_CATALOG.md) (§12.2a) f
 | [Gp180](Gp180.stp) | 2D pcurve knot vector with a near-zero-length span after Bezier decomposition (2D-curve sibling of Gn042) |
 | [Gp181](Gp181.stp) | CATIA-style near-closed non-periodic B-spline seam-like edge, mirrored onto the V direction (Gp013 is the U-direction original) |
 | [Gp182](Gp182.stp) | CATIA-style seam-like edge (two pcurves on one surface) on a non-B-spline (`CYLINDRICAL_SURFACE`) base |
-| [Gp183](Gp183.stp) | Edge `same_range` flag claims parametric agreement that does not hold, face-hosted (`bc-invalid-same-range-flag`, PARTIAL) |
+| [Gp183](Gp183.stp) | Edge `same_range` flag claims parametric agreement that does not hold, face-hosted (`bc-invalid-same-range-flag`, COVERED) |
 | [Gp184](Gp184.stp) | 3D B-spline curve with a genuine C0 interior knot, reachable in a live face (`seq-split-continuity`, PARTIAL, missing 1 of 3: curve subvariant) |
 | [Gp185](Gp185.stp) | Pcurve winds multiple full periods of a closed surface (`seq-xsalgo-pcurve-consistency`, PARTIAL, missing 1 of 3: multi-period subvariant) |
 | [Gp186](Gp186.stp) | Two pcurve-bearing edges actually merged by sewing, reversed contributor with a 4x parameter-domain mismatch (`sew-pcurve-domain-reconciliation`, PARTIAL) |
@@ -192,3 +192,6 @@ See [`../../STEP_PROBLEM_CATALOG.md`](../../STEP_PROBLEM_CATALOG.md) (§12.2a) f
 | [Gp190](Gp190.stp) | CATIA-style pseudo-seam split ACROSS TWO DIFFERENT FACES (IsLikeSeam's cross-wire domain) |
 | [Gp191](Gp191.stp) | Pcurve whose 2D trim parameters literally collapse to a point (w1==w2) on a real, non-degenerate 3D edge |
 | [Gp192](Gp192.stp) | Pcurve range straddles a U-periodic surface's seam in the wrong order (w1>w2) |
+| [Gp193](Gp193.stp) | Pcurve 2D seed drifts in V from the 3D edge geometry; OCC heals by recomputing the pcurve from the 3D curve |
+| [Gp194](Gp194.stp) | Seam edge whose two banks are declared as 2D circles: the forward bank cannot be determined and the edge is hard-failed |
+| [Gp195](Gp195.stp) | Composite curve whose segments are listed out of connected order, in the container where the reorder repair is observable |

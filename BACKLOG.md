@@ -587,6 +587,37 @@ new flaky-CI surface.
 
 ## Smaller queued items
 
+### Q15 — `EDGE_BASED_WIREFRAME_MODEL` translation is process-fatal in OCCT 7.8.1 (blocks one `stp-partial-assembly-continuation` subvariant, 2026-07-31)
+
+**Blocked, not unreachable.** The subvariant "edge-based wireframe model drops a failed edge or empty
+connected-edge-set" (`occt-coverage/exchange/problems.json`, `stp-partial-assembly-continuation`, cited at
+`StepToTopoDS_Builder.cxx:504-526` — the empty-set warn-and-skip at `:508-511` and the per-edge skip at
+`:515`) has no live fixture and could not be given one. A candidate `Tsh261` was authored (one good
+`CONNECTED_EDGE_SET`, one with an empty edge list, and one mixing a good edge with an
+unset-`edge_geometry` edge) and then **withdrawn**: reading it segfaults OCCT 7.8.1 (exit 139) in
+`validation/.venv`'s OCP build.
+
+The crash is **not** caused by the fixture's defects. It reproduces on a **minimal, entirely
+well-formed single-edge** `EDGE_BASED_WIREFRAME_MODEL` that `part21_strict` accepts (51 entities,
+0 unresolved refs) and the structural oracle passes (`ok_scan`). Variations tried, all exit 139:
+
+- schema `AUTOMOTIVE_DESIGN` and `AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF`;
+- container `EDGE_BASED_WIREFRAME_SHAPE_REPRESENTATION` and `MANIFOLD_SURFACE_SHAPE_REPRESENTATION`;
+- `ces_edges` members as `ORIENTED_EDGE` and as plain `EDGE_CURVE`;
+- `ORIENTED_EDGE` derived-attribute placeholders written as `$` and as `*`;
+- one, two and three connected-edge-sets.
+
+The only prior `EDGE_BASED_WIREFRAME_MODEL` bytes in the repo are in `step-examples/_quarantine/early-waves/`
+(Tsh023, Tsh037), neither of which wires the model into a product chain — so it appears the path has never
+actually been transferred in this corpus.
+
+Next steps when picked up: get a real backtrace (an `lldb -b -o run -o bt` attempt exceeded a 120 s budget
+in this session and produced nothing), decide whether this is an OCP-binding artifact or an upstream OCCT
+bug, and either file it upstream or ship the fixture behind the same
+`SEGFAULT_CHARACTERIZATION.md` convention other process-fatal fixtures use. Until then
+`stp-partial-assembly-continuation` stays PARTIAL for this one subvariant; every other subvariant of that
+class now has a live fixture (Xp008, Tsh023, Tsh256, Tsh257, M051, Xp017, Bo001, Bo002, Bo031).
+
 ### Q12 — IGES scoping decision (RESOLVED 2026-07-16): IGES is formally out of scope for this corpus
 
 **Maintainer decision, recorded here as the authoritative reference.** IGES is format-specific

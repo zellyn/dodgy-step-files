@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>§12.2a Pcurve defects</h1>
 <p class="blurb">Pcurve / parametric-curve defects: near-period mismatches, out-of-bounds parameters, degenerate or seam pcurves.</p>
-<p class="meta">185 entries</p>
+<p class="meta">188 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
@@ -203,6 +203,9 @@
 <tr><td><a href="Gp191.html"><code>Gp191</code></a></td><td>Pcurve whose 2D trim parameters literally collapse to a point (w1==w2) on a real, non-degenerate 3D edge</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Gp192.html"><code>Gp192</code></a></td><td>Pcurve range straddles a U-periodic surface&#x27;s seam in the wrong order (w1&gt;w2)</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Gp193.html"><code>Gp193</code></a></td><td>Pcurve 2D seed drifts in V from the 3D edge geometry; OCC heals by recomputing the pcurve from the 3D curve</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp194.html"><code>Gp194</code></a></td><td>Like-seam edge on a host that wraps around in U yet declares no period AND is not a B-spline (extrusion of a closed non-periodic curve)</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp195.html"><code>Gp195</code></a></td><td>Composite curve whose segments are listed out of connected order, in the container where the reorder repair is observable</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gp196.html"><code>Gp196</code></a></td><td>Seam edge whose two banks are declared as 2D circles: the forward bank cannot be determined and the edge is hard-failed</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
 </tbody></table>
 </main>
 <footer>

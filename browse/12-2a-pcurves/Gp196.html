@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gp196 — Seam edge whose two banks are declared as 2D circles: the forward bank cannot be determined and the edge is hard-failed</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2a Pcurve defects</a> <span class="sep">/</span> <span class="current">Gp196</span>
+</nav>
+<header class="title-bar">
+<h1>Gp196 <span class="sep">—</span> <span class="entry-title">Seam edge whose two banks are declared as 2D circles: the forward bank cannot be determined and the edge is hard-failed</span></h1>
+<p class="category">§12.2a pcurve (sub-class: `stp-seam-pcurve-selection`, PARTIAL, forward-pcurve-indeterminate subvariant)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2a-pcurves/Gp196.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2a-pcurves/Gp196.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>occt-coverage `exchange/problems.json` `stp-seam-pcurve-selection` (`StepToTopoDS_TranslateEdgeLoop::Init`, `StepToTopoDS_TranslateEdgeLoop.cxx:518-633` — `ShapeAnalysis_Curve::SelectForwardSeam` picks the forward pcurve</li>
+<li>`forwardPC==0` → hard fail &quot; Seam curve not mapped&quot;, `done = Standard_False`, at `:594-601`</li>
+<li>the wire then fails at `:680-683`). Selector behaviour read from OCCT source at `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`, `ShapeAnalysis_Curve.cxx:724-754`: each bank is downcast first to `Geom2d_Line` and, failing that, to `Geom2d_BoundedCurve` (from whose start/end a line is synthesised)</li>
+<li>a `Geom2d_Circle` is neither (it derives from `Geom2d_Conic`), so both downcasts fail and the initial 0 is returned. Also `StepToTopoDS_TranslateEdgeLoop.cxx:667-675`, which resets `done` and swallows a failed edge whose STEP start and end vertex entities are the same object.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A closed-cylinder face is bounded by the canonical four-entry loop — bottom circle, seam forward, top circle reversed, seam reversed — so the seam `EDGE_CURVE` is referenced TWICE inside the one `EDGE_LOOP`, the formal-seam encoding. Its geometry is a `SEAM_CURVE` carrying two DISTINCT `PCURVE`s, one per bank at u=0 and u=2π, but each of those pcurves&#x27; definitional representation holds a 2D `CIRCLE` rather than the usual 2D `LINE`. The two banks are then of a 2D curve kind from which no traversal direction can be extracted, so which bank is the forward one for this edge/wire/face orientation is genuinely indeterminate — and the receiver refuses to guess. Every prior fixture in this class (Gs193, Gp013, Gp011, Gs028, Twi022, Gp190) translates successfully; none reaches this branch. The seam edge&#x27;s start and end vertices are deliberately distinct `VERTEX_POINT`s (z=0 and z=1) because a same-entity start/end (a full-circle seam, Gp011&#x27;s shape) is swallowed by a separate equal-vertices recovery path and would hide the failure.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`CYLINDRICAL_SURFACE` radius 1, axis +Z. Seam 3D geometry `LINE` (1,0,0)→(1,0,1). Each bank: `AXIS2_PLACEMENT_2D` at `(u_bank, 0.5)`, `CIRCLE(&#x27;seam_bank_u0_circle_pcurve&#x27;,#plc,0.5)` (and `seam_bank_u2pi_circle_pcurve` at u=2π) — both circles genuinely pass through their bank&#x27;s two seam endpoints `(u_bank,0)` and `(u_bank,1)` — wrapped in `DEFINITIONAL_REPRESENTATION` + `PCURVE` on the cylinder. `SEAM_CURVE(&#x27;&#x27;,#line3d,(#pc_u0,#pc_u2pi),.PCURVE_S1.)`; `EDGE_CURVE(&#x27;indeterminate_seam_edge&#x27;,#v_bottom,#v_top,#seam,.T.)`; `EDGE_LOOP(&#x27;&#x27;,(#oe_bottom_circle,#oe_seam_T,#oe_top_circle_F,#oe_seam_F))` → `FACE_OUTER_BOUND` → `ADVANCED_FACE` → `OPEN_SHELL` → `SHELL_BASED_SURFACE_MODEL`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>when the two banks of a seam cannot be ordered, the edge is hard-failed and reported rather than silently assigned an arbitrary bank; the failure then propagates to the wire (&quot;at least one edge failed&quot;) and the face is left without an outer bound, so nothing downstream inherits a guessed parametrisation.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Gs193, Gp011, Gp013, Gp190 (the formal-seam and pseudo-seam subvariants of this class, all of which succeed). Live-verified (2026-07-31, this worktree, OCP/OCCT 7.8.1): the transfer check list carries &quot; Seam curve not mapped&quot; TWICE — once per traversal of the twice-referenced seam edge — followed by &quot; Edge with equal vertices failed, scipped&quot; (the two full-circle boundary edges), &quot;At least one edge failed : wire not done&quot;, &quot; EdgeLoop not mapped to TopoDS&quot; and &quot;No Outer Bound : Face not done&quot;: exactly the cascade the cited lines predict. The transferred shape is therefore the cylinder face with no wire at all — `n_edges_total == 0`, `n_vertices_total == 0`, face area 8e+100 (the unbounded natural-surface placeholder). That placeholder IS the claim here, as for Tfa252, so this entry is listed in the tier-3 placeholder lint&#x27;s intentional-placeholder set. Perturbation control (byte-level A/B): replacing each pcurve&#x27;s 2D `CIRCLE` with a 2D `LINE` spanning the same two bank endpoints — nothing else changed — makes all six check messages vanish and the face translate normally (1 wire, 4 edges, 8 vertices, zero failures). Synonyms: &quot;seam curve not mapped&quot;, &quot;forward pcurve indeterminate&quot;, &quot;which bank of the seam is forward&quot;, &quot;seam edge hard fail&quot;, &quot;two pcurves cannot be ordered&quot;, &quot;non-linear seam pcurve rejected&quot;. Provenance tier: bytes-sufficient.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;seam_bank_u0_circle_pcurve&#x27;)</code></li>
+<li><code>contains(b&#x27;seam_bank_u2pi_circle_pcurve&#x27;)</code></li>
+<li><code>contains(b&#x27;SEAM_CURVE&#x27;)</code></li>
+<li><code>contains(b&#x27;indeterminate_seam_edge&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;CYLINDRICAL_SURFACE&#x27;) == 1</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 1</code></li>
+<li><code>n_edges_total == 0</code></li>
+<li><code>n_vertices_total == 0</code></li>
+<li><code>face[0].surface_type == &quot;cylinder&quot;</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-2c-surfaces/Gs193.html">Gs193</a>, <a href="Gp011.html">Gp011</a>, <a href="Gp013.html">Gp013</a>, <a href="Gp190.html">Gp190</a>, <a href="../12-3c-faces/Tfa252.html">Tfa252</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gp196: ADVANCED_FACE on a CYLINDRICAL_SURFACE (radius 1, axis +Z) whose single EDGE_LOOP is the canonical closed-cylinder boundary (bottom CIRCLE, seam forward, top CIRCLE reversed, seam reversed) -- so the seam EDGE_CURVE &#x27;<mark>indeterminate_seam_edge</mark>&#x27; is referenced TWICE within the one wire, the formal-seam encoding. Its geometry is a <mark>SEAM_CURVE</mark> carrying two DISTINCT PCURVEs, one per bank (u=0 and u=2*pi), but each pcurve&#x27;s definitional representation holds a 2D CIRCLE (&#x27;<mark>seam_bank_u0_circle_pcurve</mark>&#x27;, &#x27;<mark>seam_bank_u2pi_circle_pcurve</mark>&#x27;) rather than the usual 2D LINE. A Geom2d_Circle is neither a Geom2d_Line nor a Geom2d_BoundedCurve, so the forward-seam selector cannot reduce either bank to a direction and returns its cannot-decide value; the reader then hard-fails the seam edge rather than guessing, sinking the wire and the face. Seam edge IS wired into the EDGE_LOOP, FACE_OUTER_BOUND, ADVANCED_FACE, OPEN_SHELL; never orphaned */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Gp196&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Gp196.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span><mark>#5=CYLINDRICAL_SURFACE(</mark>&#x27;&#x27;,#4,1.0);
+<span class="lineno">15</span>#6=(GEOMETRIC_REPRESENTATION_CONTEXT(2)PARAMETRIC_REPRESENTATION_CONTEXT()REPRESENTATION_CONTEXT(&#x27;UV&#x27;,&#x27;2D&#x27;));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,1.0));
+<span class="lineno">18</span>#9=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">19</span>#10=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">20</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">21</span>#12=VECTOR(&#x27;&#x27;,#11,1.0);
+<span class="lineno">22</span>#13=LINE(&#x27;&#x27;,#7,#12);
+<span class="lineno">23</span>#14=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.5));
+<span class="lineno">24</span>#15=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">25</span>#16=AXIS2_PLACEMENT_2D(&#x27;&#x27;,#14,#15);
+<span class="lineno">26</span>#17=CIRCLE(&#x27;<mark>seam_bank_u0_circle_pcurve</mark>&#x27;,#16,0.5);
+<span class="lineno">27</span>#18=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#17),#6);
+<span class="lineno">28</span>#19=PCURVE(&#x27;&#x27;,#5,#18);
+<span class="lineno">29</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(6.28318530718,0.5));
+<span class="lineno">30</span>#21=DIRECTION(&#x27;&#x27;,(1.0,0.0));
+<span class="lineno">31</span>#22=AXIS2_PLACEMENT_2D(&#x27;&#x27;,#20,#21);
+<span class="lineno">32</span>#23=CIRCLE(&#x27;<mark>seam_bank_u2pi_circle_pcurve</mark>&#x27;,#22,0.5);
+<span class="lineno">33</span>#24=DEFINITIONAL_REPRESENTATION(&#x27;&#x27;,(#23),#6);
+<span class="lineno">34</span>#25=PCURVE(&#x27;&#x27;,#5,#24);
+<span class="lineno">35</span>#26=<mark>SEAM_CURVE</mark>(&#x27;&#x27;,#13,(#19,#25),.PCURVE_S1.);
+<span class="lineno">36</span>#27=EDGE_CURVE(&#x27;<mark>indeterminate_seam_edge</mark>&#x27;,#9,#10,#26,.T.);
+<span class="lineno">37</span>#28=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">38</span>#29=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#28,#2,#3);
+<span class="lineno">39</span>#30=CIRCLE(&#x27;&#x27;,#29,1.0);
+<span class="lineno">40</span>#31=EDGE_CURVE(&#x27;cyl_bottom_edge&#x27;,#9,#9,#30,.T.);
+<span class="lineno">41</span>#32=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">42</span>#33=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#32,#2,#3);
+<span class="lineno">43</span>#34=CIRCLE(&#x27;&#x27;,#33,1.0);
+<span class="lineno">44</span>#35=EDGE_CURVE(&#x27;cyl_top_edge&#x27;,#10,#10,#34,.T.);
+<span class="lineno">45</span>#36=ORIENTED_EDGE(&#x27;&#x27;,$,$,#31,.T.);
+<span class="lineno">46</span>#37=ORIENTED_EDGE(&#x27;&#x27;,$,$,#27,.T.);
+<span class="lineno">47</span>#38=ORIENTED_EDGE(&#x27;&#x27;,$,$,#35,.F.);
+<span class="lineno">48</span>#39=ORIENTED_EDGE(&#x27;&#x27;,$,$,#27,.F.);
+<span class="lineno">49</span>#40=EDGE_LOOP(&#x27;&#x27;,(#36,#37,#38,#39));
+<span class="lineno">50</span>#41=FACE_OUTER_BOUND(&#x27;&#x27;,#40,.T.);
+<span class="lineno">51</span>#42=ADVANCED_FACE(&#x27;&#x27;,(#41),#5,.T.);
+<span class="lineno">52</span>#43=OPEN_SHELL(&#x27;&#x27;,(#42));
+<span class="lineno">53</span>#44=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#43));
+<span class="lineno">54</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">55</span>#9051=PRODUCT(&#x27;Gp196&#x27;,&#x27;Gp196&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">56</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">57</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">58</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">59</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">60</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">61</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">62</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">63</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">64</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">65</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#44),#9060);
+<span class="lineno">66</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">67</span>ENDSEC;
+<span class="lineno">68</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gp195.html">&larr; Gp195</a> <a class="up" href="index.html">§12.2a Pcurve defects</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

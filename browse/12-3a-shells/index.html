@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>§12.3a Shells / orientation</h1>
 <p class="blurb">Shell topology defects: orientation, free bounds, mixed open/closed shells, UnifySameDomain pathologies.</p>
-<p class="meta">291 entries</p>
+<p class="meta">296 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
@@ -32,6 +32,7 @@
 <tr><td><a href="Bo027.html"><code>Bo027</code></a></td><td>Per-vertex normals supplied for a triangulated face are inconsistent across smooth edges</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Bo028.html"><code>Bo028</code></a></td><td>Two adjacent faces meet C1-discontinuously across a shared edge</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Bo030.html"><code>Bo030</code></a></td><td>EDGE_CURVE start VERTEX_POINT lies off the underlying LINE: inner-vertex tolerance smaller than the deviation it bounds</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Bo031.html"><code>Bo031</code></a></td><td>Void shell of a solid that translates to nothing at all: the solid is still built from the outer shell and the surviving void</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(53) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Ps001.html"><code>Ps001</code></a></td><td>Negative-volume cube: every face normal points inward</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Ps002.html"><code>Ps002</code></a></td><td>FACE_OUTER_BOUND traversed CW; inner loop traversed CCW</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Ps003.html"><code>Ps003</code></a></td><td>Single ADVANCED_FACE with same_sense flipped on outer skin</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a</code></td></tr>
@@ -309,6 +310,10 @@
 <tr><td><a href="Tsh258.html"><code>Tsh258</code></a></td><td>Closed OPEN_SHELL tetrahedron promoted to a genuine solid under non-manifold read mode (tier-3-confirmed, not just shape(N))</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Tsh259.html"><code>Tsh259</code></a></td><td>Small-area internal hole wire removal cascades into removing a whole neighboring face built on the same edges</td><td><code>bytes-sufficient</code></td><td><code></code></td></tr>
 <tr><td><a href="Tsh260.html"><code>Tsh260</code></a></td><td>Non-conformal T-junction: free edge&#x27;s endpoints hang on the interior of an unrelated longer edge, split by sewing&#x27;s Cutting node insertion</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(14) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tsh261.html"><code>Tsh261</code></a></td><td>Two hanging vertices project onto the same interior stretch of one boundary edge a hair&#x27;s breadth apart: only one cut node is created</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(21) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tsh262.html"><code>Tsh262</code></a></td><td>Hanging vertex lands on the interior of a cylinder&#x27;s seam edge: the split sub-edges must keep both of the seam&#x27;s 2D curve representations</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tsh263.html"><code>Tsh263</code></a></td><td>Sliver body sharing a literal wall face with its neighbour: the input that makes the fold-into-the-neighbour disposition reachable</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(43) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tsh264.html"><code>Tsh264</code></a></td><td>Small-solid-dropping operator precondition with a literal shared wall: the input on which the merge-vs-remove flag changes the outcome</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(43) ifc=schema_n/a</code></td></tr>
 </tbody></table>
 </main>
 <footer>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa260 — Conical face bounded only by a full-revolution belt circle on the mirrored nappe, apex ABOVE the belt in V</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa260</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa260 <span class="sep">—</span> <span class="entry-title">Conical face bounded only by a full-revolution belt circle on the mirrored nappe, apex ABOVE the belt in V</span></h1>
+<p class="category">§12.3c faces (sub-class: `tkshh-wire-missing-or-bad-degenerated-edge`, subvariant &quot;cone with single closed belt wire: degenerated apex edge synthesized, apex below vs above the wire V-range&quot; — apex-above arm)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa260.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa260.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>occt-coverage PARTIAL audit, `tkshhealing/problems.json` `tkshh-wire-missing-or-bad-degenerated-edge` subvariant 7, apex-ABOVE arm. `ShapeFix_Face::FixPeriodicDegenerated` — `ShapeFix_Face.cxx:2647-2788` @ `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`</li>
+<li>apex-ABOVE arm specifically at `:2746-2751` (`gp_Pnt2d(aMaxLoopU, anApexV)`, `gp_Dir2d(-1,0)`, wire reversed when U decreases), versus the apex-BELOW arm at `:2739-2744`. Per the class notes, the apex-above case had never had a fixture at all — Tfa071/Tfa103/Tfa150 were all apex-below, and in any event were found in the 2026-07-17 re-audit never to invoke this repair.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>The mirror of Tfa259. Same `CONICAL_SURFACE` (radius 3 at V=0, semi-angle 30 degrees, apex at V=-6), but the sole boundary is the full-revolution belt `CIRCLE` at V=-10 (`belt_above_apex`) — BELOW the apex in the surface&#x27;s own parameter, i.e. on the mirrored nappe of the double cone, where the parametric radius `3 + (-10)*sin(30) = -2` is negative and the U direction is consequently mirrored. The belt is emitted as a 3D `CIRCLE` of radius 2 at z=-8.6602540 whose `AXIS2_PLACEMENT_3D` ref_direction is (-1,0,0), so its 3D parametrization agrees with the surface&#x27;s mirrored U at every point and not merely at the seam. Reaching this case is forced by the schema: `CONICAL_SURFACE` requires radius &gt;= 0 and 0 &lt; semi_angle &lt; pi/2, so the apex V coordinate -radius/sin(semi_angle) is always &lt;= 0 and a belt on the ordinary nappe always puts the apex BELOW; the mirrored nappe is the only conforming way to put it ABOVE. As in Tfa259, the apex row is left unbounded — no apex edge and no seam in the file.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`ADVANCED_FACE` on a `CONICAL_SURFACE`; `FACE_OUTER_BOUND` referencing an `EDGE_LOOP` with exactly ONE `ORIENTED_EDGE` whose `EDGE_CURVE` is a full-revolution `CIRCLE` with identical start and end `VERTEX_POINT`, positioned at a V strictly less than -radius/sin(semi_angle) (i.e. beyond the apex, on the mirrored nappe), with the circle&#x27;s ref_direction negated so its parametrization matches the surface&#x27;s mirrored U; no other edge in the file.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>heal; as in Tfa259 recognise the belting loop and locate the apex in V, but — with the apex ABOVE the belt — synthesize the apex-bridging degenerate edge as a 2D line at the loop&#x27;s MAXIMUM U running in the -U direction, applying the reversal guard for the opposite U-direction sense; the seam then follows and the face becomes a properly bounded cone on the mirrored nappe.</p></section>
+<section><h2>Notes</h2>
+<p>Live-verified (2026-07-31, this worktree, OCP/OCCT 7.8.1) against this fixture&#x27;s own bytes: ONE declared `EDGE_CURVE` reads back as a face with THREE distinct edges / FOUR oriented edges — the belt (`Geom2d_Line` at v=-10.0), a seam used twice (spanning v=[-10, -6]), and one edge with `BRep_Tool::Degenerated == True` whose pcurve is a `Geom2d_Line` with **loc=(6.283185, -6.0), dir=(-1, 0)**, range [0, 6.283185]. Set against Tfa259&#x27;s **loc=(0.0, -6.0), dir=(+1, 0)** on the identical surface, that is a clean two-way split: same apex V (both -radius/sin(semi_angle) = -6), opposite U anchor (maxLoopU vs minLoopU) and opposite traversal direction — exactly `ShapeFix_Face.cxx:2748-2749` versus `:2740-2741`. The belt edge&#x27;s own orientation in the healed wire also flips between the two fixtures (FORWARD here, REVERSED in Tfa259), reflecting the different `aSoleWire.Reverse()` guard in each arm. **See also**: Tfa259 (the apex-BELOW mirror — the pair is only meaningful together), Tfa258 (the sphere arm), Twi021 (the wire-level cone-apex insert). Synonyms: &quot;apex above wire V range&quot;, &quot;cone belt on mirrored nappe&quot;, &quot;second nappe conical face&quot;, &quot;negative parametric radius cone&quot;, &quot;apex degenerate edge decreasing U&quot;. Provenance tier: bytes-sufficient.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;CONICAL_SURFACE&#x27;) == 1</code></li>
+<li><code>count_entity_def(b&#x27;EDGE_CURVE&#x27;) == 1</code></li>
+<li><code>contains(b&#x27;belt_above_apex&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>face[0].surface_type == &quot;cone&quot;</code></li>
+<li><code>n_edges_total == 4</code></li>
+<li><code>brepcheck.valid == True</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Tfa259.html">Tfa259</a>, <a href="Tfa258.html">Tfa258</a>, <a href="../12-3b-wires/Twi021.html">Twi021</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tfa260: OPEN_SHELL with one ADVANCED_FACE on a CONICAL_SURFACE (radius 3 at V=0, semi-angle 30 deg, axis +Z, so the apex sits at V = -6 = -radius/sin(semi_angle)); FACE_OUTER_BOUND references a SINGLE-edge EDGE_LOOP whose only member is the full-revolution belt CIRCLE at V=-10 (&#x27;<mark>belt_above_apex</mark>&#x27;, on the MIRRORED nappe: parametric radius 3 + (-10)*sin(30) = -2, emitted as a 3D CIRCLE of radius 2 at z=-8.6602540 whose ref_direction is (-1,0,0) so its parametrization matches the surface&#x27;s own mirrored U). The apex row is left unbounded: no apex-bridging degenerate edge and no seam are present in the file, and the apex lies ABOVE the belt in V (-6 &gt; -10) -- the branch that must build the apex 2D line at the loop&#x27;s maximum U running in -U, the mirror of Tfa259. The EDGE_LOOP IS wired into FACE_OUTER_BOUND, ADVANCED_FACE and OPEN_SHELL; never orphaned */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tfa260&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Tfa260.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span><mark>#5=CONICAL_SURFACE(</mark>&#x27;&#x27;,#4,3.0000000000,0.5235987756);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(-2.0,0.0,-8.66025403784));
+<span class="lineno">16</span>#7=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,-8.66025403784));
+<span class="lineno">18</span>#9=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">19</span>#10=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#8,#2,#9);
+<span class="lineno">20</span>#11=CIRCLE(&#x27;&#x27;,#10,2.0000000000);
+<span class="lineno">21</span><mark>#12=EDGE_CURVE(</mark>&#x27;<mark>belt_above_apex</mark>&#x27;,#7,#7,#11,.T.);
+<span class="lineno">22</span>#13=ORIENTED_EDGE(&#x27;&#x27;,$,$,#12,.T.);
+<span class="lineno">23</span>#14=EDGE_LOOP(&#x27;&#x27;,(#13));
+<span class="lineno">24</span>#15=FACE_OUTER_BOUND(&#x27;&#x27;,#14,.T.);
+<span class="lineno">25</span>#16=ADVANCED_FACE(&#x27;&#x27;,(#15),#5,.T.);
+<span class="lineno">26</span>#17=OPEN_SHELL(&#x27;&#x27;,(#16));
+<span class="lineno">27</span>#18=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#17));
+<span class="lineno">28</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">29</span>#9051=PRODUCT(&#x27;Tfa260&#x27;,&#x27;Tfa260&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">30</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">31</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">32</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">33</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">34</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">35</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">36</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">37</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">38</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">39</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#18),#9060);
+<span class="lineno">40</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">41</span>ENDSEC;
+<span class="lineno">42</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa259.html">&larr; Tfa259</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

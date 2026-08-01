@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gs204 — Surface closed in U only to within 1e-4, so its own closure flag reads false: the same-face seam merge is approved only by comparing isoparametric-curve endpoints</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2c Surface / curve degeneracies</a> <span class="sep">/</span> <span class="current">Gs204</span>
+</nav>
+<header class="title-bar">
+<h1>Gs204 <span class="sep">—</span> <span class="entry-title">Surface closed in U only to within 1e-4, so its own closure flag reads false: the same-face seam merge is approved only by comparing isoparametric-curve endpoints</span></h1>
+<p class="category">§12.2c surfaces (sub-class: sewing seam merge on a closed surface — `sew-seam-closed-surface-merge`)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2c-surfaces/Gs204.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2c-surfaces/Gs204.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>occt-coverage PARTIAL audit, `exchange/problems.json` `sew-seam-closed-surface-merge` subvariant &quot;closure detected via isoline-distance fallback rather than the surface&#x27;s own IsUClosed/IsVClosed flag&quot; (`BRepBuilderAPI_Sewing::IsUClosedSurface` / `IsVClosedSurface`, `BRepBuilderAPI_Sewing.cxx:239-289`, whose `else` branch calls the static `IsClosedByIsos`, `:162-233`, when the surface&#x27;s own `IsUClosed()` / `IsVClosed()` return false</li>
+<li>gate reached from `IsMergedClosed` `:1255-1257` via `FindCandidates` `:1688-1689`). Closure tolerance being tested: `Geom_BSplineSurface::IsUClosed` (`Geom_BSplineSurface_1.cxx:1216`) compares the two boundary U-isocurves with `Precision::Confusion()`.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>One `ADVANCED_FACE` on a `B_SPLINE_SURFACE_WITH_KNOTS`, degree 1 × 1, shaped as a 12-sided prism of radius 1 and height 2: 13 pole columns wrapping the full 360°, where the LAST column is the first column displaced radially by 1e-4 instead of being identical to it. That is 1000× the 1e-7 pole-comparison tolerance, so the surface reports itself NOT closed in U (and it is not closed in V either) while being geometrically closed for every practical purpose. The face&#x27;s outer bound is the classic seam loop — bottom polyline, the seam line at u=umax reversed, top polyline reversed, the seam line at u=umin reversed — so ONE face carries two distinct, unshared, 1e-4-apart vertical edges that are seam-merge candidates for each other.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`B_SPLINE_SURFACE_WITH_KNOTS` of degree 1 in both directions whose pole grid wraps a full revolution with the last pole column offset from the first by a distance well above `Precision::Confusion()` but far below the model scale (here 1e-4 on a radius-1 prism); one `ADVANCED_FACE` on it bounded by bottom/top polyline `B_SPLINE_CURVE_WITH_KNOTS` edges and the two straight seam-line edges at u=umin and u=umax; sew at tolerance 1e-2.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>the two same-face seam-line edges are recognized as a genuine seam pair and merged, even though the surface exposes no closure flag saying it wraps: the closure test falls back on sampling isoparametric curves and comparing each one&#x27;s endpoint-to-endpoint distance against its endpoint-to-midpoint distance, which detects the wrap; the 2D-overlap conditions then approve the merge.</p></section>
+<section><h2>Notes</h2>
+<p>Why we believe this test is valid — live-verified against this fixture&#x27;s own bytes (this worktree&#x27;s `validation/.venv`, OCP/OCCT 7.8.1). Default read → shape_null=False, 1 face, 4 edges; `BRep_Tool::Surface(face)` is a `Geom_BSplineSurface` whose `IsUClosed()`, `IsVClosed()`, `IsUPeriodic()` and `IsVPeriodic()` all return **False** (asserted live, not assumed), and all four edges carry pcurves on it. Feeding the read shape to `BRepBuilderAPI_Sewing(1e-2)` and calling `Perform()` MERGES the two seam-line edges: `NbContigousEdges()==1`, `NbMultipleEdges()==0`, 4 unique edges → 3, and `ContigousEdgeCouple(1)` names exactly the two sections `[(1,0,2),(1,0,0)]` and `[(1.0001,0,2),(1.0001,0,0)]` — the u=umin and u=umax seam lines, averaged to x=1.00005. Both belong to the SAME face, so that merge is gated: `FindCandidates` computes `isOK = !Faces1.Contains(Face2)` and, when false, defers to `IsMergedClosed`, whose first act is `if (!isUClosed &amp;&amp; !isVClosed) return Standard_False` with both flags coming from `IsUClosedSurface`/`IsVClosedSurface`. Since the surface itself reports neither U- nor V-closed, the merge can only have been approved through the isoparametric-curve fallback inside those two methods. Two controls from the same generator confirm the sensitivity: with the pole gap set to 0 (columns exactly coincident) OCCT hands back a U-PERIODIC surface (`IsUClosed()==True`), so the fallback is bypassed entirely — which is precisely why the 1e-4 gap has to be there; with the wrap reduced 360°→180° (a genuinely open patch, seam lines 2 apart) `NbContigousEdges()==0` and nothing merges. Sewing is not on the default STEP read path, so the merge itself requires the sewing scaffold to observe; the closure-flag facts are observable directly from the default read. Synonyms: &quot;surface closed within tolerance but not flagged closed&quot;, &quot;seam merge without periodic flag STEP&quot;, &quot;IsClosedByIsos isoparametric closure fallback&quot;, &quot;bspline pole gap seam sewing&quot;, &quot;effectively closed surface seam pair merge&quot;.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;B_SPLINE_SURFACE_WITH_KNOTS&#x27;) == 1</code></li>
+<li><code>count_entity_def(b&#x27;B_SPLINE_CURVE_WITH_KNOTS&#x27;) == 2</code></li>
+<li><code>count_entity_def(b&#x27;ADVANCED_FACE&#x27;) == 1</code></li>
+<li><code>count_entity_def(b&#x27;EDGE_CURVE&#x27;) == 4</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 1</code></li>
+<li><code>n_edges_total == 4</code></li>
+<li><code>face[0].surface_type == &quot;bspline&quot;</code></li>
+<li><code>face[0].bspline.is_u_periodic == False</code></li>
+<li><code>face[0].bspline.u_degree == 1</code></li>
+<li><code>face[0].bspline.n_u_knots == 13</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gs204: B_SPLINE_SURFACE_WITH_KNOTS (degree 1x1, 12-sided prism, r=1, h=2) wrapping the full 360 degrees but whose LAST pole column is the first column displaced radially by 1e-4 instead of identical to it -- 1000x the 1e-7 pole-comparison tolerance, so the surface reports NOT closed in U while being geometrically closed. One ADVANCED_FACE on it carries two distinct, unshared, 1e-4-apart vertical seam-line edges (u=umin and u=umax), a same-face seam-merge candidate pair whose approval depends entirely on detecting the surface&#x27;s closure without a closure flag to read */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Gs204&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Gs204.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,2.0));
+<span class="lineno">12</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(0.866025403784,0.5,0.0));
+<span class="lineno">13</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(0.866025403784,0.5,2.0));
+<span class="lineno">14</span>#5=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.866025403784,0.0));
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.866025403784,2.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,2.0));
+<span class="lineno">18</span>#9=CARTESIAN_POINT(&#x27;&#x27;,(-0.5,0.866025403784,0.0));
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(-0.5,0.866025403784,2.0));
+<span class="lineno">20</span>#11=CARTESIAN_POINT(&#x27;&#x27;,(-0.866025403784,0.5,0.0));
+<span class="lineno">21</span>#12=CARTESIAN_POINT(&#x27;&#x27;,(-0.866025403784,0.5,2.0));
+<span class="lineno">22</span>#13=CARTESIAN_POINT(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">23</span>#14=CARTESIAN_POINT(&#x27;&#x27;,(-1.0,0.0,2.0));
+<span class="lineno">24</span>#15=CARTESIAN_POINT(&#x27;&#x27;,(-0.866025403784,-0.5,0.0));
+<span class="lineno">25</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(-0.866025403784,-0.5,2.0));
+<span class="lineno">26</span>#17=CARTESIAN_POINT(&#x27;&#x27;,(-0.5,-0.866025403784,0.0));
+<span class="lineno">27</span>#18=CARTESIAN_POINT(&#x27;&#x27;,(-0.5,-0.866025403784,2.0));
+<span class="lineno">28</span>#19=CARTESIAN_POINT(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">29</span>#20=CARTESIAN_POINT(&#x27;&#x27;,(0.0,-1.0,2.0));
+<span class="lineno">30</span>#21=CARTESIAN_POINT(&#x27;&#x27;,(0.5,-0.866025403784,0.0));
+<span class="lineno">31</span>#22=CARTESIAN_POINT(&#x27;&#x27;,(0.5,-0.866025403784,2.0));
+<span class="lineno">32</span>#23=CARTESIAN_POINT(&#x27;&#x27;,(0.866025403784,-0.5,0.0));
+<span class="lineno">33</span>#24=CARTESIAN_POINT(&#x27;&#x27;,(0.866025403784,-0.5,2.0));
+<span class="lineno">34</span>#25=CARTESIAN_POINT(&#x27;&#x27;,(1.0001,0.0,0.0));
+<span class="lineno">35</span>#26=CARTESIAN_POINT(&#x27;&#x27;,(1.0001,0.0,2.0));
+<span class="lineno">36</span><mark>#27=B_SPLINE_SURFACE_WITH_KNOTS(</mark>&#x27;&#x27;,1,1,((#1,#2),(#3,#4),(#5,#6),(#7,#8),(#9,#10),(#11,#12),(#13,#14),(#15,#16),(#17,#18),(#19,#20),(#21,#22),(#23,#24),(#25,#26)),.UNSPECIFIED.,.T.,.F.,.F.,(2,1,1,1,1,1,1,1,1,1,1,1,2),(2,2),(0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">37</span>#28=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">38</span>#29=VERTEX_POINT(&#x27;&#x27;,#28);
+<span class="lineno">39</span>#30=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,2.0));
+<span class="lineno">40</span>#31=VERTEX_POINT(&#x27;&#x27;,#30);
+<span class="lineno">41</span>#32=CARTESIAN_POINT(&#x27;&#x27;,(1.0001,0.0,0.0));
+<span class="lineno">42</span>#33=VERTEX_POINT(&#x27;&#x27;,#32);
+<span class="lineno">43</span>#34=CARTESIAN_POINT(&#x27;&#x27;,(1.0001,0.0,2.0));
+<span class="lineno">44</span>#35=VERTEX_POINT(&#x27;&#x27;,#34);
+<span class="lineno">45</span>#36=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">46</span>#37=CARTESIAN_POINT(&#x27;&#x27;,(0.866025403784,0.5,0.0));
+<span class="lineno">47</span>#38=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.866025403784,0.0));
+<span class="lineno">48</span>#39=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">49</span>#40=CARTESIAN_POINT(&#x27;&#x27;,(-0.5,0.866025403784,0.0));
+<span class="lineno">50</span>#41=CARTESIAN_POINT(&#x27;&#x27;,(-0.866025403784,0.5,0.0));
+<span class="lineno">51</span>#42=CARTESIAN_POINT(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">52</span>#43=CARTESIAN_POINT(&#x27;&#x27;,(-0.866025403784,-0.5,0.0));
+<span class="lineno">53</span>#44=CARTESIAN_POINT(&#x27;&#x27;,(-0.5,-0.866025403784,0.0));
+<span class="lineno">54</span>#45=CARTESIAN_POINT(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">55</span>#46=CARTESIAN_POINT(&#x27;&#x27;,(0.5,-0.866025403784,0.0));
+<span class="lineno">56</span>#47=CARTESIAN_POINT(&#x27;&#x27;,(0.866025403784,-0.5,0.0));
+<span class="lineno">57</span>#48=CARTESIAN_POINT(&#x27;&#x27;,(1.0001,0.0,0.0));
+<span class="lineno">58</span><mark>#49=B_SPLINE_CURVE_WITH_KNOTS(</mark>&#x27;&#x27;,1,(#36,#37,#38,#39,#40,#41,#42,#43,#44,#45,#46,#47,#48),.UNSPECIFIED.,.F.,.F.,(2,1,1,1,1,1,1,1,1,1,1,1,2),(0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0),.UNSPECIFIED.);
+<span class="lineno">59</span>#50=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,2.0));
+<span class="lineno">60</span>#51=CARTESIAN_POINT(&#x27;&#x27;,(0.866025403784,0.5,2.0));
+<span class="lineno">61</span>#52=CARTESIAN_POINT(&#x27;&#x27;,(0.5,0.866025403784,2.0));
+<span class="lineno">62</span>#53=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,2.0));
+<span class="lineno">63</span>#54=CARTESIAN_POINT(&#x27;&#x27;,(-0.5,0.866025403784,2.0));
+<span class="lineno">64</span>#55=CARTESIAN_POINT(&#x27;&#x27;,(-0.866025403784,0.5,2.0));
+<span class="lineno">65</span>#56=CARTESIAN_POINT(&#x27;&#x27;,(-1.0,0.0,2.0));
+<span class="lineno">66</span>#57=CARTESIAN_POINT(&#x27;&#x27;,(-0.866025403784,-0.5,2.0));
+<span class="lineno">67</span>#58=CARTESIAN_POINT(&#x27;&#x27;,(-0.5,-0.866025403784,2.0));
+<span class="lineno">68</span>#59=CARTESIAN_POINT(&#x27;&#x27;,(0.0,-1.0,2.0));
+<span class="lineno">69</span>#60=CARTESIAN_POINT(&#x27;&#x27;,(0.5,-0.866025403784,2.0));
+<span class="lineno">70</span>#61=CARTESIAN_POINT(&#x27;&#x27;,(0.866025403784,-0.5,2.0));
+<span class="lineno">71</span>#62=CARTESIAN_POINT(&#x27;&#x27;,(1.0001,0.0,2.0));
+<span class="lineno">72</span><mark>#63=B_SPLINE_CURVE_WITH_KNOTS(</mark>&#x27;&#x27;,1,(#50,#51,#52,#53,#54,#55,#56,#57,#58,#59,#60,#61,#62),.UNSPECIFIED.,.F.,.F.,(2,1,1,1,1,1,1,1,1,1,1,1,2),(0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0),.UNSPECIFIED.);
+<span class="lineno">73</span><mark>#64=EDGE_CURVE(</mark>&#x27;&#x27;,#29,#33,#49,.T.);
+<span class="lineno">74</span><mark>#65=EDGE_CURVE(</mark>&#x27;&#x27;,#31,#35,#63,.T.);
+<span class="lineno">75</span>#66=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">76</span>#67=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">77</span>#68=VECTOR(&#x27;&#x27;,#67,2.0);
+<span class="lineno">78</span>#69=LINE(&#x27;&#x27;,#66,#68);
+<span class="lineno">79</span><mark>#70=EDGE_CURVE(</mark>&#x27;&#x27;,#29,#31,#69,.T.);
+<span class="lineno">80</span>#71=CARTESIAN_POINT(&#x27;&#x27;,(1.0001,0.0,2.0));
+<span class="lineno">81</span>#72=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">82</span>#73=VECTOR(&#x27;&#x27;,#72,2.0);
+<span class="lineno">83</span>#74=LINE(&#x27;&#x27;,#71,#73);
+<span class="lineno">84</span><mark>#75=EDGE_CURVE(</mark>&#x27;&#x27;,#35,#33,#74,.T.);
+<span class="lineno">85</span>#76=ORIENTED_EDGE(&#x27;&#x27;,$,$,#64,.T.);
+<span class="lineno">86</span>#77=ORIENTED_EDGE(&#x27;&#x27;,$,$,#75,.F.);
+<span class="lineno">87</span>#78=ORIENTED_EDGE(&#x27;&#x27;,$,$,#65,.F.);
+<span class="lineno">88</span>#79=ORIENTED_EDGE(&#x27;&#x27;,$,$,#70,.F.);
+<span class="lineno">89</span>#80=EDGE_LOOP(&#x27;&#x27;,(#76,#77,#78,#79));
+<span class="lineno">90</span>#81=FACE_OUTER_BOUND(&#x27;&#x27;,#80,.T.);
+<span class="lineno">91</span><mark>#82=ADVANCED_FACE(</mark>&#x27;&#x27;,(#81),#27,.T.);
+<span class="lineno">92</span>#83=OPEN_SHELL(&#x27;gs204_isoline_closure_fallback_shell&#x27;,(#82));
+<span class="lineno">93</span>#84=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#83));
+<span class="lineno">94</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">95</span>#9051=PRODUCT(&#x27;Gs204&#x27;,&#x27;Gs204&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">96</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">97</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">98</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">99</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">100</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">101</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">102</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">103</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">104</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">105</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#84),#9060);
+<span class="lineno">106</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">107</span>ENDSEC;
+<span class="lineno">108</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gs203.html">&larr; Gs203</a> <a class="up" href="index.html">§12.2c Surface / curve degeneracies</a> <a class="next" href="Gs205.html">Gs205 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

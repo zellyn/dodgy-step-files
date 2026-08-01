@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ad138 — Curve element of a curve set whose construction throws is logged and skipped; the rest of the set still translates</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad138</span>
+</nav>
+<header class="title-bar">
+<h1>Ad138 <span class="sep">—</span> <span class="entry-title">Curve element of a curve set whose construction throws is logged and skipped; the rest of the set still translates</span></h1>
+<p class="category">§12.11 adversarial (sub-class: `stp-transfer-exception-to-fail`, PARTIAL, fourth catch boundary)</p>
+<p class="severity-badge severity-p3">P3 — cosmetic / metadata-only</p>
+<p class="tag-pills">
+<a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-11-adversarial/Ad138.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad138.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>occt-coverage `exchange/problems.json` `stp-transfer-exception-to-fail` (`StepToTopoDS_Builder::Init(GeometricSet)`, `StepToTopoDS_Builder.cxx:700-709` — per-element curve conversion wrapped in try/catch, element skipped on exception</li>
+<li>the skipped element is then reported at `:781`). The class cites FOUR distinct catch boundaries</li>
+<li>Ad043 covers the per-root one (`STEPControl_ActorRead::TransferShape`, `STEPControl_ActorRead.cxx:1414-1480`), Xp008 the per-edge one (`StepToTopoDS_TranslateEdgeLoop::Init`, `:307-326`), Ad137 the per-segment one (`StepToTopoDS_TranslateCompositeCurve::Init`, `:188-211,243-249`) — this one had no live fixture. Verified from OCCT source at `bd2a789f15235755ce4d1a3b07379a2e062fdc2e` that the curve-construction helper this call site invokes contains no try/catch of its own (the only one in that file guards surface construction), so the exception genuinely propagates out to the cited boundary.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A bare curve set — the shape representation&#x27;s own item, and therefore a real translation root — holds two `B_SPLINE_CURVE_WITH_KNOTS` elements that are structurally identical and differ only in their knot vector. `good_bspline_element` has monotonically increasing knots `(0.0, 1.0)`. `throwing_bspline_element` has DECREASING knots `(1.0, 0.5)`: schema-legal Part-21 bytes, but numerically invalid geometry — a B-spline constructor requires a non-decreasing knot sequence and raises a construction error on violation rather than returning an error code. The receiver must contain that exception at the individual element, log the loss, and carry on with the set&#x27;s other elements.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`#3=B_SPLINE_CURVE_WITH_KNOTS(&#x27;good_bspline_element&#x27;,1,(#1,#2),.UNSPECIFIED.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);` and `#6=B_SPLINE_CURVE_WITH_KNOTS(&#x27;throwing_bspline_element&#x27;,1,(#4,#5),.UNSPECIFIED.,.F.,.F.,(2,2),(1.0,0.5),.UNSPECIFIED.);` — identical apart from the knots — listed together in `#7=GEOMETRIC_CURVE_SET(&#x27;ad138_element_catch_set&#x27;,(#3,#6));` inside a `MANIFOLD_SURFACE_SHAPE_REPRESENTATION`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>catch the construction exception at the individual set element, log that element as not mapped, and still emit the surviving element&#x27;s edge into the output compound — rather than aborting the set, the representation, or the whole read.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Ad043, Xp008, Ad137 (the three coarser/sibling catch boundaries of this same class), M051, Xp017 (bare-curve-set siblings with non-geometric and empty item lists). Live-verified (2026-07-31, this worktree, OCP/OCCT 7.8.1): the transfer check list carries exactly ONE message, the warning &quot; Entity not mapped to TopoDS&quot;, and the transferred shape is a compound holding exactly ONE edge — the good element&#x27;s. Independently confirmed that the decreasing knot vector does raise (constructing the same degree-1 B-spline directly from the same poles/knots/multiplicities fails with &quot;BSpline curve: Knots interval values too close&quot;). Perturbation control: flipping the bad element&#x27;s knots to `(0.0,1.0)` — a one-token byte change, nothing else — makes the warning disappear and the edge count go 1 → 2, so the observable is caused by the knot bytes and not by the surrounding scaffold. Synonyms: &quot;geometric set element throws&quot;, &quot;per-element try catch geometric curve set&quot;, &quot;bad knot vector element skipped&quot;, &quot;one bad curve doesn&#x27;t sink the curve set&quot;, &quot;element not mapped to TopoDS&quot;. Provenance tier: bytes-sufficient.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;good_bspline_element&#x27;)</code></li>
+<li><code>contains(b&#x27;throwing_bspline_element&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;B_SPLINE_CURVE_WITH_KNOTS&#x27;) == 2</code></li>
+<li><code>contains(b&#x27;GEOMETRIC_CURVE_SET&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_edges_total == 1</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ad043.html">Ad043</a>, <a href="../12-12-cross-product/Xp008.html">Xp008</a>, <a href="Ad137.html">Ad137</a>, <a href="../12-8-mixed/M051.html">M051</a>, <a href="../12-12-cross-product/Xp017.html">Xp017</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Ad138: <mark>GEOMETRIC_CURVE_SET</mark> (the shape representation&#x27;s own item, a real translation root) with TWO B_SPLINE_CURVE_WITH_KNOTS elements of identical structure differing only in their knot vector: &#x27;<mark>good_bspline_element</mark>&#x27; with monotonically increasing knots (0.0,1.0) and &#x27;<mark>throwing_bspline_element</mark>&#x27; with DECREASING knots (1.0,0.5) which Geom_BSplineCurve&#x27;s constructor rejects by raising Standard_ConstructionError; the per-element try/catch around the geometric-set element&#x27;s own curve construction IS the mechanism under test -- the throwing element must be logged and skipped while the good element still produces its edge in the output compound; both curves ARE elements of the root <mark>GEOMETRIC_CURVE_SET</mark>, never orphaned */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad138&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ad138.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">12</span><mark>#3=B_SPLINE_CURVE_WITH_KNOTS(</mark>&#x27;<mark>good_bspline_element</mark>&#x27;,1,(#1,#2),.UNSPECIFIED.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);
+<span class="lineno">13</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">14</span>#5=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">15</span><mark>#6=B_SPLINE_CURVE_WITH_KNOTS(</mark>&#x27;<mark>throwing_bspline_element</mark>&#x27;,1,(#4,#5),.UNSPECIFIED.,.F.,.F.,(2,2),(1.0,0.5),.UNSPECIFIED.);
+<span class="lineno">16</span>#7=<mark>GEOMETRIC_CURVE_SET</mark>(&#x27;ad138_element_catch_set&#x27;,(#3,#6));
+<span class="lineno">17</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">18</span>#9051=PRODUCT(&#x27;Ad138&#x27;,&#x27;Ad138&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">19</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">20</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">21</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">22</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">23</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">24</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">25</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">26</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">27</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">28</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#7),#9060);
+<span class="lineno">29</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">30</span>ENDSEC;
+<span class="lineno">31</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ad137.html">&larr; Ad137</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

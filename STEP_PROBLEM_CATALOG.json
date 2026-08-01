@@ -5260,6 +5260,54 @@
   },
   {
     "byte_assertions": [
+      "contains(b'good_bspline_element')",
+      "contains(b'throwing_bspline_element')",
+      "count_entity_def(b'B_SPLINE_CURVE_WITH_KNOTS') == 2",
+      "contains(b'GEOMETRIC_CURVE_SET')"
+    ],
+    "category": "§12.11 adversarial (sub-class: `stp-transfer-exception-to-fail`, PARTIAL, fourth catch boundary)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A bare curve set — the shape representation's own item, and therefore a real translation root — holds two `B_SPLINE_CURVE_WITH_KNOTS` elements that are structurally identical and differ only in their knot vector. `good_bspline_element` has monotonically increasing knots `(0.0, 1.0)`. `throwing_bspline_element` has DECREASING knots `(1.0, 0.5)`: schema-legal Part-21 bytes, but numerically invalid geometry — a B-spline constructor requires a non-decreasing knot sequence and raises a construction error on violation rather than returning an error code. The receiver must contain that exception at the individual element, log the loss, and carry on with the set's other elements.",
+    "expected_kernel_behavior": "catch the construction exception at the individual set element, log that element as not mapped, and still emit the surviving element's edge into the output compound — rather than aborting the set, the representation, or the whole read.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-11-adversarial/Ad138.stp",
+    "id": "Ad138",
+    "notes": "**See also**: Ad043, Xp008, Ad137 (the three coarser/sibling catch boundaries of this same class), M051, Xp017 (bare-curve-set siblings with non-geometric and empty item lists). Live-verified (2026-07-31, this worktree, OCP/OCCT 7.8.1): the transfer check list carries exactly ONE message, the warning \" Entity not mapped to TopoDS\", and the transferred shape is a compound holding exactly ONE edge — the good element's. Independently confirmed that the decreasing knot vector does raise (constructing the same degree-1 B-spline directly from the same poles/knots/multiplicities fails with \"BSpline curve: Knots interval values too close\"). Perturbation control: flipping the bad element's knots to `(0.0,1.0)` — a one-token byte change, nothing else — makes the warning disappear and the edge count go 1 → 2, so the observable is caused by the knot bytes and not by the surrounding scaffold. Synonyms: \"geometric set element throws\", \"per-element try catch geometric curve set\", \"bad knot vector element skipped\", \"one bad curve doesn't sink the curve set\", \"element not mapped to TopoDS\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`#3=B_SPLINE_CURVE_WITH_KNOTS('good_bspline_element',1,(#1,#2),.UNSPECIFIED.,.F.,.F.,(2,2),(0.0,1.0),.UNSPECIFIED.);` and `#6=B_SPLINE_CURVE_WITH_KNOTS('throwing_bspline_element',1,(#4,#5),.UNSPECIFIED.,.F.,.F.,(2,2),(1.0,0.5),.UNSPECIFIED.);` — identical apart from the knots — listed together in `#7=GEOMETRIC_CURVE_SET('ad138_element_catch_set',(#3,#6));` inside a `MANIFOLD_SURFACE_SHAPE_REPRESENTATION`.",
+    "section": "12.11",
+    "section_dir": "12-11-adversarial",
+    "see_also": [
+      "Ad043",
+      "Xp008",
+      "Ad137",
+      "M051",
+      "Xp017"
+    ],
+    "sender": "",
+    "severity": "P3",
+    "sources": [
+      "occt-coverage `exchange/problems.json` `stp-transfer-exception-to-fail` (`StepToTopoDS_Builder::Init(GeometricSet)`, `StepToTopoDS_Builder.cxx:700-709` — per-element curve conversion wrapped in try/catch, element skipped on exception",
+      "the skipped element is then reported at `:781`). The class cites FOUR distinct catch boundaries",
+      "Ad043 covers the per-root one (`STEPControl_ActorRead::TransferShape`, `STEPControl_ActorRead.cxx:1414-1480`), Xp008 the per-edge one (`StepToTopoDS_TranslateEdgeLoop::Init`, `:307-326`), Ad137 the per-segment one (`StepToTopoDS_TranslateCompositeCurve::Init`, `:188-211,243-249`) — this one had no live fixture. Verified from OCCT source at `bd2a789f15235755ce4d1a3b07379a2e062fdc2e` that the curve-construction helper this call site invokes contains no try/catch of its own (the only one in that file guards surface construction), so the exception genuinely propagates out to the cited boundary."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "adversarial"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_edges_total == 1"
+    ],
+    "title": "Curve element of a curve set whose construction throws is logged and skipped; the rest of the set still translates"
+  },
+  {
+    "byte_assertions": [
       "contains(b'\\\\X2\\\\')",
       "contains(b'EDGE_CURVE')",
       "contains(b'ADVANCED_FACE')"
@@ -40343,6 +40391,53 @@
   },
   {
     "byte_assertions": [
+      "contains(b'I-DEAS')",
+      "contains(b'main_open_shell')",
+      "contains(b'closing_shell')",
+      "contains(b'second_item_model')",
+      "count_entity_def(b'OPEN_SHELL') == 3",
+      "count_entity_def(b'EDGE_CURVE') == 20"
+    ],
+    "category": "§12.1b header (sub-class: `stp-ideas-shell-closing`)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "An I-DEAS-authored file represents one closed solid boundary as several separate OPEN shells: a \"main\" open shell plus extra shells made entirely of shared edges that exist only to close the gap. This fixture supplies that pattern in the encoding the receiver can actually act on. A unit cube's bottom and four sides form `main_open_shell` (5 faces, genuinely open — no lid); the lid forms `closing_shell` (1 face) whose four boundary edges are four NEW `EDGE_CURVE` records whose names `e_lid_1`..`e_lid_4` are byte-equal to the four top edges already used by the side faces. Separate edge records matched by name is the real I-DEAS authoring shape — and the only one that marks the closing shell's edges as shared, which is the precondition for it to be treated as a closing candidate. Lh031 supplies only the header trigger (no shell topology at all); Lh053 supplies real open+closing topology but reuses the same `EDGE_CURVE` entities, which is exactly why no merge was ever observed for it. A second, unrelated representation item is also required: with a single item the merge runs but its result is discarded before binding.",
+    "expected_kernel_behavior": "with non-manifold reading and I-DEAS post-processing enabled, recognise the lid shell as a closing candidate for the open shell, merge its face in, confirm the merged shell is closed, prune any closing face not needed for closure, and promote the now-closed shell to a solid — leaving unrelated open shells untouched.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-1b-header/Lh054.stp",
+    "id": "Lh054",
+    "notes": "**See also**: Lh031 (header-only trigger), Lh053 (real topology in the same-entity encoding that cannot fire — this entry is its working counterpart, not a duplicate), Tsh258 (documents the same single-item binding shortcut for shell-to-solid promotion). Live-verified (2026-07-31, this worktree, OCP/OCCT 7.8.1). Under this corpus's default oracle settings the file reads verbatim — 7 faces, 3 shells, 0 solids, 20 unique edges, brepcheck valid — because the whole pipeline is gated behind two opt-in reader parameters. Driving `read.step.nonmanifold=1` AND `read.step.ideas=1` (BOTH required; either alone leaves the result unchanged) the merge is directly observed: 1 SOLID appears, the unique-edge count drops 20 → 16 as the lid's four name-matched edges resolve to the main shell's own edges, and the shell count drops 3 → 2 (the merged, now-closed cube shell inside the solid, plus the second item's untouched open shell); brepcheck stays valid. Perturbation control (byte-level A/B): repointing the lid face's four `ORIENTED_EDGE`s at the main shell's own `EDGE_CURVE` entities — four reference numbers changed, Lh053's encoding, nothing else touched — gives 0 solids and 3 shells under those same parameters. **Reader-configuration finding, recorded because it invalidates earlier negative results for this class**: setting these two parameters through `Interface_Static` alone does NOT reach the transfer in this OCP build; they must be carried in a `StepData_ConfParameters` handed to `ReadFile(path, params)`. Verified independently by a control on an unrelated fixture whose behaviour changes only under the parameters-object route. Synonyms: \"I-DEAS closing shell merged\", \"open shell closed by adjacent non-manifold shell\", \"closing face pruned after closure\", \"same edge name different edge record\", \"I-DEAS non-manifold post processing\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`FILE_NAME('Lh054.stp',...,'I-DEAS Master Series 11','','');`. Unit cube, consistently outward-oriented. `OPEN_SHELL('main_open_shell',(#bottom,#front,#right,#back,#left))`; four new `EDGE_CURVE('e_lid_1',...)`..`('e_lid_4',...)` duplicating the names (not the entity ids) of the side faces' top edges; `ADVANCED_FACE('top_closing',...)` on those four; `OPEN_SHELL('closing_shell',(#top_closing))`; `SHELL_BASED_SURFACE_MODEL('ideas_shells',(#main_open_shell,#closing_shell))`. Second item: one open square face → `OPEN_SHELL('second_item_shell',...)` → `SHELL_BASED_SURFACE_MODEL('second_item_model',...)`. Both models listed as the two items of one `MANIFOLD_SURFACE_SHAPE_REPRESENTATION`.",
+    "section": "12.1b",
+    "section_dir": "12-1b-header",
+    "see_also": [
+      "Lh031",
+      "Lh053",
+      "Tsh258"
+    ],
+    "sender": "",
+    "severity": "P3",
+    "sources": [
+      "occt-coverage `exchange/problems.json` `stp-ideas-shell-closing` (`STEPControl_ActorRead::computeIDEASClosings`, `STEPControl_ActorRead.cxx:2064-2086`",
+      "`STEPControl_ActorRead::closeIDEASShell`, `:1997-2055`). Root cause of the class's long-standing \"merge never fires\" finding identified live and read from OCCT source at `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`: `StepToTopoDS_NMTool::IsPureNMShell` (`StepToTopoDS_NMTool.cxx:183-194`) requires every edge of a candidate closing shell to have been passed to `RegisterNMEdge`, and `RegisterNMEdge` has exactly ONE call site — `StepToTopoDS_TranslateEdge.cxx:244`, inside the branch at `:237-249` that fires only when an `EDGE_CURVE`'s own NAME is non-empty and a DIFFERENT, already-translated `EDGE_CURVE` was bound under that same name (`:336-337`). Reusing the same `EDGE_CURVE` entity in both shells short-circuits at `:208` / `:223` and registers nothing. Additionally `STEPControl_ActorRead.cxx:1015-1024`: a representation that yields exactly one shape binds that per-item shape directly and discards the compound the closing and solid-reconstruction passes wrote into."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "syntax"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 7"
+    ],
+    "title": "I-DEAS closing shell that is actually merged: closing edges are separate records sharing the open shell's edge names"
+  },
+  {
+    "byte_assertions": [
       "contains(b'DATA;')",
       "contains(b'HEADER;')",
       "count(b'ENDSEC;') >= 2"
@@ -49283,6 +49378,107 @@
       "n_edges_total == 4"
     ],
     "title": "Like-seam edge on a host that wraps around in U yet declares no period AND is not a B-spline (extrusion of a closed non-periodic curve)"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'composite_curve_scrambled_order')",
+      "contains(b'seg_a_bottom')",
+      "contains(b'seg_c_top')",
+      "count_entity_def(b'COMPOSITE_CURVE_SEGMENT') == 4",
+      "contains(b'GEOMETRIC_CURVE_SET')"
+    ],
+    "category": "§12.2a pcurve (sub-class: `stp-compcurve-reorder`)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A `COMPOSITE_CURVE` traces the unit square with four `COMPOSITE_CURVE_SEGMENT`s, but lists them A, C, B, D — the top edge sits between the bottom edge and the right edge, so successive entries in the list do not follow on from one another, and the permutation is neither the identity nor a cyclic rotation (which on a closed wire would be a mere choice of starting point). Every segment's parent curve is a genuinely BOUNDED curve — a degree-1 `B_SPLINE_CURVE_WITH_KNOTS` over a finite [0,1] domain — so each yields a real finite edge, unlike the infinite-parameter segments a bare `LINE` produces. The composite curve is the sole element of the shape representation's own curve set, so it is a real translation root, not an orphan.",
+    "expected_kernel_behavior": "detect that the segment list is not in connected sequence, reorder the collected segments algorithmically before assembling them, log that the disorder was repaired, and emit a single wire — rather than building a disjoint or self-crossing wire in list order.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp195.stp",
+    "id": "Gp195",
+    "notes": "**See also**: Gp176 (byte-genuine disordered composite curve in the container where the repair cannot be observed — this entry is its observable counterpart, not a duplicate), Twi007, Twi028, Twi038 (`EDGE_LOOP` edge-list scrambles, a different translation path), Ad137, Gp188 (composite-curve siblings). Live-verified (2026-07-31, this worktree, OCP/OCCT 7.8.1): the transfer check list carries exactly one message, the warning \"Segments were disordered; fixed\" — the literal string emitted when the reorder status comes back set — and the transfer yields ONE wire of 4 edges (8 raw vertices). Perturbation control (byte-level A/B): re-listing the same four unchanged segment entities in their connected order A, B, C, D — a single-token edit to the segment list, nothing else — makes the warning disappear entirely while the resulting topology is identical (1 wire, 4 edges, 8 vertices, zero check messages). The message is therefore caused by the segment ORDER alone, which is exactly what Gp176's own control could not establish, because in Gp176's configuration both orders produced the identical empty signature. Synonyms: \"segments were disordered fixed\", \"composite curve segments out of sequence\", \"composite curve reorder\", \"successive segments do not follow on\", \"wire assembled from scrambled segments\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "four `B_SPLINE_CURVE_WITH_KNOTS` of degree 1, knots `(0.0,1.0)`, multiplicities `(2,2)`: `seg_a_bottom` (0,0,0)→(1,0,0), `seg_b_right` (1,0,0)→(1,1,0), `seg_c_top` (1,1,0)→(0,1,0), `seg_d_left` (0,1,0)→(0,0,0); each wrapped in `COMPOSITE_CURVE_SEGMENT(.CONTINUOUS.,.T.,#crv)`; then `COMPOSITE_CURVE('composite_curve_scrambled_order',(#seg_a,#seg_c,#seg_b,#seg_d),.F.)` — note the A, C, B, D order — inside `GEOMETRIC_CURVE_SET('gp195_composite_set',(#composite))` in a `MANIFOLD_SURFACE_SHAPE_REPRESENTATION`.",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [
+      "Gp176",
+      "Twi007",
+      "Twi028",
+      "Twi038",
+      "Ad137",
+      "Gp188"
+    ],
+    "sender": "",
+    "severity": "P3",
+    "sources": [
+      "occt-coverage `exchange/problems.json` `stp-compcurve-reorder` (`StepToTopoDS_TranslateCompositeCurve::Init`, `StepToTopoDS_TranslateCompositeCurve.cxx:265-274` — `sfw->FixReorder()`, and `StatusReorder(ShapeExtend_DONE)` → the warning \"Segments were disordered",
+      "fixed\"). The verdict was held at PARTIAL because Gp176 could not be made to show the repair firing. Root cause identified live: Gp176 hands its composite curve to an `EDGE_CURVE` as `edge_geometry`, which routes through the single-curve conversion path and never constructs the segment-wise wire assembler at all (Gp176 reports \" Make Geom_Curve (3D) failed\" / \"Could not convert a curve\", and no reorder message, in either segment order). The assembler — and hence the reorder pass — is only reached when the composite curve is an ELEMENT of a curve set (`StepToTopoDS_Builder::Init(GeometricSet)`, `StepToTopoDS_Builder.cxx:677-698`)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_edges_total == 4"
+    ],
+    "title": "Composite curve whose segments are listed out of connected order, in the container where the reorder repair is observable"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'seam_bank_u0_circle_pcurve')",
+      "contains(b'seam_bank_u2pi_circle_pcurve')",
+      "contains(b'SEAM_CURVE')",
+      "contains(b'indeterminate_seam_edge')",
+      "count_entity_def(b'CYLINDRICAL_SURFACE') == 1"
+    ],
+    "category": "§12.2a pcurve (sub-class: `stp-seam-pcurve-selection`, PARTIAL, forward-pcurve-indeterminate subvariant)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A closed-cylinder face is bounded by the canonical four-entry loop — bottom circle, seam forward, top circle reversed, seam reversed — so the seam `EDGE_CURVE` is referenced TWICE inside the one `EDGE_LOOP`, the formal-seam encoding. Its geometry is a `SEAM_CURVE` carrying two DISTINCT `PCURVE`s, one per bank at u=0 and u=2π, but each of those pcurves' definitional representation holds a 2D `CIRCLE` rather than the usual 2D `LINE`. The two banks are then of a 2D curve kind from which no traversal direction can be extracted, so which bank is the forward one for this edge/wire/face orientation is genuinely indeterminate — and the receiver refuses to guess. Every prior fixture in this class (Gs193, Gp013, Gp011, Gs028, Twi022, Gp190) translates successfully; none reaches this branch. The seam edge's start and end vertices are deliberately distinct `VERTEX_POINT`s (z=0 and z=1) because a same-entity start/end (a full-circle seam, Gp011's shape) is swallowed by a separate equal-vertices recovery path and would hide the failure.",
+    "expected_kernel_behavior": "when the two banks of a seam cannot be ordered, the edge is hard-failed and reported rather than silently assigned an arbitrary bank; the failure then propagates to the wire (\"at least one edge failed\") and the face is left without an outer bound, so nothing downstream inherits a guessed parametrisation.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2a-pcurves/Gp196.stp",
+    "id": "Gp196",
+    "notes": "**See also**: Gs193, Gp011, Gp013, Gp190 (the formal-seam and pseudo-seam subvariants of this class, all of which succeed). Live-verified (2026-07-31, this worktree, OCP/OCCT 7.8.1): the transfer check list carries \" Seam curve not mapped\" TWICE — once per traversal of the twice-referenced seam edge — followed by \" Edge with equal vertices failed, scipped\" (the two full-circle boundary edges), \"At least one edge failed : wire not done\", \" EdgeLoop not mapped to TopoDS\" and \"No Outer Bound : Face not done\": exactly the cascade the cited lines predict. The transferred shape is therefore the cylinder face with no wire at all — `n_edges_total == 0`, `n_vertices_total == 0`, face area 8e+100 (the unbounded natural-surface placeholder). That placeholder IS the claim here, as for Tfa252, so this entry is listed in the tier-3 placeholder lint's intentional-placeholder set. Perturbation control (byte-level A/B): replacing each pcurve's 2D `CIRCLE` with a 2D `LINE` spanning the same two bank endpoints — nothing else changed — makes all six check messages vanish and the face translate normally (1 wire, 4 edges, 8 vertices, zero failures). Synonyms: \"seam curve not mapped\", \"forward pcurve indeterminate\", \"which bank of the seam is forward\", \"seam edge hard fail\", \"two pcurves cannot be ordered\", \"non-linear seam pcurve rejected\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`CYLINDRICAL_SURFACE` radius 1, axis +Z. Seam 3D geometry `LINE` (1,0,0)→(1,0,1). Each bank: `AXIS2_PLACEMENT_2D` at `(u_bank, 0.5)`, `CIRCLE('seam_bank_u0_circle_pcurve',#plc,0.5)` (and `seam_bank_u2pi_circle_pcurve` at u=2π) — both circles genuinely pass through their bank's two seam endpoints `(u_bank,0)` and `(u_bank,1)` — wrapped in `DEFINITIONAL_REPRESENTATION` + `PCURVE` on the cylinder. `SEAM_CURVE('',#line3d,(#pc_u0,#pc_u2pi),.PCURVE_S1.)`; `EDGE_CURVE('indeterminate_seam_edge',#v_bottom,#v_top,#seam,.T.)`; `EDGE_LOOP('',(#oe_bottom_circle,#oe_seam_T,#oe_top_circle_F,#oe_seam_F))` → `FACE_OUTER_BOUND` → `ADVANCED_FACE` → `OPEN_SHELL` → `SHELL_BASED_SURFACE_MODEL`.",
+    "section": "12.2a",
+    "section_dir": "12-2a-pcurves",
+    "see_also": [
+      "Gs193",
+      "Gp011",
+      "Gp013",
+      "Gp190"
+    ],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "occt-coverage `exchange/problems.json` `stp-seam-pcurve-selection` (`StepToTopoDS_TranslateEdgeLoop::Init`, `StepToTopoDS_TranslateEdgeLoop.cxx:518-633` — `ShapeAnalysis_Curve::SelectForwardSeam` picks the forward pcurve",
+      "`forwardPC==0` → hard fail \" Seam curve not mapped\", `done = Standard_False`, at `:594-601`",
+      "the wire then fails at `:680-683`). Selector behaviour read from OCCT source at `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`, `ShapeAnalysis_Curve.cxx:724-754`: each bank is downcast first to `Geom2d_Line` and, failing that, to `Geom2d_BoundedCurve` (from whose start/end a line is synthesised)",
+      "a `Geom2d_Circle` is neither (it derives from `Geom2d_Conic`), so both downcasts fail and the initial 0 is returned. Also `StepToTopoDS_TranslateEdgeLoop.cxx:667-675`, which resets `done` and swallows a failed edge whose STEP start and end vertex entities are the same object."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 1",
+      "n_edges_total == 0",
+      "n_vertices_total == 0",
+      "face[0].surface_type == \"cylinder\""
+    ],
+    "title": "Seam edge whose two banks are declared as 2D circles: the forward bank cannot be determined and the edge is hard-failed"
   },
   {
     "byte_assertions": [
@@ -63450,6 +63646,62 @@
       "load == \"ok\""
     ],
     "title": "EDGE_CURVE start VERTEX_POINT lies off the underlying LINE: inner-vertex tolerance smaller than the deviation it bounds"
+  },
+  {
+    "byte_assertions": [
+      "contains(b'failing_void_shell')",
+      "contains(b'failing_void_face')",
+      "contains(b'good_void_bot')",
+      "count_entity_def(b'ORIENTED_CLOSED_SHELL') == 2",
+      "contains(b'BREP_WITH_VOIDS')"
+    ],
+    "category": "§12.3a shells (sub-class: `stp-partial-assembly-continuation`, BrepWithVoids subvariant)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A solid-with-voids has a valid 10×10×10 outer boundary shell, one valid 2×2×2 void, and a second void, `failing_void_shell`, that is a `CLOSED_SHELL` holding exactly one `ADVANCED_FACE`, `failing_void_face`, whose `face_geometry` is unset (`$`). That face has no surface and cannot be translated, so the second void contributes no geometry whatsoever. The receiver must still assemble the solid from the outer shell and the good void — the asymmetric counterpart to a failed OUTER shell, which is fatal to the whole solid (Bo001, Bo002). Every existing void fixture in the corpus (Tsh015, Tsh067, Bo003) has voids that translate cleanly; unset `face_geometry` is the same null-surface pattern Xp008 uses one container level down.",
+    "expected_kernel_behavior": "a void member that yields no geometry is logged and dropped while the solid is still assembled from the outer shell and the remaining voids; only the mandatory outer shell's failure is fatal.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(53) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Bo031.stp",
+    "id": "Bo031",
+    "notes": "**See also**: Bo001, Bo002 (the fatal-outer-shell half of this contrast), Bo003, Tsh015, Tsh067 (solids whose voids all translate), Xp008, Tsh023, Tsh256, Tsh257, M051, Xp017 (the other container subvariants of this class). Live-verified (2026-07-31, this worktree, OCP/OCCT 7.8.1): the transfer check list carries \" Surface has not been created\" (the unset `face_geometry`) and \" a Face from Shell not mapped to TopoDS\" — and NOT \" A Void from BrepWithVoids not mapped to TopoDS\". The transferred shape is still 1 SOLID carrying 3 shells (outer, good void, and the now-empty failing void) with 12 faces: the outer shell's 6 plus the good void's 6, the failing void contributing none. A third, incidental warning \"Shell has incorrect flag isClosed\" is present in the control too and is not part of the claim. **Honest scope note — what this entry does NOT show.** The literal per-void \"not mapped\" warning is structurally UNREACHABLE from a Part-21 file in this OCCT version, for two independent reasons (both cited under Sources): shell translation reports done for any void whose reference resolves, however empty the result; and the only not-done path needs an unresolvable void reference, whose early return does not clear the stale done flag anyway. That second construction was built and run and is process-fatal — the reader exits with signal 11 during the read — so it was discarded as CI-unsafe and is not shipped. What IS demonstrated live is the class's actual claim for this container: a void that contributes nothing does not abort the parent solid. Perturbation control (byte-level A/B): giving `failing_void_face` a real `PLANE` instead of `$` — one reference changed, nothing else — makes both target messages disappear and raises the face count 12 → 13; the solid count stays 1 either way. Synonyms: \"void shell not mapped\", \"solid built without its failing void\", \"brep with voids partial continuation\", \"one bad void doesn't sink the solid\", \"outer shell fatal but void is not\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`CLOSED_SHELL` boxes for the outer boundary (`outer_*`, 10 units) and the good void (`good_void_*`, 2 units); then `ADVANCED_FACE('failing_void_face',(#bound),$,.T.)` in `CLOSED_SHELL('failing_void_shell',(#failing_void_face))`; `ORIENTED_CLOSED_SHELL('',*,#good_void,.F.)` and `ORIENTED_CLOSED_SHELL('',*,#failing_void_shell,.F.)` (note the `*` placeholder — `cfs_faces` is a redeclared derived attribute here); `BREP_WITH_VOIDS('bo031_body',#outer,(#ocs_good,#ocs_bad))` in an `ADVANCED_BREP_SHAPE_REPRESENTATION`.",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [
+      "Bo001",
+      "Bo002",
+      "Bo003",
+      "Tsh015",
+      "Tsh067",
+      "Xp008",
+      "Tsh023",
+      "Tsh256",
+      "Tsh257",
+      "M051",
+      "Xp017"
+    ],
+    "sender": "",
+    "severity": "P3",
+    "sources": [
+      "occt-coverage `exchange/problems.json` `stp-partial-assembly-continuation` (`StepToTopoDS_Builder::Init(BrepWithVoids)`, `StepToTopoDS_Builder.cxx:226-246` — per-void loop",
+      "a void that fails is warned about at `:242-245`, in deliberate contrast with the outer shell whose failure at `:210-216` is fatal). Companion reachability analysis read from OCCT source at `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`: `StepToTopoDS_TranslateShell.cxx:104-107` (shell translation reports done unconditionally for any non-null connected-face-set, even one whose every face failed at `:95-97` or one with no faces at all) and `:61-62` (the only not-done path is a null connected-face-set, whose early return does not reset the done flag)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "crash",
+      "topology"
+    ],
+    "tier3_assertions": [
+      "shape_null == False",
+      "n_faces_total == 12",
+      "face[0].surface_type == \"plane\""
+    ],
+    "title": "Void shell of a solid that translates to nothing at all: the solid is still built from the outer shell and the surviving void"
   },
   {
     "byte_assertions": [],

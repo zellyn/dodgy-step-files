@@ -75,6 +75,11 @@ EXEMPT_PLACEHOLDER: set[str] = {
     "Tfa026",  # OFFSET_SURFACE schema scope; defect is the surface type, not bounds
     "Tfa252",  # EDGE_CURVE null edge_geometry -> wire drops -> face collapses to
                # unbounded natural-surface fallback (edge_count==0) IS the defect
+    "Gp196",   # seam whose two banks are 2D circles -> forward bank
+               # indeterminate -> edge hard-failed -> wire not done -> face
+               # left as the unbounded natural-surface placeholder. The
+               # placeholder IS the claim (same shape as Tfa252); the A/B
+               # control with 2D-LINE banks builds a normal 4-edge wire.
 
     # Non-geometric: parser / call-path / round-trip / semantic-attribute claims.
     "Ad064",   # string truncation on name parsing

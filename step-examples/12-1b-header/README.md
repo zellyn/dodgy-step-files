@@ -57,3 +57,4 @@ See [`../../STEP_PROBLEM_CATALOG.md`](../../STEP_PROBLEM_CATALOG.md) (§12.1b) f
 | [Lh051](Lh051.stp) | Leading-zero instance-name aliasing collision (`#1` and `#01` are the same name) |
 | [Lh052](Lh052.stp) | Conformant AP203 file rejected at the `DATA;` boundary (independent-parser differential) |
 | [Lh053](Lh053.stp) | FILE_NAME preprocessor_version contains "I-DEAS", plus a real open shell with an adjacent, edge-sharing closing shell |
+| [Lh054](Lh054.stp) | I-DEAS closing shell that is actually merged: closing edges are separate records sharing the open shell's edge names |

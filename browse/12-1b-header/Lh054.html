@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lh054 — I-DEAS closing shell that is actually merged: closing edges are separate records sharing the open shell&#x27;s edge names</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1b Header &amp; instance-numbering</a> <span class="sep">/</span> <span class="current">Lh054</span>
+</nav>
+<header class="title-bar">
+<h1>Lh054 <span class="sep">—</span> <span class="entry-title">I-DEAS closing shell that is actually merged: closing edges are separate records sharing the open shell&#x27;s edge names</span></h1>
+<p class="category">§12.1b header (sub-class: `stp-ideas-shell-closing`)</p>
+<p class="severity-badge severity-p3">P3 — cosmetic / metadata-only</p>
+<p class="tag-pills">
+<a class="tag tag-syntax" href="../by-tag/syntax/index.html">syntax</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1b-header/Lh054.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1b-header/Lh054.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>occt-coverage `exchange/problems.json` `stp-ideas-shell-closing` (`STEPControl_ActorRead::computeIDEASClosings`, `STEPControl_ActorRead.cxx:2064-2086`</li>
+<li>`STEPControl_ActorRead::closeIDEASShell`, `:1997-2055`). Root cause of the class&#x27;s long-standing &quot;merge never fires&quot; finding identified live and read from OCCT source at `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`: `StepToTopoDS_NMTool::IsPureNMShell` (`StepToTopoDS_NMTool.cxx:183-194`) requires every edge of a candidate closing shell to have been passed to `RegisterNMEdge`, and `RegisterNMEdge` has exactly ONE call site — `StepToTopoDS_TranslateEdge.cxx:244`, inside the branch at `:237-249` that fires only when an `EDGE_CURVE`&#x27;s own NAME is non-empty and a DIFFERENT, already-translated `EDGE_CURVE` was bound under that same name (`:336-337`). Reusing the same `EDGE_CURVE` entity in both shells short-circuits at `:208` / `:223` and registers nothing. Additionally `STEPControl_ActorRead.cxx:1015-1024`: a representation that yields exactly one shape binds that per-item shape directly and discards the compound the closing and solid-reconstruction passes wrote into.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An I-DEAS-authored file represents one closed solid boundary as several separate OPEN shells: a &quot;main&quot; open shell plus extra shells made entirely of shared edges that exist only to close the gap. This fixture supplies that pattern in the encoding the receiver can actually act on. A unit cube&#x27;s bottom and four sides form `main_open_shell` (5 faces, genuinely open — no lid); the lid forms `closing_shell` (1 face) whose four boundary edges are four NEW `EDGE_CURVE` records whose names `e_lid_1`..`e_lid_4` are byte-equal to the four top edges already used by the side faces. Separate edge records matched by name is the real I-DEAS authoring shape — and the only one that marks the closing shell&#x27;s edges as shared, which is the precondition for it to be treated as a closing candidate. Lh031 supplies only the header trigger (no shell topology at all); Lh053 supplies real open+closing topology but reuses the same `EDGE_CURVE` entities, which is exactly why no merge was ever observed for it. A second, unrelated representation item is also required: with a single item the merge runs but its result is discarded before binding.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`FILE_NAME(&#x27;Lh054.stp&#x27;,...,&#x27;I-DEAS Master Series 11&#x27;,&#x27;&#x27;,&#x27;&#x27;);`. Unit cube, consistently outward-oriented. `OPEN_SHELL(&#x27;main_open_shell&#x27;,(#bottom,#front,#right,#back,#left))`; four new `EDGE_CURVE(&#x27;e_lid_1&#x27;,...)`..`(&#x27;e_lid_4&#x27;,...)` duplicating the names (not the entity ids) of the side faces&#x27; top edges; `ADVANCED_FACE(&#x27;top_closing&#x27;,...)` on those four; `OPEN_SHELL(&#x27;closing_shell&#x27;,(#top_closing))`; `SHELL_BASED_SURFACE_MODEL(&#x27;ideas_shells&#x27;,(#main_open_shell,#closing_shell))`. Second item: one open square face → `OPEN_SHELL(&#x27;second_item_shell&#x27;,...)` → `SHELL_BASED_SURFACE_MODEL(&#x27;second_item_model&#x27;,...)`. Both models listed as the two items of one `MANIFOLD_SURFACE_SHAPE_REPRESENTATION`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>with non-manifold reading and I-DEAS post-processing enabled, recognise the lid shell as a closing candidate for the open shell, merge its face in, confirm the merged shell is closed, prune any closing face not needed for closure, and promote the now-closed shell to a solid — leaving unrelated open shells untouched.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Lh031 (header-only trigger), Lh053 (real topology in the same-entity encoding that cannot fire — this entry is its working counterpart, not a duplicate), Tsh258 (documents the same single-item binding shortcut for shell-to-solid promotion). Live-verified (2026-07-31, this worktree, OCP/OCCT 7.8.1). Under this corpus&#x27;s default oracle settings the file reads verbatim — 7 faces, 3 shells, 0 solids, 20 unique edges, brepcheck valid — because the whole pipeline is gated behind two opt-in reader parameters. Driving `read.step.nonmanifold=1` AND `read.step.ideas=1` (BOTH required; either alone leaves the result unchanged) the merge is directly observed: 1 SOLID appears, the unique-edge count drops 20 → 16 as the lid&#x27;s four name-matched edges resolve to the main shell&#x27;s own edges, and the shell count drops 3 → 2 (the merged, now-closed cube shell inside the solid, plus the second item&#x27;s untouched open shell); brepcheck stays valid. Perturbation control (byte-level A/B): repointing the lid face&#x27;s four `ORIENTED_EDGE`s at the main shell&#x27;s own `EDGE_CURVE` entities — four reference numbers changed, Lh053&#x27;s encoding, nothing else touched — gives 0 solids and 3 shells under those same parameters. **Reader-configuration finding, recorded because it invalidates earlier negative results for this class**: setting these two parameters through `Interface_Static` alone does NOT reach the transfer in this OCP build; they must be carried in a `StepData_ConfParameters` handed to `ReadFile(path, params)`. Verified independently by a control on an unrelated fixture whose behaviour changes only under the parameters-object route. Synonyms: &quot;I-DEAS closing shell merged&quot;, &quot;open shell closed by adjacent non-manifold shell&quot;, &quot;closing face pruned after closure&quot;, &quot;same edge name different edge record&quot;, &quot;I-DEAS non-manifold post processing&quot;. Provenance tier: bytes-sufficient.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;I-DEAS&#x27;)</code></li>
+<li><code>contains(b&#x27;main_open_shell&#x27;)</code></li>
+<li><code>contains(b&#x27;closing_shell&#x27;)</code></li>
+<li><code>contains(b&#x27;second_item_model&#x27;)</code></li>
+<li><code>count_entity_def(b&#x27;OPEN_SHELL&#x27;) == 3</code></li>
+<li><code>count_entity_def(b&#x27;EDGE_CURVE&#x27;) == 20</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+<li><code>n_faces_total == 7</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Lh031.html">Lh031</a>, <a href="Lh053.html">Lh053</a>, <a href="../12-3a-shells/Tsh258.html">Tsh258</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Lh054: FILE_NAME.preprocessor_version &#x27;<mark>I-DEAS</mark> Master Series 11&#x27; engages the preprocessor-substring auto-detect, PLUS the <mark>I-DEAS</mark> closing topology in its ONLY workable encoding: a unit cube whose bottom and 4 sides form &#x27;<mark>main_open_shell</mark>&#x27; (5 faces, genuinely open) and whose lid forms &#x27;<mark>closing_shell</mark>&#x27; (1 face) built on FOUR NEW EDGE_CURVE entities whose names &#x27;e_lid_1&#x27;..&#x27;e_lid_4&#x27; duplicate the main shell&#x27;s own top-edge names -- distinct records matched by name, the real <mark>I-DEAS</mark> authoring shape, and the only encoding that reaches the non-manifold-edge registration that the pure-non-manifold-shell test requires (reusing the SAME EDGE_CURVE entities, as Lh053 does, short-circuits earlier and registers nothing). A second unrelated representation item, &#x27;<mark>second_item_model</mark>&#x27;, is present because a single-item representation makes the reader bind the pre-merge per-item shape and discard the merged compound. Both shells ARE items of the shape representation via SHELL_BASED_SURFACE_MODEL; never orphaned */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Lh054&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Lh054.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;<mark>I-DEAS</mark> Master Series 11&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">12</span>#3=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,0.0));
+<span class="lineno">13</span>#4=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">14</span>#5=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,1.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(1.0,1.0,1.0));
+<span class="lineno">17</span>#8=CARTESIAN_POINT(&#x27;&#x27;,(0.0,1.0,1.0));
+<span class="lineno">18</span>#9=VERTEX_POINT(&#x27;&#x27;,#1);
+<span class="lineno">19</span>#10=VERTEX_POINT(&#x27;&#x27;,#2);
+<span class="lineno">20</span>#11=VERTEX_POINT(&#x27;&#x27;,#3);
+<span class="lineno">21</span>#12=VERTEX_POINT(&#x27;&#x27;,#4);
+<span class="lineno">22</span>#13=VERTEX_POINT(&#x27;&#x27;,#5);
+<span class="lineno">23</span>#14=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">24</span>#15=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">25</span>#16=VERTEX_POINT(&#x27;&#x27;,#8);
+<span class="lineno">26</span>#17=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">27</span>#18=VECTOR(&#x27;&#x27;,#17,1.0);
+<span class="lineno">28</span>#19=LINE(&#x27;&#x27;,#1,#18);
+<span class="lineno">29</span><mark>#20=EDGE_CURVE(</mark>&#x27;e_bot_1&#x27;,#9,#10,#19,.T.);
+<span class="lineno">30</span>#21=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">31</span>#22=VECTOR(&#x27;&#x27;,#21,1.0);
+<span class="lineno">32</span>#23=LINE(&#x27;&#x27;,#2,#22);
+<span class="lineno">33</span><mark>#24=EDGE_CURVE(</mark>&#x27;e_bot_2&#x27;,#10,#11,#23,.T.);
+<span class="lineno">34</span>#25=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">35</span>#26=VECTOR(&#x27;&#x27;,#25,1.0);
+<span class="lineno">36</span>#27=LINE(&#x27;&#x27;,#3,#26);
+<span class="lineno">37</span><mark>#28=EDGE_CURVE(</mark>&#x27;e_bot_3&#x27;,#11,#12,#27,.T.);
+<span class="lineno">38</span>#29=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">39</span>#30=VECTOR(&#x27;&#x27;,#29,1.0);
+<span class="lineno">40</span>#31=LINE(&#x27;&#x27;,#4,#30);
+<span class="lineno">41</span><mark>#32=EDGE_CURVE(</mark>&#x27;e_bot_4&#x27;,#12,#9,#31,.T.);
+<span class="lineno">42</span>#33=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">43</span>#34=VECTOR(&#x27;&#x27;,#33,1.0);
+<span class="lineno">44</span>#35=LINE(&#x27;&#x27;,#1,#34);
+<span class="lineno">45</span><mark>#36=EDGE_CURVE(</mark>&#x27;e_vert_1&#x27;,#9,#13,#35,.T.);
+<span class="lineno">46</span>#37=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">47</span>#38=VECTOR(&#x27;&#x27;,#37,1.0);
+<span class="lineno">48</span>#39=LINE(&#x27;&#x27;,#2,#38);
+<span class="lineno">49</span><mark>#40=EDGE_CURVE(</mark>&#x27;e_vert_2&#x27;,#10,#14,#39,.T.);
+<span class="lineno">50</span>#41=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">51</span>#42=VECTOR(&#x27;&#x27;,#41,1.0);
+<span class="lineno">52</span>#43=LINE(&#x27;&#x27;,#3,#42);
+<span class="lineno">53</span><mark>#44=EDGE_CURVE(</mark>&#x27;e_vert_3&#x27;,#11,#15,#43,.T.);
+<span class="lineno">54</span>#45=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">55</span>#46=VECTOR(&#x27;&#x27;,#45,1.0);
+<span class="lineno">56</span>#47=LINE(&#x27;&#x27;,#4,#46);
+<span class="lineno">57</span><mark>#48=EDGE_CURVE(</mark>&#x27;e_vert_4&#x27;,#12,#16,#47,.T.);
+<span class="lineno">58</span>#49=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">59</span>#50=VECTOR(&#x27;&#x27;,#49,1.0);
+<span class="lineno">60</span>#51=LINE(&#x27;&#x27;,#5,#50);
+<span class="lineno">61</span><mark>#52=EDGE_CURVE(</mark>&#x27;e_lid_1&#x27;,#13,#14,#51,.T.);
+<span class="lineno">62</span>#53=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">63</span>#54=VECTOR(&#x27;&#x27;,#53,1.0);
+<span class="lineno">64</span>#55=LINE(&#x27;&#x27;,#6,#54);
+<span class="lineno">65</span><mark>#56=EDGE_CURVE(</mark>&#x27;e_lid_2&#x27;,#14,#15,#55,.T.);
+<span class="lineno">66</span>#57=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">67</span>#58=VECTOR(&#x27;&#x27;,#57,1.0);
+<span class="lineno">68</span>#59=LINE(&#x27;&#x27;,#7,#58);
+<span class="lineno">69</span><mark>#60=EDGE_CURVE(</mark>&#x27;e_lid_3&#x27;,#15,#16,#59,.T.);
+<span class="lineno">70</span>#61=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">71</span>#62=VECTOR(&#x27;&#x27;,#61,1.0);
+<span class="lineno">72</span>#63=LINE(&#x27;&#x27;,#8,#62);
+<span class="lineno">73</span><mark>#64=EDGE_CURVE(</mark>&#x27;e_lid_4&#x27;,#16,#13,#63,.T.);
+<span class="lineno">74</span>#65=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">75</span>#66=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">76</span>#67=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#65,#66);
+<span class="lineno">77</span>#68=PLANE(&#x27;&#x27;,#67);
+<span class="lineno">78</span>#69=ORIENTED_EDGE(&#x27;&#x27;,$,$,#32,.F.);
+<span class="lineno">79</span>#70=ORIENTED_EDGE(&#x27;&#x27;,$,$,#28,.F.);
+<span class="lineno">80</span>#71=ORIENTED_EDGE(&#x27;&#x27;,$,$,#24,.F.);
+<span class="lineno">81</span>#72=ORIENTED_EDGE(&#x27;&#x27;,$,$,#20,.F.);
+<span class="lineno">82</span>#73=EDGE_LOOP(&#x27;&#x27;,(#69,#70,#71,#72));
+<span class="lineno">83</span>#74=FACE_OUTER_BOUND(&#x27;&#x27;,#73,.T.);
+<span class="lineno">84</span>#75=ADVANCED_FACE(&#x27;bottom&#x27;,(#74),#68,.T.);
+<span class="lineno">85</span>#76=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">86</span>#77=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">87</span>#78=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#76,#77);
+<span class="lineno">88</span>#79=PLANE(&#x27;&#x27;,#78);
+<span class="lineno">89</span>#80=ORIENTED_EDGE(&#x27;&#x27;,$,$,#20,.T.);
+<span class="lineno">90</span>#81=ORIENTED_EDGE(&#x27;&#x27;,$,$,#40,.T.);
+<span class="lineno">91</span>#82=ORIENTED_EDGE(&#x27;&#x27;,$,$,#52,.F.);
+<span class="lineno">92</span>#83=ORIENTED_EDGE(&#x27;&#x27;,$,$,#36,.F.);
+<span class="lineno">93</span>#84=EDGE_LOOP(&#x27;&#x27;,(#80,#81,#82,#83));
+<span class="lineno">94</span>#85=FACE_OUTER_BOUND(&#x27;&#x27;,#84,.T.);
+<span class="lineno">95</span>#86=ADVANCED_FACE(&#x27;front&#x27;,(#85),#79,.T.);
+<span class="lineno">96</span>#87=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">97</span>#88=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">98</span>#89=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#2,#87,#88);
+<span class="lineno">99</span>#90=PLANE(&#x27;&#x27;,#89);
+<span class="lineno">100</span>#91=ORIENTED_EDGE(&#x27;&#x27;,$,$,#24,.T.);
+<span class="lineno">101</span>#92=ORIENTED_EDGE(&#x27;&#x27;,$,$,#44,.T.);
+<span class="lineno">102</span>#93=ORIENTED_EDGE(&#x27;&#x27;,$,$,#56,.F.);
+<span class="lineno">103</span>#94=ORIENTED_EDGE(&#x27;&#x27;,$,$,#40,.F.);
+<span class="lineno">104</span>#95=EDGE_LOOP(&#x27;&#x27;,(#91,#92,#93,#94));
+<span class="lineno">105</span>#96=FACE_OUTER_BOUND(&#x27;&#x27;,#95,.T.);
+<span class="lineno">106</span>#97=ADVANCED_FACE(&#x27;right&#x27;,(#96),#90,.T.);
+<span class="lineno">107</span>#98=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">108</span>#99=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">109</span>#100=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#3,#98,#99);
+<span class="lineno">110</span>#101=PLANE(&#x27;&#x27;,#100);
+<span class="lineno">111</span>#102=ORIENTED_EDGE(&#x27;&#x27;,$,$,#28,.T.);
+<span class="lineno">112</span>#103=ORIENTED_EDGE(&#x27;&#x27;,$,$,#48,.T.);
+<span class="lineno">113</span>#104=ORIENTED_EDGE(&#x27;&#x27;,$,$,#60,.F.);
+<span class="lineno">114</span>#105=ORIENTED_EDGE(&#x27;&#x27;,$,$,#44,.F.);
+<span class="lineno">115</span>#106=EDGE_LOOP(&#x27;&#x27;,(#102,#103,#104,#105));
+<span class="lineno">116</span>#107=FACE_OUTER_BOUND(&#x27;&#x27;,#106,.T.);
+<span class="lineno">117</span>#108=ADVANCED_FACE(&#x27;back&#x27;,(#107),#101,.T.);
+<span class="lineno">118</span>#109=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">119</span>#110=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">120</span>#111=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#109,#110);
+<span class="lineno">121</span>#112=PLANE(&#x27;&#x27;,#111);
+<span class="lineno">122</span>#113=ORIENTED_EDGE(&#x27;&#x27;,$,$,#32,.T.);
+<span class="lineno">123</span>#114=ORIENTED_EDGE(&#x27;&#x27;,$,$,#36,.T.);
+<span class="lineno">124</span>#115=ORIENTED_EDGE(&#x27;&#x27;,$,$,#64,.F.);
+<span class="lineno">125</span>#116=ORIENTED_EDGE(&#x27;&#x27;,$,$,#48,.F.);
+<span class="lineno">126</span>#117=EDGE_LOOP(&#x27;&#x27;,(#113,#114,#115,#116));
+<span class="lineno">127</span>#118=FACE_OUTER_BOUND(&#x27;&#x27;,#117,.T.);
+<span class="lineno">128</span>#119=ADVANCED_FACE(&#x27;left&#x27;,(#118),#112,.T.);
+<span class="lineno">129</span><mark>#120=OPEN_SHELL(</mark>&#x27;<mark>main_open_shell</mark>&#x27;,(#75,#86,#97,#108,#119));
+<span class="lineno">130</span>#121=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">131</span>#122=VECTOR(&#x27;&#x27;,#121,1.0);
+<span class="lineno">132</span>#123=LINE(&#x27;&#x27;,#5,#122);
+<span class="lineno">133</span><mark>#124=EDGE_CURVE(</mark>&#x27;e_lid_1&#x27;,#13,#14,#123,.T.);
+<span class="lineno">134</span>#125=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">135</span>#126=VECTOR(&#x27;&#x27;,#125,1.0);
+<span class="lineno">136</span>#127=LINE(&#x27;&#x27;,#6,#126);
+<span class="lineno">137</span><mark>#128=EDGE_CURVE(</mark>&#x27;e_lid_2&#x27;,#14,#15,#127,.T.);
+<span class="lineno">138</span>#129=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">139</span>#130=VECTOR(&#x27;&#x27;,#129,1.0);
+<span class="lineno">140</span>#131=LINE(&#x27;&#x27;,#7,#130);
+<span class="lineno">141</span><mark>#132=EDGE_CURVE(</mark>&#x27;e_lid_3&#x27;,#15,#16,#131,.T.);
+<span class="lineno">142</span>#133=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">143</span>#134=VECTOR(&#x27;&#x27;,#133,1.0);
+<span class="lineno">144</span>#135=LINE(&#x27;&#x27;,#8,#134);
+<span class="lineno">145</span><mark>#136=EDGE_CURVE(</mark>&#x27;e_lid_4&#x27;,#16,#13,#135,.T.);
+<span class="lineno">146</span>#137=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">147</span>#138=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">148</span>#139=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#5,#137,#138);
+<span class="lineno">149</span>#140=PLANE(&#x27;&#x27;,#139);
+<span class="lineno">150</span>#141=ORIENTED_EDGE(&#x27;&#x27;,$,$,#124,.T.);
+<span class="lineno">151</span>#142=ORIENTED_EDGE(&#x27;&#x27;,$,$,#128,.T.);
+<span class="lineno">152</span>#143=ORIENTED_EDGE(&#x27;&#x27;,$,$,#132,.T.);
+<span class="lineno">153</span>#144=ORIENTED_EDGE(&#x27;&#x27;,$,$,#136,.T.);
+<span class="lineno">154</span>#145=EDGE_LOOP(&#x27;&#x27;,(#141,#142,#143,#144));
+<span class="lineno">155</span>#146=FACE_OUTER_BOUND(&#x27;&#x27;,#145,.T.);
+<span class="lineno">156</span>#147=ADVANCED_FACE(&#x27;top_closing&#x27;,(#146),#140,.T.);
+<span class="lineno">157</span><mark>#148=OPEN_SHELL(</mark>&#x27;<mark>closing_shell</mark>&#x27;,(#147));
+<span class="lineno">158</span>#149=SHELL_BASED_SURFACE_MODEL(&#x27;ideas_shells&#x27;,(#120,#148));
+<span class="lineno">159</span>#150=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">160</span>#151=CARTESIAN_POINT(&#x27;&#x27;,(6.0,0.0,0.0));
+<span class="lineno">161</span>#152=CARTESIAN_POINT(&#x27;&#x27;,(6.0,1.0,0.0));
+<span class="lineno">162</span>#153=CARTESIAN_POINT(&#x27;&#x27;,(5.0,1.0,0.0));
+<span class="lineno">163</span>#154=VERTEX_POINT(&#x27;&#x27;,#150);
+<span class="lineno">164</span>#155=VERTEX_POINT(&#x27;&#x27;,#151);
+<span class="lineno">165</span>#156=VERTEX_POINT(&#x27;&#x27;,#152);
+<span class="lineno">166</span>#157=VERTEX_POINT(&#x27;&#x27;,#153);
+<span class="lineno">167</span>#158=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">168</span>#159=VECTOR(&#x27;&#x27;,#158,1.0);
+<span class="lineno">169</span>#160=LINE(&#x27;&#x27;,#150,#159);
+<span class="lineno">170</span><mark>#161=EDGE_CURVE(</mark>&#x27;second_item_e1&#x27;,#154,#155,#160,.T.);
+<span class="lineno">171</span>#162=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">172</span>#163=VECTOR(&#x27;&#x27;,#162,1.0);
+<span class="lineno">173</span>#164=LINE(&#x27;&#x27;,#151,#163);
+<span class="lineno">174</span><mark>#165=EDGE_CURVE(</mark>&#x27;second_item_e2&#x27;,#155,#156,#164,.T.);
+<span class="lineno">175</span>#166=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">176</span>#167=VECTOR(&#x27;&#x27;,#166,1.0);
+<span class="lineno">177</span>#168=LINE(&#x27;&#x27;,#152,#167);
+<span class="lineno">178</span><mark>#169=EDGE_CURVE(</mark>&#x27;second_item_e3&#x27;,#156,#157,#168,.T.);
+<span class="lineno">179</span>#170=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">180</span>#171=VECTOR(&#x27;&#x27;,#170,1.0);
+<span class="lineno">181</span>#172=LINE(&#x27;&#x27;,#153,#171);
+<span class="lineno">182</span><mark>#173=EDGE_CURVE(</mark>&#x27;second_item_e4&#x27;,#157,#154,#172,.T.);
+<span class="lineno">183</span>#174=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">184</span>#175=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">185</span>#176=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#150,#174,#175);
+<span class="lineno">186</span>#177=PLANE(&#x27;&#x27;,#176);
+<span class="lineno">187</span>#178=ORIENTED_EDGE(&#x27;&#x27;,$,$,#161,.T.);
+<span class="lineno">188</span>#179=ORIENTED_EDGE(&#x27;&#x27;,$,$,#165,.T.);
+<span class="lineno">189</span>#180=ORIENTED_EDGE(&#x27;&#x27;,$,$,#169,.T.);
+<span class="lineno">190</span>#181=ORIENTED_EDGE(&#x27;&#x27;,$,$,#173,.T.);
+<span class="lineno">191</span>#182=EDGE_LOOP(&#x27;&#x27;,(#178,#179,#180,#181));
+<span class="lineno">192</span>#183=FACE_OUTER_BOUND(&#x27;&#x27;,#182,.T.);
+<span class="lineno">193</span>#184=ADVANCED_FACE(&#x27;second_item_face&#x27;,(#183),#177,.T.);
+<span class="lineno">194</span><mark>#185=OPEN_SHELL(</mark>&#x27;second_item_shell&#x27;,(#184));
+<span class="lineno">195</span>#186=SHELL_BASED_SURFACE_MODEL(&#x27;<mark>second_item_model</mark>&#x27;,(#185));
+<span class="lineno">196</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">197</span>#9051=PRODUCT(&#x27;Lh054&#x27;,&#x27;Lh054&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">198</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">199</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">200</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">201</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">202</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">203</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">204</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">205</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">206</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">207</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#149,#186),#9060);
+<span class="lineno">208</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">209</span>ENDSEC;
+<span class="lineno">210</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Lh053.html">&larr; Lh053</a> <a class="up" href="index.html">§12.1b Header &amp; instance-numbering</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>
