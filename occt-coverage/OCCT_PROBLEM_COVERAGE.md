@@ -15,22 +15,22 @@ Structurally unreachable (1): `tkshh-indirect-elementary-surface-axes` (TKShHeal
 
 | view | classes | COVERED | PARTIAL | GAP |
 |---|---:|---:|---:|---:|
-| **All classes** | **205** | 149 (72.7%) | 19 (9.3%) | 37 (18.0%) |
+| **All classes** | **205** | 157 (76.6%) | 11 (5.4%) | 37 (18.0%) |
 
 | view | classes | COVERED | PARTIAL | GAP |
 |---|---:|---:|---:|---:|
-| **STEP-exercisable classes** | **142** | 126 (88.7%) | 16 (11.3%) | 0 (0.0%) |
+| **STEP-exercisable classes** | **142** | 134 (94.4%) | 8 (5.6%) | 0 (0.0%) |
 
 ## Per sub-domain breakdown (all classes)
 
 | sub-domain | classes | COVERED | PARTIAL | GAP | detect-only | unreachable | carve-out |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| `TKShHealing` | 60 | 56 | 3 | 1 | 0 | 1 |  |
+| `TKShHealing` | 60 | 57 | 2 | 1 | 0 | 1 |  |
 | `exchange/brepcheck` | 31 | 23 | 3 | 5 | 31 |  |  |
-| `exchange/heal-sequence` | 20 | 19 | 1 | 0 | 0 |  |  |
+| `exchange/heal-sequence` | 20 | 20 | 0 | 0 | 0 |  |  |
 | `exchange/iges-reader` | 31 | 0 | 0 | 31 | 0 |  | yes |
-| `exchange/sewing` | 24 | 18 | 6 | 0 | 0 |  |  |
-| `exchange/step-reader` | 39 | 33 | 6 | 0 | 0 |  |  |
+| `exchange/sewing` | 24 | 20 | 4 | 0 | 0 |  |  |
+| `exchange/step-reader` | 39 | 37 | 2 | 0 | 0 |  |  |
 
 ## Ranked GAP list (all domains)
 
