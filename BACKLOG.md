@@ -2185,3 +2185,30 @@ the current baseline — expect real DRIFT, triage rather than bulk-accept; (4) 
 whether `read.surfacecurve.mode` is even the right knob to call "healing off" (it controls
 pcurve-vs-3D-curve preference, not ShapeFix), or whether the honest fix is to drop the second
 column and document the oracle as single-mode.
+
+---
+
+## (H) Two entries whose title contradicts their own bytes (found 2026-08-01)
+
+Surfaced while writing `Expected kernel behavior` for the T0 slice. Both got a
+bytes-grounded spec; the TITLES are the suspect part. Same class as the Q14
+misnomer campaign — do not fix by editing the spec to match the title.
+
+- **Gs069** — title claims a near-zero axis vector is a degeneracy that a
+  magnitude check misses. Bytes: `DIRECTION('gs069_degenaxis',(1.E-11,0.0,0.0))`.
+  Per ISO 10303-42 `direction_ratios` need not be normalised and their magnitude
+  carries no meaning (the only WHERE rule is "at least one ratio non-zero"), so
+  this legally denotes +X and the file correctly loads `shape(1)`. The spec
+  written says: normalise by the Euclidean norm, reject only an all-zero ratio
+  vector, guard normalisation against underflow. Likely a retitle.
+
+- **Gs138** — title/description claim "minimal bilinear surface, fragile
+  derivative evaluation". The bytes contain something else entirely:
+  `B_SPLINE_SURFACE_WITH_KNOTS('',1,1,(#20,#21,#22,#23),((0.,0.,1.,1.),
+  (0.,0.,1.,1.)),((1.,1.),(1.,1.)),.F.,.F.,.F.)` — 9 attributes where the schema
+  requires 13, and a FLAT control-point list where a grid is required — plus
+  `#70=LINE('',#60,#60)` with a CARTESIAN_POINT in the direction slot, and a
+  single-edge non-closed EDGE_LOOP. That is consistent with its `signal(11)`.
+  A bilinear patch is valid geometry, so the "flag minimal surfaces / consider
+  degree elevation" claim could not be grounded and was not written. Likely a
+  retitle to a schema-violation/crash entry.
