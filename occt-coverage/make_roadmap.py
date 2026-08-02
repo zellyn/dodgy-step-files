@@ -26,12 +26,26 @@ OUT = os.path.join(ROOT, "IMPLEMENTERS_ROADMAP.md")
 
 # ---------------------------------------------------------------- load
 
-def load_catalog_tokens() -> tuple[dict[str, str], dict[str, str]]:
-    """fixture id -> (occt_heal_on token, entry title)."""
+VACUOUS = re.compile(
+    r"^(heal\.?|heal:\s*investigate\s*/\s*reject:\s*geometric degeneracy\.?|"
+    r"heal:\s*detect and correct the issue;\s*reject:\s*if precondition unrecoverable\.?)$",
+    re.I,
+)
+
+
+def load_catalog_tokens() -> tuple[dict[str, str], dict[str, str], set[str]]:
+    """fixture id -> (occt_heal_on token, entry title, set-of-specced-ids).
+
+    "Specced" means the entry carries an `Expected kernel behavior` that
+    actually says something. An entry can be a perfectly good *test* — real
+    file, real CI-checked assertions — while telling an implementer nothing
+    about what their kernel ought to do. This page must not send someone to
+    one of those pretending it is a specification.
+    """
     text = open(os.path.join(ROOT, "STEP_PROBLEM_CATALOG.md")).read()
     starts = [(m.start(), m.group(1), m.group(2))
               for m in re.finditer(r"^### (\S+) — (.*)$", text, re.M)]
-    tok, title = {}, {}
+    tok, title, specced = {}, {}, set()
     for i, (pos, fid, ttl) in enumerate(starts):
         end = starts[i + 1][0] if i + 1 < len(starts) else len(text)
         block = text[pos:end]
@@ -39,7 +53,10 @@ def load_catalog_tokens() -> tuple[dict[str, str], dict[str, str]]:
         if m:
             tok[fid] = m.group(1)
         title[fid] = ttl
-    return tok, title
+        e = re.search(r"^- \*\*Expected kernel behavior\*\*:\s*(.*)$", block, re.M)
+        if e and e.group(1).strip() and not VACUOUS.match(e.group(1).strip()):
+            specced.add(fid)
+    return tok, title, specced
 
 
 def load_classes() -> list[dict]:
@@ -92,7 +109,7 @@ def tier_of(counts: collections.Counter) -> tuple[int, str]:
 # ------------------------------------------------------------- render
 
 def main() -> None:
-    tok, title = load_catalog_tokens()
+    tok, title, specced = load_catalog_tokens()
     classes = load_classes()
 
     rows = []
@@ -111,6 +128,7 @@ def main() -> None:
             "rank": rank,
             "label": label,
             "verdict": c.get("coverage_verdict", "?"),
+            "specced": sum(1 for f in fids if f in specced),
         })
 
     # Within a tier: most crash fixtures first, then most fixtures overall.
@@ -162,6 +180,13 @@ def main() -> None:
 
     A("## What this page does *not* cover")
     A("")
+    n_spec = sum(1 for f in tok if f in specced)
+    A(f"**Only {n_spec} of the {len(tok)} STEP fixtures ({100.0*n_spec/len(tok):.0f}%) carry a written "
+      "`Expected kernel behavior`.** The remainder are real fixtures with real, CI-verified "
+      "assertions — they are good *tests* — but they do not state what a correct kernel should do, "
+      "so they teach an implementer nothing on their own. They are marked † below. This is the "
+      "corpus's largest known gap against its own purpose, and it is tracked, not hidden.")
+    A("")
     total_fix = len(tok)
     pct = 100.0 * n_fix / total_fix if total_fix else 0.0
     A(f"It cites **{n_fix} of the {total_fix} STEP fixtures ({pct:.0f}%)**. The rest are real, "
@@ -199,15 +224,23 @@ def main() -> None:
             desc = desc[:397].rsplit(" ", 1)[0] + "…"
         A(f"### `{r['id']}`")
         A("")
-        A(f"*{r['domain']}* · {len(r['fids'])} fixtures · observed: {mix} · corpus coverage: {r['verdict']}")
+        sp = r["specced"]
+        spec_note = (f"**{sp}/{len(r['fids'])} carry a written spec**"
+                     if sp else "**none carry a written spec — read the files**")
+        A(f"*{r['domain']}* · {len(r['fids'])} fixtures · observed: {mix} · "
+          f"{spec_note} · corpus coverage: {r['verdict']}")
         A("")
         if desc:
             A(desc)
             A("")
         show = r["fids"][:12]
-        listed = ", ".join(f"`{f}`" for f in show)
+        listed = ", ".join(f"`{f}`" + ("" if f in specced else " †") for f in show)
         more = "" if len(r["fids"]) <= 12 else f" …and {len(r['fids']) - 12} more"
         A(f"**Test against:** {listed}{more}")
+        if any(f not in specced for f in show):
+            A("")
+            A("<sub>† file + CI-checked assertions only — no written "
+              "`Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>")
         A("")
 
     open(OUT, "w").write("\n".join(L) + "\n")
