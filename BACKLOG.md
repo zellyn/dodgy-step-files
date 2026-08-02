@@ -2212,3 +2212,42 @@ misnomer campaign — do not fix by editing the spec to match the title.
   A bilinear patch is valid geometry, so the "flag minimal surfaces / consider
   degree elevation" claim could not be grounded and was not written. Likely a
   retitle to a schema-violation/crash entry.
+
+## (I) Twi crash-cohort: 5 fixtures crash on a malformed LINE, not their titled defect
+
+Found 2026-08-01 while writing kernel specs for the T0 slice. Prose/spec work
+only was done; **no bytes or assertions were changed**.
+
+**Twi222, Twi224, Twi225, Twi227, Twi231** each build every `LINE` with a
+`DIRECTION` entity in the slot that ISO 10303-42 requires to be a `VECTOR`
+(e.g. Twi224: `#130=LINE('',#110,#102);` where `#102=DIRECTION(...)`).
+Verified mechanically across the cohort: 6/6, 3/3, 5/5, 5/5, 5/5 LINEs
+malformed respectively. The parse succeeds (`ReadFile` → `RetDone`, 1 root);
+`TransferRoots()` is what segfaults. On Twi224 the agent confirmed causally:
+inserting a real `VECTOR` and repointing the three lines makes the file load
+cleanly (1 root, shape non-null).
+
+So these five assert `signal(11)` for a curve-attribute-type error, NOT for the
+wire defect their titles name — the wire defect is never reached. Same class as
+the shape(1)/empty overclaim campaigns.
+
+**CORRECTION to the originating report, which said "all seven":** Twi219 and
+Twi220 were checked and their `LINE`s are well-formed (0/2 and 0/3 malformed).
+They crash for a different, still-undiagnosed reason. Do not fold them into
+this cohort.
+
+Decision needed: repair the `LINE` attributes (which would let the titled wire
+defects actually be exercised, and would change the Expected line from
+`signal(11)`), or re-title the five as curve-attribute-type crash fixtures.
+
+## (J) Twi275 is a byte-level duplicate of Twi260
+
+Confirmed by diff with entity labels and comments normalised: 32 entities each,
+**geometry identical**. Twi275's own header comment even begins `/* Twi260: ...`
+— a copy-paste artifact from its builder. Both encode three unit self-loops on
+one vertex in a `GEOMETRIC_CURVE_SET`/`EDGE_LOOP`.
+
+No spec was written for Twi275 (it would have been a verbatim duplicate, which
+is the boilerplate this task exists to remove). Either differentiate it into a
+genuinely distinct case or retire it — the dedup audit's BM25 pass does not
+catch this because the two entries' PROSE differs.
