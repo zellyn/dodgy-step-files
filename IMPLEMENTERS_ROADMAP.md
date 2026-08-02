@@ -2,7 +2,7 @@
 
 **Audience: you are writing a CAD kernel and need to survive real-world STEP files.** This document is the corpus re-cut along the axis you actually work on.
 
-The catalog ([`STEP_PROBLEM_CATALOG.md`](STEP_PROBLEM_CATALOG.md)) is organised one entry per broken file, which is right for auditing and wrong for building — 3335 entries do not tell you where to start. This page inverts it into the **169 distinct repair mechanisms** those files exercise, ordered so the failures that hurt users most come first, each pointing at the fixtures that prove you got it right (625 fixtures cited).
+The catalog ([`STEP_PROBLEM_CATALOG.md`](STEP_PROBLEM_CATALOG.md)) is organised one entry per broken file, which is right for auditing and wrong for building — 3335 entries do not tell you where to start. This page inverts it into the **169 distinct repair mechanisms** those files exercise, ordered so the failures that hurt users most come first, each pointing at the fixtures that prove you got it right (624 fixtures cited).
 
 > **Generated file — do not edit.** `python3 occt-coverage/make_roadmap.py`.
 > Everything below is joined from `occt-coverage/*/problems.json` and the catalog's CI-verified `Expected validation` lines. No hand-entered claims.
@@ -21,7 +21,7 @@ The tiering below is derived from **observed reference-engine behaviour**, not f
 
 **Only 1782 of the 2530 STEP fixtures (70%) carry a written `Expected kernel behavior`.** The remainder are real fixtures with real, CI-verified assertions — they are good *tests* — but they do not state what a correct kernel should do, so they teach an implementer nothing on their own. They are marked † below. This is the corpus's largest known gap against its own purpose, and it is tracked, not hidden.
 
-It cites **625 of the 2530 STEP fixtures (25%)**. The rest are real, CI-verified fixtures that simply have not been linked to a named repair mechanism yet — they are reachable through the catalog and [`browse/`](browse/), just not from here. So this is a *starting* map, not an exhaustive one: finishing a tier does not mean you have handled everything the corpus knows about. Growing the linkage is tracked in `occt-coverage/`.
+It cites **624 of the 2530 STEP fixtures (25%)**. The rest are real, CI-verified fixtures that simply have not been linked to a named repair mechanism yet — they are reachable through the catalog and [`browse/`](browse/), just not from here. So this is a *starting* map, not an exhaustive one: finishing a tier does not mean you have handled everything the corpus knows about. Growing the linkage is tracked in `occt-coverage/`.
 
 ## Tier summary
 
@@ -174,16 +174,6 @@ Two non-adjacent edges of the same wire cross in parameter space (global self-in
 
 <sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
 
-### `tkshh-wire-multivertex-loop`
-
-*TKShHealing* · 15 fixtures · observed: empty×9, loads×5, crash×1 · **11/15 carry a written spec** · corpus coverage: COVERED
-
-A wire visits the same vertex more than twice (a vertex has more than two incident wire edges, after discounting seams, degenerated and small edges): a pinched / figure-eight / branching wire that is really several loops glued at a point, and must be split into separate wires.
-
-**Test against:** `Twi010`, `Twi087`, `Twi256`, `Twi258`, `Twi259`, `Twi260`, `Twi261`, `Twi274`, `Twi275` †, `Twi276`, `Twi076`, `Tfa151` …and 3 more
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
-
 ### `tkshh-vertex-not-on-curve-endpoints`
 
 *TKShHealing* · 14 fixtures · observed: loads×11, empty×2, crash×1 · **14/14 carry a written spec** · corpus coverage: COVERED
@@ -191,6 +181,16 @@ A wire visits the same vertex more than twice (a vertex has more than two incide
 An edge's vertex 3D points do not lie on the ends of the edge's 3D curve and/or its pcurve (lifted to the surface) within the vertex tolerance - the declared endpoint and the geometric endpoint disagree. Healing enlarges vertex tolerance to cover the actual curve ends.
 
 **Test against:** `Twi046`, `Twi048`, `Twi059`, `Twi060`, `Twi061`, `Twi085`, `Gp002`, `Gp038`, `Bo030`, `Gp046`, `N054`, `Twi003` …and 2 more
+
+### `tkshh-wire-multivertex-loop`
+
+*TKShHealing* · 14 fixtures · observed: empty×8, loads×5, crash×1 · **11/14 carry a written spec** · corpus coverage: COVERED
+
+A wire visits the same vertex more than twice (a vertex has more than two incident wire edges, after discounting seams, degenerated and small edges): a pinched / figure-eight / branching wire that is really several loops glued at a point, and must be split into separate wires.
+
+**Test against:** `Twi010`, `Twi087`, `Twi256`, `Twi258`, `Twi259`, `Twi260`, `Twi261`, `Twi274`, `Twi276`, `Twi076`, `Tfa151`, `Tfa091` † …and 2 more
+
+<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
 
 ### `tkshh-wire-small-edge`
 

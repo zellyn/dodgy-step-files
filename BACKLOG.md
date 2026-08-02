@@ -2285,3 +2285,44 @@ not "repair" what is not broken), which is a real and gradeable kernel
 requirement — a kernel that splits a non-self-intersecting curve is buggy. But
 the specs now read as contradicting their own entry's Description, so the
 Descriptions need a corrective pass. Same family as (H) and the Q14 misnomers.
+
+---
+
+## DECISIONS TAKEN 2026-08-02 on (H) (I) (J) (K) (L)
+
+Maintainer decisions delegated and executed. **Governing policy: retitle to
+match the bytes; do not regenerate.** Rationale: (1) every one of these
+fixtures IS a real test — a kernel must not abort on a `DIRECTION` where a
+`VECTOR` belongs — they were labelled wrong, not worthless; (2) retitling is
+prose-only: no change to `Expected validation` or any assertion, so no
+re-baseline and no DRIFT; (3) regenerating is expensive AND uncertain, since
+the intended defect may not reproduce once the malformation is removed;
+(4) precedent — the Q14 campaign resolved 117 misnomer fixtures exactly this
+way (117 retitle, 0 quarantine, 0 repair).
+
+- **(I) + (K) — 7 retitled** to name the malformation that actually fires:
+  Twi222/224/225/227/231 (a `DIRECTION` in the slot requiring a `VECTOR`),
+  Tsh108 (self-referential `VECTOR`), Twi147 (nested aggregate in a
+  `DIRECTION`). Each carries a `Status` line with the byte evidence. These now
+  correctly document a real and valuable class: *malformed entity attributes
+  must be diagnosed, not dereferenced.* Twi219/Twi220 were NOT folded in —
+  their LINEs are well-formed and their crash cause is still unknown.
+- **(H) — 2 retitled.** Gs069 reframed as a NEGATIVE CONTROL (near-zero
+  direction ratios are schema-legal; flagging them is a false positive).
+  Gs138 retitled to the schema violation its bytes actually contain.
+- **(J) — Twi275 marked DUPLICATE of Twi260** and removed from the
+  `tkshh-wire-multivertex-loop` coverage list (15 -> 14 fixtures; Twi260
+  already covers that subvariant, so no coverage is lost). Retained on disk
+  rather than deleted: deletion would invalidate the mutation snapshot,
+  section README and validation report for no benefit. No spec written for it
+  on purpose — it would duplicate Twi260's.
+- **(L) — 8 reframed as NEGATIVE CONTROLS** (Twi129/151/172/188, Twi130,
+  Tsh089/106/124) rather than quarantined. Their geometry lacks the declared
+  defect, but their `Expected kernel behavior` states the
+  false-positive-avoidance requirement, which is real and gradeable: a kernel
+  that "repairs" sound geometry is buggy. The Descriptions remain wrong and are
+  flagged in each entry's Status for a later corrective pass.
+
+**Still open, deliberately:** the Descriptions of the 8 negative controls; the
+undiagnosed crash cause of Twi219/Twi220; and whether the titled wire defects
+that Twi222/224/225/227/231 were meant to cover are exercised anywhere else.

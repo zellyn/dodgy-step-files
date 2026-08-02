@@ -58129,7 +58129,7 @@
     "closure_defect": null,
     "closure_intent": null,
     "cross_oracle_note": null,
-    "description": "ShapeAnalysis_Surface.IsDegenerated zero-length axis",
+    "description": "Near-zero direction ratios are schema-legal and denote a valid axis: treating small magnitude as degeneracy is a false positive",
     "expected_kernel_behavior": "A `DIRECTION`'s ratios are not required to be normalised and their magnitude carries no meaning, so ratios of (1e-11, 0, 0) denote +X exactly as (1, 0, 0) do: normalise by the Euclidean norm and use the resulting unit vector as the axis. Reject only when the norm is zero — every ratio zero, which violates the schema's own rule and leaves the axis undefined — and guard the normalisation against underflow by scaling the components before squaring, so that denormal ratios cannot yield a zero or non-finite norm.",
     "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a",
     "fixture_kind": null,
@@ -58155,7 +58155,7 @@
     "tier3_assertions": [
       "load == \"ok\""
     ],
-    "title": "ShapeAnalysis_Surface.IsDegenerated zero-length axis"
+    "title": "Near-zero direction ratios are schema-legal and denote a valid axis: treating small magnitude as degeneracy is a false positive"
   },
   {
     "byte_assertions": [],
@@ -60616,7 +60616,7 @@
       "geometry"
     ],
     "tier3_assertions": [],
-    "title": "ShapeAnalysis_Surface.IsDegenerated bounded-surface-with-only-corner-points"
+    "title": "A B-spline surface missing four of its thirteen attributes, with a flat control-point list where a grid is required, makes the reader abort"
   },
   {
     "byte_assertions": [],
@@ -68478,7 +68478,7 @@
     "closure_defect": null,
     "closure_intent": null,
     "cross_oracle_note": null,
-    "description": "ShapeUpgrade_ShellSewing.Apply zero-tolerance",
+    "description": "A vector entity that names itself as its own direction makes the reader abort",
     "expected_kernel_behavior": "The two faces abut along x=1 but each owns its boundary: face 2's vertices sit at x=1.0000001, exactly the file's declared 1.0E-7 distance accuracy away from face 1's, and the two boundary edges are separate entities. Never let a caller-supplied sewing tolerance fall below the model's declared accuracy — clamp it to that floor — so this pair is recognised as one boundary and merged into a single shared edge with merged vertices instead of requiring bit-exact equality. Separately, one `VECTOR` entity names itself as its own direction attribute: detect the reference cycle while resolving the instance graph and reject that entity with a diagnostic rather than recursing into it.",
     "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
@@ -68503,7 +68503,7 @@
       "topology"
     ],
     "tier3_assertions": [],
-    "title": "ShapeUpgrade_ShellSewing.Apply zero-tolerance"
+    "title": "A vector entity that names itself as its own direction makes the reader abort"
   },
   {
     "byte_assertions": [],
@@ -79287,7 +79287,7 @@
     "closure_defect": null,
     "closure_intent": null,
     "cross_oracle_note": null,
-    "description": "ShapeFix_Wire.FixGaps3d edge-replacement",
+    "description": "A direction whose ratio list nests an aggregate where three reals are required makes the reader abort",
     "expected_kernel_behavior": "The first edge ends at vertex (5,0,0) and the second begins at a distinct vertex (5.01,0,0): a 0.01 gap on a 10-unit contour, five orders of magnitude above the declared 1.0E-7 accuracy. Close it by changing geometry — extend one edge's line or trim the other to a shared point, and merge the two vertices — rather than by inflating vertex tolerance to 0.01, and re-test the modified edge against every other edge of the wire for newly created crossings or overlaps before committing, backing out or moving the other end if the fix introduces one. The fourth edge's direction entity must be rejected as well: its ratios are written as `(-1.47552825814757,(1.0,0.0))`, a nested aggregate rather than three reals, and must not be guessed at.",
     "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
@@ -79312,7 +79312,7 @@
       "topology"
     ],
     "tier3_assertions": [],
-    "title": "ShapeFix_Wire.FixGaps3d edge-replacement"
+    "title": "A direction whose ratio list nests an aggregate where three reals are required makes the reader abort"
   },
   {
     "byte_assertions": [],
@@ -81859,7 +81859,7 @@
     "closure_defect": null,
     "closure_intent": null,
     "cross_oracle_note": null,
-    "description": "ShapeFix_Wire.FixTails consecutive-removal",
+    "description": "Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before any tail repair is reached",
     "expected_kernel_behavior": "Beyond the main edge's end at (10,0,0) the boundary continues through several 0.2-unit collinear stubs to (11,0,0.1) and the closing edge then runs straight back to the origin, so the protrusion is a single hair spread across four edges — and the chain is separately broken between the stub ending at (10.2,0,0) and the one starting at (10.4,0,0). Trim the whole out-and-back excursion back to the branch point at (10,0,0) rather than deleting one edge, re-deriving what remains of the protrusion after each removal instead of walking a list captured earlier, and close or report the 0.2 break. Guard curve construction while doing so: every line in this file names a direction in its vector slot, and each unbuildable curve must be reported per entity.",
     "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
@@ -81884,7 +81884,7 @@
       "topology"
     ],
     "tier3_assertions": [],
-    "title": "ShapeFix_Wire.FixTails consecutive-removal"
+    "title": "Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before any tail repair is reached"
   },
   {
     "byte_assertions": [],
@@ -81925,7 +81925,7 @@
     "closure_defect": null,
     "closure_intent": null,
     "cross_oracle_note": null,
-    "description": "ShapeFix_Wire.FixGaps3d gap-bigger-than-edge",
+    "description": "Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before any 3D gap repair is reached",
     "expected_kernel_behavior": "Before closing a gap by moving a curve's end, weigh the gap against the edges it would alter: the 2.5-unit separation between the edge ending at (1,0,0) and the edge starting at (3.5,0,0) exceeds the whole 1.0-unit length of the first edge. Refuse to extend an edge by more than its own length — insert a fresh bridging edge between the two free vertices instead, or report the wire as unrepairably open quoting the gap and both edge lengths. Getting that far means refusing to build a curve whose vector attribute holds a direction entity, as all three lines here do, and saying which entity failed rather than dereferencing a null curve.",
     "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
@@ -81950,7 +81950,7 @@
       "topology"
     ],
     "tier3_assertions": [],
-    "title": "ShapeFix_Wire.FixGaps3d gap-bigger-than-edge"
+    "title": "Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before any 3D gap repair is reached"
   },
   {
     "byte_assertions": [],
@@ -81958,7 +81958,7 @@
     "closure_defect": null,
     "closure_intent": null,
     "cross_oracle_note": null,
-    "description": "ShapeAnalysis_Wire.CheckSelfIntersection branch-point",
+    "description": "Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before self-intersection analysis is reached",
     "expected_kernel_behavior": "The vertex at (5,0,0) is the end of one edge and the start of three more, so this bound is a branching graph rather than a simple closed contour. Count the edge-ends incident on each vertex and, where the count exceeds two, treat the wire as several loops or chains glued at a point — separate them or reject the bound naming the vertex — rather than reporting the shared point as a curve crossing to be split, which would only recreate the same junction. The lines here are equally unbuildable, a direction standing where a vector must, and that has to surface as a diagnostic rather than an abort partway through translation.",
     "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
@@ -81983,7 +81983,7 @@
       "topology"
     ],
     "tier3_assertions": [],
-    "title": "ShapeAnalysis_Wire.CheckSelfIntersection branch-point"
+    "title": "Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before self-intersection analysis is reached"
   },
   {
     "byte_assertions": [],
@@ -82024,7 +82024,7 @@
     "closure_defect": null,
     "closure_intent": null,
     "cross_oracle_note": null,
-    "description": "ShapeFix_Wire.FixGaps2d on-bspline-surface",
+    "description": "Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before pcurve gap repair is reached",
     "expected_kernel_behavior": "heal or reject (mechanism-specific; see Description)",
     "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
@@ -82049,7 +82049,7 @@
       "topology"
     ],
     "tier3_assertions": [],
-    "title": "ShapeFix_Wire.FixGaps2d on-bspline-surface"
+    "title": "Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before pcurve gap repair is reached"
   },
   {
     "byte_assertions": [],
@@ -82156,7 +82156,7 @@
     "closure_defect": null,
     "closure_intent": null,
     "cross_oracle_note": null,
-    "description": "ShapeFix_Wire.FixLacking with-existing-wire-degenerate-vertex",
+    "description": "Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before degenerate-edge insertion is reached",
     "expected_kernel_behavior": "The second edge ends on a vertex at (5,5,0) and the next begins on a separate vertex instance at exactly the same point, leaving the wire disconnected in the middle although nothing geometric is missing. Merge vertices that coincide within tolerance and re-point their incident edges at the survivor, rather than inserting a connecting edge that would necessarily have zero length; only a genuine separation in the surface's parameter space justifies inserting one. Because every line in this file carries a direction in the slot reserved for a vector, curve construction has to fail loudly before any of that is attempted.",
     "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
@@ -82181,7 +82181,7 @@
       "topology"
     ],
     "tier3_assertions": [],
-    "title": "ShapeFix_Wire.FixLacking with-existing-wire-degenerate-vertex"
+    "title": "Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before degenerate-edge insertion is reached"
   },
   {
     "byte_assertions": [],
