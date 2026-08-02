@@ -26984,6 +26984,7 @@ Integrated face-healing pipeline; mode-dependent cascade via base-slant-apex dec
 **Defect**: Wire with adjacent edges missing exactly (gap ~0.05 unit in Z between P1 and P2 vertices). Vertex-tolerance ball overlap but distance exceeds Confusion threshold.
 **Pattern**: 4-edge planar loop with deliberate Z-offset at P2 to force FixGaps3d bridge repair.
 **Coverage**: ShapeFix_Wire.FixGaps3d edge vertex connection tolerance handling.
+- **Expected kernel behavior**: The first edge ends at vertex (10,0,0) while the next begins at a different vertex (10,0,0.05) — a 0.05 gap, five orders of magnitude above the declared 1.0E-7 accuracy — so the loop is geometrically open even though it is listed as a closed `EDGE_LOOP`. Measure real 3D endpoint distances rather than trusting the listing, and close a gap this large by changing geometry (trim or extend the second edge's line back to (10,0,0), or insert a connecting edge) and merging the two vertices; it is far too big to absorb into vertex tolerance on a 10-unit contour. That second edge also leaves the face's z=0 plane at its start, so if the boundary cannot be brought onto the surface, reject the face and name the junction.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Twi109 — FixShifted Period-Shift on Closed Surface
@@ -27014,10 +27015,12 @@ Integrated face-healing pipeline; mode-dependent cascade via base-slant-apex dec
 **Defect**: Cylindrical wire with extraneous seam edge pair (dummy_seam + seam_close) at P1 that no longer matches true seam line (u=0, 2π). Seam edge lies near u=0.002, falsely marked as seam.
 **Pattern**: 6-edge loop (4 main + 2 dummy seam) on CYLINDRICAL_SURFACE; dummy pair inserted at P1 with pcurves offset from true seam.
 **Coverage**: ShapeFix_Wire.FixDummySeam seam edge validation and removal when seam no longer coincides with surface seam.
+- **Expected kernel behavior**: The last two edges form an out-and-back pair: both run between the same two vertices along the same line, and both pcurves sit at u=0.002 spanning v from 1.0 down to 0.5 and back, enclosing nothing. They are appended at the end of the loop, after the edge that returns to the start vertex, so the listed sequence is not a connected chain — reorder the edges into a connected chain first, which places the pair at the junction it really belongs to. Then remove both and rejoin the neighbours at the combined vertex: the pair is not a genuine surface seam, because a real seam lies on the periodic boundary at u=0 or u=2pi, not at u=0.002.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi112 — ShapeFix_Wire.FixGaps2d 2D-gap repair on cylindrical surface
 
 Wire on cylindrical surface with consecutive edges' parametric curves (pcurves) leaving a 2D gap in the parameter domain. First edge pcurve ranges [0.0, 1.0], second edge pcurve starts at [1.01, ...], creating a 0.01-unit discontinuity. FixGaps2d should bridge with a new pcurve segment to restore continuity.
+- **Expected kernel behavior**: The four edges meet exactly in 3D (they share vertices) but their pcurves do not: edge 1 ends at (u,v)=(0, 1.0) while edge 2 starts at (0, 1.01), and edge 2 ends at (pi/2, 1.01) while edge 3 starts at (pi/2, 1.0) — two independent 0.01 gaps in v. Check parametric continuity independently of 3D continuity, and close both gaps by adjusting the pcurve parameter ranges or reapproximating their ends onto a shared parametric point; do not insert extra edges, because the 3D wire is already closed. If the parametric contour cannot be closed, reject the face rather than trimming the cylinder from an open parametric boundary.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
@@ -27034,6 +27037,7 @@ Face with multiple wires where the loop with largest enclosed area (20×20 outer
 ### Twi114 — ShapeFix_Wire.FixTails tail-elimination
 
 Wire ending in a small "tail" edge (length 0.05 units) much shorter than its neighbors (length 10.0). Tail extends from (0,10) to (0,10.05). FixTails should identify and remove this degenerate edge to restore wire closure.
+- **Expected kernel behavior**: The chain runs (0,0,0) to (10,0,0) to (0,10,0) to (0,10.05,0) and stops: it is open, and its final 0.05 edge goes out but never comes back. A tail is an out-and-back protrusion, so this edge is not one and must not be deleted by a tail-removal pass — at 0.05 it is five orders of magnitude above the declared 1.0E-7 accuracy, and dropping it would still leave the wire open from (0,10,0) back to the start. Either keep the wire open as authored, or, if the consumer requires closure, insert the missing segment; never present deletion of a real edge as a closure fix.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi115 — ShapeAnalysis_Wire.CheckGap3d threshold-comparison edge
@@ -27054,11 +27058,13 @@ Wire with edges whose 3D-curve derivatives are parallel at shared vertex. Notch 
 ### Twi118 — ShapeAnalysis_Wire.CheckLacking lacking-edge tangency
 
 Adjacent edges with gap; CheckLacking detects via tangent-angle test but fails when one tangent is computed from degenerate (zero-length) sub-curve. Edge 2 is degenerate cubic (all control points coincident), creating undefined tangent. Distance-gap check should fire but computation reaches no decision path.
+- **Expected kernel behavior**: The first edge ends at (1,0,0) while the second begins at (2,0,0) — a 1.0-unit gap — and that second edge is itself collapsed: a degree-3 B-spline whose four control points are all (2,0,0), with the same vertex at both ends, so its tangent is undefined everywhere. Run the connectivity check as a distance test on the two endpoints, before and independently of any tangent-continuity test, so an undefined tangent cannot suppress it. Then remove the collapsed edge, which bounds nothing, and report the remaining 1.0-unit gap as a genuine missing segment rather than absorbing it into vertex tolerance.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi119 — ShapeFix_Wire.FixSmall threshold-on-tolerance
 
 Wire with "small" edge exactly at user-configured small-edge threshold (1e-5). FixSmall uses non-strict comparison at one code site and strict at another, causing inconsistent behavior. Floating-point equality test at threshold boundary is undefined; edge may or may not be flagged for removal.
+- **Expected kernel behavior**: The middle edge is exactly 1.0E-5 long — the value a caller would set as a small-edge threshold, and 100 times the declared 1.0E-7 accuracy — closing a triangle whose other two edges are about 1.0 long. Apply one documented smallness rule identically in the checking pass and the fixing pass (the safe rule being that an edge is small only when its two endpoints and its curve midpoint all coincide within model tolerance), so the verdict cannot flip between passes at the boundary; under that rule this edge is not small and the wire stays a three-edge closed loop. If a caller's threshold does make it removable, remove it and merge its two vertices in the same pass — never flag it in analysis and then skip it in repair.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi120 — ShapeAnalysis_Wire.CheckShapeConnect 4-way orientation encoding
@@ -27069,11 +27075,13 @@ Wire boundary where edges should be merged at hub vertex; CheckShapeConnect's DO
 ### Twi121 — ShapeFix_Wire.FixSeam closed-surface seam reset
 
 Wire on cylindrical surface where seam-edge tolerance gets reset to 0.0 unconditionally. Seam edge at u-parameter boundary (topology closure) has user-set tolerance 0.001; FixSeam erases it. Downstream CheckConnected tolerance mismatch detection fails.
+- **Expected kernel behavior**: The wire has two edges: a vertical line whose pcurve runs u=0 with v from 0 to 1, and a full-turn circle whose pcurve runs u from 0 to 2pi at v=1, so although the 3D endpoints coincide and the wire looks closed, the parametric contour ends at (2pi, 1) having started at (0, 0). The vertical edge lies exactly on the periodic boundary and is therefore needed twice — once at u=0 and once at u=2pi — so add its second use with a pcurve shifted by one full period, and require every seam edge to carry a pcurve for each side rather than a single shared one. If the second use cannot be constructed, report the face as having an open parametric boundary instead of trimming from it.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi122 — ShapeFix_Wire.FixTails wire-tail asymmetry
 
 Wire with first edge 0.0001mm (very short) and final edge normal-length (1.0mm). FixTails detects short trailing edges and removes them, but fails to symmetrically validate leading edges. Repair chain should either detect both or apply consistent threshold logic.
+- **Expected kernel behavior**: All three edges lie on the X axis: the wire runs out from (0,0,0) through a 1.0E-4 edge and a 1.0-unit edge to (1.0001,0,0), then returns along the identical line, so it encloses zero area. Recognise the whole contour as an out-and-back protrusion — each outgoing edge is covered within tolerance by the return edge along its full length — rather than only trimming the short leading edge; cutting the out and back portions against each other consumes every edge, so the correct result is to drop the wire and any face it bounds, with a diagnostic. The 1.0E-4 leading edge is a thousand times the declared 1.0E-7 accuracy and is not by itself grounds for removal.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi123 — ShapeAnalysis_Wire.CheckGap2d tolerance-equality misclassification
@@ -27094,6 +27102,7 @@ Wire with very narrow bounding box (1.0 unit square) where two edges intersect e
 ### Twi126 — ShapeFix_Wire.FixClosed linear submethod cascade
 
 FixClosed chains FixConnected → FixDegenerated → FixLacking sequentially. After FixConnected modifies wire (fixes gap), FixDegenerated's internal state flags may skip degenerate-edge detection due to prior fix. Cascade must reset internal state or use independent analysis per sub-method.
+- **Expected kernel behavior**: Three defects sit in one three-edge chain: a 0.01 gap between the first edge's end (1,0,0) and the second edge's start (1.01,0,0); a closing edge whose `LINE` has magnitude 0.0 and whose start and end vertex are the same; and an overall contour that runs from (0,0,0) to (2,0,0) and never returns. Re-derive gaps and degeneracies from the current geometry after every repair rather than from flags computed once — snapping the 0.01 gap does not remove the zero-length edge, and removing the zero-length edge does not close the wire. Report the wire as not closable, naming the residual (2,0,0)-to-(0,0,0) gap, instead of declaring success after the first fix.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi127 — ShapeFix_Wire.FixReorder UV-disjoint regions
@@ -27124,6 +27133,7 @@ FixClosed chains FixConnected → FixDegenerated → FixLacking sequentially. Af
 
 **Status**: VALID — exposes inflection-point self-touch blind spot.
 
+- **Expected kernel behavior**: The single edge is a degree-3 B-spline whose five control points have strictly increasing x (0, 2.5, 5, 7.5, 10), so every control point of its derivative has a positive x component: the curve is x-monotone and cannot cross itself anywhere in its range, despite an S-shaped control polygon that inflects near (5,0,0). Test for self-intersection by subdividing the actual curve and comparing non-adjacent pieces, never by reading the control polygon and never by splitting where curvature changes sign — an inflection is not a crossing — so the correct result here is no self-intersection and no split. The defect that must be reported instead is that the loop holds a single edge whose two endpoints differ, so it does not close.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi130 — ShapeAnalysis_Wire.CheckIntersectingEdges adjacency exemption
@@ -27134,6 +27144,7 @@ FixClosed chains FixConnected → FixDegenerated → FixLacking sequentially. Af
 
 **Status**: VALID — wire-level intersection detection vulnerability.
 
+- **Expected kernel behavior**: The five straight edges form a simple closed pentagon through (0,0), (10,0), (15,-2), (15,5) and (0,5); no pair crosses, including the adjacent pair at (10,0,0) where the second edge dips below the X axis. Do not blanket-exempt adjacent edges from intersection testing — test each consecutive pair over the portions lying outside the tolerance ball around their shared vertex — but on this input that test finds nothing, so the wire must be accepted unchanged. A checker that reports a crossing here is producing a false positive, and trimming to a phantom intersection would destroy a valid boundary.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi131 — ShapeFix_Wire.FixLacking degenerate-edge insertion
@@ -27144,14 +27155,17 @@ FixClosed chains FixConnected → FixDegenerated → FixLacking sequentially. Af
 
 **Status**: VALID — degenerate-edge insertion ambiguity on cone apex / sphere pole singularities.
 
+- **Expected kernel behavior**: The chain (0,0,0) to (10,0,0) to (10,10,0) to (0,10,0) to (5,5,0) ends with a degenerate edge: a degree-1 B-spline with both control points at (5,5,0) over the null knot range (0.0, 0.0), carrying the same vertex at both ends. A degenerate edge is legitimate only where the underlying surface collapses to a point and where its parametric length is non-zero; there is no surface here and no singularity, so remove it as spurious. What remains is a 7.07-unit gap from (5,5,0) back to (0,0,0), which must be reported as a genuine missing segment or closed with a real edge — never with another degenerate edge, whose direction would be undefined because its ends coincide.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi132 — ShapeFix_Wire.FixDummySeam non-periodic-surface
 Wire on PLANE (non-periodic) with edge orientation pattern that triggers seam-like heuristic. FixDummySeam logic should be no-op for non-periodic surfaces but incorrectly evaluates the heuristic trigger conditions.
+- **Expected kernel behavior**: The wire is a closed 10x5 rectangle on a `PLANE`, every pcurve matches its 3D line exactly, no two consecutive edges share a curve, and the surface has no periodic direction and therefore no seam. Gate duplicate-pair removal on evidence that is actually present — two consecutive edges whose curves coincide within tolerance while running in opposite directions — rather than on heuristics about edge direction patterns. On this input nothing may be removed: deleting any of the four edges would open the boundary and destroy the face.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi133 — ShapeAnalysis_Wire.CheckCurveGap bspline endpoint precision
 Wire with adjacent B-spline edges. CheckCurveGap evaluates curve endpoints using parameter sampling method which accumulates floating-point precision loss, causing false gap detection between valid endpoints.
+- **Expected kernel behavior**: The two clamped cubic B-splines meet exactly at (5,0,0): both end knots have multiplicity 4, so each curve interpolates its terminal control point and the shared vertex is reached with no positional error. Evaluate endpoints from the clamped knot structure directly instead of sampling near the parameter ends, where accumulated round-off manufactures a gap that is not there, and report positional continuity as satisfied. The genuine discontinuity here is tangential — the incoming tangent runs along (1,0,0) and the outgoing along (1,1,0), a 45-degree kink — and must be reported as a smoothness defect, not as a gap to bridge.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi134 — ShapeFix_Wire.FixShifted non-2π shift
@@ -27169,10 +27183,12 @@ Three edges forming chain with vertex duplicates: v1→v2(dup)→v3(dup)→v4. F
 ### Twi137 — ShapeFix_Wire.FixIntersectingEdges 2D-only intersection
 
 Wire on a 3D surface (plane) where two edges intersect in 2D parameter space but not in 3D. The healer over-eagerly splits both edges at the parameter-space intersection, missing that the 3D gap should absorb the discrepancy. Tests tolerance-vs-geometry logic in intersection repair.
+- **Expected kernel behavior**: The second edge lies wholly at z=1 while the face's surface is the z=0 plane; projected into the face's parameters it crosses the first edge at (5,5), but in 3D the two are 1.0 unit apart, seven orders of magnitude above the declared accuracy. Qualify every parameter-space crossing against the 3D geometry before repairing it, and split only when the 3D separation at the crossing is within tolerance — so no split may happen here. Report the actual defects instead: the second edge does not lie on the face's surface, the first edge's `LINE` along (1,0,0) does not pass through its declared end vertex (10,10,0), and the two edges share no vertex, so the wire is not a chain at all.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi138 — ShapeAnalysis_Wire.CheckSmall edge-length comparison
 
 Wire with a tiny edge below the threshold where CheckSmall comparison uses parameter-difference (not arc-length) for some curve types. B-spline with degenerate knot multiplicity creates large 3D arc from small parameter range; checker falsely classifies as small. Tests parameter vs. arc-length measurement.
+- **Expected kernel behavior**: The edge's curve is declared degree 3 with knots (0.0, 1.0) at multiplicities (4,4) — eight knots — but carries only three control points, where a clamped cubic needs four; the identity knot-count = control-point-count + degree + 1 fails. Validate that identity before evaluating any B-spline and reject the curve with a diagnostic naming the entity, rather than reading past the end of the control-point array. Only once a curve is valid may an edge-smallness test run, and that test must measure 3D arc length, or endpoint-and-midpoint coincidence, never the width of the parameter range — a narrow parameter range can carry an arbitrarily long arc.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi139 — ShapeFix_Wire.FixReorder seed-edge choice
 
@@ -27185,12 +27201,14 @@ Wire with last edge a B-spline whose tangent at endpoint is undefined (degenerat
 ### Twi141 — ShapeFix_Wire.FixSelfIntersectingEdge close-loop iteration
 
 Wire forms a near-closed loop with a tiny self-intersecting tail; iteration limit (30 cycles) reached before resolution leaves tail intact. Tests loop-removal convergence and iteration-runaway prevention. Common in real CAD data with micro-features near closure.
+- **Expected kernel behavior**: The first four edges already close a 10x10 square; a fifth edge then runs 0.05 units from the closure vertex (0,0,0) back along the +X axis, lying exactly on top of the first edge for its whole length. Treat the last-versus-first pair as a candidate like any other, detect the collinear overlap, and cut the stub away so the four-edge closed square is restored; the repair must terminate, so bound the number of re-detection passes and fail loudly with a diagnostic if the overlap survives them, rather than exhausting an iteration cap and returning silently. That stub's declared direction (1.0, 0.5, 0.0) also does not pass through its own end vertex (0.05,0,0), and must be rejected on that basis.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi142 — ShapeFix_Wire.FixDegenerated insertion at index 0
 
 Wire with degenerate edge (zero-length) at position 0; FixDegenerated's index logic doesn't handle position-0 special case, causing incorrect insertion or index-out-of-bounds when attempting to insert/remove at index 0.
 
 **Root cause**: Off-by-one or missing boundary check when index equals 0.
+- **Expected kernel behavior**: The loop's first entry is a zero-length edge: its two distinct vertex instances both sit at (0,0,0). Handle removal at index 0 exactly as at any other index — drop the edge, merge the two coincident vertices into one, and re-close the ring so the last edge's end becomes the new first edge's start, remembering that index 0's predecessor is the last edge and not index -1 — leaving a four-edge closed square. An implementation that special-cases only interior positions leaves a dangling vertex or reads out of range; the fourth edge must also be rejected, since its `LINE` along (0,-1,0) from (10,10,0) never reaches its declared end vertex (0,10,0).
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi143 — ShapeAnalysis_Wire.CheckIntersectingEdges parallel edges
 
@@ -27203,6 +27221,7 @@ Two parallel edges coincident along their entire length but in opposite directio
 Wire on periodic SURFACE_OF_REVOLUTION (conical profile) crossing seam; FixSeam special-case only handles cylinders, fails on other periodic surfaces with curved profiles.
 
 **Root cause**: Hardcoded cylinder-only logic; needs generalization for all periodic surfaces.
+- **Expected kernel behavior**: The face's surface is a revolution of the line through (5,0,0) with direction (1,0,1) about the Z axis — a cone — but the wire carries no pcurves, three of its four edges have end vertices that do not lie on their own `LINE`s (one runs along (1,0,0) from (5,0,0) yet ends at (6,2,3)), and the chain is broken because the first edge ends at (7.071,0,2.071) while the second starts at a second vertex instance back at (5,0,0). Validate every edge against its own curve and against the face's surface before any seam reasoning, and reject or repair the off-curve vertices first. Where an edge genuinely crosses the periodic boundary, take the period shift from the surface's own u-period — a revolution with a slanted profile has the same 2pi period as a cylinder — rather than from a cylinder-only special case.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 - **Notes**:
 ### Twi145 — ShapeAnalysis_Wire.CheckGap3d 3D-only with valid 2D
@@ -27216,21 +27235,27 @@ Wire on surface where 3D edges have a real gap but parametric 2D curves connect 
 Wire on cylinder missing edge crossing periodic seam; FixLacking inserts edge but in wrong period of cyclic domain (e.g., near u=0 instead of u=2π).
 
 **Root cause**: Period wrapping not accounted when inserting closure edge on periodic surface.
+- **Expected kernel behavior**: The closing edge is a straight `LINE` from (-5,0,0) to (5,0,0): a diameter chord through the cylinder's axis, so it does not lie on the radius-5 surface and no pcurve can be projected for it. Construct a closure on a periodic surface in parameter space rather than in 3D: the wire's u values run 0, pi/2, pi, so the closure must continue in the same direction to u=2pi rather than jumping back to u=0, keeping the contour monotone in u and free of self-overlap. If no closure can be placed on the surface — as here — reject the edge with a diagnostic instead of projecting a chord onto an arbitrary meridian.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi147 — ShapeFix_Wire.FixGaps3d edge-replacement
 Wire with a gap bridged by extending one edge; the extension creates a self-intersection with another edge. FixGaps3d fails to detect the induced self-intersection before committing the fix.
+- **Expected kernel behavior**: The first edge ends at vertex (5,0,0) and the second begins at a distinct vertex (5.01,0,0): a 0.01 gap on a 10-unit contour, five orders of magnitude above the declared 1.0E-7 accuracy. Close it by changing geometry — extend one edge's line or trim the other to a shared point, and merge the two vertices — rather than by inflating vertex tolerance to 0.01, and re-test the modified edge against every other edge of the wire for newly created crossings or overlaps before committing, backing out or moving the other end if the fix introduces one. The fourth edge's direction entity must be rejected as well: its ratios are written as `(-1.47552825814757,(1.0,0.0))`, a nested aggregate rather than three reals, and must not be guessed at.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi148 — ShapeAnalysis_Wire.CheckClosed degenerate-tolerance
 Wire whose closing distance is exactly equal to the closure tolerance (1.0E-7). Non-strict equality (==) leads to false-positive closure, masking incomplete loop detection.
+- **Expected kernel behavior**: The wire's last edge ends at (1.0E-7, 0, 0) while its first begins at (0,0,0), so the closure gap is exactly the file's declared distance accuracy of 1.0E-7. Fix one convention for that boundary case and apply it identically in analysis and repair — treating a distance less than or equal to tolerance as coincident is the safe choice, since tolerance means indistinguishable at this accuracy — and then actually merge the two vertices so the wire becomes topologically closed. Reporting closure while leaving two distinct vertices in place is the failure mode: downstream face building still sees an open contour.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi149 — ShapeFix_Wire.FixDummySeam non-orientable surface
 Wire on non-orientable surface; FixDummySeam assumes orientability and incorrectly removes a seam edge that is actually topology-defining.
+- **Expected kernel behavior**: The wire is a closed 5x5 rectangle on a `PLANE`. Its second and fourth edges run in exactly opposite directions, (0,1,0) and (0,-1,0), but they lie 5 units apart at x=5 and x=0 and are not consecutive, so a duplicate-pair test must require both adjacency in the wire and curves that coincide within tolerance along their length — opposite tangent direction alone is not evidence. Neither condition holds here, so all four edges must be kept; removing the fourth would open the boundary and destroy the face.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi150 — ShapeAnalysis_Wire.CheckLacking parallel-tangent
 Adjacent edges with tangents parallel to within tolerance; CheckLacking's tangent-discontinuity test returns false-negative, failing to detect lack of sufficient continuity.
+- **Expected kernel behavior**: At the junction (10,0,0) the two edges share a vertex exactly, and the outgoing direction (0.999875, 0.015625, 0) differs from the incoming (1,0,0) by only 0.0156 rad. A missing-edge check asks whether consecutive edges meet in position, not whether their tangents agree, so nothing may be inserted here; a near-parallel tangent is a smoothness observation and must be reported separately, if at all. The defects a consistency check should catch on this file are edges 2, 3 and 4, whose declared `LINE` directions do not pass through their own end vertices — edge 2's line reaches y about 0.156 at x=20 while its end vertex sits at y=0.1.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi151 — ShapeFix_Wire.FixSelfIntersectingEdge cusp-cusp
 Single edge with a cusp (zero-derivative point); FixSelfIntersectingEdge tries to split at cusp but the parameter is undefined due to degeneracy.
+- **Expected kernel behavior**: The edge's curve is a degree-3 B-spline whose five control points have strictly increasing x (-2, -1, 0, 1, 2), so its derivative never vanishes and the curve is x-monotone: it has no cusp and no self-crossing, even though its control polygon dips below the chord. Locate cusp candidates by subdividing the curve and evaluating the derivative, and refuse to split at any parameter where the derivative is non-zero — the correct outcome is to leave this edge intact. Two `VECTOR` entities in the file are also written with two attributes and an inline coordinate list where a direction reference and a magnitude are required, and must be rejected rather than default-filled.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi152 — ShapeFix_Wire.FixIntersectingEdges line-segment-vs-circle-arc
 
@@ -27240,6 +27265,7 @@ Wire contains a LINE edge that intersects a CIRCLE arc edge. FixIntersectingEdge
 **Source**: OCCT_HEAL_COVERAGE_V3.md ShapeFix_Wire.FixIntersectingEdges_at3272 (branch W3272.6)  
 **Root cause**: Parameter extraction at line 3026 uses conditional ternary without validating parameter space; arc parametrization is non-linear
 
+- **Expected kernel behavior**: The wire mixes a straight edge from (0,0,0) to (10,0,0) with a radius-10 `CIRCLE` edge trimmed by its vertices (10,0,0) and (0,10,0), and no two edges actually cross. Any split or intersection parameter on the circle must be obtained by inverting the circle's own parametrization about its placement axis, never by interpolating linearly between the edge's start and end parameters — arc parameter is not affine in position along the curve, so interpolation lands off it. Verify every computed split by evaluating the curve at the returned parameter and comparing with the intended 3D point within tolerance, and discard the split if they disagree.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: edge[1].curve_type == "circle"
 - **Tier-3 assertion**: edge[1].analytic.radius == 10.0
@@ -27262,6 +27288,7 @@ Wire on cylindrical surface with seam edge in reverse (.F.) orientation. FixSeam
 **Source**: OCCT_HEAL_COVERAGE_V3.md ShapeFix_Wire seam handling (edge orientation not checked before period adjustment)  
 **Root cause**: Period correction applied without orientation check; parametrization direction inverted for reversed edges
 
+- **Expected kernel behavior**: The seam edge is declared with vertices (1,0,1) then (1,0,0) while its `LINE` runs upward in +Z from (1,0,0), and the wire uses it through an `ORIENTED_EDGE` flagged `.F.`, so its effective traversal is the composition of two reversals. Derive each edge's traversal direction from that composition — curve sense combined with the `ORIENTED_EDGE` flag — and apply any seam period shift in the composed direction; shifting along the curve's intrinsic direction moves a reversed seam edge the wrong way by a full period. The other edge must also be rejected: its `TRIMMED_CURVE` is an arc of a circle lying at z=0 while its declared vertices sit at z=0 and z=1, so it cannot connect them.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi155 — ShapeAnalysis_Wire.CheckGap3d zero-length-edge
 
@@ -27283,10 +27310,12 @@ Wire contains same edge twice with forward and reverse orientations. FixReorder 
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi157 — ShapeAnalysis_Wire.CheckSelfIntersection figure-8 wire
 Wire whose path forms a figure-8 (crosses itself at one point). CheckSelfIntersection must detect the crossing at the self-intersection point where the two lobes meet.
+- **Expected kernel behavior**: Edges 1 and 3 are non-adjacent straight segments — (0,0,0) to (10,10,0) and (10,0,0) to (0,10,0) — that cross transversally at (5,5,0), interior to both, making the contour a bow tie. Run self-intersection detection over all edge pairs and not only consecutive ones, and on an interior crossing insert a vertex at (5,5,0), split both edges there, and rebuild the result as two separate closed loops rather than one. If a crossing falls within tolerance of an existing vertex, snap to that vertex instead of splitting; never return the bow tie as a valid face boundary.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
 ### Twi158 — ShapeFix_Wire.FixGaps2d 2D-gap on periodic surface
 Wire on cylindrical surface where 2D pcurves leave a gap exactly at u=0 (the seam). FixGaps2d's gap-bridging fails to handle seam-crossing correctly.
+- **Expected kernel behavior**: The face's surface is a revolution of a radius-1 `CIRCLE` lying in the z=0 plane about the Z axis through that circle's own centre: every point of the generatrix is the same distance from the axis, so the swept surface collapses back onto the single circle and has no two-parameter domain. Check a revolution's generatrix for this coaxial degeneracy before building any parametric geometry on it, and reject the surface and its face with a diagnostic. The sole edge, a vertical line from (1,0,0) to (1,0,1.5), does not lie on that circle at all, so no seam-gap repair is meaningful — there is no parameter space in which to compute one.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi159 — ShapeAnalysis_Wire.CheckOrder wire-completely-reversed
 4-edge closed wire where all edges are .F. orientation. CheckOrder should detect reverse-traversal and flag it as a fixable mode rather than failing silently.
@@ -27294,6 +27323,7 @@ Wire on cylindrical surface where 2D pcurves leave a gap exactly at u=0 (the sea
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Twi160 — ShapeFix_Wire.FixLacking degenerate-vertex-gap
 Wire missing an edge between v1 and v2 where dist(v1,v2) < Confusion (effectively coincident). FixLacking inserts a degenerate edge but the construction has wrong direction.
+- **Expected kernel behavior**: Vertices (10,0,0) and (10,0,5.0E-8) are 5.0E-8 apart, below the declared 1.0E-7 accuracy, so they are the same point; once merged, edges 2 and 3 are seen to run out from (10,0,0) to (5,10,0) and straight back along the identical line. Merge the sub-tolerance vertex pair first, then remove the out-and-back pair; what remains is a single open edge from (0,0,0) to (10,0,0) enclosing nothing, so reject the face with a diagnostic. Do not instead insert a degenerate edge between the two coincident vertices: that reports a closed wire which still bounds no area, and its direction would be undefined because its ends coincide.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### Twi161 — ShapeAnalysis_Wire.CheckGap2d on B-spline pcurve
@@ -27306,6 +27336,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Claim**: Without cycle detection, pairwise splitting of 3 mutually-intersecting edges leaves at least one pair with undetected overlap.  
 **Reproducer**: Three line segments (horizontal, vertical, diagonal) passing through (5,5,0); wire loop enclosing all three. FixIntersectingEdges should split pairwise but create invalid vertex/edge correspondence.  
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi162.stp`
+- **Expected kernel behavior**: The vertex at (5,5,0) is used twice by the same wire — once between edges 1 and 2 and again between edges 4 and 5 — so the contour is a figure eight pinched at a point rather than two edges crossing at interior parameters. Detect repeated vertex use within one wire, not only curve-curve crossings, and split the wire there into its two closed lobes ((5,5) to (10,5) to (5,10) back to (5,5), and (5,5) to (5,0) to (0,5) back to (5,5)), then classify each lobe independently as outer boundary or hole. A crossing-only search finds nothing on this input and silently returns the pinched wire.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
 ### Twi163 — ShapeAnalysis_Wire.CheckIntersectingEdges trimmed-edges-overlap-base-curve
@@ -27338,6 +27369,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Claim**: Without degenerate-intersection filtering, FixSelfIntersectingEdge splits a B-spline at a point within Confusion tolerance, creating topologically invalid sub-edges.  
 **Reproducer**: B-spline curve looping back on itself with endpoints separated by 0.0001 unit, creating near-intersection within default Confusion (~1e-7). FixSelfIntersectingEdge must skip or merge degenerate splits.  
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi166.stp`
+- **Expected kernel behavior**: The wire is one large closed contour: a degree-3 B-spline that swings out to (10,4) and returns, plus a 1.0E-4 straight edge closing (0.0001,0,0) back to (0,0,0). Sampling the spline shows no self-crossing — its two endpoints merely come within 1.0E-4 of each other, a thousand times the declared 1.0E-7 accuracy, and that span is already bridged by a real edge — so no split may be made there. Reject any self-intersection split whose resulting sub-edge would be shorter than model tolerance, and snap a split point falling within tolerance of an existing vertex onto that vertex instead.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 ### Twi167 — ShapeFix_Wire.FixIntersectingEdges loop-collapse
@@ -27348,6 +27380,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Minimal reproducer**: Bow-tie wire (4 vertices, crossing edges); invoke FixIntersectingEdges; expect collapse detection, observe degenerate output  
 **Search anchors**: `FixIntersectingEdges`, `loop-collapse`, `degenerate wire`
 
+- **Expected kernel behavior**: Every edge here carries a pcurve on the z=0 plane, and the bow-tie crossing of the first and third edges at (5,5,0) is present identically in 3D and in the face's parameters. Compute the crossing once, in one representation, and transfer the split parameter to the other — solving separately in 3D and in parameter space yields two slightly different vertices and a wire that ends up neither closed nor properly split. After splitting, check each resulting loop for non-zero enclosed area before accepting it (both halves here are triangles of area 25), and discard any loop that collapses, with a diagnostic, rather than emitting it as a face boundary.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi168 — ShapeAnalysis_Wire.CheckShapeConnect different-vertex-counts
@@ -27368,6 +27401,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Minimal reproducer**: Wire [degenerate, normal, degenerate]; invoke FixDegenerated; expect proper repair, observe incomplete removal  
 **Search anchors**: `FixDegenerated`, `insert-between-degenerate`, `consecutive degenerate edges`
 
+- **Expected kernel behavior**: The wire is a zero-length edge at (0,0,0), then a real 10-unit edge, then a zero-length edge at (10,0,0): each degenerate edge has the same vertex at both ends, both its 3D `LINE` and its pcurve carry a zero-magnitude `VECTOR`, and the underlying surface is a `PLANE` with no singular point. Remove both — a degenerate edge is legitimate only where the surface collapses to a point and where its parametric length is non-zero — and do so in a single scan over the whole edge list, so removing the first entry does not stop the walk and removing the last does not leave the ring pointing at a deleted edge. What remains is one open edge that cannot bound a face; report that rather than emitting a face.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi170 — ShapeAnalysis_Wire.CheckGap3d 3D-vs-pcurve-disagreement
@@ -27395,6 +27429,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 
 **Fixture:** B-spline curve with zero derivative at midpoint connecting two vertices. FixSelfIntersectingEdge fails during tangent computation at cusp location.
 
+- **Expected kernel behavior**: The edge's curve is a clamped cubic Bezier with duplicated interior control points, both (5,10), so its derivative's control points are (5,10), (0,0) and (5,-10), and dx/dt = 5(1-t)^2 + 5t^2 is never below 2.5: the tangent never vanishes, the curve is x-monotone, and there is no cusp and no self-intersection. Detect cusps by evaluating the derivative rather than by looking for repeated control points, and return the edge unsplit — the flat spot at t=0.5 is only a horizontal tangent (dy/dt = 0), which is not a cusp. Splitting there would produce two edges where one is correct.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi173 — ShapeAnalysis_Wire.CheckLacking endpoint-degenerate
@@ -27403,6 +27438,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 
 **Fixture:** Three-edge loop with intermediate vertices nearly coincident, creating gap where edge should connect. Degenerate-vertex masking prevents detection of the missing linking edge.
 
+- **Expected kernel behavior**: The chain runs (0,0,0) to (10,0,0) to (10.000001,0,0) to (5,8,0) and stops: the closing segment from (5,8,0) back to (0,0,0), a 9.43-unit gap, is simply absent. Measure the closure gap between the last edge's end and the first edge's start and act on that alone; the near-degenerate 1.0E-6 middle edge is ten times the declared 1.0E-7 accuracy, so it is not removable and must not be allowed to mask the check. Insert the missing closing edge, or reject the wire naming the (5,8,0)-to-(0,0,0) gap — never declare it closed because two of its vertices are nearly coincident somewhere else.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi174 — ShapeFix_Wire.FixDummySeam non-cylindrical
@@ -27411,6 +27447,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 
 **Fixture:** Closed loop on conical surface at uniform height. FixDummySeam's cylindrical-seam heuristic misidentifies cone apex region and incorrectly processes edges.
 
+- **Expected kernel behavior**: The four edges form a closed belt at constant height on a cone of base radius 5 and half-angle 30 degrees: their pcurves tile u from 0 to 2pi exactly, but each edge's 3D curve is a straight chord between the vertices instead of an arc on the surface, deviating from the cone by up to about 2.3 units. Reconcile the 3D curve with the pcurve before any seam reasoning — replace each chord with the surface curve its pcurve implies, or reject the edge — and do not read the belt's 0-to-2pi wrap as a duplicate seam pair, since a closed belt legitimately spans one full period. Because this belt is the face's only bound, the parametric region is still open on the apex side: close it by inserting a degenerate edge at the cone apex, which lies below the belt.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi175 — ShapeAnalysis_Wire.CheckTail negative-parameter
@@ -27426,11 +27463,13 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Defect:** Wire where FixIntersectingEdges modifies the edge list while iterating; downstream operations get stale iterator.
 
 **Fixture:** Self-intersecting figure-eight wire with six edges creating crossing pattern. FixIntersectingEdges split operations invalidate iteration cursors during concurrent list modification.
+- **Expected kernel behavior**: This six-edge closed contour crosses itself at several interior points among non-adjacent edges — edges 2 and 4, for instance, meet at (6.667, 6.667, 0), away from any vertex. Collect every crossing from the original wire before modifying anything and apply all the splits in one rebuild: splitting pairs one at a time while walking the same edge list invalidates the parameters of the crossings not yet handled and leaves some undetected. If instead detection is re-run from scratch after each rebuild, bound the number of rounds and fail loudly when crossings remain at the bound, rather than returning a wire that still self-intersects.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi177 — ShapeAnalysis_Wire.CheckOuterBound nested-faces
 
 Wire is the outer bound of an inner face within a larger face. `CheckOuterBound` classifies based on enclosed area but the nested context is missing, causing it to misidentify the wire's role within compound geometry.
+- **Expected kernel behavior**: The file supplies a single closed 2x2 square wire from (3,3,0) to (5,5,0), traversed counter-clockwise, with no enclosing boundary anywhere in the model. Classify a wire as outer or inner only relative to the other wires of the same face: with exactly one wire the answer follows from its own orientation against the face normal — counter-clockwise here, so it is the outer bound and the material lies inside — and no containment test against absent siblings may be attempted or defaulted. If the wire is later attached to a face that already has an outer bound, recompute the classification by a point-in-wire test against that sibling rather than carrying the earlier verdict over.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi178 — ShapeFix_Wire.FixSelfIntersection convergence-oscillation
@@ -27446,6 +27485,7 @@ Adjacent edges with `TRIMMED_CURVE` pcurves. `CheckGap2d` compares trim bounds a
 ### Twi180 — ShapeFix_Wire.FixGaps3d 4-edge-gap-chain
 
 Wire with 4 consecutive edges all having tiny gaps between them. `FixGaps3d` bridges each individual gap independently but the chain of bridges accumulates curvature deviations.
+- **Expected kernel behavior**: Four consecutive junctions of this roughly 1x1 contour are each open by 1.0E-6 — ten times the declared 1.0E-7 accuracy — including the wrap-around from the last edge back to the first. Find all four in one pass and close each by moving both sides to a common point, rather than always moving the following edge, which accumulates the correction in one direction and walks the contour off its authored position. Re-measure the whole ring after the repair and require the total deviation from the original geometry to stay within tolerance; if it does not, report the wire instead of emitting a silently distorted boundary.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi181 — ShapeAnalysis_Wire.CheckGap3d B-spline-vs-LINE
@@ -27462,6 +27502,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Fixture path**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi182.stp`  
 **Fixture kind**: `STEP_STANDALONE`  
 **Schema**: `AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }`
+- **Expected kernel behavior**: The first four edges already close the unit square, and a fifth edge is appended after the closing edge: it joins two distinct vertex instances that both sit at (0,1,0), and its 3D `LINE` and its pcurve both have magnitude 0.0, so the listed sequence is no longer a connected chain. Reorder the edges into a connected chain, then remove the zero-length edge and merge its two vertex instances into the one already shared with edges 3 and 4, so closure points at a surviving vertex rather than a deleted end. The result must be the original four-edge closed square; if removing the edge would break closure, keep it and report it instead.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi183 — ShapeAnalysis_Wire.CheckSeam non-cylindrical-seam
@@ -27473,6 +27514,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Fixture path**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi183.stp`  
 **Fixture kind**: `STEP_STANDALONE`  
 **Schema**: `AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }`
+- **Expected kernel behavior**: The first edge's pcurve ends at u=2pi while the second's begins at u=0 — the same 3D point on the sphere reached from opposite sides of the periodic boundary — and the contour is then left open from u=1.0 back to u=5.0 at v=0.1. Recognise a seam crossing from the pcurve's full-period jump at a junction whose 3D endpoints coincide, rather than from a surface-type test, and normalise by shifting one pcurve by 2pi so the parametric contour is continuous; a sphere additionally needs degenerate edges at its poles, which a cylinder-only seam rule never supplies. The fourth edge's 3D curve is a straight chord from (2.688,4.186,-0.499) to (1.411,-4.771,0.499) passing through the sphere's interior, and must be replaced by the meridian arc its u=1.0 pcurve implies, or rejected.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Tier-3 assertion**: face[0].surface_type == "sphere"
 - **Tier-3 assertion**: face[0].quadric.radius == 5.0
@@ -27490,6 +27532,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Fixture path**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi184.stp`  
 **Fixture kind**: `STEP_STANDALONE`  
 **Schema**: `AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }`
+- **Expected kernel behavior**: The second edge is declared between two distinct vertices 0.1 apart, (1,0,0) and (1.1,0,0), yet both its 3D `LINE` and its pcurve have magnitude 0.0, so its curve cannot reach its own end vertex. Compare each edge's curve endpoints against its declared vertices before using that edge as evidence of connectivity: the 0.1 discontinuity between its neighbours is real and must be closed by extending or trimming one of them, or by inserting a genuine segment. A zero-length edge whose vertices are not coincident is self-contradictory data and must be rejected with a diagnostic, never accepted as a bridge that makes the wire look connected.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi185 — ShapeAnalysis_Wire.CheckSelfIntersection coincident-curves
@@ -27528,6 +27571,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Minimal reproducer**: Wire with gap from (10,0) to (20,0) followed by another gap; invoke FixLacking(). Without re-evaluation: second insertion uses stale position. With fix: gap detection re-runs after each insertion.
 
 **Falsifiable claim**: FixLacking must re-check for gaps after each edge insertion to catch cascading missing edges.
+- **Expected kernel behavior**: The first edge ends at (1,0,0) while the second begins at (3,0,0): a single 2.0-unit gap, with the rest of the three-edge contour connected and closing at (0,0,0). After inserting a bridging edge, re-run gap detection over the whole rebuilt wire rather than assuming one pass suffices — the insertion creates two new junctions, each of which must itself be checked for connectivity and for crossings with the remaining edges — and report the wire closed only when a full re-scan finds nothing. If the gap cannot be bridged without crossing the third edge, fail with a diagnostic naming the (1,0,0)-to-(3,0,0) gap.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi188 — ShapeAnalysis_Wire.CheckSelfIntersectingEdge B-spline-with-loop
@@ -27537,6 +27581,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Minimal reproducer**: B-spline edge with control points forming self-loop: (0,0)→(5,5)→(10,5)→(5,0)→(10,0); invoke CheckSelfIntersectingEdge(). Without full-curve check: interior crossing at (7.5,2.5) missed. With fix: curve parameterization swept for internal intersections.
 
 **Falsifiable claim**: CheckSelfIntersectingEdge must examine curve interior, not just endpoints, to detect self-crossing splines.
+- **Expected kernel behavior**: The edge's B-spline is written with its self-intersection flag set to `.T.`, but sampling the actual curve (degree 3, control points (0,0), (5,5), (10,5), (5,0), (10,0), knots 0/0.5/1 at multiplicities 4/1/4) shows no crossing anywhere in its range. Treat the declared flag as an unverified hint, decide from the geometry by subdividing the curve and comparing non-adjacent pieces over the whole parameter range rather than only its endpoints, and leave the edge intact when no crossing is found — a flag must never on its own license a split. The defect to report instead is that the loop consists of one open edge from (0,0,0) to (10,0,0) and therefore cannot bound a face.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi189 — ShapeFix_Wire.FixGaps3d directional-extension
@@ -30048,11 +30093,13 @@ Single CLOSED_SHELL containing one face with inwardly-oriented normal (inside-ou
 ### Tsh085 — ShapeFix_Shell.FixFaceOrientation transition-point
 
 Shell containing two adjacent faces meeting at shared edge with opposing normal vectors (one +Z, one -Z at seam). Edge-traversal neighbor selection fails to detect normal discontinuity; fixer chooses wrong orientation branch during iteration.
+- **Expected kernel behavior**: The two coplanar quads share edge #16, which one face uses forward and the other reversed — but the second face also carries `same_sense=.F.`, so once loop sense is composed with face sense both faces run the shared edge the same way and their outward sides point into opposite half-spaces. Derive consistency from that composed traversal (in a consistent shell every interior edge is used once forward and once reversed by its two faces), flip the minority face, and re-verify. If no set of flips makes every shared edge oppositely traversed, emit separate consistently oriented shells and report that the input could not be made single-shell.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 ### Tsh086 — ShapeUpgrade_ShellSewing.Prepare two-orientation merge
 
 Compound of two shells with opposite orientation conventions: one outward-normal (FACE_OUTER_BOUND flag .T.), one inward-normal (.F.). Prepare phase must detect and normalize before sewing merges incompatible shells; missing pre-validation.
+- **Expected kernel behavior**: The model is two single-face shells abutting exactly along x=1, each carrying its own copies of the boundary vertices ((1,0,0) and (1,1,0) each appear twice) and its own boundary edge, and the second face's outer bound is flagged `.F.`. Recognise the two coincident free edges as one boundary — pair them by sampling points along one and projecting onto the other, not by a single endpoint test — merge them into a shared edge with merged vertices, and normalise the reversed bound so both faces wind the same way about the joined surface. If the two sides cannot be reconciled into one orientation, keep them as two shells and report the boundary as non-conformal rather than emitting a shell whose normals disagree.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh087 — ShapeFix_Shell.Perform face-removal during iteration
@@ -30068,11 +30115,13 @@ Compound with two shells exhibiting mixed FACE_OUTER_BOUND orientation flags (.T
 ### Tsh089 — ShapeUpgrade_RemoveInternalWires tolerance-based removal
 
 Face with two small internal wires (5mm×5mm and 10mm×10mm) below typical tolerance thresholds. Tests whether `Perform` uses face-area-relative scaling (recommended: remove if wire area < 0.1% of face) or absolute threshold. Expected: wires removed. Likely failure: Perform uses fixed absolute threshold, skips small wires on large faces.
+- **Expected kernel behavior**: The 200x200 face carries two inner wires enclosing 25 and 100 square units, against a declared distance accuracy of 1.0E-7 — fifteen orders of magnitude smaller — so neither is negligible and both holes must survive. Judge a wire small against absolute model tolerance (a loop whose enclosed area or width is at or below it), never as a fraction of the containing face, or genuine small holes on large plates silently vanish. Both inner loops are also listed in reverse sequence — each oriented edge is individually reversed while the list order is unchanged, so consecutive entries do not join — so reorder each loop into a connected chain before classifying it.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(25) ifc=schema_n/a`
 ### Tsh090 — ShapeFix_Shell.FixFaceOrientation single-face shell
 
 Single-face closed shell with inverted orientation flag (.F. on FACE_OUTER_BOUND). Tests orientation propagation logic in `FixFaceOrientation`. With only one face, no adjacent face to propagate from. Expected: orientation flipped to .T.. Likely failure: Silent skip; propagation assumes ≥2 faces, returns unchanged inverted shell.
+- **Expected kernel behavior**: The single face's only bound is a counter-clockwise square loop flagged `.F.`, so the boundary is effectively traversed clockwise about the surface's +Z normal and the material side is inverted. With one face there is no neighbour to propagate from, so decide from the wire itself — signed area in the surface's own parametrization, or a point-in-wire test anchored at infinity — and reverse the bound so the outer boundary encloses finite material. Never leave a lone face unchecked merely because orientation propagation wants two faces.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tsh091 — ShapeUpgrade_ShellSewing.Apply degenerate-face sliver
@@ -30100,6 +30149,7 @@ Shell contains two ADVANCED_FACEs that are geometrically identical (same surface
 
 **Minimal reproducer**: Create shell with two copies of identical face geometry; call FixFaceOrientation; observe one face flipped, other unchanged or vice versa.
 
+- **Expected kernel behavior**: The shell's two faces are exact duplicates: same `PLANE`, same sense flag, and literally the same `EDGE_LOOP` instance. Detect geometric duplicates before any orientation work — otherwise every edge of that loop appears to carry four face uses and the manifold rule that each edge is used once forward and once reversed becomes unsatisfiable — then drop one copy during shell rebuild and keep a single face. Report the dropped duplicate; do not try to flip one of the pair to balance the counts.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
 ### Tsh095 — ShapeUpgrade_ShellSewing.ApplySewing self-intersecting shell
@@ -30112,6 +30162,7 @@ Shell with two faces that intersect each other (T-intersection or X-crossing). F
 
 **Minimal reproducer**: Create two planar faces with edges that physically cross; call ApplySewing; expect rejection, observe acceptance.
 
+- **Expected kernel behavior**: The two coplanar faces overlap in area rather than abutting: the strip x in [2, 2.5], y in [-1, 5] crosses the 4x4 square, and they share no vertex or edge. Edge merging during sewing must require two free edges to lie within tolerance of each other over most of their sampled length; no pair here qualifies, so nothing may be merged and no shared edge fabricated. Detect the face-face interference and report the shell as self-intersecting rather than accepting a shell whose faces cross.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh096 — ShapeAnalysis_Shell.CheckOrientedShells degenerate-face
@@ -30157,11 +30208,13 @@ Single ADVANCED_FACE wrapped as CLOSED_SHELL. The "shell orientation" checker re
 ### Tsh100 — ShapeFix_Shell.FixFaceOrientation tangent-edge propagation
 
 Two coplanar faces (z=0) meeting at shared edge; dihedral angle=0°. Orientation propagation cannot determine which face "wins" and fails to propagate consistently. Tests boundary case where topology rules break down.
+- **Expected kernel behavior**: The two faces are coplanar (both on +Z planes at z=0), meet along y=0 at a 180-degree dihedral, and already share one edge, used `.T.` by one loop and `.F.` by the other. Do not decide shell consistency by comparing neighbouring face normals or dihedral angles — for coplanar neighbours those tests are degenerate and give no answer — but from each shared edge's traversal directions, which here are already opposite. The correct outcome is to leave both faces exactly as authored and report no orientation defect.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 ### Tsh101 — ShapeUpgrade_ShellSewing.Apply tolerance-driven merge
 
 Two shells with closest vertices offset by (0.0005, 0.0005, 0) — within tolerance (1.0E-3). Sewing merges shells but fails to update merged vertex tolerance to cumulative value, leaving orphaned tight tolerance.
+- **Expected kernel behavior**: Two separate single-face shells sit 0.0005 apart in x and 0.0005 in y, so their facing free edges are parallel, overlap over 0.9995 of their length, and corresponding vertices are about 7.07E-4 apart — far above the file's 1.0E-7 declared accuracy but inside a millimetre-scale sewing tolerance. If the caller's tolerance covers that distance, merge the two free edges into one shared edge, place each merged vertex at the centre of the box spanning its originals, and raise that vertex's tolerance to cover every original position; a merged vertex left at the original tight tolerance claims a connection the geometry does not support. If the tolerance does not cover it, leave the shells separate and report the gap.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh102 — ShapeFix_Solid.SolidFromShell hollow-solid cavity loss
@@ -30179,6 +30232,7 @@ Two faces (z=0, z=1) with named seam edges ('seam_e0', 'seam_e1', 'seam_conn0', 
 Shell where one face's edge is referenced with `.F.` by a neighbor; orientation propagation should flip but the logic only handles `.T.` inputs. Two adjacent rectangular faces share edge #37; Face2 references it as `.F.` while Face1 uses `.T.`. FixFaceOrientation's propagation logic fails to cascade the flip through the graph.
 
 **File:** `Tsh104.stp`
+- **Expected kernel behavior**: The two faces correctly share the edge from (1,0,0) to (1,1,0), referenced `.T.` by the first loop and `.F.` by the second, with both faces carrying `same_sense=.T.` on +Z planes. Orientation propagation must treat the reversed reference symmetrically: a neighbour's `.F.` use means the neighbour is already consistent and nothing may be flipped, and only an edge that both faces traverse in the same direction is evidence of an inconsistency. An implementation that handles only `.T.` references will either skip this pair entirely or flip a face that was already correct.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 ### Tsh105 — ShapeAnalysis_Shell.CheckOrientedShells unconnected components
@@ -30193,6 +30247,7 @@ Shell with two disjoint sub-shells (not topologically connected); CheckOrientedS
 Shell-level RemoveInternalWires is called but doesn't propagate to face-level interior wires. Single-face OPEN_SHELL containing a FACE_OUTER_BOUND with outer 4×4 square and FACE_INNER_BOUND with 2×2 hole. RemoveInternalWires at shell level must cascade to remove interior wire from the face.
 
 **File:** `Tsh106.stp`
+- **Expected kernel behavior**: The 4x4 face's 2x2 inner bound has every oriented edge individually reversed but the list order left unchanged, so consecutive entries do not join — read backwards, the same list is a properly connected clockwise hole. Reorder the oriented edges into a connected chain (reversing the sequence, not just the individual senses) before doing anything else with the wire. The hole encloses 4 square units against a declared accuracy of 1.0E-7, so it is a genuine hole: preserve it, and do not fill it as a negligible-area wire.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh107 — ShapeFix_Shell.Perform double-orient oscillation
 
@@ -30206,21 +30261,25 @@ Perform's orientation pass runs FixFaceOrientation then re-checks; the recheck f
 Sewing tolerance set to 0.0; Apply should reject or use Confusion as minimum but uses 0.0 literally, leaving vertex-pair matches to require exact equality. Two adjacent faces with perturbed shared-edge vertices (1.0000001 vs 1.0); sewing at 0.0 tolerance fails because vertex pairing requires exact equality instead of applying Confusion minimum.
 
 **File:** `Tsh108.stp`
+- **Expected kernel behavior**: The two faces abut along x=1 but each owns its boundary: face 2's vertices sit at x=1.0000001, exactly the file's declared 1.0E-7 distance accuracy away from face 1's, and the two boundary edges are separate entities. Never let a caller-supplied sewing tolerance fall below the model's declared accuracy — clamp it to that floor — so this pair is recognised as one boundary and merged into a single shared edge with merged vertices instead of requiring bit-exact equality. Separately, one `VECTOR` entity names itself as its own direction attribute: detect the reference cycle while resolving the instance graph and reject that entity with a diagnostic rather than recursing into it.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh109 — ShapeFix_Shell.Perform rejection orphan vertices
 Face rejection in Perform() configured to reject faces failing checks creates orphan vertices. When a single face is rejected from a multi-face shell, its vertices become unreferenced by remaining faces, and downstream operations dereference invalid geometry pointers.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh110 — ShapeUpgrade_ShellSewing tolerance-scale interaction
 Sewing operation tolerance (0.01) exceeds vertex uncertainty (0.001) by 10x. Apply() merges vertices with gap 0.005 (within sewing tolerance but outside uncertainty), causing precision loss. Tolerance hierarchy unclear: which precedence should govern merge decisions?
+- **Expected kernel behavior**: The two coplanar 5x5 faces are separated by a uniform 0.005 gap in x — five times the file's declared 1.0E-3 accuracy, and half a caller tolerance of 0.01. Treat the declared accuracy as the floor and the caller's sewing tolerance as the ceiling: merging is permitted here, but the merged edge and its vertices must have their tolerances raised to at least half the gap (0.0025) so the shell's own tolerances justify the connectivity it now claims. Merging while leaving those vertices at 1.0E-3 produces a shell asserting a join its tolerances cannot support, and must not happen silently.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh111 — ShapeAnalysis_Shell.CheckOrientedShells torus topology
 Single face spanning complete torus (genus 1, Euler χ=0) fails orientation validation logic. Algorithm assumes χ=2 (sphere topology). Torus face with looped parameterization violates orientation propagation heuristics for genus-0 shells.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh112 — ShapeFix_Shell.FixFaceOrientation T-junction ambiguity
 Three faces meet at one shared edge: two outer faces and one inner (back) face. Orientation propagation in FixFaceOrientation must choose neighbor to follow from edge adjacency, creating ambiguity in traversal order. Picking wrong path inverts inner face incorrectly.
+- **Expected kernel behavior**: Three faces meet along the line x=0, z=0 — two coplanar quads at z=0 and one vertical quad spanning y in [-1, 1] — but each owns private, coincident copies of the boundary edge and its vertices, and relative to their own surface normals the first quad's loop runs counter-clockwise while the other two run clockwise. Sew the coincident boundaries into shared edges first, then correct winding from the loops' signed areas rather than from traversal comparisons, since before sewing there are no shared edges to compare. Because the resulting line carries three face uses, no single globally consistent outward orientation exists: group the faces that can agree, emit the remainder as a separate shell, and report the non-manifold edge instead of flipping a face to satisfy an unsatisfiable constraint.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh113 — ShapeUpgrade_RemoveInternalWires edge-loop aliasing
 Two FACE_BOUND entities in different faces reference identical EDGE_LOOP id (#509). RemoveInternalWires removes wire on Face 1, breaking Face 2's topology. Duplicate-reference aliasing not detected or validated during wire removal.
+- **Expected kernel behavior**: The z=0 face and the z=5 face both name the same `EDGE_LOOP` instance as their inner bound, and that loop's geometry lies entirely in z=0 — five units off the second face's plane — while that face's own correctly placed hole loop is defined but never referenced. On import give every face its own copy of each bound's edges and vertices, so that repairing or removing a wire on one face can never mutate another face's boundary, and validate that every bound actually lies on its face's surface. The z=5 face's inner bound fails that test: reject it (or re-point it at the unreferenced loop) with a diagnostic naming the face and the offending bound, rather than trimming a plane with a wire that is not on it.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh114 — wedge near-tangent dihedral angle
 Two triangular faces meeting at shared edge with near-zero dihedral angle (~0.001 rad). Sewing tolerance triggers phantom face generation near the wedge tip. Tests numerical instability in angle-based topology merging.
@@ -30259,6 +30318,7 @@ Box shell with bottom + 4 sides; top face omitted, creating free edges on the up
 **Defect**: Two faces share edge #51 with consistent same-sense flags (.T. and .T.) but propagation logic expects alternating flags; internal edge reversal blocks correct orientation propagation.
 **Pattern**: Two-face shell sharing edge #51. Face 1 uses #51 as .T.; Face 2 should use #51 as .F. for manifold topology but uses .T. instead. Propagation flips incorrectly due to edge direction reversal.
 **Severity**: CEILING (v0.3 tier-3 validation).
+- **Expected kernel behavior**: The two faces meet at right angles along the shared edge from (0,0,0) to (10,0,0), and both edge loops reference it with `.T.` — the same traversal direction. In a consistently oriented shell each interior edge is traversed once in each direction, so this is a genuine inconsistency: reverse one of the two faces — here the z=0 face, whose loop also runs clockwise in its own -Z-normal parametrization — so the shared edge becomes oppositely used. Then propagate that decision to any further neighbours and re-verify before accepting the shell.
 - **Byte assertion**: contains(b'ADVANCED_FACE')
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh123 — ShapeAnalysis_Shell.BadEdges adjacent-face mismatch
@@ -30270,6 +30330,7 @@ Box shell with bottom + 4 sides; top face omitted, creating free edges on the up
 ### Tsh124 — ShapeUpgrade_RemoveInternalWires faces-with-multiple-internal-wires
 
 Face with 3 internal wires (holes); RemoveInternalWires iterates internal wires but removes them in wrong order, leaving inconsistent face state. OCCT processes multi-hole faces; iteration order mismatch causes dangling wire references.
+- **Expected kernel behavior**: The 100x100 face has three 10x10 inner bounds whose loops run counter-clockwise, the same sense as the outer bound, so outer and inner boundaries put material on the same side and the face interior is undefined. Classify each wire by containment — all three lie strictly inside the outer loop and are mutually disjoint — then reverse every wire whose sense disagrees with the consensus, so holes are traversed opposite to the outer boundary. Each hole encloses 100 square units against a declared accuracy of 1.0E-7, so none may be discarded as a negligible-area wire, and all three must be settled in one classification pass so the result does not depend on iteration order.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 - **Notes**: Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
 ### Tsh125 — ShapeFix_Shell.Perform recursive context
@@ -30288,6 +30349,7 @@ Two shells in sewing input (Shell 1 and Shell 2) have implicitly different toler
 ### Tsh128 — ShapeFix_Shell.FixFaceOrientation early-exit
 
 Shell with 5 faces; Perform's early-exit condition (myStatus contains FAIL2) triggers on false positive during face 2 processing, halting before faces 3–5 are processed. Remaining faces skip orientation fixing.
+- **Expected kernel behavior**: Two of the five faces are individually broken: the x=0 face's three-edge loop contains an edge whose `LINE` lies along x=0, y=10 while its declared end vertex is (0,0,10), and the x=10 face uses two edges whose `LINE`s carry a zero-magnitude `VECTOR`. Validate each edge against its own curve and vertices before the shell-level pass, and keep any such failure local to its face: record the diagnostic, set that face aside, and continue so the remaining faces still receive a consistent orientation. A per-face failure must never short-circuit the shell pass and leave later faces unprocessed.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh129 — ShapeFix_Shell.Perform compound-input
 **Defect**: ShapeFix_Shell.Perform receives COMPOUND with multiple CLOSED_SHELLs; processes first shell only, silently ignores rest.
@@ -30311,6 +30373,7 @@ Shell with 5 faces; Perform's early-exit condition (myStatus contains FAIL2) tri
 **Defect**: Shell consists entirely of coplanar faces (flat shell, 2x2 grid of unit squares in z=0).
 **Expected**: FixFaceOrientation's normal-vector comparison fails when all normals are parallel/anti-parallel (indeterminate).
 **Fixture**: Four coplanar unit squares arranged in 2x2 grid; all in z=0 plane; all normals (0,0,±1).
+- **Expected kernel behavior**: The four unit squares tile a flat 2x2 patch in z=0, all with +Z normals, and each of the four interior edges is used once `.T.` and once `.F.` by its two faces, so the patch is already consistently oriented. Because every normal is identical, any test based on comparing neighbouring normals is degenerate here; decide consistency purely from shared-edge traversal, which finds nothing to fix. Return all four faces unflipped and as one shell — do not split into multiple shells, and do not invent an outward side, which for an open flat patch is a caller's convention rather than something derivable from the geometry.
 - **Tier-3 assertion**: n_faces_total == 4
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(25) ifc=schema_n/a`
 ### Tsh133 — ShapeUpgrade_RemoveLocations.Remove top-down
@@ -30353,6 +30416,7 @@ Shell with inverted face orientation. ShapeFix_Shell::Perform called twice; seco
 **Expected behavior**: FixFaceOrientation should propagate consistent orientation across seams.
 
 **Fault axis**: `orientation_seam_inconsistency`
+- **Expected kernel behavior**: The closed shell's three faces share no edges at all: each cap is bounded by a single full-period `CIRCLE` edge whose start and end vertex coincide, while the cylindrical wall's loop is closed by straight lines from (-50,0,100) to (50,0,100) and from (-50,0,0) to (50,0,0) — chords through the axis that do not lie on the radius-50 surface. Do not trust the closed-shell declaration: split each full-period closed edge at a parametric break so it can be matched to a neighbour, recompute the free boundaries, and if the wall boundary still cannot be matched to the cap circles, report the shell as open and name the unmatched faces rather than emitting a solid. One `EDGE_CURVE` also names a `VERTEX_POINT` in its curve slot; reject that entity with a diagnostic instead of dereferencing it as geometry.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh140 — ShapeAnalysis_Shell.CheckOrientedShells curved-faces
 
@@ -30402,6 +30466,7 @@ Shell with inverted face orientation. ShapeFix_Shell::Perform called twice; seco
 ### Tsh144 — ShapeFix_Shell.FixFaceOrientation T-shaped-non-manifold
 
 Shell with three faces meeting at a shared edge. FixFaceOrientation picks one orientation as propagation direction; the other two remain flipped. Tests non-manifold edge handling in orientation repair.
+- **Expected kernel behavior**: The three unit squares tile an L-shape, but the boundary between the first and third face exists twice: two distinct `EDGE_CURVE` entities carry the same two vertices and identical `LINE` geometry, one used by each face, so the faces are geometrically adjacent yet topologically unconnected. Detect duplicate edges by comparing vertices and curve geometry, merge them into one shared edge, and only then run the orientation check — on the merged edge the two faces use opposite senses, so no face needs flipping. Reporting this as a non-manifold three-face edge would be wrong: after merging, every edge has at most two face uses.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(22) ifc=schema_n/a`
 ### Tsh145 — ShapeAnalysis_Shell.CheckOrientedShells one-face-shell-edge-cases
@@ -30681,6 +30746,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Trigger**: Call Apply() with sewing tolerance >> max edge distance; two separate coplanar faces merge into one
 - **Expected failure**: Output shell contains only 1 face instead of 2; sewing logic collapses topology
 - **Test assertion**: Shell face count should not decrease below input count when tolerance is explicitly bounded
+- **Expected kernel behavior**: The two unit squares are coplanar with their facing free edges parallel, 0.001 apart, and overlapping over their full 1.0 length, and they share no topology. A sewing pass must merge exactly that one edge pair (and its two vertex pairs) into shared topology, leaving a two-face shell: face count must never drop below the input count however large the caller's tolerance, because a tolerance that swallows whole faces is a defect and not a merge. If the merged edge's tolerance would have to exceed what downstream operations accept, refuse the merge and report the 0.001 crack instead of snapping the faces together.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh182 — ShapeFix_Shell.Perform face removal with shared edge
