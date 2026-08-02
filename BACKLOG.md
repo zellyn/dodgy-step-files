@@ -2251,3 +2251,37 @@ No spec was written for Twi275 (it would have been a verbatim duplicate, which
 is the boilerplate this task exists to remove). Either differentiate it into a
 genuinely distinct case or retire it — the dedup audit's BM25 pass does not
 catch this because the two entries' PROSE differs.
+
+## (K) Two more byte-level malformations behind a `signal(11)` (2026-08-01)
+
+Verified directly, both previously undocumented in their entries' Descriptions.
+
+- **Tsh108** — `#35=VECTOR('',#35,1.0)`, a self-referential entity. The
+  surrounding pattern makes it an off-by-one in the builder, not a designed
+  defect: `#31=VECTOR('',#30,...)`, `#39=VECTOR('',#38,...)`, so `#35` should
+  reference `#34=DIRECTION('',(0.0,1.0,0.0))`. Verified as the only
+  self-reference in the 66-entry slice by a whole-file reference scan.
+- **Twi147** — `#128=DIRECTION('',(-1.47552825814757,(1.0,0.0)))`: a nested
+  aggregate where three reals are required.
+
+Same decision as (I): repair so the titled defect is actually exercised, or
+re-title as schema/attribute-malformation crash fixtures.
+
+## (L) Eight entries whose Description claims a defect the geometry lacks
+
+Found by computing the geometry rather than trusting the prose: de Boor
+sampling of the B-splines, shoelace winding of the shell loops.
+
+- **Twi129, Twi151, Twi172, Twi188** — declared self-intersection or cusp; none
+  exists. Twi188's own file even sets `self_intersect=.T.` while the sampled
+  curve does not self-intersect. Twi172's "cusp" is a horizontal tangent
+  (dy/dt = 0) with dx/dt = 5(1−t)² + 5t² ≥ 2.5, so the tangent never vanishes.
+- **Twi130** — declared adjacent-edge crossing; the pentagon is simple.
+- **Tsh089, Tsh106, Tsh124** — declared negligible-area wires; their areas are
+  8–15 orders of magnitude ABOVE the file's declared tolerance.
+
+Each received a spec stating the **false-positive-avoidance** requirement (do
+not "repair" what is not broken), which is a real and gradeable kernel
+requirement — a kernel that splits a non-self-intersecting curve is buggy. But
+the specs now read as contradicting their own entry's Description, so the
+Descriptions need a corrective pass. Same family as (H) and the Q14 misnomers.
