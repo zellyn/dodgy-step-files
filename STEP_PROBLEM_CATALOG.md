@@ -25089,6 +25089,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 
 **Sources**: OCCT method `ShapeFix_Face::FixSmallAreaWire` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the micro-scale wire loads unremoved.
 
+- **Expected kernel behavior**: Given a face whose only wire encloses an area orders of magnitude below the model tolerance (here ~1e-6 mm², inside a 7-face block), a plain read must keep the face exactly as encoded — silently dropping geometry the file declares is never acceptable. An explicitly requested healing pass should then compare each wire's enclosed area against the model tolerance and rebuild the face without the negligible wires; when every wire of a face is negligible the whole face is removed, and the pass must report each removal, because dropping the face opens a hole in the surrounding shell.
 - **Tier-3 assertion**: load == "ok"
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed small-area-wire repair's degenerate-orientation check bypasses its own early exit; that method is never invoked on an ordinary read, and the micro-scale wire loads intact and unremoved. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: "micro-scale outer wire loads unremoved", "small-area wire never removed on ordinary read".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
@@ -25132,6 +25133,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 
 **Sources**: OCCT method `ShapeFix_Face::FixOrientation` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the reversed face loads with its encoded orientation intact.
 
+- **Expected kernel behavior**: `same_sense=.F.` is valid STEP for a face whose surface normal opposes its own orientation, so a read must honour the flag as encoded and yield all 6 faces — do not "correct" it by flipping the surface or the wire. Re-orienting wires is a healing operation and must be driven by evidence: classify each wire against the others of the same face by point-in-face tests, reverse only the wires that disagree with the consensus, and report every flip made.
 - **Tier-3 assertion**: n_faces_total == 6
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed orientation repair actively detects and heals the reversed face's winding; that method is never invoked on an ordinary read, and `same_sense=.F.` is itself valid STEP semantics OCCT interprets correctly without any healing pass. Same batch pattern as Tfa113 (cube with reversed face, already corrected). Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: "reversed-normal cube face loads intact", "same_sense=.F. is not an error needing orientation repair".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
@@ -25190,6 +25192,7 @@ Rectangular face with interior notch that, when removed, leaves 0.1-unit gap bet
 
 **Sources**: OCCT method `ShapeFix_Face::FixAddNaturalBound` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the sphere's existing boundary loads unaltered.
 
+- **Expected kernel behavior**: When a face on a closed surface already carries a boundary wire — here a full sphere bounded by four quarter-arcs of one great circle — use the encoded boundary as given and do not substitute a natural (full parametric rectangle) bound. Natural-bound construction applies only to a face that declares no bounds at all, or that on a doubly-periodic surface carries hole wires only; in that case build the full parametric rectangle and shift the hole wires by whole periods into the chosen fundamental domain.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "sphere"
 - **Tier-3 assertion**: face[0].quadric.radius == 5.0
@@ -25236,6 +25239,7 @@ Face with reversed outer orientation and incomplete inner bound (missing closing
 
 **Root cause**: not a specific single-edge-bound defect (unlike the Tfa085/Tfa106/Tfa118 family) — isolation confirms the crash trigger is the presence of the additional bound wire as encoded, but the precise internal mechanism (e.g. `BRepLib` pcurve/tolerance handling on multi-bound faces of this construction) was not traced further in this pass.
 
+- **Expected kernel behavior**: Reading a face with several bound wires whose edges carry only 3D curves and no pcurves must never terminate the process: derive each edge's 2D representation by projecting it onto the host surface, and if an individual bound cannot be projected or classified, drop that bound with a diagnostic naming it and still build the face from the bounds that remain usable. Only once the face exists should a healing pass compare each wire's enclosed area against the model tolerance — the 0.0025-area hole here is a small hole beside a 1.0-area hole, not sub-tolerance debris, so both must survive.
 - **Notes**: **See also**: Tfa135. Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed small-area-wire repair applies its removal threshold check only to outer wires, leaving inner wires uninspected; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: "multi-bound face crashes reader, outer-alone loads clean", "any inner wire (large or tiny) crashes the reader, outer-alone loads clean".- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa094 — Inner FACE_BOUND rectangle reuses the outer hexagonal wire's own vertex entity as its corner (shared endpoint, not a T-junction)
 
@@ -25314,6 +25318,7 @@ Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-16): the top fac
 
 **Sources**: OCCT method `ShapeFix_Face::FixAddNaturalBound` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the placeholder loop loads unaltered.
 
+- **Expected kernel behavior**: A full toroidal face that already declares a boundary loop must load with that loop exactly as encoded — do not manufacture a second loop, and do not reject the face for declaring "too few". Natural-bound construction is reserved for a face on a closed surface that declares no bounds at all, or hole wires only; neither condition holds here.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Tier-3 assertion**: face[1].surface_type == "torus"
 - **Tier-3 assertion**: face[1].quadric.major_radius == 5.0
@@ -25569,6 +25574,7 @@ ADVANCED_FACE hosted inside a `GEOMETRIC_CURVE_SET`, whose builder dispatch only
 
 ADVANCED_FACE hosted inside a `GEOMETRIC_CURVE_SET`, whose builder dispatch only accepts `GeometricRepresentationItem`s and never reaches `StepToTopoDS_TranslateFace`/the face-topology pipeline at all (same orphaning pattern as Tfa121/Tfa160/Tfa169). Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): `transferred roots == 0`, `shape.IsNull() == True`, `n_faces == 0` — matching this entry's own pre-existing `shape_null == True` / `occt=empty/empty` lines below. This fixture's own header comment states "GEOMETRIC_CURVE_SET IS model entity — OCC yields empty; no orphaned entities" — the generator itself anticipated this outcome. Since no face is ever built, small-area-wire repair is never called on this geometry — the "produces a near-zero area value despite the wire being geometrically valid" claim describes a code path this file never reaches.
 
+- **Expected kernel behavior**: An `ADVANCED_FACE` listed as a member of a `GEOMETRIC_CURVE_SET` is a container/content type mismatch — that container admits only curve- and point-typed items. Detect it during representation-item dispatch and reject the item with a diagnostic naming the entity and the types the container accepts; never skip it silently and hand back an empty shape, which leaves the caller unable to distinguish an empty model from a discarded one.
 - **Tier-3 assertion**: shape_null == True
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed small-area-wire repair produces a near-zero area value despite the wire being geometrically valid; that checker/fixer is never invoked because the face never survives translation (the `GEOMETRIC_CURVE_SET` wrapper is a type the builder dispatch skips). The `shape_null == True` / `occt=empty/empty` Expected-validation line below was already correct; only the mechanism attribution was wrong. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. **See also**: Tfa121, Tfa160, Tfa169 (same `GEOMETRIC_CURVE_SET`-orphaning pattern). Synonyms: "GEOMETRIC_CURVE_SET wrapped face never translates", "near-collinear thin rectangle face orphaned in curve set".
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -25590,6 +25596,7 @@ ADVANCED_FACE hosted inside a `GEOMETRIC_CURVE_SET`, whose builder dispatch only
 
 **Defect**: Face with an outer wire (4 edges, closed) and an inner `FACE_INNER_BOUND` wrapping an `EDGE_LOOP` with only 2 edges that does NOT close — this fixture's own original description candidly notes "inner loop edges do not form a closed loop (incomplete test)". Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): isolation testing (stripping the bound list to the outer wire alone) shows the outer-only face loads cleanly (`exit 0`); restoring the malformed non-closed inner bound, exactly as encoded, reproduces the SIGSEGV — the same invalid-bound-topology crash class already isolated for Tfa085/Tfa106/Tfa118 (a bound wire that isn't actually closed), not a "loops crossing instead of nesting" merge-logic bug. Loop-wire repair is never reached — the process crashes during shape translation, before any loop-merge logic could run.
 
+- **Expected kernel behavior**: Before building a face, verify that every bound wire actually closes — the last edge's end vertex must coincide, within tolerance, with the first edge's start vertex. A `FACE_INNER_BOUND` wrapping a 2-edge loop that does not close must be either closed by inserting the missing segment when the gap is within tolerance, or dropped with a diagnostic naming the bound while the face is still built from its remaining valid bounds; an unclosed bound must never be walked as though it were closed, and reading one must not terminate the process.
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixLoopWire's outer/inner-loop assumption breaks when wires spatially cross; that method is never reached (crash occurs first), and the actual structural cause is an invalid non-closed 2-edge bound, not a crossing-loop scenario. **See also**: Tfa085, Tfa106, Tfa118 (same non-closed-bound crash family). Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: "non-closed 2-edge inner bound crashes reader", "invalid bound topology, not crossing-loop merge bug".
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa127 — Thin rectangular face (10x1.5) loads as an ordinary valid face; pin-face checking is never invoked to classify it
@@ -25627,6 +25634,7 @@ Reproducer: rectangular face with a B-spline (not line) top edge; no T-junction 
 
 **Defect**: `CLOSED_SHELL` cube whose top face is encoded with TWO `FACE_OUTER_BOUND` wires on the same host `PLANE` — a large 20×20 loop and a disjoint tiny 0.2×0.2 loop, neither marked as an inner bound (`FACE_INNER_BOUND`). Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-17): the reader does not "select" one loop as outer and discard or misclassify the other — it builds BOTH loops as independent 4-edge-wire faces, yielding `n_faces_total == 7` (5 ordinary cube faces + 2 faces built from the single dual-bound `ADVANCED_FACE`), matching this entry's own pre-existing assertion below exactly. Small-area-wire repair's area-sorted-list heuristic is never reached — the translator's own bound-to-face dispatch, not a wire-removal healer, is what produces the extra face.
 
+- **Expected kernel behavior**: When one face declares two closed wires that bound disjoint regions of the same surface — here two `FACE_OUTER_BOUND`s, a 20×20 loop and a disjoint 0.2×0.2 loop — classify the wires by point-in-face containment, build one face per outer wire, assign each hole wire to the outer wire that contains it, and replace the original face with the resulting group. Report the split explicitly: returning more faces than the file declares, with nothing to say so, leaves every downstream face count silently wrong.
 - **Tier-3 assertion**: n_faces_total == 7
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed small-area-wire repair's area-sorted-list heuristic incorrectly selects the tiny loop as outer; live-oracle confirms the reader instead builds both `FACE_OUTER_BOUND` wires as separate topological faces (`n_faces_total == 7`, already correctly asserted below) — a translator-level dual-outer-bound dispatch behavior, not an area-heuristic selection bug. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: "dual FACE_OUTER_BOUND splits into two faces", "two disjoint outer bounds on one host surface become two faces".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
@@ -25636,6 +25644,7 @@ Reproducer: rectangular face with a B-spline (not line) top edge; no T-junction 
 
 **Root cause**: not a specific single-edge-bound defect (unlike the Tfa085/Tfa106/Tfa118 family) — isolation confirms the crash trigger is the presence of the additional bound wire as encoded, but the precise internal mechanism (e.g. `BRepLib` pcurve/tolerance handling on multi-bound faces of this construction) was not traced further in this pass.
 
+- **Expected kernel behavior**: Given two bounds of the same face that share a collinear segment — here an inner wire that re-uses one of the outer wire's own edges — detect the overlap by intersecting edge pairs across the two wires, then resolve it: split the participating edges at the ends of the shared span and rebuild both wires over a single shared segment edge, then rebuild the face from the modified wires. If the overlap cannot be resolved, drop the offending bound with a diagnostic naming it; reading a face whose bounds share an edge must not terminate the process.
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed coincident-edge wire merging cannot decide which wire owns the shared edge segment; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: "multi-bound face crashes reader, outer-alone loads clean", "shared-edge-reusing inner wire crashes reader (NOT GEOMETRIC_CURVE_SET-orphaned, contra Q14's flagged note)".
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa132 — B-spline surface with a genuinely duplicated control-point column (real C0 fold, not a placeholder) causes the reader to drop the face entirely: the OPEN_SHELL survives as an empty container (0 faces, 0 wires, 0 edges); twisted-face checking is never reached
@@ -25651,6 +25660,7 @@ Reproducer: rectangular face with a B-spline (not line) top edge; no T-junction 
 
 **Root cause**: not a specific single-edge-bound defect (unlike the Tfa085/Tfa106/Tfa118 family) — isolation confirms the crash trigger is the presence of the additional bound wire as encoded, but the precise internal mechanism (e.g. `BRepLib` pcurve/tolerance handling on multi-bound faces of this construction) was not traced further in this pass.
 
+- **Expected kernel behavior**: Decide each bound wire's role from geometry — point-in-face containment classification against the other wires of the same face — rather than trusting the declared `FACE_OUTER_BOUND`/`FACE_INNER_BOUND` labels or the raw winding direction, then reverse only the wires that disagree with the consensus and report each reversal. What must hold is the RELATIVE sense of outer and hole wires, not the absolute sense of any one of them; and reading a multi-bound face whose edges carry no pcurves must not terminate the process.
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed orientation repair flips the outer wire's winding, breaking the inner wires' relative-consistency; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: "multi-bound face crashes reader, outer-alone loads clean", "inner wires crash reader regardless of relative winding, outer-alone loads clean".
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa134 — strip-face checking strip-with-pin
@@ -25755,6 +25765,7 @@ Strip-like face (30×0.5 rectangle) with a pin protrusion (2×2 square) at one e
 
 Planar face (10x10 square) with two interior lines meant to represent splitters: a vertical segment (x=2, y in [0,10]) and a horizontal segment (y=5, x in [0,10]). Byte-level inspection (2026-07-16, live-oracle verified, validation/.venv OCP/OCCT 7.8.1) shows each is encoded as its own `FACE_BOUND` wrapping an `EDGE_LOOP` with a single edge — not a closed wire. Face-splitting repair is never invoked during an ordinary read (not called by that class's default `Perform()`, and in any case a non-closed single-edge bound could never define a valid sub-face boundary for ANY split implementation to find — there is no "sequential splitter" processing happening at all). Live-oracle confirms `n_faces == 1`: the reader loads all three bounds (outer + two single-edge inner bounds) as inert extra topology on one unsplit face.
 
+- **Expected kernel behavior**: A `FACE_BOUND` must wrap a closed wire: a bound consisting of a single non-closed edge delimits no region and cannot be a face boundary under any implementation. Detect the non-closure and either reject the bound with a diagnostic naming it, or — if the kernel supports internal edges — admit it explicitly as an internal edge of the face; do not accept it silently as inert extra topology, which leaves the caller believing a split happened when nothing was split.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Notes**: Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed a face-splitting repair sequential-application bug (stale topology, unsynchronized dedup between two splits); that method is never invoked, and the "splitters" are non-closed single-edge bounds that cannot define a sub-face boundary under any implementation. **See also**: Tfa085, Tfa118, Tfa136 (same single-edge-bound family). Synonyms: "non-closed splitter bounds don't split", "two open-wire inner bounds stay unsplit", "crossing lines as invalid inner bounds".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
@@ -25819,6 +25830,7 @@ Planar face (10x10 square) with two interior lines meant to represent splitters:
 
 **Sources**: OCCT method `ShapeFix_Face::FixLoopWire` — verified NOT invoked during an ordinary read (live-oracle, validation/.venv, OCP/OCCT 7.8.1, 2026-07-17); the touching wires load intact and distinct.
 
+- **Expected kernel behavior**: An inner wire that touches the outer wire at one shared vertex is legal input: keep both wires present and distinct. Splitting applies to a SINGLE wire that visits the same vertex more than twice — a pinched or figure-eight wire that is really several loops glued at a point, which must be split into separate wires — and a vertex shared between two DIFFERENT wires must never trigger it.
 - **Tier-3 assertion**: load == "ok"
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixLoopWire's nested-loop assumption breaks when the inner wire touches the outer wire; that method is never invoked on an ordinary read, so no repair (correct or incorrect) is ever attempted. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: "inner wire touching outer wire loads intact", "loop-merge repair never invoked on touching wires".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(35) ifc=schema_n/a`
@@ -25898,7 +25910,7 @@ ADVANCED_FACE hosted inside a `GEOMETRIC_CURVE_SET`, whose builder dispatch only
 
 **Fixture**: `step-examples/12-3c-faces/Tfa160.stp`
 
-**Expected behavior**: detect the type mismatch (a face-typed item inside a curve/point-only container) and reject the representation with a clear per-entity diagnostic, rather than silently returning an empty shape with no indication that a whole face was discarded.
+- **Expected kernel behavior**: Detect the container/content type mismatch — a face-typed item inside a curve- and point-only `GEOMETRIC_CURVE_SET` — and reject the representation item with a diagnostic naming the entity and the types the container accepts, rather than silently returning an empty shape with no indication that a whole face was discarded.
 - **Tier-3 assertion**: shape_null == True
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed coincident-edge wire merging actively detects/fails-to-resolve a face-level defect; that method is never invoked at all, because the face never survives to face-translation in the first place (the GEOMETRIC_CURVE_SET/ADVANCED_FACE type mismatch drops it earlier, during representation-item dispatch). Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. **See also**: CURVE, GEOMETRIC, SET, Sources, Tfa003, Tfa166, Tfa167, Tfa168, Tfa169, Tfa170, Tfa252, cites, dispatch, edges, entity, family, for, geometry, mechanism, null, orphaned, same, the, unreachable. Synonyms: "GEOMETRIC_CURVE_SET-hosted face never reaches coincidence check", "ADVANCED_FACE inside GEOMETRIC_CURVE_SET empty transfer", "curve-set builder type mismatch drops face".- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Tfa161 — Single-wire (outer-boundary-only) rectangular PLANE face loads intact; orientation repair is never invoked on an ordinary read
@@ -25907,7 +25919,7 @@ ADVANCED_FACE hosted inside a `GEOMETRIC_CURVE_SET`, whose builder dispatch only
 
 **Fixture**: `step-examples/12-3c-faces/Tfa161.stp`
 
-**Expected behavior**: load the wire(s)/face without complaint; no orientation repair classification is required or expected for ordinary geometrically valid input.
+- **Expected kernel behavior**: A face with exactly one closed outer wire and no inner wires is ordinary valid input: build it and stop. Having no other wire to classify the outer wire against is not a failure and not grounds for reversing it — the face must load unchanged, with no repair and no diagnostic.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Notes**: **See also**: Tfa236. Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed orientation repair "short-circuits when comparing against non-existent inner wires, failing to validate self-orientation"; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: "single-wire face loads without inner-wire comparison".- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tfa162 — PLANE face with reversed (.F.) orientation and a CCW quad wire loads intact; spot-face checking is never invoked on an ordinary read
@@ -26135,7 +26147,7 @@ Rectangular face (10x10, x/y in [0,10]) with a closed 2-edge `FACE_BOUND` "split
 
 **Fixture**: `step-examples/12-3c-faces/Tfa186.stp`
 
-**Expected behavior**: reject an `ADVANCED_FACE` that declares no `FACE_OUTER_BOUND` with a clear per-entity diagnostic, rather than silently manufacturing additional faces not present in the file's declared topology.
+- **Expected kernel behavior**: An `ADVANCED_FACE` whose bound list holds only `FACE_BOUND`s and no `FACE_OUTER_BOUND` is ambiguous — nothing in the file says which wire, if either, is the outer boundary. Reject it with a diagnostic naming the entity; or, if the kernel chooses to recover, classify the wires by point-in-face containment and report the resulting change in face count. Silently promoting each wire to its own face inflates the model's topology with nothing in the output to say it happened.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed orientation repair's containment-check logic exhibits "undefined behavior" when no outer wire exists; that method is never invoked, and the real, verified behavior is well-defined but silent: each orphan wire becomes its own valid face. Compare Tfa164 (also a bound-list ambiguity, but there the result is topologically INVALID; here it is valid, just inflated). Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: "outer-bound-less face split into two faces", "silent face-count inflation from ambiguous bound list".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
@@ -26400,7 +26412,7 @@ Rectangular face (10x10, x/y in [0,10]) with a closed 2-edge `FACE_BOUND` "split
 
 **Fixture**: `step-examples/12-3c-faces/Tfa208.stp`
 
-**Expected behavior**: load the wire(s)/face without complaint; no small-area-wire repair classification is required or expected for ordinary geometrically valid input.
+- **Expected kernel behavior**: A hole wire enclosing ~1e-8 of area inside a 10×10 outer boundary must survive a plain read intact — a read reports what the file says, it does not edit it. Removing negligible-area wires belongs to an explicitly requested healing pass, which should compare each wire's enclosed area against the model tolerance, rebuild the face without the wires that fall below it, and report each removal.
 - **Tier-3 assertion**: load == "ok"
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed small-area-wire repair "removes sub-tolerance loops from the topology before face healing, preventing degenerate geometry propagation"; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: "sub-tolerance inner loop loads without a dedicated small-area removal pass".
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`
@@ -26712,7 +26724,7 @@ TOROIDAL_SURFACE face with U-seam loop traversing toroidal topology; missing P-c
 
 **Fixture**: `step-examples/12-3c-faces/Tfa236.stp`
 
-**Expected behavior**: load the wire(s)/face without complaint; no orientation repair classification is required or expected for ordinary geometrically valid input.
+- **Expected kernel behavior**: An ordinary rectangular planar face with one closed 4-edge outer wire is valid input and must load unchanged, with no repair and no diagnostic — no wire-sense correction or surface-normal re-evaluation is required or expected of geometrically valid input.
 - **Tier-3 assertion**: load == "ok"
 - **Notes**: **See also**: Tfa161. Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed orientation repair "performs wire-sense correction via face-surface normal evaluation and manifold-compatibility validation"; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: "ordinary planar boundary loads without wire-sense correction".- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tfa237 — face-repair.SplitEdge (line-2653)
@@ -26738,6 +26750,7 @@ Multi-point edge subdivision; overlapping parameter intervals via meridian B-spl
 ### Tfa239 — Ordinary bilinear RATIONAL_B_SPLINE_SURFACE face with one properly-closed, non-touching interior hole; loads as ONE valid face, no split, no defect
 
 Single `ADVANCED_FACE` on a bilinear (degree 1x1) `RATIONAL_B_SPLINE_SURFACE` (corner weights 1.0, mid-edge weights 0.9) with a 2x2 outer `FACE_OUTER_BOUND` and a properly-closed, non-touching 0.5x0.5 central `FACE_BOUND` hole. Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-16): `n_faces == 1` with all 8 edges present — this is ordinary, valid multi-bound-face-on-NURBS-surface topology, structurally identical to Tfa210's plane-surface case, just on a rational B-spline surface instead of a `PLANE`. Face-splitting repair is never invoked (no split occurs, none is needed); there is no "containment test" ambiguity or "NURBS bias" — the hole simply does not touch the outer boundary.
+- **Expected kernel behavior**: A properly closed hole wire that does not touch the outer boundary yields exactly one face carrying two bounds — do not split it. Splitting a face applies only when its wires bound disjoint regions (more than one wire acting as an outer boundary), and the containment test that decides this must be purely geometric: a rational B-spline host surface and its control-point weights must not change the outcome relative to the same wires on a plane.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "bspline"
 - **Tier-3 assertion**: face[0].bspline.is_rational == True
@@ -28421,6 +28434,7 @@ Edges E1(V0→V2), E2(V1→V2), E3(V2→V3). V2 extent=3. Tests end-vertex (V2) 
 
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-2c-surfaces/Gs069.stp`
 
+- **Expected kernel behavior**: A `DIRECTION`'s ratios are not required to be normalised and their magnitude carries no meaning, so ratios of (1e-11, 0, 0) denote +X exactly as (1, 0, 0) do: normalise by the Euclidean norm and use the resulting unit vector as the axis. Reject only when the norm is zero — every ratio zero, which violates the schema's own rule and leaves the axis undefined — and guard the normalisation against underflow by scaling the components before squaring, so that denormal ratios cannot yield a zero or non-finite norm.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gs070 — ShapeUpgrade_SplitSurfaceContinuity.Compute trimmed-fallback
@@ -28562,6 +28576,7 @@ B_SPLINE_SURFACE_WITH_KNOTS declared form='.QUASI_UNIFORM_KNOTS.' but actual kno
 ### Gs084 — ShapeAnalysis_Surface.IsDegenerated bounded-surface zero-area
 
 RECTANGULAR_TRIMMED_SURFACE with u1==u2 (zero-width trim). IsDegenerated parameter-difference check fails to detect zero area. Fixture uses B-spline base with trimmed surface u∈[0,0].
+- **Expected kernel behavior**: A `RECTANGULAR_TRIMMED_SURFACE` with u1 == u2 (here both 0.0) violates the schema's own requirement that the two trim parameters differ, and the surface it describes has zero extent in U — no area, no usable normal. Detect the equality (and the v1 == v2 case) and reject the entity with a diagnostic naming it, rather than building a face on a zero-area surface and reporting success.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gs085 — ShapeUpgrade_SplitSurfaceContinuity.Compute criterion-elevation offset
@@ -28672,7 +28687,7 @@ creating a pinch point where the surface crosses itself.
 - **Sources**: OCCT/ShapeAnalysis (see fixture)
 - **Description**: SURFACE_OF_REVOLUTION where basis curve passes through the axis. IsDegenerated only checks axis vector direction, not curve position,
 missing the degenerate apex singularity.
-- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Expected kernel behavior**: The basis curve of this `SURFACE_OF_REVOLUTION` lies ON its axis of revolution, so every point of the swept surface collapses onto that axis: degeneracy detection must measure the distance from the basis curve to the axis, not merely inspect the axis direction vector. If the whole basis curve lies on the axis the surface has no area and must be rejected with a diagnostic naming it; if the curve meets the axis only at isolated parameters, keep the surface but mark those parameter rows singular so that edge and wire processing treats them as poles.
 - **Notes**: synthesized from earlier wave; backfilled from fixture comment
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs098.stp
@@ -28871,7 +28886,7 @@ allocation expects 2; the 3rd value is ignored.
 - **Description**: SURFACE_OF_LINEAR_EXTRUSION with zero-magnitude extrusion vector;
 surface collapses to base curve but IsDegenerated's test uses Length()
 which returns positive value for zero VECTOR magnitude due to sign bug. Reproducer:.
-- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Expected kernel behavior**: A `SURFACE_OF_LINEAR_EXTRUSION` whose extrusion `VECTOR` has magnitude 0.0 collapses to its base curve — zero area, no normal — and the zero lives in the vector's magnitude, not in its direction ratios, so a check that inspects only the direction will not see it. Compute the vector's magnitude explicitly, and reject the surface with a diagnostic naming the entity instead of building a face on it.
 - **Notes**: synthesized from earlier wave; backfilled from fixture comment
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs111.stp
@@ -29253,7 +29268,7 @@ clamped to nearest representable machine-precision double.
 or knot structure) passes IsDegenerated correctly as non-degenerate, but the
 surface itself is barely defined—derivative evaluation is unreliable, and
 trimming or intersection operations assume richer surface.
-- **Expected kernel behavior**: heal: investigate / reject: geometric degeneracy
+- **Expected kernel behavior**: This file's surface entity does not match its schema definition — the control points are a flat list where a grid of rows is required, and the knot and multiplicity attributes are absent — and the edge's 3D `LINE` supplies a point where a direction vector belongs. Validate every entity's attribute count and attribute types against the schema before constructing geometry from it, and reject offending entities individually with diagnostics naming them while the rest of the model is still built: a partially-initialised surface or curve must never be constructed, and a malformed entity must never terminate the read.
 - **Notes**: synthesized from earlier wave; backfilled from fixture comment
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs138.stp
@@ -31121,6 +31136,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Defect**: SURFACE_CURVE has no PCURVE `(*)`. Some FixAddPCurve branches bypass plane-trivial PCURVE construction when geometry or downstream healing requires explicit parametric representation.
 - **Healer impact**: FixAddPCurve should construct a trivial PCURVE (identity map) but plane-bypass branch skips it, leaving the edge without parametric curve data.
 - **File**: `step-examples/12-2a-pcurves/Gp042.stp`
+- **Expected kernel behavior**: Given a boundary edge whose `SURFACE_CURVE` carries a 3D curve but an empty associated-geometry list, do not leave the edge without a 2D representation: compute the pcurve by projecting the already-built 3D curve onto the face's surface (a trivial mapping on a plane). If the projection yields no usable parameter range, drop the pcurve and keep the edge as 3D-only on that face with a diagnostic — a missing pcurve is a repairable condition, never a reason to abort the read.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Gp043 — B-spline PCURVE reversal corrupts knot-vector structure without re-evaluation.
 
@@ -31144,6 +31160,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Defect**: FixSameParameter copies EDGE_CURVE to new TEdge but preserves old range bounds. New BSpline's actual knot domain differs from preserved bounds, causing parameter mismatch between 3D and 2D curves.
 - **Healer impact**: Edge copy trap: parameter range bounds become stale when BSpline geometry is recomputed. SameParameter recomputation fails to detect and correct the range corruption.
 - **File**: `step-examples/12-2a-pcurves/Gp045.stp`
+- **Expected kernel behavior**: The edge's 3D geometry is trimmed to [0.05, 0.95] while its pcurve spans the full knot domain [0, 1] of the same B-spline: detect that the two representations do not bound the same parameter sub-domain, instead of trusting any stored "same range" assertion. Re-derive the pcurve's range from the 3D curve's actual domain, or re-project one from the other, so that both agree; report an invalid-range condition on the edge if they cannot be reconciled.
 - **Tier-3 assertion**: shape_null == False
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp046 — ShapeFix_Edge.FixVertexTolerance face-context null underestimates multi-surface tolerance
@@ -31270,7 +31287,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 **Sources**: OCCT `src/ShapeAnalysis/ShapeAnalysis_Edge.cxx:1401`  
 **Description**: Edge has degenerate vertex (start==end by identity); CheckPCurveRange assumes distinct vertex parameters, producing non-deterministic verdict.  
 **Reproducer**: Create loop-back edge (same vertex both ends); call CheckPCurveRange; observe nondeterministic result.  
-**Expected kernel behavior**: CheckPCurveRange detects degenerate case; handles zero-length domain robustly.  
+- **Expected kernel behavior**: Given an edge whose start and end vertex are the same entity and whose 3D curve and pcurve both collapse to a single point, detect the zero-length parameter domain BEFORE any range comparison: the check must not assume two distinct vertex parameters, must not divide by or normalise against a zero span, and must return the same verdict on every run. Classify such an edge as degenerate and report it per-entity; a degenerate edge must never take down the read.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=accept(0)`
 
 ---
@@ -31281,7 +31298,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 **Sources**: OCCT `src/ShapeFix/ShapeFix_Edge.cxx:1175`  
 **Description**: Edge's 3D curve has zero arc length (degenerate); FixSameParameter divides by edge length, producing NaN tolerance.  
 **Reproducer**: Create edge where start==end in 3D; call FixSameParameter; check tolerance value is NaN.  
-**Expected kernel behavior**: FixSameParameter detects zero arc length; use default tolerance or skip computation.  
+- **Expected kernel behavior**: Given an edge whose 3D curve has zero arc length (both ends are the same point), test for the zero before using the length as a divisor: fall back to the model's default tolerance rather than computing a length-scaled one, so the edge's tolerance can never become NaN or infinite. Mark the edge degenerate — a candidate to be merged away with its neighbours — and report it; a non-finite tolerance must never be propagated into the topology.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=accept(0)`
 
 ---
@@ -31311,6 +31328,7 @@ Two edges share identical 3D line but with non-overlapping parameter ranges: edg
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gp064 — ShapeFix_Edge.FixRemovePCurve degenerate-on-cone
 Edge at cone apex where 3D curve has zero length (degenerate point). PCurve is parametrically valid but references degenerate geometry. FixRemovePCurve removes pcurve, leaving only unusable zero-length 3D curve.
+- **Expected kernel behavior**: The edge's 3D curve collapses onto the cone apex over the first half of its range and then jumps ~0.7 mm to rejoin the spoke, while its pcurve is a clean radial line: the 3D curve is the untrustworthy representation here, so discard IT and rebuild it by evaluating the pcurve on the surface — not the reverse. Over a surface singularity the pcurve is the only usable representation and must be kept, with the collapsed sub-segment marked degenerate; if neither representation can be rebuilt, reject the edge with a diagnostic naming it instead of returning an empty shape.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp065 — ShapeAnalysis_Edge.GetEndTangent2d POLYLINE variant
@@ -31325,6 +31343,7 @@ Pcurve as POLYLINE with 5 control points: (0,0)→(0.5,0)→(1,1)→(2,0.5)→(5
 
 **Trigger**: `ShapeFix_Edge::FixSameParameter()` on this edge will choose first-exceeds instead of minimum-feasible.
 
+- **Expected kernel behavior**: Given an edge whose 3D curve and pcurve are visibly different curves (a degree-3 B-spline against a straight 2D line over the same parameter interval), measure the actual 3D-versus-surface deviation by sampling along the edge and set the edge tolerance to the SMALLEST value that bounds the measured deviation — not to the first candidate that merely exceeds the coincidence threshold. If the smallest bounding value exceeds the model's maximum permitted tolerance, re-project one representation from the other or reject the edge with a diagnostic; inflating tolerance to paper over a bad fit corrupts every downstream operation.
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -31393,6 +31412,7 @@ Pcurve as POLYLINE with 5 control points: (0,0)→(0.5,0)→(1,1)→(2,0.5)→(5
 
 **Fixture**: Cylindrical surface; helix 3D curve θ∈[0,2π]; pcurve wraps U∈[π,3π] (same physical span, different parametrization); triggers periodic-domain phase mismatch.
 
+- **Expected kernel behavior**: The pcurve's U-range [π, 3π] is offset from the 3D curve's actual surface parameters by π on a 2π-periodic cylinder: reduce both to the surface's fundamental period before comparing, so that a WHOLE-period offset is accepted as equivalent and only a residual offset such as this one is reported as a genuine parameterisation mismatch. On finding one, re-project the 3D curve to obtain a correct pcurve; and where the 3D curve is itself positionally discontinuous, reject that edge with a diagnostic naming it rather than returning an empty shape.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp074 — ShapeFix_Edge.FixSameParameter precision-cliff
@@ -31413,6 +31433,7 @@ Pcurve as POLYLINE with 5 control points: (0,0)→(0.5,0)→(1,1)→(2,0.5)→(5
 ### Gp076 — ShapeFix_Edge.FixAddPCurve periodic-surface-seam
 
 Edge 3D curve lies on cylindrical seam (u=0); FixAddPCurve constructs pcurve at u=0 but should also accept u=2π as equivalent on periodic surfaces.
+- **Expected kernel behavior**: On a periodic surface u=0 and u=2π denote the same seam location, so a pcurve authored on either branch must be accepted — compare seam pcurve positions modulo the surface period instead of treating u=2π as "no pcurve at u=0". A seam edge needs BOTH period-shifted pcurves, so synthesise the missing one by shifting the given one by a whole period rather than rejecting the edge; and where the edge's 3D curve is positionally discontinuous, reject that edge with a diagnostic instead of returning an empty shape.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp077 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve sampling-period-mismatch
@@ -31479,6 +31500,7 @@ P-curve is an ELLIPSE entity; GetEndTangent2d uses finite-difference fallback wh
 ### Gp086 — CheckPCurveRange domain-larger-than-3D
 
 Edge with B-spline 3D curve spanning [0,5] but B-spline pcurve spanning [0,10]. CheckPCurveRange validates pcurve range against basis curve bounds; this fixture exposes out-of-bounds pcurve parameter range. Defect: analyzer fails to flag domain overspanning on non-periodic curves.
+- **Expected kernel behavior**: The pcurve's knot domain [0, 10] is twice the 3D curve's [0, 5] on non-periodic geometry, so the two do not describe the same sub-domain: flag the range as invalid rather than silently evaluating the pcurve outside the interval the 3D curve covers. Reconcile by re-parameterising the pcurve onto the 3D curve's domain, or discard the pcurve and rebuild it by projection; if neither succeeds, reject the edge with a diagnostic naming it.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp087 — FixAddPCurve high-curvature near-tangent
@@ -31583,6 +31605,7 @@ Edge on torus near minor radius singularity (v ≈ 0). 3D curve is spiral. FixAd
 ### Gp103 — ShapeAnalysis_Edge.CheckPCurveRange CIRCLE-vs-trim-mismatch
 
 Plane edge with 3D circle arc from parameter 0.5 to 6.0 rad (outside [0, 2π]). PCurve is untrimmed circle [0, 2π]. CheckPCurveRange fails to detect parameter range mismatch between pcurve domain and edge vertex parameters.
+- **Expected kernel behavior**: The edge's 3D arc is trimmed to [0.5, 6.0] rad while its pcurve is an untrimmed full circle spanning [0, 2π]: an edge's 2D and 3D representations must bound the same parameter sub-range, so trim the pcurve to the edge's own range instead of accepting a full-period pcurve on a partial edge. If the two ranges cannot be brought into correspondence, report the edge's range as invalid rather than leaving an over-long pcurve to be evaluated beyond the edge.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: edge[0].curve_type == "circle"
 - **Tier-3 assertion**: edge[0].analytic.radius == 1.0
@@ -31610,6 +31633,7 @@ Edge whose 3D curve is B-spline of degree 0 (control-point-only, no smoothing). 
 ### Gp108 — CheckPCurveRange B-spline-out-of-knot
 
 Pcurve B-spline with knot range [0,5] used on edge parametrized [-1,6]. CheckPCurveRange fails to detect and report that pcurve evaluation falls outside valid knot domain.
+- **Expected kernel behavior**: The edge is parameterised over [-1, 6] while its pcurve's knots cover only [0, 5]: detect that part of the edge's interval falls outside the pcurve's valid domain and refuse to evaluate the pcurve there, since evaluating past the end knots extrapolates silently and yields plausible-looking nonsense. Either restrict the edge to the intersection of the two domains, or discard the pcurve and rebuild it by projecting the 3D curve; report the out-of-domain range on the edge either way.
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -31691,6 +31715,7 @@ Edge on RECTANGULAR_TRIMMED_SURFACE wrapping B-spline. FixAddPCurve constructs p
 ### Gp123 — ShapeAnalysis_Edge.CheckPCurveRange CIRCLE with-large-radius
 
 Pcurve is CIRCLE with radius 1e6 but edge parameters [0, 0.001]. CheckPCurveRange's tolerance check uses absolute parameter not arc-length.
+- **Expected kernel behavior**: The pcurve is a radius-1e6 circle traversed over just 4e-6 rad — a genuine 4 mm span. Range and degeneracy checks must be expressed in model-space distance (parameter span times the local derivative magnitude, i.e. arc length), never in raw parameter units, or a large-radius arc is wrongly judged degenerate and a small-radius one wrongly judged long. Accept this edge unchanged, and reserve the degenerate verdict for spans that are short in model space.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp124 — ShapeFix_Edge.FixReversed2d HYPERBOLA
@@ -31982,6 +32007,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp151 — ShapeAnalysis_Edge.CheckPCurveRange periodic_range_semantics
 Periodic P-curve with parameter range straddling 2π boundary; validation assumes wrap-around is intentional without detecting non-monotonic parametrization. Reproduces OCCT line 1007 defect.
+- **Expected kernel behavior**: A periodic pcurve trimmed from 5.5 rad to 0.8 rad means "wrap forward through the period", not a reversed or empty range: normalise it by adding the period to the end parameter (0.8 → 0.8 + 2π) so the interval increases monotonically before any length, containment, or sampling arithmetic is done on it. Where the underlying curve is NOT periodic, a first-greater-than-last range has no valid reading and must be rejected with a diagnostic naming the edge.
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -33490,6 +33516,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Reproducer**: V1 tol=0.001, V2 tol=0.01, intersection near V2.
 - **Impact**: Intersection result uses insufficient tolerance for high-tolerance vertices.
 - **STEP**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N141.stp`
+- **Expected kernel behavior**: When two edges are found to cross and a shared vertex is created at (or an existing vertex re-used near) the crossing, the merged vertex's tolerance must be at least the LARGEST of the tolerances of every vertex and edge it absorbs — taking whichever was visited first leaves a vertex too tight to contain the coarse-tolerance geometry it now represents, and the connection silently fails to hold. If no value within the model's permitted maximum tolerance can cover them all, reject the merge with a diagnostic rather than producing a vertex that does not contain its own geometry.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N142 — ShapeUpgrade_ConvertCurve2dToBezier precision-semantics,asymmetric-tolerance
@@ -33546,6 +33573,7 @@ Curve-length comparison fails at parity (5.0 vs 4.9): backwards projection direc
 
 Precision-equality guard absent: candidates differing by 1e-11 inserted as distinct despite Precision::Confusion (~1e-10) threshold. Tiebreaker logic bypassed for numerically identical distances. Mechanism is wired into 2 real ADVANCED_FACEs: the candidate edge pair (eA, eB_sub_confusion) sits on the live free boundary between two faces, 1e-11mm apart (below Precision::Confusion).
 **Fixture kind**: scaffold (kernel-test-pair: shape provides the sub-confusion-threshold candidate-edge-on-real-faces setup; FindCandidates runtime invocation required to reproduce)
+- **Expected kernel behavior**: Two candidate distances differing by less than the coincidence tolerance (here 1e-11 against a ~1e-10 threshold) are equal and must be treated as equal: compare against the tolerance, then break the tie by a deterministic secondary criterion, so that the result never depends on insertion or iteration order. Two free-boundary edges lying 1e-11 apart are the same boundary — cluster their endpoints into one shared vertex and merge the edges — rather than retaining them as two distinct candidates that leave the boundary unsewn.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### N150 — IsMergedClosed.v_overlap_negativity_test
