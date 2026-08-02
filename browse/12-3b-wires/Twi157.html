@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Edges 1 and 3 are non-adjacent straight segments — (0,0,0) to (10,10,0) and (10,0,0) to (0,10,0) — that cross transversally at (5,5,0), interior to both, making the contour a bow tie. Run self-intersection detection over all edge pairs and not only consecutive ones, and on an interior crossing insert a vertex at (5,5,0), split both edges there, and rebuild the result as two separate closed loops rather than one. If a crossing falls within tolerance of an existing vertex, snap to that vertex instead of splitting; never return the bow tie as a valid face boundary.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

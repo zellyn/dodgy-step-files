@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The first edge spans 1e-6 from (0,0,0) to (1e-6,0,0) inside a wire whose remaining edges are about ten units long. Judge smallness by comparing that length against the working tolerance in absolute terms, and let neither the vertex sitting exactly on the origin nor its coordinates being zero divert the comparison into a special case; remove the edge, merge its two vertices, and re-anchor the following edge on the merged vertex.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

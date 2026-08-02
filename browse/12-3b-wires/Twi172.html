@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The edge&#x27;s curve is a clamped cubic Bezier with duplicated interior control points, both (5,10), so its derivative&#x27;s control points are (5,10), (0,0) and (5,-10), and dx/dt = 5(1-t)^2 + 5t^2 is never below 2.5: the tangent never vanishes, the curve is x-monotone, and there is no cusp and no self-intersection. Detect cusps by evaluating the derivative rather than by looking for repeated control points, and return the edge unsplit — the flat spot at t=0.5 is only a horizontal tangent (dy/dt = 0), which is not a cusp. Splitting there would produce two edges where one is correct.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The wire&#x27;s last edge ends at (1.0E-7, 0, 0) while its first begins at (0,0,0), so the closure gap is exactly the file&#x27;s declared distance accuracy of 1.0E-7. Fix one convention for that boundary case and apply it identically in analysis and repair — treating a distance less than or equal to tolerance as coincident is the safe choice, since tolerance means indistinguishable at this accuracy — and then actually merge the two vertices so the wire becomes topologically closed. Reporting closure while leaving two distinct vertices in place is the failure mode: downstream face building still sees an open contour.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

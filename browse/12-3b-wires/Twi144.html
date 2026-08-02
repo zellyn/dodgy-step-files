@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The face&#x27;s surface is a revolution of the line through (5,0,0) with direction (1,0,1) about the Z axis — a cone — but the wire carries no pcurves, three of its four edges have end vertices that do not lie on their own `LINE`s (one runs along (1,0,0) from (5,0,0) yet ends at (6,2,3)), and the chain is broken because the first edge ends at (7.071,0,2.071) while the second starts at a second vertex instance back at (5,0,0). Validate every edge against its own curve and against the face&#x27;s surface before any seam reasoning, and reject or repair the off-curve vertices first. Where an edge genuinely crosses the periodic boundary, take the period shift from the surface&#x27;s own u-period — a revolution with a slanted profile has the same 2pi period as a cylinder — rather than from a cylinder-only special case.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

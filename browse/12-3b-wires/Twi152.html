@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The wire mixes a straight edge from (0,0,0) to (10,0,0) with a radius-10 `CIRCLE` edge trimmed by its vertices (10,0,0) and (0,10,0), and no two edges actually cross. Any split or intersection parameter on the circle must be obtained by inverting the circle&#x27;s own parametrization about its placement axis, never by interpolating linearly between the edge&#x27;s start and end parameters — arc parameter is not affine in position along the curve, so interpolation lands off it. Verify every computed split by evaluating the curve at the returned parameter and comparing with the intended 3D point within tolerance, and discard the split if they disagree.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

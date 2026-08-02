@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The second edge is declared between two distinct vertices 0.1 apart, (1,0,0) and (1.1,0,0), yet both its 3D `LINE` and its pcurve have magnitude 0.0, so its curve cannot reach its own end vertex. Compare each edge&#x27;s curve endpoints against its declared vertices before using that edge as evidence of connectivity: the 0.1 discontinuity between its neighbours is real and must be closed by extending or trimming one of them, or by inserting a genuine segment. A zero-length edge whose vertices are not coincident is self-contradictory data and must be rejected with a diagnostic, never accepted as a bridge that makes the wire look connected.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

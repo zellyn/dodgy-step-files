@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>All four edges reference full circles of radius 5 sharing one axis and reference direction, so their extents come only from their vertices; the third additionally declares its curve to run opposite to the edge, which would make it traverse nearly the whole circle backwards instead of the 0.1 rad step from its start vertex to its end vertex. Validate that declaration by evaluating the curve at the parameters of the edge&#x27;s own start and end vertices and comparing the resulting direction of travel with the vertex order, then set the sense from that measurement rather than trusting the file or copying a neighbour&#x27;s value.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

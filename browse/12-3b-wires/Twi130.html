@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The five straight edges form a simple closed pentagon through (0,0), (10,0), (15,-2), (15,5) and (0,5); no pair crosses, including the adjacent pair at (10,0,0) where the second edge dips below the X axis. Do not blanket-exempt adjacent edges from intersection testing — test each consecutive pair over the portions lying outside the tolerance ball around their shared vertex — but on this input that test finds nothing, so the wire must be accepted unchanged. A checker that reports a crossing here is producing a false positive, and trimming to a phantom intersection would destroy a valid boundary.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

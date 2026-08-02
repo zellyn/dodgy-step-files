@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The two cubics cross each other twice, near (-2,2,0) and near (2,-2,0). An intersection search between a pair of edges must return every crossing within their ranges and the repair must split both edges at all of them; stopping after the first leaves a wire that still crosses itself while reporting itself repaired. If the solver can only guarantee a single root, say so and report the pair as unresolved rather than emitting a partially split contour.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

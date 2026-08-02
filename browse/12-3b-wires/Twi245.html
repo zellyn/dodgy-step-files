@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The loop declares itself closed, yet its last edge stops at (0,0.05,0) while the first starts at (0,0,0) — a 0.05 separation, five orders of magnitude above the file&#x27;s declared 1e-7 uncertainty. Verify a declared closure against the geometry instead of trusting the declaration, and close a gap of this size by inserting an explicit edge between the two free vertices, since snapping one vertex by 0.05 would silently deform a 6-unit side; failing that, report the wire as open with the measured distance.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

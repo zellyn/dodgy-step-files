@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The two coplanar faces overlap in area rather than abutting: the strip x in [2, 2.5], y in [-1, 5] crosses the 4x4 square, and they share no vertex or edge. Edge merging during sewing must require two free edges to lie within tolerance of each other over most of their sampled length; no pair here qualifies, so nothing may be merged and no shared edge fabricated. Detect the face-face interference and report the shell as self-intersecting rather than accepting a shell whose faces cross.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

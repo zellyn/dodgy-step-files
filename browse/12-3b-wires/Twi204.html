@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>All three vertices are placed at (0,0,0) while the three lines they bound run out to (10,0,0) and (0,10,0), so no edge&#x27;s declared vertices lie on its own curve. Verify that an edge&#x27;s start and end points fall on its curve within tolerance before any crossing analysis is attempted, and repair by re-deriving the vertex positions from the curve ends; the three coincident endpoints must not be reported as three crossings, since contact at a shared vertex is connectivity and only a transverse crossing away from the shared vertices is a self-intersection.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

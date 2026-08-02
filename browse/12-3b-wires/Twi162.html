@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The vertex at (5,5,0) is used twice by the same wire — once between edges 1 and 2 and again between edges 4 and 5 — so the contour is a figure eight pinched at a point rather than two edges crossing at interior parameters. Detect repeated vertex use within one wire, not only curve-curve crossings, and split the wire there into its two closed lobes ((5,5) to (10,5) to (5,10) back to (5,5), and (5,5) to (5,0) to (0,5) back to (5,5)), then classify each lobe independently as outer boundary or hole. A crossing-only search finds nothing on this input and silently returns the pinched wire.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

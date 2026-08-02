@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>An inner wire that touches the outer wire at one shared vertex is legal input: keep both wires present and distinct. Splitting applies to a SINGLE wire that visits the same vertex more than twice — a pinched or figure-eight wire that is really several loops glued at a point, which must be split into separate wires — and a vertex shared between two DIFFERENT wires must never trigger it.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixLoopWire&#x27;s nested-loop assumption breaks when the inner wire touches the outer wire; that method is never invoked on an ordinary read, so no repair (correct or incorrect) is ever attempted. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;inner wire touching outer wire loads intact&quot;, &quot;loop-merge repair never invoked on touching wires&quot;.</p></section>
 <section><h2>Expected validation</h2>

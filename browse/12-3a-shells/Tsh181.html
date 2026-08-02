@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The two unit squares are coplanar with their facing free edges parallel, 0.001 apart, and overlapping over their full 1.0 length, and they share no topology. A sewing pass must merge exactly that one edge pair (and its two vertex pairs) into shared topology, leaving a two-face shell: face count must never drop below the input count however large the caller&#x27;s tolerance, because a tolerance that swallows whole faces is a defect and not a merge. If the merged edge&#x27;s tolerance would have to exceed what downstream operations accept, refuse the merge and report the 0.001 crack instead of snapping the faces together.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

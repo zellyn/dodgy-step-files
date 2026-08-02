@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The vertex at (5,0,0) is the end of one edge and the start of three more, so this bound is a branching graph rather than a simple closed contour. Count the edge-ends incident on each vertex and, where the count exceeds two, treat the wire as several loops or chains glued at a point — separate them or reject the bound naming the vertex — rather than reporting the shared point as a curve crossing to be split, which would only recreate the same junction. The lines here are equally unbuildable, a direction standing where a vector must, and that has to surface as a diagnostic rather than an abort partway through translation.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

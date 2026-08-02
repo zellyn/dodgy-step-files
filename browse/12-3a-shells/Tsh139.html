@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The closed shell&#x27;s three faces share no edges at all: each cap is bounded by a single full-period `CIRCLE` edge whose start and end vertex coincide, while the cylindrical wall&#x27;s loop is closed by straight lines from (-50,0,100) to (50,0,100) and from (-50,0,0) to (50,0,0) — chords through the axis that do not lie on the radius-50 surface. Do not trust the closed-shell declaration: split each full-period closed edge at a parametric break so it can be matched to a neighbour, recompute the free boundaries, and if the wall boundary still cannot be matched to the cap circles, report the shell as open and name the unmatched faces rather than emitting a solid. One `EDGE_CURVE` also names a `VERTEX_POINT` in its curve slot; reject that entity with a diagnostic instead of dereferencing it as geometry.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

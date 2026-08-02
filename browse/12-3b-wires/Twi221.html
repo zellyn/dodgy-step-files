@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>A seam&#x27;s position belongs to the surface&#x27;s own parametrisation, not to world coordinates: this cylinder&#x27;s reference direction is rotated 45 degrees about +Z, so its seam sits at global angle pi/4 while remaining at parameter u=0 in its own space. Locate the seam from the surface&#x27;s period and reference direction rather than by testing whether a global angle equals 0 or 2pi, and identify the lateral edge that appears once forward and once reversed within the same bound as that seam.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

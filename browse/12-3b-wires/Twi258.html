@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The self-loop at (0,0,0) is 0.05 long — not zero — so a test that recognises only exactly-zero-length or explicitly flagged edges will retain it and see a degree-three junction where the wire is really a simple two-vertex chain. Compare the loop&#x27;s length against the working tolerance, discount it from the vertex-degree count when it falls below, and remove it as a negligible edge; what survives is the single edge from (0,0,0) to (6,0,0).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

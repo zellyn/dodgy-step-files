@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The pcurve&#x27;s U-range [π, 3π] is offset from the 3D curve&#x27;s actual surface parameters by π on a 2π-periodic cylinder: reduce both to the surface&#x27;s fundamental period before comparing, so that a WHOLE-period offset is accepted as equivalent and only a residual offset such as this one is reported as a genuine parameterisation mismatch. On finding one, re-project the 3D curve to obtain a correct pcurve; and where the 3D curve is itself positionally discontinuous, reject that edge with a diagnostic naming it rather than returning an empty shape.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

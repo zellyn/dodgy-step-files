@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The two faces correctly share the edge from (1,0,0) to (1,1,0), referenced `.T.` by the first loop and `.F.` by the second, with both faces carrying `same_sense=.T.` on +Z planes. Orientation propagation must treat the reversed reference symmetrically: a neighbour&#x27;s `.F.` use means the neighbour is already consistent and nothing may be flipped, and only an edge that both faces traverse in the same direction is evidence of an inconsistency. An implementation that handles only `.T.` references will either skip this pair entirely or flip a face that was already correct.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

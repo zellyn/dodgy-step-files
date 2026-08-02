@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The wire is a zero-length edge at (0,0,0), then a real 10-unit edge, then a zero-length edge at (10,0,0): each degenerate edge has the same vertex at both ends, both its 3D `LINE` and its pcurve carry a zero-magnitude `VECTOR`, and the underlying surface is a `PLANE` with no singular point. Remove both — a degenerate edge is legitimate only where the surface collapses to a point and where its parametric length is non-zero — and do so in a single scan over the whole edge list, so removing the first entry does not stop the walk and removing the last does not leave the ring pointing at a deleted edge. What remains is one open edge that cannot bound a face; report that rather than emitting a face.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

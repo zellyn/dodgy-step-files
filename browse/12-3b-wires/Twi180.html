@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Four consecutive junctions of this roughly 1x1 contour are each open by 1.0E-6 — ten times the declared 1.0E-7 accuracy — including the wrap-around from the last edge back to the first. Find all four in one pass and close each by moving both sides to a common point, rather than always moving the following edge, which accumulates the correction in one direction and walks the contour off its authored position. Re-measure the whole ring after the repair and require the total deviation from the original geometry to stay within tolerance; if it does not, report the wire instead of emitting a silently distorted boundary.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

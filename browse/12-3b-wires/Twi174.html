@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The four edges form a closed belt at constant height on a cone of base radius 5 and half-angle 30 degrees: their pcurves tile u from 0 to 2pi exactly, but each edge&#x27;s 3D curve is a straight chord between the vertices instead of an arc on the surface, deviating from the cone by up to about 2.3 units. Reconcile the 3D curve with the pcurve before any seam reasoning — replace each chord with the surface curve its pcurve implies, or reject the edge — and do not read the belt&#x27;s 0-to-2pi wrap as a duplicate seam pair, since a closed belt legitimately spans one full period. Because this belt is the face&#x27;s only bound, the parametric region is still open on the apex side: close it by inserting a degenerate edge at the cone apex, which lies below the belt.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The edge&#x27;s B-spline is written with its self-intersection flag set to `.T.`, but sampling the actual curve (degree 3, control points (0,0), (5,5), (10,5), (5,0), (10,0), knots 0/0.5/1 at multiplicities 4/1/4) shows no crossing anywhere in its range. Treat the declared flag as an unverified hint, decide from the geometry by subdividing the curve and comparing non-adjacent pieces over the whole parameter range rather than only its endpoints, and leave the edge intact when no crossing is found — a flag must never on its own license a split. The defect to report instead is that the loop consists of one open edge from (0,0,0) to (10,0,0) and therefore cannot bound a face.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The first two control points of the second edge&#x27;s cubic are both (8,0,0), so the curve&#x27;s first derivative vanishes at the start parameter — which is also the edge&#x27;s start vertex. Recognise a vanishing tangent at an edge endpoint as a parametrisation defect and repair it by trimming away the zero-derivative span or re-fitting the curve with distinct leading control points; do not route it into crossing repair, which would have to insert a split point coincident with an existing vertex and cannot make progress.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

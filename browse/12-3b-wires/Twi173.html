@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The chain runs (0,0,0) to (10,0,0) to (10.000001,0,0) to (5,8,0) and stops: the closing segment from (5,8,0) back to (0,0,0), a 9.43-unit gap, is simply absent. Measure the closure gap between the last edge&#x27;s end and the first edge&#x27;s start and act on that alone; the near-degenerate 1.0E-6 middle edge is ten times the declared 1.0E-7 accuracy, so it is not removable and must not be allowed to mask the check. Insert the missing closing edge, or reject the wire naming the (5,8,0)-to-(0,0,0) gap — never declare it closed because two of its vertices are nearly coincident somewhere else.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Beyond the main edge&#x27;s end at (10,0,0) the boundary continues through several 0.2-unit collinear stubs to (11,0,0.1) and the closing edge then runs straight back to the origin, so the protrusion is a single hair spread across four edges — and the chain is separately broken between the stub ending at (10.2,0,0) and the one starting at (10.4,0,0). Trim the whole out-and-back excursion back to the branch point at (10,0,0) rather than deleting one edge, re-deriving what remains of the protrusion after each removal instead of walking a list captured earlier, and close or report the 0.2 break. Guard curve construction while doing so: every line in this file names a direction in its vector slot, and each unbuildable curve must be reported per entity.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>A `SURFACE_OF_LINEAR_EXTRUSION` whose extrusion `VECTOR` has magnitude 0.0 collapses to its base curve — zero area, no normal — and the zero lives in the vector&#x27;s magnitude, not in its direction ratios, so a check that inspects only the direction will not see it. Compute the vector&#x27;s magnitude explicitly, and reject the surface with a diagnostic naming the entity instead of building a face on it.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The edge carries two pcurves of opposite parametric sense, running 0 to 2pi and 2pi to 0, which is how a seam edge is presented — but its surface is a plane, and a plane has no period in either direction and therefore can never carry a seam. Reject the second pcurve, and the seam reading with it, instead of taking whichever pcurve is listed first as canonical; accept a two-pcurve edge only when the surface is genuinely periodic in the relevant direction and the two pcurves differ there by exactly one period.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

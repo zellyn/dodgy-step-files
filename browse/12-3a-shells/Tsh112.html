@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Three faces meet along the line x=0, z=0 — two coplanar quads at z=0 and one vertical quad spanning y in [-1, 1] — but each owns private, coincident copies of the boundary edge and its vertices, and relative to their own surface normals the first quad&#x27;s loop runs counter-clockwise while the other two run clockwise. Sew the coincident boundaries into shared edges first, then correct winding from the loops&#x27; signed areas rather than from traversal comparisons, since before sewing there are no shared edges to compare. Because the resulting line carries three face uses, no single globally consistent outward orientation exists: group the faces that can agree, emit the remainder as a separate shell, and report the non-manifold edge instead of flipping a face to satisfy an unsatisfiable constraint.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

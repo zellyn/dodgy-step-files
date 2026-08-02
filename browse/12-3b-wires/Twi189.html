@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Detect that the edge ending at (5,5,0) and the edge starting at (5,5.1,0) leave a 0.1 mm gap in 3D — six orders of magnitude above the file&#x27;s declared 1e-7 uncertainty — and do not close it by extending whichever of the two the traversal happens to reach first. Either insert an explicit bridging edge between the two free vertices, or, if curve ends are to be moved at all, pick which end to move from the geometry (tangent continuity with the neighbouring edges) so the same file always yields the same wire; a gap this far above the declared tolerance should be reported rather than silently absorbed.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The two faces are coplanar (both on +Z planes at z=0), meet along y=0 at a 180-degree dihedral, and already share one edge, used `.T.` by one loop and `.F.` by the other. Do not decide shell consistency by comparing neighbouring face normals or dihedral angles — for coplanar neighbours those tests are degenerate and give no answer — but from each shared edge&#x27;s traversal directions, which here are already opposite. The correct outcome is to leave both faces exactly as authored and report no orientation defect.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

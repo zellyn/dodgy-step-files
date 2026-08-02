@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The two coplanar quads share edge #16, which one face uses forward and the other reversed — but the second face also carries `same_sense=.F.`, so once loop sense is composed with face sense both faces run the shared edge the same way and their outward sides point into opposite half-spaces. Derive consistency from that composed traversal (in a consistent shell every interior edge is used once forward and once reversed by its two faces), flip the minority face, and re-verify. If no set of flips makes every shared edge oppositely traversed, emit separate consistently oriented shells and report that the input could not be made single-shell.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

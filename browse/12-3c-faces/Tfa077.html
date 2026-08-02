@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Given a face whose only wire encloses an area orders of magnitude below the model tolerance (here ~1e-6 mm², inside a 7-face block), a plain read must keep the face exactly as encoded — silently dropping geometry the file declares is never acceptable. An explicitly requested healing pass should then compare each wire&#x27;s enclosed area against the model tolerance and rebuild the face without the negligible wires; when every wire of a face is negligible the whole face is removed, and the pass must report each removal, because dropping the face opens a hole in the surrounding shell.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed small-area-wire repair&#x27;s degenerate-orientation check bypasses its own early exit; that method is never invoked on an ordinary read, and the micro-scale wire loads intact and unremoved. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;micro-scale outer wire loads unremoved&quot;, &quot;small-area wire never removed on ordinary read&quot;.</p></section>
 <section><h2>Expected validation</h2>

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The middle edge is exactly 1.0E-5 long — the value a caller would set as a small-edge threshold, and 100 times the declared 1.0E-7 accuracy — closing a triangle whose other two edges are about 1.0 long. Apply one documented smallness rule identically in the checking pass and the fixing pass (the safe rule being that an edge is small only when its two endpoints and its curve midpoint all coincide within model tolerance), so the verdict cannot flip between passes at the boundary; under that rule this edge is not small and the wire stays a three-edge closed loop. If a caller&#x27;s threshold does make it removable, remove it and merge its two vertices in the same pass — never flag it in analysis and then skip it in repair.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

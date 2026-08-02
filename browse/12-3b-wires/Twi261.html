@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The vertex at (1,0,0) is the end of the first edge and the start of both others, so it carries three incident ends: the wire is a closed loop between (0,0,0) and (1,0,0) plus a spur running out to (1,1,0). Record every edge against both of its endpoint vertices when accumulating degrees — attributing an edge to only one end would leave this junction invisible — then detach the spur from the closed loop, or reject the bound naming the vertex.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

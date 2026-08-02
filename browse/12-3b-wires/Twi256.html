@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>One of the two edges begins and ends on the vertex at (0,0,0) and its curve is 1e-12 long, far below any usable tolerance. Exclude such degenerate edges when counting how many edge-ends meet at a vertex, so (0,0,0) reads as an ordinary chain start of degree one rather than a junction of degree three, and drop the degenerate edge from the wire. The degeneracy has to be established by measuring the curve, since nothing in the file marks the edge as degenerate.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

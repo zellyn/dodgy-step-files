@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Three defects sit in one three-edge chain: a 0.01 gap between the first edge&#x27;s end (1,0,0) and the second edge&#x27;s start (1.01,0,0); a closing edge whose `LINE` has magnitude 0.0 and whose start and end vertex are the same; and an overall contour that runs from (0,0,0) to (2,0,0) and never returns. Re-derive gaps and degeneracies from the current geometry after every repair rather than from flags computed once — snapping the 0.01 gap does not remove the zero-length edge, and removing the zero-length edge does not close the wire. Report the wire as not closable, naming the residual (2,0,0)-to-(0,0,0) gap, instead of declaring success after the first fix.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

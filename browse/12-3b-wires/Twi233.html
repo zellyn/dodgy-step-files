@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The single loop returns to (0,0,0) halfway through its traversal, giving that vertex four incident edge-ends and making the contour two 5x5 squares pinched together at a point. Split the wire at the repeated vertex into its two closed sub-loops before attempting any inner-versus-outer classification, then classify each sub-loop from its own signed area against the surface normal; asking whether the combined contour encloses a test point has no answer here, because the two loops&#x27; contributions cancel.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

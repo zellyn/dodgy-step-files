@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The 1e-6 separation between the vertex at (2,0,0) and the vertex at (2.000001,0,0) must be judged against one threshold, not two: a kernel that calls this a real gap by a fixed confusion constant while a vertex-tolerance test would call it closed yields a different wire depending on which check runs first. Derive a single merge tolerance from the file&#x27;s declared 1e-7 uncertainty together with the two vertices&#x27; own tolerances, merge the vertices when the separation falls within it and inflate the merged vertex&#x27;s tolerance to cover the move, and report the separation otherwise.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

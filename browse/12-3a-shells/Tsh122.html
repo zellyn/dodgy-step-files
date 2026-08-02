@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The two faces meet at right angles along the shared edge from (0,0,0) to (10,0,0), and both edge loops reference it with `.T.` — the same traversal direction. In a consistently oriented shell each interior edge is traversed once in each direction, so this is a genuine inconsistency: reverse one of the two faces — here the z=0 face, whose loop also runs clockwise in its own -Z-normal parametrization — so the shared edge becomes oppositely used. Then propagate that decision to any further neighbours and re-verify before accepting the shell.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

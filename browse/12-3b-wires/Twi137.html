@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The second edge lies wholly at z=1 while the face&#x27;s surface is the z=0 plane; projected into the face&#x27;s parameters it crosses the first edge at (5,5), but in 3D the two are 1.0 unit apart, seven orders of magnitude above the declared accuracy. Qualify every parameter-space crossing against the 3D geometry before repairing it, and split only when the 3D separation at the crossing is within tolerance — so no split may happen here. Report the actual defects instead: the second edge does not lie on the face&#x27;s surface, the first edge&#x27;s `LINE` along (1,0,0) does not pass through its declared end vertex (10,10,0), and the two edges share no vertex, so the wire is not a chain at all.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

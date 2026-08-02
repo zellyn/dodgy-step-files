@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>All three edges lie on the X axis: the wire runs out from (0,0,0) through a 1.0E-4 edge and a 1.0-unit edge to (1.0001,0,0), then returns along the identical line, so it encloses zero area. Recognise the whole contour as an out-and-back protrusion — each outgoing edge is covered within tolerance by the return edge along its full length — rather than only trimming the short leading edge; cutting the out and back portions against each other consumes every edge, so the correct result is to drop the wire and any face it bounds, with a diagnostic. The 1.0E-4 leading edge is a thousand times the declared 1.0E-7 accuracy and is not by itself grounds for removal.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

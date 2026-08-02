@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The 200x200 face carries two inner wires enclosing 25 and 100 square units, against a declared distance accuracy of 1.0E-7 — fifteen orders of magnitude smaller — so neither is negligible and both holes must survive. Judge a wire small against absolute model tolerance (a loop whose enclosed area or width is at or below it), never as a fraction of the containing face, or genuine small holes on large plates silently vanish. Both inner loops are also listed in reverse sequence — each oriented edge is individually reversed while the list order is unchanged, so consecutive entries do not join — so reorder each loop into a connected chain before classifying it.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(25) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

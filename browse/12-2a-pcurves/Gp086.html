@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The pcurve&#x27;s knot domain [0, 10] is twice the 3D curve&#x27;s [0, 5] on non-periodic geometry, so the two do not describe the same sub-domain: flag the range as invalid rather than silently evaluating the pcurve outside the interval the 3D curve covers. Reconcile by re-parameterising the pcurve onto the 3D curve&#x27;s domain, or discard the pcurve and rebuild it by projection; if neither succeeds, reject the edge with a diagnostic naming it.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>Edge copy trap: parameter range bounds become stale when BSpline geometry is recomputed. SameParameter recomputation fails to detect and correct the range corruption.</p></section>
+<p>The edge&#x27;s 3D geometry is trimmed to [0.05, 0.95] while its pcurve spans the full knot domain [0, 1] of the same B-spline: detect that the two representations do not bound the same parameter sub-domain, instead of trusting any stored &quot;same range&quot; assertion. Re-derive the pcurve&#x27;s range from the 3D curve&#x27;s actual domain, or re-project one from the other, so that both agree; report an invalid-range condition on the edge if they cannot be reconciled.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

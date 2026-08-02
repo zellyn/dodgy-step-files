@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Two separate single-face shells sit 0.0005 apart in x and 0.0005 in y, so their facing free edges are parallel, overlap over 0.9995 of their length, and corresponding vertices are about 7.07E-4 apart — far above the file&#x27;s 1.0E-7 declared accuracy but inside a millimetre-scale sewing tolerance. If the caller&#x27;s tolerance covers that distance, merge the two free edges into one shared edge, place each merged vertex at the centre of the box spanning its originals, and raise that vertex&#x27;s tolerance to cover every original position; a merged vertex left at the original tight tolerance claims a connection the geometry does not support. If the tolerance does not cover it, leave the shells separate and report the gap.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

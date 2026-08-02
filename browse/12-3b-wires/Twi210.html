@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The traversal ends at (0.0001,0.0001,0) and never returns to the start vertex at (0,0,0): the wire is open by about 1.41e-4, roughly a thousand times the file&#x27;s declared 1e-7 uncertainty. Do not pull the two ends together merely because the gap looks small in absolute terms — a bound that is required to be closed should either gain an explicit closing edge between the two free vertices or be reported open with the measured separation, and that decision must be taken against the declared tolerance rather than a hard-coded distance.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

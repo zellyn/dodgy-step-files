@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>A properly closed hole wire that does not touch the outer boundary yields exactly one face carrying two bounds — do not split it. Splitting a face applies only when its wires bound disjoint regions (more than one wire acting as an outer boundary), and the containment test that decides this must be purely geometric: a rational B-spline host surface and its control-point weights must not change the outcome relative to the same wires on a plane.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed a face-splitting repair multi-wire split path with &quot;rational B-spline weights introducing NURBS bias in containment check&quot;; live-oracle confirms `n_faces_total == 1`, no split, no containment ambiguity. As encoded, this file demonstrates no defect — it is a valid multi-hole face on a rational B-spline surface (useful as a NURBS-surface analog of Tfa210, not as a healing-defect fixture). **See also**: Tfa210 (same &quot;no defect, ordinary multi-hole face&quot; finding on a `PLANE` instead of NURBS). Synonyms: &quot;valid hole on rational B-spline face&quot;, &quot;bilinear NURBS face with non-touching interior bound&quot;.</p></section>
 <section><h2>Expected validation</h2>

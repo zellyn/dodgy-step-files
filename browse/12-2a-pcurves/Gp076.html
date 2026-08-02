@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>On a periodic surface u=0 and u=2π denote the same seam location, so a pcurve authored on either branch must be accepted — compare seam pcurve positions modulo the surface period instead of treating u=2π as &quot;no pcurve at u=0&quot;. A seam edge needs BOTH period-shifted pcurves, so synthesise the missing one by shifting the given one by a whole period rather than rejecting the edge; and where the edge&#x27;s 3D curve is positionally discontinuous, reject that edge with a diagnostic instead of returning an empty shape.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

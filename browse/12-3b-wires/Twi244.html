@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The wire&#x27;s second edge spans 1e-5 from (6,0,0) to (6.00001,0,0) — its two endpoints and its midpoint all lie within any usable working tolerance of one another — while the rectangle around it is 6 units on a side. Remove the sliver and re-stitch the wire by merging its two vertices, then re-anchor the following edge, whose line is presently tilted by 1.7e-6 in order to reach the far corner, back onto the true corner at (6,0,0); leaving the sliver in place makes the tangent direction at that corner meaningless.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

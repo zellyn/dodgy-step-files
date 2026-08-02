@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The chain runs (0,0,0) to (10,0,0) to (0,10,0) to (0,10.05,0) and stops: it is open, and its final 0.05 edge goes out but never comes back. A tail is an out-and-back protrusion, so this edge is not one and must not be deleted by a tail-removal pass — at 0.05 it is five orders of magnitude above the declared 1.0E-7 accuracy, and dropping it would still leave the wire open from (0,10,0) back to the start. Either keep the wire open as authored, or, if the consumer requires closure, insert the missing segment; never present deletion of a real edge as a closure fix.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

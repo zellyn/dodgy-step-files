@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>An `ADVANCED_FACE` whose bound list holds only `FACE_BOUND`s and no `FACE_OUTER_BOUND` is ambiguous — nothing in the file says which wire, if either, is the outer boundary. Reject it with a diagnostic naming the entity; or, if the kernel chooses to recover, classify the wires by point-in-face containment and report the resulting change in face count. Silently promoting each wire to its own face inflates the model&#x27;s topology with nothing in the output to say it happened.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed orientation repair&#x27;s containment-check logic exhibits &quot;undefined behavior&quot; when no outer wire exists; that method is never invoked, and the real, verified behavior is well-defined but silent: each orphan wire becomes its own valid face. Compare Tfa164 (also a bound-list ambiguity, but there the result is topologically INVALID; here it is valid, just inflated). Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;outer-bound-less face split into two faces&quot;, &quot;silent face-count inflation from ambiguous bound list&quot;.</p></section>
 <section><h2>Expected validation</h2>

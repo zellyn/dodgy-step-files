@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The two clamped cubic B-splines meet exactly at (5,0,0): both end knots have multiplicity 4, so each curve interpolates its terminal control point and the shared vertex is reached with no positional error. Evaluate endpoints from the clamped knot structure directly instead of sampling near the parameter ends, where accumulated round-off manufactures a gap that is not there, and report positional continuity as satisfied. The genuine discontinuity here is tangential — the incoming tangent runs along (1,0,0) and the outgoing along (1,1,0), a 45-degree kink — and must be reported as a smoothness defect, not as a gap to bridge.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

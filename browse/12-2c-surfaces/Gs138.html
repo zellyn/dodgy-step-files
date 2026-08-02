@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>This file&#x27;s surface entity does not match its schema definition — the control points are a flat list where a grid of rows is required, and the knot and multiplicity attributes are absent — and the edge&#x27;s 3D `LINE` supplies a point where a direction vector belongs. Validate every entity&#x27;s attribute count and attribute types against the schema before constructing geometry from it, and reject offending entities individually with diagnostics naming them while the rest of the model is still built: a partially-initialised surface or curve must never be constructed, and a malformed entity must never terminate the read.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

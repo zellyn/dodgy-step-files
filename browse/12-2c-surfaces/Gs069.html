@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>A `DIRECTION`&#x27;s ratios are not required to be normalised and their magnitude carries no meaning, so ratios of (1e-11, 0, 0) denote +X exactly as (1, 0, 0) do: normalise by the Euclidean norm and use the resulting unit vector as the axis. Reject only when the norm is zero — every ratio zero, which violates the schema&#x27;s own rule and leaves the axis undefined — and guard the normalisation against underflow by scaling the components before squaring, so that denormal ratios cannot yield a zero or non-finite norm.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

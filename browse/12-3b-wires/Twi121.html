@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The wire has two edges: a vertical line whose pcurve runs u=0 with v from 0 to 1, and a full-turn circle whose pcurve runs u from 0 to 2pi at v=1, so although the 3D endpoints coincide and the wire looks closed, the parametric contour ends at (2pi, 1) having started at (0, 0). The vertical edge lies exactly on the periodic boundary and is therefore needed twice — once at u=0 and once at u=2pi — so add its second use with a pcurve shifted by one full period, and require every seam edge to carry a pcurve for each side rather than a single shared one. If the second use cannot be constructed, report the face as having an open parametric boundary instead of trimming from it.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Three edges of this wire share one underlying curve: the first spans (0,0,0) to (6,0,0) and the next two re-cover the same run in halves through (3,0,0), so that side of the boundary is traversed twice. Detect redundant coverage by comparing the edges&#x27; restricted ranges on the shared curve rather than by comparing curve identity alone, and drop enough of them that every point of the boundary is traversed exactly once; where the redundant set cannot be chosen unambiguously, report the multiplicity instead of picking arbitrarily.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

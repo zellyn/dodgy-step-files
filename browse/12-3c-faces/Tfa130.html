@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>When one face declares two closed wires that bound disjoint regions of the same surface — here two `FACE_OUTER_BOUND`s, a 20×20 loop and a disjoint 0.2×0.2 loop — classify the wires by point-in-face containment, build one face per outer wire, assign each hole wire to the outer wire that contains it, and replace the original face with the resulting group. Report the split explicitly: returning more faces than the file declares, with nothing to say so, leaves every downstream face count silently wrong.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed small-area-wire repair&#x27;s area-sorted-list heuristic incorrectly selects the tiny loop as outer; live-oracle confirms the reader instead builds both `FACE_OUTER_BOUND` wires as separate topological faces (`n_faces_total == 7`, already correctly asserted below) — a translator-level dual-outer-bound dispatch behavior, not an area-heuristic selection bug. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;dual FACE_OUTER_BOUND splits into two faces&quot;, &quot;two disjoint outer bounds on one host surface become two faces&quot;.</p></section>
 <section><h2>Expected validation</h2>

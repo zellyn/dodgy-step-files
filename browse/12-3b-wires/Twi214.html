@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The wire&#x27;s single edge runs from (5,5,0) to (5,-5,0) and crosses itself once near the origin. Locate the crossing within the curve&#x27;s own parameter range, insert a vertex there, and split the edge into the two sub-edges that meet at it — the outcome is still one wire whose edges are listed in traversal order, not two independent wires. If the crossing parameter cannot be resolved reliably, leave the edge whole and report the self-intersection rather than emitting a partly split contour.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

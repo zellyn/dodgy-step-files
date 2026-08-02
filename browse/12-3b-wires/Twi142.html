@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The loop&#x27;s first entry is a zero-length edge: its two distinct vertex instances both sit at (0,0,0). Handle removal at index 0 exactly as at any other index — drop the edge, merge the two coincident vertices into one, and re-close the ring so the last edge&#x27;s end becomes the new first edge&#x27;s start, remembering that index 0&#x27;s predecessor is the last edge and not index -1 — leaving a four-edge closed square. An implementation that special-cases only interior positions leaves a dangling vertex or reads out of range; the fourth edge must also be rejected, since its `LINE` along (0,-1,0) from (10,10,0) never reaches its declared end vertex (0,10,0).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

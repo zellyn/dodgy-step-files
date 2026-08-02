@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>The basis curve of this `SURFACE_OF_REVOLUTION` lies ON its axis of revolution, so every point of the swept surface collapses onto that axis: degeneracy detection must measure the distance from the basis curve to the axis, not merely inspect the axis direction vector. If the whole basis curve lies on the axis the surface has no area and must be rejected with a diagnostic naming it; if the curve meets the axis only at isolated parameters, keep the surface but mark those parameter rows singular so that edge and wire processing treats them as poles.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

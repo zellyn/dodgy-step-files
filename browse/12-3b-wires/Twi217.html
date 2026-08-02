@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The first edge&#x27;s 3D line runs from z=0 up to z=2 while its pcurve runs from v=2 down to v=0, so the two representations of one edge traverse it in opposite directions. Detect the disagreement by evaluating both representations at the ends of the edge&#x27;s range and comparing the points they yield, then reverse the pcurve (or the edge&#x27;s sense declaration) so both advance together, and store the corrected parametrisation on the edge so that no stale one is left referenced by the face.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

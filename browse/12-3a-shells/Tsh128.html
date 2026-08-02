@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Two of the five faces are individually broken: the x=0 face&#x27;s three-edge loop contains an edge whose `LINE` lies along x=0, y=10 while its declared end vertex is (0,0,10), and the x=10 face uses two edges whose `LINE`s carry a zero-magnitude `VECTOR`. Validate each edge against its own curve and vertices before the shell-level pass, and keep any such failure local to its face: record the diagnostic, set that face aside, and continue so the remaining faces still receive a consistent orientation. A per-face failure must never short-circuit the shell pass and leave later faces unprocessed.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Given an edge whose start and end vertex are the same entity and whose 3D curve and pcurve both collapse to a single point, detect the zero-length parameter domain BEFORE any range comparison: the check must not assume two distinct vertex parameters, must not divide by or normalise against a zero span, and must return the same verdict on every run. Classify such an edge as degenerate and report it per-entity; a degenerate edge must never take down the read.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=accept(0)</code></p></section>
 <section><h2>Live oracle output</h2>

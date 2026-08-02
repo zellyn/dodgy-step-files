@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Three unit-length edges all begin and end on the vertex at (0,0,0), giving it six incident edge-ends. A vertex with more than two ends, once degenerate, negligible and seam edges have been discounted, marks a wire that is really several loops glued at a point, so this one must be separated into three closed loops; the comparison has to be strictly against two, since even two self-loops (four ends) is already a pinch and must not be waved through.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The middle edge&#x27;s vertices run from (1,0,0) to (2,0,0) while its line starts at (2,0,0) and points along -X, so the curve is traversed backwards relative to the edge even though the endpoints coincide exactly and there is no positional gap anywhere. Continuity between consecutive edges therefore has to be checked on direction as well as position: evaluate each edge&#x27;s curve at the parameters of its own start and end vertices, and where the traversal opposes the vertex order, reverse the edge&#x27;s sense rather than pronouncing the junction sound because the points match.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

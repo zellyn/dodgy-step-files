@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The file supplies a single closed 2x2 square wire from (3,3,0) to (5,5,0), traversed counter-clockwise, with no enclosing boundary anywhere in the model. Classify a wire as outer or inner only relative to the other wires of the same face: with exactly one wire the answer follows from its own orientation against the face normal — counter-clockwise here, so it is the outer bound and the material lies inside — and no containment test against absent siblings may be attempted or defaulted. If the wire is later attached to a face that already has an outer bound, recompute the classification by a point-in-wire test against that sibling rather than carrying the earlier verdict over.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The wire&#x27;s last edge ends at (1e-7,0,0) while the first starts at (0,0,0), so the separation is exactly the file&#x27;s declared 1e-7 uncertainty and the verdict turns on whether the comparison is strict or inclusive. Apply one comparison, inclusive at the declared tolerance, everywhere the closure question is asked, and merge the two vertices so the wire closes; a kernel that answers closed in one check and open in another produces a wire whose validity depends on evaluation order.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

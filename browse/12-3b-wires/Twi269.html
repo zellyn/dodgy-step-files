@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The middle edge begins and ends on the vertex at (1,0,0) and its line&#x27;s direction vector has magnitude zero, so the edge has neither extent nor a traversal direction. Recognise that a zero-magnitude direction vector makes the curve unusable instead of tracing it for a self-crossing, remove the edge, and retain the vertex at (1,0,0) as the junction of the two remaining collinear edges; a direction that cannot be normalised must be reported, never evaluated.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

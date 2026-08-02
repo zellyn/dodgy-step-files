@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The two coplanar 5x5 faces are separated by a uniform 0.005 gap in x — five times the file&#x27;s declared 1.0E-3 accuracy, and half a caller tolerance of 0.01. Treat the declared accuracy as the floor and the caller&#x27;s sewing tolerance as the ceiling: merging is permitted here, but the merged edge and its vertices must have their tolerances raised to at least half the gap (0.0025) so the shell&#x27;s own tolerances justify the connectivity it now claims. Merging while leaving those vertices at 1.0E-3 produces a shell asserting a join its tolerances cannot support, and must not happen silently.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

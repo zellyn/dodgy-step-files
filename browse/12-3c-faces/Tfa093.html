@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reading a face with several bound wires whose edges carry only 3D curves and no pcurves must never terminate the process: derive each edge&#x27;s 2D representation by projecting it onto the host surface, and if an individual bound cannot be projected or classified, drop that bound with a diagnostic naming it and still build the face from the bounds that remain usable. Only once the face exists should a healing pass compare each wire&#x27;s enclosed area against the model tolerance — the 0.0025-area hole here is a small hole beside a 1.0-area hole, not sub-tolerance debris, so both must survive.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Tfa135. Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed small-area-wire repair applies its removal threshold check only to outer wires, leaving inner wires uninspected; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;multi-bound face crashes reader, outer-alone loads clean&quot;, &quot;any inner wire (large or tiny) crashes the reader, outer-alone loads clean&quot;.- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`</p></section>
 <section><h2>Expected validation</h2>

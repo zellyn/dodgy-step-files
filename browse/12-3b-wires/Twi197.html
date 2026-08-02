@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Two separate 0.01-unit stubs hang off the same corner vertex at (0,0,0), one along +X and one along +Y, each ending on a vertex with no other edge. Collect every such dangling stub in a single pass over the wire and remove all of them, re-deriving the candidate set from the current edge list after each removal rather than from positions captured before it, so that removing the +X stub does not cause the +Y stub to be skipped; what must remain is the bare three-edge triangle.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

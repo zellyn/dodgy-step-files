@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The wire is one large closed contour: a degree-3 B-spline that swings out to (10,4) and returns, plus a 1.0E-4 straight edge closing (0.0001,0,0) back to (0,0,0). Sampling the spline shows no self-crossing — its two endpoints merely come within 1.0E-4 of each other, a thousand times the declared 1.0E-7 accuracy, and that span is already bridged by a real edge — so no split may be made there. Reject any self-intersection split whose resulting sub-edge would be shorter than model tolerance, and snap a split point falling within tolerance of an existing vertex onto that vertex instead.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

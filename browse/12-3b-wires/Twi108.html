@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The first edge ends at vertex (10,0,0) while the next begins at a different vertex (10,0,0.05) — a 0.05 gap, five orders of magnitude above the declared 1.0E-7 accuracy — so the loop is geometrically open even though it is listed as a closed `EDGE_LOOP`. Measure real 3D endpoint distances rather than trusting the listing, and close a gap this large by changing geometry (trim or extend the second edge&#x27;s line back to (10,0,0), or insert a connecting edge) and merging the two vertices; it is far too big to absorb into vertex tolerance on a 10-unit contour. That second edge also leaves the face&#x27;s z=0 plane at its start, so if the boundary cannot be brought onto the surface, reject the face and name the junction.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

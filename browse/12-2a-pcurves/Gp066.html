@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Given an edge whose 3D curve and pcurve are visibly different curves (a degree-3 B-spline against a straight 2D line over the same parameter interval), measure the actual 3D-versus-surface deviation by sampling along the edge and set the edge tolerance to the SMALLEST value that bounds the measured deviation — not to the first candidate that merely exceeds the coincidence threshold. If the smallest bounding value exceeds the model&#x27;s maximum permitted tolerance, re-project one representation from the other or reject the edge with a diagnostic; inflating tolerance to paper over a bad fit corrupts every downstream operation.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

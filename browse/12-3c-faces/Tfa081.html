@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>`same_sense=.F.` is valid STEP for a face whose surface normal opposes its own orientation, so a read must honour the flag as encoded and yield all 6 faces — do not &quot;correct&quot; it by flipping the surface or the wire. Re-orienting wires is a healing operation and must be driven by evidence: classify each wire against the others of the same face by point-in-face tests, reverse only the wires that disagree with the consensus, and report every flip made.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed orientation repair actively detects and heals the reversed face&#x27;s winding; that method is never invoked on an ordinary read, and `same_sense=.F.` is itself valid STEP semantics OCCT interprets correctly without any healing pass. Same batch pattern as Tfa113 (cube with reversed face, already corrected). Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;reversed-normal cube face loads intact&quot;, &quot;same_sense=.F. is not an error needing orientation repair&quot;.</p></section>
 <section><h2>Expected validation</h2>

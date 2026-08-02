@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The chain (0,0,0) to (10,0,0) to (10,10,0) to (0,10,0) to (5,5,0) ends with a degenerate edge: a degree-1 B-spline with both control points at (5,5,0) over the null knot range (0.0, 0.0), carrying the same vertex at both ends. A degenerate edge is legitimate only where the underlying surface collapses to a point and where its parametric length is non-zero; there is no surface here and no singularity, so remove it as spurious. What remains is a 7.07-unit gap from (5,5,0) back to (0,0,0), which must be reported as a genuine missing segment or closed with a real edge — never with another degenerate edge, whose direction would be undefined because its ends coincide.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

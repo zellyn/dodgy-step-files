@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The second edge ends on a vertex at (5,5,0) and the next begins on a separate vertex instance at exactly the same point, leaving the wire disconnected in the middle although nothing geometric is missing. Merge vertices that coincide within tolerance and re-point their incident edges at the survivor, rather than inserting a connecting edge that would necessarily have zero length; only a genuine separation in the surface&#x27;s parameter space justifies inserting one. Because every line in this file carries a direction in the slot reserved for a vector, curve construction has to fail loudly before any of that is attempted.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

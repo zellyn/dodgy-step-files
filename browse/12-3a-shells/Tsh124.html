@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The 100x100 face has three 10x10 inner bounds whose loops run counter-clockwise, the same sense as the outer bound, so outer and inner boundaries put material on the same side and the face interior is undefined. Classify each wire by containment — all three lie strictly inside the outer loop and are mutually disjoint — then reverse every wire whose sense disagrees with the consensus, so holes are traversed opposite to the outer boundary. Each hole encloses 100 square units against a declared accuracy of 1.0E-7, so none may be discarded as a negligible-area wire, and all three must be settled in one classification pass so the result does not depend on iteration order.</p></section>
 <section><h2>Notes</h2>
 <p>Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>

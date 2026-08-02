@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The seam edge is declared with vertices (1,0,1) then (1,0,0) while its `LINE` runs upward in +Z from (1,0,0), and the wire uses it through an `ORIENTED_EDGE` flagged `.F.`, so its effective traversal is the composition of two reversals. Derive each edge&#x27;s traversal direction from that composition — curve sense combined with the `ORIENTED_EDGE` flag — and apply any seam period shift in the composed direction; shifting along the curve&#x27;s intrinsic direction moves a reversed seam edge the wrong way by a full period. The other edge must also be rejected: its `TRIMMED_CURVE` is an arc of a circle lying at z=0 while its declared vertices sit at z=0 and z=1, so it cannot connect them.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

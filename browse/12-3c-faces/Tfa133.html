@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Decide each bound wire&#x27;s role from geometry — point-in-face containment classification against the other wires of the same face — rather than trusting the declared `FACE_OUTER_BOUND`/`FACE_INNER_BOUND` labels or the raw winding direction, then reverse only the wires that disagree with the consensus and report each reversal. What must hold is the RELATIVE sense of outer and hole wires, not the absolute sense of any one of them; and reading a multi-bound face whose edges carry no pcurves must not terminate the process.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed orientation repair flips the outer wire&#x27;s winding, breaking the inner wires&#x27; relative-consistency; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;multi-bound face crashes reader, outer-alone loads clean&quot;, &quot;inner wires crash reader regardless of relative winding, outer-alone loads clean&quot;.</p></section>
 <section><h2>Expected validation</h2>

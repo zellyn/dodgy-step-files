@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The edge&#x27;s 3D curve collapses onto the cone apex over the first half of its range and then jumps ~0.7 mm to rejoin the spoke, while its pcurve is a clean radial line: the 3D curve is the untrustworthy representation here, so discard IT and rebuild it by evaluating the pcurve on the surface — not the reverse. Over a surface singularity the pcurve is the only usable representation and must be kept, with the collapsed sub-segment marked degenerate; if neither representation can be rebuilt, reject the edge with a diagnostic naming it instead of returning an empty shape.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

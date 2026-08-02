@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>A `RECTANGULAR_TRIMMED_SURFACE` with u1 == u2 (here both 0.0) violates the schema&#x27;s own requirement that the two trim parameters differ, and the surface it describes has zero extent in U — no area, no usable normal. Detect the equality (and the v1 == v2 case) and reject the entity with a diagnostic naming it, rather than building a face on a zero-area surface and reporting success.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

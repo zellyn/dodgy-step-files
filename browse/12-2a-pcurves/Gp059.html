@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Given an edge whose 3D curve has zero arc length (both ends are the same point), test for the zero before using the length as a divisor: fall back to the model&#x27;s default tolerance rather than computing a length-scaled one, so the edge&#x27;s tolerance can never become NaN or infinite. Mark the edge degenerate — a candidate to be merged away with its neighbours — and report it; a non-finite tolerance must never be propagated into the topology.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=accept(0)</code></p></section>
 <section><h2>Live oracle output</h2>

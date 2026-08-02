@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>A hole wire enclosing ~1e-8 of area inside a 10×10 outer boundary must survive a plain read intact — a read reports what the file says, it does not edit it. Removing negligible-area wires belongs to an explicitly requested healing pass, which should compare each wire&#x27;s enclosed area against the model tolerance, rebuild the face without the wires that fall below it, and report each removal.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed small-area-wire repair &quot;removes sub-tolerance loops from the topology before face healing, preventing degenerate geometry propagation&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;sub-tolerance inner loop loads without a dedicated small-area removal pass&quot;.</p></section>
 <section><h2>Expected validation</h2>

@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The wire is a closed 5x5 rectangle on a `PLANE`. Its second and fourth edges run in exactly opposite directions, (0,1,0) and (0,-1,0), but they lie 5 units apart at x=5 and x=0 and are not consecutive, so a duplicate-pair test must require both adjacency in the wire and curves that coincide within tolerance along their length — opposite tangent direction alone is not evidence. Neither condition holds here, so all four edges must be kept; removing the fourth would open the boundary and destroy the face.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

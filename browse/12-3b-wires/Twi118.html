@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The first edge ends at (1,0,0) while the second begins at (2,0,0) — a 1.0-unit gap — and that second edge is itself collapsed: a degree-3 B-spline whose four control points are all (2,0,0), with the same vertex at both ends, so its tangent is undefined everywhere. Run the connectivity check as a distance test on the two endpoints, before and independently of any tangent-continuity test, so an undefined tangent cannot suppress it. Then remove the collapsed edge, which bounds nothing, and report the remaining 1.0-unit gap as a genuine missing segment rather than absorbing it into vertex tolerance.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

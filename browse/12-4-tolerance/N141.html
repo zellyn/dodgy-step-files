@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>When two edges are found to cross and a shared vertex is created at (or an existing vertex re-used near) the crossing, the merged vertex&#x27;s tolerance must be at least the LARGEST of the tolerances of every vertex and edge it absorbs — taking whichever was visited first leaves a vertex too tight to contain the coarse-tolerance geometry it now represents, and the connection silently fails to hold. If no value within the model&#x27;s permitted maximum tolerance can cover them all, reject the merge with a diagnostic rather than producing a vertex that does not contain its own geometry.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

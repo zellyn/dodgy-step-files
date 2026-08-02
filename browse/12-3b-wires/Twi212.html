@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Both edges are built on the same infinite line, so their underlying curves coincide everywhere, but one is restricted to parameters [1,5] and the other to [6,10]. Intersect the restricted domains, never the underlying curves: two edges sharing a curve with disjoint parameter intervals do not meet, and no split point may be introduced — least of all at parameter 0, which lies outside both edges. Report contact only over the range where the two restrictions actually overlap.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

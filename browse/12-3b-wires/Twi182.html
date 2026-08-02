@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The first four edges already close the unit square, and a fifth edge is appended after the closing edge: it joins two distinct vertex instances that both sit at (0,1,0), and its 3D `LINE` and its pcurve both have magnitude 0.0, so the listed sequence is no longer a connected chain. Reorder the edges into a connected chain, then remove the zero-length edge and merge its two vertex instances into the one already shared with edges 3 and 4, so closure points at a surviving vertex rather than a deleted end. The result must be the original four-edge closed square; if removing the edge would break closure, keep it and report it instead.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

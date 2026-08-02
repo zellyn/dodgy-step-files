@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>FixAddPCurve should construct a trivial PCURVE (identity map) but plane-bypass branch skips it, leaving the edge without parametric curve data.</p></section>
+<p>Given a boundary edge whose `SURFACE_CURVE` carries a 3D curve but an empty associated-geometry list, do not leave the edge without a 2D representation: compute the pcurve by projecting the already-built 3D curve onto the face&#x27;s surface (a trivial mapping on a plane). If the projection yields no usable parameter range, drop the pcurve and keep the edge as 3D-only on that face with a diagnostic — a missing pcurve is a repairable condition, never a reason to abort the read.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

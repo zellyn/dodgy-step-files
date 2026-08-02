@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The first edge&#x27;s pcurve ends at u=2pi while the second&#x27;s begins at u=0 — the same 3D point on the sphere reached from opposite sides of the periodic boundary — and the contour is then left open from u=1.0 back to u=5.0 at v=0.1. Recognise a seam crossing from the pcurve&#x27;s full-period jump at a junction whose 3D endpoints coincide, rather than from a surface-type test, and normalise by shifting one pcurve by 2pi so the parametric contour is continuous; a sphere additionally needs degenerate edges at its poles, which a cylinder-only seam rule never supplies. The fourth edge&#x27;s 3D curve is a straight chord from (2.688,4.186,-0.499) to (1.411,-4.771,0.499) passing through the sphere&#x27;s interior, and must be replaced by the meridian arc its u=1.0 pcurve implies, or rejected.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

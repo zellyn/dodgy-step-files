@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The first edge ends on a vertex at (5,0,0) and the second begins on a different vertex instance at exactly the same point, so the contour is broken topologically while being geometrically continuous; the repair is to merge the two coincident vertices, not to insert a connecting edge, since any such edge would have zero length and could not be a valid boundary segment. Insert an edge only where the two ends genuinely differ in the surface&#x27;s parameter space. The second edge also declares a curve running along -Z although both its vertices lie in the z=0 plane, so an edge&#x27;s curve must be checked against its own vertices — and the lines here supply a direction where a vector is required, which has to fail curve construction with a named diagnostic instead of yielding a null the topology pass later dereferences.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

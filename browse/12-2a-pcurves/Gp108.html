@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The edge is parameterised over [-1, 6] while its pcurve&#x27;s knots cover only [0, 5]: detect that part of the edge&#x27;s interval falls outside the pcurve&#x27;s valid domain and refuse to evaluate the pcurve there, since evaluating past the end knots extrapolates silently and yields plausible-looking nonsense. Either restrict the edge to the intersection of the two domains, or discard the pcurve and rebuild it by projecting the 3D curve; report the out-of-domain range on the edge either way.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

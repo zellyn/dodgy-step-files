@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The 4x4 face&#x27;s 2x2 inner bound has every oriented edge individually reversed but the list order left unchanged, so consecutive entries do not join — read backwards, the same list is a properly connected clockwise hole. Reorder the oriented edges into a connected chain (reversing the sequence, not just the individual senses) before doing anything else with the wire. The hole encloses 4 square units against a declared accuracy of 1.0E-7, so it is a genuine hole: preserve it, and do not fill it as a negligible-area wire.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

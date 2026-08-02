@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>A periodic pcurve trimmed from 5.5 rad to 0.8 rad means &quot;wrap forward through the period&quot;, not a reversed or empty range: normalise it by adding the period to the end parameter (0.8 → 0.8 + 2π) so the interval increases monotonically before any length, containment, or sampling arithmetic is done on it. Where the underlying curve is NOT periodic, a first-greater-than-last range has no valid reading and must be rejected with a diagnostic naming the edge.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

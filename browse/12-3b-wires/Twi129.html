@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The single edge is a degree-3 B-spline whose five control points have strictly increasing x (0, 2.5, 5, 7.5, 10), so every control point of its derivative has a positive x component: the curve is x-monotone and cannot cross itself anywhere in its range, despite an S-shaped control polygon that inflects near (5,0,0). Test for self-intersection by subdividing the actual curve and comparing non-adjacent pieces, never by reading the control polygon and never by splitting where curvature changes sign — an inflection is not a crossing — so the correct result here is no self-intersection and no split. The defect that must be reported instead is that the loop holds a single edge whose two endpoints differ, so it does not close.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

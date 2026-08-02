@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The last two edges form an out-and-back pair: both run between the same two vertices along the same line, and both pcurves sit at u=0.002 spanning v from 1.0 down to 0.5 and back, enclosing nothing. They are appended at the end of the loop, after the edge that returns to the start vertex, so the listed sequence is not a connected chain — reorder the edges into a connected chain first, which places the pair at the junction it really belongs to. Then remove both and rejoin the neighbours at the combined vertex: the pair is not a genuine surface seam, because a real seam lies on the periodic boundary at u=0 or u=2pi, not at u=0.002.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

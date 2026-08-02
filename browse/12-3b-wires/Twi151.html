@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The edge&#x27;s curve is a degree-3 B-spline whose five control points have strictly increasing x (-2, -1, 0, 1, 2), so its derivative never vanishes and the curve is x-monotone: it has no cusp and no self-crossing, even though its control polygon dips below the chord. Locate cusp candidates by subdividing the curve and evaluating the derivative, and refuse to split at any parameter where the derivative is non-zero — the correct outcome is to leave this edge intact. Two `VECTOR` entities in the file are also written with two attributes and an inline coordinate list where a direction reference and a magnitude are required, and must be rejected rather than default-filled.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The three unit squares tile an L-shape, but the boundary between the first and third face exists twice: two distinct `EDGE_CURVE` entities carry the same two vertices and identical `LINE` geometry, one used by each face, so the faces are geometrically adjacent yet topologically unconnected. Detect duplicate edges by comparing vertices and curve geometry, merge them into one shared edge, and only then run the orientation check — on the merged edge the two faces use opposite senses, so no face needs flipping. Reporting this as a non-manifold three-face edge would be wrong: after merging, every edge has at most two face uses.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(22) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

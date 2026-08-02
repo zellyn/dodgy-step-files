@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>This six-edge closed contour crosses itself at several interior points among non-adjacent edges — edges 2 and 4, for instance, meet at (6.667, 6.667, 0), away from any vertex. Collect every crossing from the original wire before modifying anything and apply all the splits in one rebuild: splitting pairs one at a time while walking the same edge list invalidates the parameters of the crossings not yet handled and leaves some undetected. If instead detection is re-run from scratch after each rebuild, bound the number of rounds and fail loudly when crossings remain at the bound, rather than returning a wire that still self-intersects.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Two distinct vertices occupy the same 3D point (1.5,5,0) while their pcurves are 0.01 apart in v at the knot value u=1.5, so both the topology and the parameter-space contour are broken there. Merge the coincident vertices first, then close the parametric gap by moving the second pcurve&#x27;s start onto the first pcurve&#x27;s end and re-evaluating the surface at the adjusted parameter to confirm it still reproduces the shared 3D point within tolerance; a straight splice in parameter space that is never checked against the surface must not be accepted, because across a knot line the surface&#x27;s parametrisation need not be locally affine.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

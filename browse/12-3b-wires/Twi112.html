@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The four edges meet exactly in 3D (they share vertices) but their pcurves do not: edge 1 ends at (u,v)=(0, 1.0) while edge 2 starts at (0, 1.01), and edge 2 ends at (pi/2, 1.01) while edge 3 starts at (pi/2, 1.0) — two independent 0.01 gaps in v. Check parametric continuity independently of 3D continuity, and close both gaps by adjusting the pcurve parameter ranges or reapproximating their ends onto a shared parametric point; do not insert extra edges, because the 3D wire is already closed. If the parametric contour cannot be closed, reject the face rather than trimming the cylinder from an open parametric boundary.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

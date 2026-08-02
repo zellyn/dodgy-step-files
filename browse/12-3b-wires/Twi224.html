@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Before closing a gap by moving a curve&#x27;s end, weigh the gap against the edges it would alter: the 2.5-unit separation between the edge ending at (1,0,0) and the edge starting at (3.5,0,0) exceeds the whole 1.0-unit length of the first edge. Refuse to extend an edge by more than its own length — insert a fresh bridging edge between the two free vertices instead, or report the wire as unrepairably open quoting the gap and both edge lengths. Getting that far means refusing to build a curve whose vector attribute holds a direction entity, as all three lines here do, and saying which entity failed rather than dereferencing a null curve.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The four unit squares tile a flat 2x2 patch in z=0, all with +Z normals, and each of the four interior edges is used once `.T.` and once `.F.` by its two faces, so the patch is already consistently oriented. Because every normal is identical, any test based on comparing neighbouring normals is degenerate here; decide consistency purely from shared-edge traversal, which finds nothing to fix. Return all four faces unflipped and as one shell — do not split into multiple shells, and do not invent an outward side, which for an open flat patch is a caller&#x27;s convention rather than something derivable from the geometry.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(25) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

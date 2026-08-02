@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The first edge ends at (1,0,0) while the second begins at (3,0,0): a single 2.0-unit gap, with the rest of the three-edge contour connected and closing at (0,0,0). After inserting a bridging edge, re-run gap detection over the whole rebuilt wire rather than assuming one pass suffices — the insertion creates two new junctions, each of which must itself be checked for connectivity and for crossings with the remaining edges — and report the wire closed only when a full re-scan finds nothing. If the gap cannot be bridged without crossing the third edge, fail with a diagnostic naming the (1,0,0)-to-(3,0,0) gap.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

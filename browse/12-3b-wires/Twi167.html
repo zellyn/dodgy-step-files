@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Every edge here carries a pcurve on the z=0 plane, and the bow-tie crossing of the first and third edges at (5,5,0) is present identically in 3D and in the face&#x27;s parameters. Compute the crossing once, in one representation, and transfer the split parameter to the other — solving separately in 3D and in parameter space yields two slightly different vertices and a wire that ends up neither closed nor properly split. After splitting, check each resulting loop for non-zero enclosed area before accepting it (both halves here are triangles of area 25), and discard any loop that collapses, with a diagnostic, rather than emitting it as a face boundary.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

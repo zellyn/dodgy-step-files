@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>At the junction (10,0,0) the two edges share a vertex exactly, and the outgoing direction (0.999875, 0.015625, 0) differs from the incoming (1,0,0) by only 0.0156 rad. A missing-edge check asks whether consecutive edges meet in position, not whether their tangents agree, so nothing may be inserted here; a near-parallel tangent is a smoothness observation and must be reported separately, if at all. The defects a consistency check should catch on this file are edges 2, 3 and 4, whose declared `LINE` directions do not pass through their own end vertices — edge 2&#x27;s line reaches y about 0.156 at x=20 while its end vertex sits at y=0.1.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

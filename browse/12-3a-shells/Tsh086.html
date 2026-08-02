@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The model is two single-face shells abutting exactly along x=1, each carrying its own copies of the boundary vertices ((1,0,0) and (1,1,0) each appear twice) and its own boundary edge, and the second face&#x27;s outer bound is flagged `.F.`. Recognise the two coincident free edges as one boundary — pair them by sampling points along one and projecting onto the other, not by a single endpoint test — merge them into a shared edge with merged vertices, and normalise the reversed bound so both faces wind the same way about the joined surface. If the two sides cannot be reconciled into one orientation, keep them as two shells and report the boundary as non-conformal rather than emitting a shell whose normals disagree.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

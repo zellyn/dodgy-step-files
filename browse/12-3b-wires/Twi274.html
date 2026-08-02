@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The second edge starts and ends on the vertex at (1,0,0) and its curve is a full unit long, so it is a genuine closed sub-loop hanging off the end of an open chain and that vertex has three incident edge-ends. Only edges with zero 3D extent, or true seams on a periodic surface, may be discounted from that count, and neither exemption applies here — the surrounding entity is a bare curve set with no periodic surface anywhere in it — so separate the closed sub-loop from the chain instead of presenting the pair as one contour.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

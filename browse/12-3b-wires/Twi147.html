@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The first edge ends at vertex (5,0,0) and the second begins at a distinct vertex (5.01,0,0): a 0.01 gap on a 10-unit contour, five orders of magnitude above the declared 1.0E-7 accuracy. Close it by changing geometry — extend one edge&#x27;s line or trim the other to a shared point, and merge the two vertices — rather than by inflating vertex tolerance to 0.01, and re-test the modified edge against every other edge of the wire for newly created crossings or overlaps before committing, backing out or moving the other end if the fix introduces one. The fourth edge&#x27;s direction entity must be rejected as well: its ratios are written as `(-1.47552825814757,(1.0,0.0))`, a nested aggregate rather than three reals, and must not be guessed at.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

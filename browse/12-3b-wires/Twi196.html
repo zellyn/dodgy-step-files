@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Compute an edge&#x27;s effective extent from the range it is actually restricted to, not from the underlying curve or from a degeneracy marking: the second edge&#x27;s line is ten units long but is trimmed to the single parameter value 5.0, and both of its vertices sit at (5,0,0), so its extent is zero. Treat a zero-width trim as a degenerate edge, drop it and re-join its neighbours at the shared vertex; if the trim range cannot be interpreted at all, report the edge rather than passing a zero-extent boundary segment downstream.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

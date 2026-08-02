@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The two faces abut along x=1 but each owns its boundary: face 2&#x27;s vertices sit at x=1.0000001, exactly the file&#x27;s declared 1.0E-7 distance accuracy away from face 1&#x27;s, and the two boundary edges are separate entities. Never let a caller-supplied sewing tolerance fall below the model&#x27;s declared accuracy — clamp it to that floor — so this pair is recognised as one boundary and merged into a single shared edge with merged vertices instead of requiring bit-exact equality. Separately, one `VECTOR` entity names itself as its own direction attribute: detect the reference cycle while resolving the instance graph and reject that entity with a diagnostic rather than recursing into it.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>
