@@ -634,11 +634,10 @@
       "Tsh086",
       "Tsh095",
       "Tsh101",
-      "Tsh108",
       "Tsh110"
     ],
     "coverage_verdict": "COVERED",
-    "notes": "MERGED with group-C's ShapeUpgrade_ShellSewing record: same underlying defect - adjacent faces each carrying an independent copy of their common boundary edge instead of one shared edge (unsewn shell / cracks); ShapeFix_FaceConnect repairs it pairwise, ShapeUpgrade_ShellSewing shape-wide (as a thin TKShHealing wrapper over BRepBuilderAPI_Sewing). NOTE: the sewing algorithm proper (BRepBuilderAPI_Sewing) is the sibling exchange/sewing domain's denominator; this class counts only the TKShHealing entry points. || Source-record notes: [C-edge-vertex-facesplit] Tfa019's title is a near-verbatim match ('FaceConnect: vertices not shared'). Twi037 demonstrates the general free-bound/duplicate-edge sewing scenario. No fixture specifically isolates the >2-coincident-vertex aggregation math as its own defect, but that is an implementation detail of the same repair, not a separately observable input pattern. | [C-edge-vertex-facesplit as tkshh-shell-faces-not-sewn] Multiple fixtures explicitly named after ShapeUpgrade_ShellSewing.Apply/Prepare/ApplySewing exist in 12-3a-shells. This problem is conceptually the same underlying defect class as tkshh-faceconnect-unshared-boundary-edges but operates at whole-shell granularity via a different OCCT utility class explicitly in this group's assigned scope; kept as a separate grading item per the assigned class list, with the overlap noted here rather than silently deduplicated away.",
+    "notes": "MERGED with group-C's ShapeUpgrade_ShellSewing record: same underlying defect - adjacent faces each carrying an independent copy of their common boundary edge instead of one shared edge (unsewn shell / cracks); ShapeFix_FaceConnect repairs it pairwise, ShapeUpgrade_ShellSewing shape-wide (as a thin TKShHealing wrapper over BRepBuilderAPI_Sewing). NOTE: the sewing algorithm proper (BRepBuilderAPI_Sewing) is the sibling exchange/sewing domain's denominator; this class counts only the TKShHealing entry points. || Source-record notes: [C-edge-vertex-facesplit] Tfa019's title is a near-verbatim match ('FaceConnect: vertices not shared'). Twi037 demonstrates the general free-bound/duplicate-edge sewing scenario. No fixture specifically isolates the >2-coincident-vertex aggregation math as its own defect, but that is an implementation detail of the same repair, not a separately observable input pattern. | [C-edge-vertex-facesplit as tkshh-shell-faces-not-sewn] Multiple fixtures explicitly named after ShapeUpgrade_ShellSewing.Apply/Prepare/ApplySewing exist in 12-3a-shells. This problem is conceptually the same underlying defect class as tkshh-faceconnect-unshared-boundary-edges but operates at whole-shell granularity via a different OCCT utility class explicitly in this group's assigned scope; kept as a separate grading item per the assigned class list, with the overlap noted here rather than silently deduplicated away. || FIXTURE LIST CORRECTED 2026-08-02: removed Tsh108 — retitled after byte inspection showed the reader aborts on a malformed entity attribute (or, for Gs069, that the input is schema-legal) BEFORE this class's repair is reached, so they never exercised it. Verdict unchanged; the class retains 7 fixtures that do. See BACKLOG (H)(I)(K).",
     "source_group": [
       "C-edge-vertex-facesplit"
     ]
@@ -1134,14 +1133,12 @@
     ],
     "subvariants": [],
     "fixture_ids": [
-      "Gs069",
       "Gs084",
       "Gs098",
-      "Gs111",
-      "Gs138"
+      "Gs111"
     ],
     "coverage_verdict": "COVERED",
-    "notes": "Gs069 (zero-length axis), Gs084 (bounded-surface zero-area), Gs098 (revolution-axis-on-curve), Gs111 (zero-extrusion), Gs138 (bounded surface with only corner points) collectively exercise this implicit/heuristic degeneracy path distinctly from the canonical-singularity family above.",
+    "notes": "Gs069 (zero-length axis), Gs084 (bounded-surface zero-area), Gs098 (revolution-axis-on-curve), Gs111 (zero-extrusion), Gs138 (bounded surface with only corner points) collectively exercise this implicit/heuristic degeneracy path distinctly from the canonical-singularity family above. || FIXTURE LIST CORRECTED 2026-08-02: removed Gs069/Gs138 — retitled after byte inspection showed the reader aborts on a malformed entity attribute (or, for Gs069, that the input is schema-legal) BEFORE this class's repair is reached, so they never exercised it. Verdict unchanged; the class retains 3 fixtures that do. See BACKLOG (H)(I)(K).",
     "source_group": [
       "B-curve-surface-analysis"
     ]
@@ -1266,14 +1263,13 @@
       "Twi158",
       "Twi192",
       "Twi207",
-      "Twi227",
       "Twi069",
       "Twi073",
       "Gp020",
       "Twi067"
     ],
     "coverage_verdict": "COVERED",
-    "notes": "MERGED with group-F record: ShapeFix_Wireframe::FixWireGaps delegates 2D-gap closure to ShapeFix_Wire::FixGaps2d - same underlying defect, one class. || Source-record notes: [D-wire] Gp020 verified (UV disagreement between adjacent pcurves); Twi112/Twi158/Twi227 vary the surface (cylindrical, periodic, B-spline), Twi192 the 2D-only-bridge case, Twi207 gap at a knot discontinuity; Twi069/Twi073 the enumeration/per-junction detection; CheckGap2d variants Twi123/Twi135/Twi161/Twi179. | [F-wireframe-unify-split as tkshh-wire-2d-pcurve-gaps] Gp020 is exactly this defect (pcurve endpoints disagree in UV, identical 3D endpoints); Twi069 covers the multi-junction enumeration; Twi067 the not-absorbable-by-tolerance variant; Twi073 the per-junction query. A human grading against FixGaps2d would accept these.",
+    "notes": "MERGED with group-F record: ShapeFix_Wireframe::FixWireGaps delegates 2D-gap closure to ShapeFix_Wire::FixGaps2d - same underlying defect, one class. || Source-record notes: [D-wire] Gp020 verified (UV disagreement between adjacent pcurves); Twi112/Twi158/Twi227 vary the surface (cylindrical, periodic, B-spline), Twi192 the 2D-only-bridge case, Twi207 gap at a knot discontinuity; Twi069/Twi073 the enumeration/per-junction detection; CheckGap2d variants Twi123/Twi135/Twi161/Twi179. | [F-wireframe-unify-split as tkshh-wire-2d-pcurve-gaps] Gp020 is exactly this defect (pcurve endpoints disagree in UV, identical 3D endpoints); Twi069 covers the multi-junction enumeration; Twi067 the not-absorbable-by-tolerance variant; Twi073 the per-junction query. A human grading against FixGaps2d would accept these. || FIXTURE LIST CORRECTED 2026-08-02: removed Twi227 — retitled after byte inspection showed the reader aborts on a malformed entity attribute (or, for Gs069, that the input is schema-legal) BEFORE this class's repair is reached, so they never exercised it. Verdict unchanged; the class retains 8 fixtures that do. See BACKLOG (H)(I)(K).",
     "source_group": [
       "D-wire",
       "F-wireframe-unify-split"
@@ -1299,18 +1295,16 @@
     ],
     "fixture_ids": [
       "Twi108",
-      "Twi147",
       "Twi180",
       "Twi189",
       "Twi199",
-      "Twi224",
       "Twi266",
       "Twi068",
       "Twi072",
       "Twi003"
     ],
     "coverage_verdict": "COVERED",
-    "notes": "UPGRADED to COVERED (PARTIAL_RESWEEP.md): the notes' claim that the free-wire (no-face) gap branch has no fixture was factually wrong -- four fixtures already in this problem's own fixture_ids are free wires with genuine gaps. Author-verified Twi180.stp: its EDGE_LOOP is wrapped in a GEOMETRIC_CURVE_SET that IS reachable via MANIFOLD_SURFACE_SHAPE_REPRESENTATION, zero ADVANCED_FACE entities in the file, with four genuine 1e-6 junction gaps. Twi189 (0.1 gap), Twi199 (1e-6 gap), and Twi266 verified equally face-less with genuine gaps. Tsh037/P017 (previously cited as the free-wire counter-evidence) are confirmed gap-free but irrelevant now that Twi180/Twi189/Twi199/Twi266 demonstrate the branch directly. All five subvariants (range mode, convert mode, single gap, multi-gap, free wire) now demonstrated. || Prior PARTIAL notes: MERGED with group-F record (Wireframe::FixWireGaps delegates to ShapeFix_Wire::FixGaps3d). Face-bound-wire variants well covered (single gap Twi003/Twi108, multi-gap Twi068). The notes previously (incorrectly) characterized Twi180/Twi189/Twi199/Twi266 as gap-free free-wire fixtures and claimed a gapped FREE wire belonging to no face was missing; this was a misreading of already-cited fixtures, corrected above. Twi147 edge-replacement, Twi224 gap bigger than edge; Twi068/Twi072 enumeration and per-junction query; CheckGap3d threshold/variant fixtures Twi115/Twi145/Twi155/Twi170/Twi181/Twi213/Twi228.",
+    "notes": "UPGRADED to COVERED (PARTIAL_RESWEEP.md): the notes' claim that the free-wire (no-face) gap branch has no fixture was factually wrong -- four fixtures already in this problem's own fixture_ids are free wires with genuine gaps. Author-verified Twi180.stp: its EDGE_LOOP is wrapped in a GEOMETRIC_CURVE_SET that IS reachable via MANIFOLD_SURFACE_SHAPE_REPRESENTATION, zero ADVANCED_FACE entities in the file, with four genuine 1e-6 junction gaps. Twi189 (0.1 gap), Twi199 (1e-6 gap), and Twi266 verified equally face-less with genuine gaps. Tsh037/P017 (previously cited as the free-wire counter-evidence) are confirmed gap-free but irrelevant now that Twi180/Twi189/Twi199/Twi266 demonstrate the branch directly. All five subvariants (range mode, convert mode, single gap, multi-gap, free wire) now demonstrated. || Prior PARTIAL notes: MERGED with group-F record (Wireframe::FixWireGaps delegates to ShapeFix_Wire::FixGaps3d). Face-bound-wire variants well covered (single gap Twi003/Twi108, multi-gap Twi068). The notes previously (incorrectly) characterized Twi180/Twi189/Twi199/Twi266 as gap-free free-wire fixtures and claimed a gapped FREE wire belonging to no face was missing; this was a misreading of already-cited fixtures, corrected above. Twi147 edge-replacement, Twi224 gap bigger than edge; Twi068/Twi072 enumeration and per-junction query; CheckGap3d threshold/variant fixtures Twi115/Twi145/Twi155/Twi170/Twi181/Twi213/Twi228. || FIXTURE LIST CORRECTED 2026-08-02: removed Twi147/Twi224 — retitled after byte inspection showed the reader aborts on a malformed entity attribute (or, for Gs069, that the input is schema-legal) BEFORE this class's repair is reached, so they never exercised it. Verdict unchanged; the class retains 8 fixtures that do. See BACKLOG (H)(I)(K).",
     "source_group": [
       "D-wire",
       "F-wireframe-unify-split"
@@ -1492,11 +1486,10 @@
       "Twi173",
       "Twi187",
       "Twi211",
-      "Twi220",
-      "Twi231"
+      "Twi220"
     ],
     "coverage_verdict": "COVERED",
-    "notes": "Twi036 verified (3D-shared vertex, UV endpoints apart by >1e-3 - the canonical lacking input) and Twi131 bytes verified (degenerate-edge insertion variant). Twi067 not-absorbable-by-tolerance, Twi220 degenerate-fill-in, Twi146 wrap-around on closed surface, Twi118/Twi150 tangency classification. The pcurve-bending subvariant has no dedicated fixture found by search, but the class is otherwise densely covered - treated as covered with this minor caveat.",
+    "notes": "Twi036 verified (3D-shared vertex, UV endpoints apart by >1e-3 - the canonical lacking input) and Twi131 bytes verified (degenerate-edge insertion variant). Twi067 not-absorbable-by-tolerance, Twi220 degenerate-fill-in, Twi146 wrap-around on closed surface, Twi118/Twi150 tangency classification. The pcurve-bending subvariant has no dedicated fixture found by search, but the class is otherwise densely covered - treated as covered with this minor caveat. || FIXTURE LIST CORRECTED 2026-08-02: removed Twi231 — retitled after byte inspection showed the reader aborts on a malformed entity attribute (or, for Gs069, that the input is schema-legal) BEFORE this class's repair is reached, so they never exercised it. Verdict unchanged; the class retains 11 fixtures that do. See BACKLOG (H)(I)(K).",
     "source_group": [
       "D-wire"
     ]
@@ -1620,7 +1613,6 @@
       "Twi076",
       "Twi157",
       "Twi214",
-      "Twi225",
       "Twi232",
       "Twi263",
       "Twi249",
@@ -1634,7 +1626,7 @@
       "Twi298"
     ],
     "coverage_verdict": "COVERED",
-    "notes": "MERGED with group-E record (same defect via ShapeFix_IntersectionTool::FixSelfIntersectWire; ShapeFix_Wire::FixSelfIntersection delegates non-adjacent pairs there). Interior-interior crossing, near-vertex crossing, and small (<50%) collinear overlap verified covered (Twi049/Gs011/Twi063). MISSING: dedicated fixture for large (>50%) collinear overlap forcing the 3-edge reconstruction path (ShapeFix_IntersectionTool.cxx:1033-1456). || Source-record notes: [D-wire] Twi049 verified (four-edge figure-eight in UV with explicit crossing at (5,5)). Twi249-251 target ShapeFix_IntersectionTool primitives (CutEdge, FindVertAndSplitEdge, null guard). Twi185/Twi198/Twi208 cover coincident/tangent overlap variants; Twi096 the cross-loop translation case. Note: the V3 entries filed under ShapeAnalysis_WireOrder.Perform_at206 actually describe this ShapeFix_IntersectionTool code (misattribution, see line_verification_notes). | [E-face-composeshell-intersection as tkshh-wire-self-intersection-nonadjacent-edges] Interior-interior crossing is well covered (Twi049/Gs011 verified: crossed diagonals with no shared endpoints; Twi103 additionally probes the 30-split limit; Xp015 combines with a periodic face). Twi063 verified: two edges of one EDGE_LOOP overlapping collinearly over [2,5] of the same line -- the segment-overlap subvariant. Missing: dedicated fixtures for the near-endpoint vertex-snap subvariant, the endpoint-endpoint UnionVertexes subvariant, and the large (>50%) overlap 3-edge reconstruction within one wire. Note: many Twi15x/Twi2xx 'FixSelfIntersectingEdge' fixtures target ShapeFix_Wire's adjacent-edge fixer (different code, Group covered elsewhere), not this tool. || Wave-4 (2026-07-12, adversarial verifier): COVERED. Twi298 (>50% collinear overlap, non-adjacent, forcing the 3-edge reconstruction path at ShapeFix_IntersectionTool.cxx:1202-1456) closes the sole remaining named gap. Live A/B against sibling Twi063 (small/<50% overlap): Twi298 8 declared -> 10 edges read, brepcheck.valid=False; Twi063 6 declared -> 5 edges read, brepcheck.valid=True -- genuinely distinct, worse-handling path confirmed by direct comparison, not merely asserted.",
+    "notes": "MERGED with group-E record (same defect via ShapeFix_IntersectionTool::FixSelfIntersectWire; ShapeFix_Wire::FixSelfIntersection delegates non-adjacent pairs there). Interior-interior crossing, near-vertex crossing, and small (<50%) collinear overlap verified covered (Twi049/Gs011/Twi063). MISSING: dedicated fixture for large (>50%) collinear overlap forcing the 3-edge reconstruction path (ShapeFix_IntersectionTool.cxx:1033-1456). || Source-record notes: [D-wire] Twi049 verified (four-edge figure-eight in UV with explicit crossing at (5,5)). Twi249-251 target ShapeFix_IntersectionTool primitives (CutEdge, FindVertAndSplitEdge, null guard). Twi185/Twi198/Twi208 cover coincident/tangent overlap variants; Twi096 the cross-loop translation case. Note: the V3 entries filed under ShapeAnalysis_WireOrder.Perform_at206 actually describe this ShapeFix_IntersectionTool code (misattribution, see line_verification_notes). | [E-face-composeshell-intersection as tkshh-wire-self-intersection-nonadjacent-edges] Interior-interior crossing is well covered (Twi049/Gs011 verified: crossed diagonals with no shared endpoints; Twi103 additionally probes the 30-split limit; Xp015 combines with a periodic face). Twi063 verified: two edges of one EDGE_LOOP overlapping collinearly over [2,5] of the same line -- the segment-overlap subvariant. Missing: dedicated fixtures for the near-endpoint vertex-snap subvariant, the endpoint-endpoint UnionVertexes subvariant, and the large (>50%) overlap 3-edge reconstruction within one wire. Note: many Twi15x/Twi2xx 'FixSelfIntersectingEdge' fixtures target ShapeFix_Wire's adjacent-edge fixer (different code, Group covered elsewhere), not this tool. || Wave-4 (2026-07-12, adversarial verifier): COVERED. Twi298 (>50% collinear overlap, non-adjacent, forcing the 3-edge reconstruction path at ShapeFix_IntersectionTool.cxx:1202-1456) closes the sole remaining named gap. Live A/B against sibling Twi063 (small/<50% overlap): Twi298 8 declared -> 10 edges read, brepcheck.valid=False; Twi063 6 declared -> 5 edges read, brepcheck.valid=True -- genuinely distinct, worse-handling path confirmed by direct comparison, not merely asserted. || FIXTURE LIST CORRECTED 2026-08-02: removed Twi225 — retitled after byte inspection showed the reader aborts on a malformed entity attribute (or, for Gs069, that the input is schema-legal) BEFORE this class's repair is reached, so they never exercised it. Verdict unchanged; the class retains 15 fixtures that do. See BACKLOG (H)(I)(K).",
     "source_group": [
       "D-wire",
       "E-face-composeshell-intersection"
@@ -1817,11 +1809,10 @@
       "Twi122",
       "Twi182",
       "Twi197",
-      "Twi215",
-      "Twi222"
+      "Twi215"
     ],
     "coverage_verdict": "COVERED",
-    "notes": "Twi011/Twi077 verified (thin spike beyond max-angle/width; 180-degree fold over sub-tolerance width). Twi098 is the false-positive guard case (intentional chamfer-like short edges must survive), Twi197/Twi222 iteration-with-removal, Twi215 multi-tail, plus CheckTail mechanism fixtures Twi104/Twi128/Twi140/Twi165/Twi175/Twi203/Twi235/Twi271. Kept separate from notched-edges: tail = protruding out-and-back spike gated by MaxTailWidth/Angle; notch = one edge retracing along the other.",
+    "notes": "Twi011/Twi077 verified (thin spike beyond max-angle/width; 180-degree fold over sub-tolerance width). Twi098 is the false-positive guard case (intentional chamfer-like short edges must survive), Twi197/Twi222 iteration-with-removal, Twi215 multi-tail, plus CheckTail mechanism fixtures Twi104/Twi128/Twi140/Twi165/Twi175/Twi203/Twi235/Twi271. Kept separate from notched-edges: tail = protruding out-and-back spike gated by MaxTailWidth/Angle; notch = one edge retracing along the other. || FIXTURE LIST CORRECTED 2026-08-02: removed Twi222 — retitled after byte inspection showed the reader aborts on a malformed entity attribute (or, for Gs069, that the input is schema-legal) BEFORE this class's repair is reached, so they never exercised it. Verdict unchanged; the class retains 8 fixtures that do. See BACKLOG (H)(I)(K).",
     "source_group": [
       "D-wire"
     ]

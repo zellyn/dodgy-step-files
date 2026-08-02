@@ -2231,10 +2231,26 @@ So these five assert `signal(11)` for a curve-attribute-type error, NOT for the
 wire defect their titles name — the wire defect is never reached. Same class as
 the shape(1)/empty overclaim campaigns.
 
-**CORRECTION to the originating report, which said "all seven":** Twi219 and
-Twi220 were checked and their `LINE`s are well-formed (0/2 and 0/3 malformed).
-They crash for a different, still-undiagnosed reason. Do not fold them into
-this cohort.
+**CORRECTION, then a CORRECTION OF THE CORRECTION (2026-08-02).** I first
+reported Twi219/Twi220 as having well-formed `LINE`s (0/2, 0/3 malformed) and
+excluded them. That was wrong, and the fault was my detector, not the data: my
+regex matched only `LINE('name',#N,#M)`, so it never saw
+`#32=LINE('',#30,(DIRECTION('',(1.0,0.0,0.0)),1.0))` — an INLINE ANONYMOUS
+AGGREGATE in the slot that requires a `#N` reference to a VECTOR. Part 21 has
+no such construction. Twi218 carries it too. So the cohort is **eight**, in two
+flavours:
+  - reference to a DIRECTION where a VECTOR is required: Twi222/224/225/227/231
+  - inline anonymous aggregate instead of a reference: Twi218/219/220
+    (exactly these three files corpus-wide)
+All eight are now retitled. Lesson for future byte sweeps: a pattern-based
+"is it malformed?" check reports CLEAN both when the bytes are fine and when
+the bytes do not match your pattern at all — those two outcomes must be
+distinguished, or a malformation hides behind a passing check.
+
+(Also a false alarm worth recording: `#9006`-`#9010` read as "undefined
+references" under a `#N=NAME(` regex. They are defined — as COMPLEX entities,
+`#9006=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.))`, which that regex
+cannot match. Not a defect.)
 
 Decision needed: repair the `LINE` attributes (which would let the titled wire
 defects actually be exercised, and would change the Expected line from

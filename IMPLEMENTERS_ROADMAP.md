@@ -2,7 +2,7 @@
 
 **Audience: you are writing a CAD kernel and need to survive real-world STEP files.** This document is the corpus re-cut along the axis you actually work on.
 
-The catalog ([`STEP_PROBLEM_CATALOG.md`](STEP_PROBLEM_CATALOG.md)) is organised one entry per broken file, which is right for auditing and wrong for building — 3335 entries do not tell you where to start. This page inverts it into the **169 distinct repair mechanisms** those files exercise, ordered so the failures that hurt users most come first, each pointing at the fixtures that prove you got it right (624 fixtures cited).
+The catalog ([`STEP_PROBLEM_CATALOG.md`](STEP_PROBLEM_CATALOG.md)) is organised one entry per broken file, which is right for auditing and wrong for building — 3335 entries do not tell you where to start. This page inverts it into the **169 distinct repair mechanisms** those files exercise, ordered so the failures that hurt users most come first, each pointing at the fixtures that prove you got it right (615 fixtures cited).
 
 > **Generated file — do not edit.** `python3 occt-coverage/make_roadmap.py`.
 > Everything below is joined from `occt-coverage/*/problems.json` and the catalog's CI-verified `Expected validation` lines. No hand-entered claims.
@@ -21,15 +21,15 @@ The tiering below is derived from **observed reference-engine behaviour**, not f
 
 **Only 1782 of the 2530 STEP fixtures (70%) carry a written `Expected kernel behavior`.** The remainder are real fixtures with real, CI-verified assertions — they are good *tests* — but they do not state what a correct kernel should do, so they teach an implementer nothing on their own. They are marked † below. This is the corpus's largest known gap against its own purpose, and it is tracked, not hidden.
 
-It cites **624 of the 2530 STEP fixtures (25%)**. The rest are real, CI-verified fixtures that simply have not been linked to a named repair mechanism yet — they are reachable through the catalog and [`browse/`](browse/), just not from here. So this is a *starting* map, not an exhaustive one: finishing a tier does not mean you have handled everything the corpus knows about. Growing the linkage is tracked in `occt-coverage/`.
+It cites **615 of the 2530 STEP fixtures (24%)**. The rest are real, CI-verified fixtures that simply have not been linked to a named repair mechanism yet — they are reachable through the catalog and [`browse/`](browse/), just not from here. So this is a *starting* map, not an exhaustive one: finishing a tier does not mean you have handled everything the corpus knows about. Growing the linkage is tracked in `occt-coverage/`.
 
 ## Tier summary
 
 | tier | meaning | mechanisms |
 |---|---|---:|
-| `T0` | at least one fixture **aborts** the reference engine — a kernel must never do this | 35 |
-| `T1` | most fixtures parse but yield **no geometry** — silent loss, check these early | 4 |
-| `T2` | the file loads; the question is whether the repair was **faithful** | 130 |
+| `T0` | at least one fixture **aborts** the reference engine — a kernel must never do this | 31 |
+| `T1` | most fixtures parse but yield **no geometry** — silent loss, check these early | 6 |
+| `T2` | the file loads; the question is whether the repair was **faithful** | 132 |
 
 
 ## T0 crash-exposing
@@ -50,14 +50,6 @@ A shell's constituent faces have inconsistent orientation relative to each other
 
 **Test against:** `Tsh070`, `Tsh085`, `Tsh090`, `Tsh094`, `Tsh100`, `Tsh104`, `Tsh112`, `Tsh122`, `Tsh128`, `Tsh132`, `Tsh139`, `Tsh144` …and 1 more
 
-### `tkshh-wire-lacking-edge-2d`
-
-*TKShHealing* · 12 fixtures · observed: empty×6, crash×4, loads×2 · **12/12 carry a written spec** · corpus coverage: COVERED
-
-Two consecutive edges share a vertex in 3D (topologically connected) but their pcurves are disconnected in the face's UV space - a boundary segment is missing in parameter space (classically at a seam or degenerated boundary of the surface). The wire cannot bound a UV region until an edge is inserted or the pcurves are deformed.
-
-**Test against:** `Twi036`, `Twi067`, `Twi118`, `Twi131`, `Twi146`, `Twi150`, `Twi160`, `Twi173`, `Twi187`, `Twi211`, `Twi220`, `Twi231`
-
 ### `tkshh-edge-3d-2d-parameterization-mismatch`
 
 *TKShHealing* · 23 fixtures · observed: loads×10, empty×10, crash×3 · **13/23 carry a written spec** · corpus coverage: COVERED
@@ -65,6 +57,14 @@ Two consecutive edges share a vertex in 3D (topologically connected) but their p
 An edge's 3D curve and its pcurve disagree as parameterizations: at the same parameter the 3D point and the surface-evaluated pcurve point diverge beyond tolerance (SameParameter violation), the declared parameter ranges differ while SameRange is asserted, the pcurve's range is invalid for its surface domain, or the two representations drift apart mid-edge while agreeing at the ends.
 
 **Test against:** `Gp022`, `Twi082`, `Twi070`, `Twi133`, `Twi246`, `Gp050`, `Gp073`, `Twi040`, `Gp045`, `Gp052`, `Gp059`, `Gp066` …and 11 more
+
+### `tkshh-wire-lacking-edge-2d`
+
+*TKShHealing* · 11 fixtures · observed: empty×6, crash×3, loads×2 · **11/11 carry a written spec** · corpus coverage: COVERED
+
+Two consecutive edges share a vertex in 3D (topologically connected) but their pcurves are disconnected in the face's UV space - a boundary segment is missing in parameter space (classically at a seam or degenerated boundary of the surface). The wire cannot bound a UV region until an edge is inserted or the pcurves are deformed.
+
+**Test against:** `Twi036`, `Twi067`, `Twi118`, `Twi131`, `Twi146`, `Twi150`, `Twi160`, `Twi173`, `Twi187`, `Twi211`, `Twi220`
 
 ### `tkshh-edge-missing-pcurve`
 
@@ -106,14 +106,6 @@ A seam edge on a periodic surface carries two pcurves (one per side of the seam)
 
 **Test against:** `Twi022`, `Twi071`, `Twi121`, `Twi144`, `Twi154`, `Twi183`, `Twi201`, `Twi217`, `Twi268`, `Gp011`
 
-### `tkshh-wire-3d-curve-gap`
-
-*TKShHealing* · 10 fixtures · observed: empty×5, loads×3, crash×2 · **10/10 carry a written spec** · corpus coverage: COVERED
-
-The 3D curves of two consecutive edges do not meet: the end point of edge n's 3D curve and the start point of edge n+1's 3D curve are separated by more than precision, even though the wire's topology may claim connection. Repair modifies the curve geometry itself - translating/extending curve ends or replacing curve segments - to close the gap (distinct from merely merging vertices or…
-
-**Test against:** `Twi108`, `Twi147`, `Twi180`, `Twi189`, `Twi199`, `Twi224`, `Twi266`, `Twi068`, `Twi072`, `Twi003`
-
 ### `tkshh-face-intersecting-wires`
 
 *TKShHealing* · 9 fixtures · observed: loads×4, empty×3, crash×2 · **9/9 carry a written spec** · corpus coverage: COVERED
@@ -122,16 +114,6 @@ Two DIFFERENT wires of the same face intersect each other in UV: a hole boundary
 
 **Test against:** `Tfa039`, `Twi250`, `Tfa126`, `Tfa131`, `Tfa160`, `N141`, `Twi249`, `Tfa253`, `Tfa254`
 
-### `tkshh-wire-2d-pcurve-gap`
-
-*TKShHealing* · 9 fixtures · observed: empty×4, loads×3, crash×2 · **8/9 carry a written spec** · corpus coverage: COVERED
-
-The pcurves of two consecutive edges do not meet in the face's UV space: edge n's pcurve ends at a different UV point than edge n+1's pcurve starts (beyond the surface UV resolution of the precision), while 3D may be fine. Repair modifies the pcurve geometry to close the parametric contour (distinct from inserting a lacking edge).
-
-**Test against:** `Twi112`, `Twi158`, `Twi192`, `Twi207`, `Twi227` †, `Twi069`, `Twi073`, `Gp020`, `Twi067`
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
-
 ### `tkshh-wire-duplicate-opposed-edge-pair`
 
 *TKShHealing* · 8 fixtures · observed: loads×4, crash×2, empty×2 · **8/8 carry a written spec** · corpus coverage: COVERED
@@ -139,14 +121,6 @@ The pcurves of two consecutive edges do not meet in the face's UV space: edge n'
 A wire contains two consecutive edges that traverse (nearly) the same curve in opposite directions - a 'dummy seam' or duplicated out-and-back pair that encloses nothing. The pair must be removed and the wire's neighboring edges re-joined at a combined vertex.
 
 **Test against:** `Twi033`, `Twi111`, `Twi132`, `Twi149`, `Twi174`, `Twi221`, `Twi057`, `Twi063`
-
-### `tkshh-faceconnect-unshared-boundary-edges`
-
-*TKShHealing* · 7 fixtures · observed: loads×5, crash×2 · **7/7 carry a written spec** · corpus coverage: COVERED
-
-Two adjacent faces that physically touch along a common boundary each carry their own independent copy of the boundary edge (and its endpoint vertices) instead of referencing one shared topological edge — a geometric crack/gap in an otherwise visually-closed shell. The healer geometrically sews the registered face pairs together (via BRepBuilderAPI_Sewing), rebuilds the affected wires with the…
-
-**Test against:** `Tfa019`, `Twi037`, `Tsh086`, `Tsh095`, `Tsh101`, `Tsh108`, `Tsh110`
 
 ### `stp-missing-pcurve-projection`
 
@@ -163,16 +137,6 @@ An edge on a face boundary has no usable 2D (pcurve) representation: the EDGE_CU
 A wire on a surface with a singularity (cone apex, sphere pole, degenerated torus/revolution row) is missing the degenerated edge (zero 3D length, finite UV length) that must bridge the singular row - or carries a degenerated edge whose flag/pcurve is wrong (no pcurve and no singularity actually present, bad parametrization vs neighbors, or duplicated degenerated edges).
 
 **Test against:** `Twi021`, `Twi031`, `Twi083`, `Twi102`, `Twi142`, `Twi169`, `Twi196`, `Twi216`, `Twi234`, `Tfa005`, `Twi296`, `Twi297` …and 4 more
-
-### `tkshh-wire-nonadjacent-edges-intersect`
-
-*TKShHealing* · 16 fixtures · observed: loads×10, empty×5, crash×1 · **15/16 carry a written spec** · corpus coverage: COVERED
-
-Two non-adjacent edges of the same wire cross in parameter space (global self-intersection, e.g. a figure-eight or bow-tie contour). Repair splits the edges at the crossing, cuts back, or removes the enclosed sub-segment.
-
-**Test against:** `Twi049`, `Twi076`, `Twi157`, `Twi214`, `Twi225`, `Twi232`, `Twi263` †, `Twi249`, `Twi250`, `Twi251`, `Gs011`, `Gs009` …and 4 more
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
 
 ### `tkshh-vertex-not-on-curve-endpoints`
 
@@ -234,14 +198,6 @@ Adjacent faces of a shell lie on the same geometric surface (coplanar planes, co
 
 **Test against:** `Tfa016`, `Tfa018`, `Tfa019`, `Tsh046`, `Tsh047`, `Tsh049`, `Tsh057`, `N003`, `Xp033`
 
-### `tkshh-wire-tail`
-
-*TKShHealing* · 9 fixtures · observed: empty×7, loads×1, crash×1 · **9/9 carry a written spec** · corpus coverage: COVERED
-
-A tail (hair): at the junction of two consecutive edges the boundary shoots out and comes straight back, forming a protrusion narrower than a configured max width (and optionally sharper than a max angle). The out-and-back portions must be cut off the two edges and the residual out/back pair removed.
-
-**Test against:** `Twi011`, `Twi077`, `Twi098`, `Twi114`, `Twi122`, `Twi182`, `Twi197`, `Twi215`, `Twi222`
-
 ### `sew-free-edge-gap-merge`
 
 *exchange/sewing* · 8 fixtures · observed: loads×7, crash×1 · **8/8 carry a written spec** · corpus coverage: COVERED
@@ -249,6 +205,14 @@ A tail (hair): at the junction of two consecutive edges the boundary shoots out 
 Two free (unshared) edges that geometrically represent the same boundary curve but sit a small distance apart (gap smaller than the sewing tolerance) are recognized as the same edge and merged into one shared edge, instead of being left as two separate, non-conformal edges. Distance is evaluated by sampling points along the candidate edge and projecting them onto the reference edge (and vice…
 
 **Test against:** `Tfa020`, `Tsh203`, `Tsh187`, `Twi037`, `Tfa019`, `Tsh181`, `Tsh243`, `Tsh244`
+
+### `tkshh-wire-2d-pcurve-gap`
+
+*TKShHealing* · 8 fixtures · observed: empty×4, loads×3, crash×1 · **8/8 carry a written spec** · corpus coverage: COVERED
+
+The pcurves of two consecutive edges do not meet in the face's UV space: edge n's pcurve ends at a different UV point than edge n+1's pcurve starts (beyond the surface UV resolution of the precision), while 3D may be fine. Repair modifies the pcurve geometry to close the parametric contour (distinct from inserting a lacking edge).
+
+**Test against:** `Twi112`, `Twi158`, `Twi192`, `Twi207`, `Twi069`, `Twi073`, `Gp020`, `Twi067`
 
 ### `tkshh-face-wires-bound-multiple-disjoint-regions`
 
@@ -265,6 +229,14 @@ One face's wires actually bound several disjoint regions of the surface -- more 
 A face on a closed surface lacks its outer boundary: either the ADVANCED_FACE has no bounds at all (legal STEP for 'the whole surface'), or -- on a doubly-periodic surface (sphere, torus) -- it carries only hole wires, the intended semantics being 'entire surface minus holes'. OCCT creates the natural (full parametric rectangle) boundary: an empty face is rebuilt via BRepBuilderAPI_MakeFace; a…
 
 **Test against:** `Tfa002`, `Tfa004`, `Tfa038`, `Tfa088`, `Tfa101`, `Tfa255`
+
+### `tkshh-faceconnect-unshared-boundary-edges`
+
+*TKShHealing* · 6 fixtures · observed: loads×5, crash×1 · **6/6 carry a written spec** · corpus coverage: COVERED
+
+Two adjacent faces that physically touch along a common boundary each carry their own independent copy of the boundary edge (and its endpoint vertices) instead of referencing one shared topological edge — a geometric crack/gap in an otherwise visually-closed shell. The healer geometrically sews the registered face pairs together (via BRepBuilderAPI_Sewing), rebuilds the affected wires with the…
+
+**Test against:** `Tfa019`, `Twi037`, `Tsh086`, `Tsh095`, `Tsh101`, `Tsh110`
 
 ### `bc-check-fail`
 
@@ -289,14 +261,6 @@ Perfect 3D/2D parameter synchronization (see sew-pcurve-parameter-desync-repair)
 Vertices from originally-separate shapes/edges that sit within tolerance of each other, but are not the literal same topological vertex, get unified into one shared 'node' vertex so that edges from different shapes actually connect at a shared point. This is done as a transitive spatial clustering (using a cell-filter spatial index) rather than naive pairwise snapping, and per-pair merges are…
 
 **Test against:** `Tfa019`, `Twi037`, `Tsh203`, `Tfa022`, `N149`
-
-### `tkshh-surface-implicit-degenerate-edge`
-
-*TKShHealing* · 5 fixtures · observed: loads×4, crash×1 · **5/5 carry a written spec** · corpus coverage: COVERED
-
-An edge segment can be geometrically degenerate in 3D (its two endpoints and midpoint all map to nearly the same 3D point) even though it spans a non-trivial 2D parametric distance and is nowhere near one of the surface's canonical analytic singularities (cone apex, sphere pole, torus pinch). This is detected by comparing the 3D span against the 2D parametric span scaled by the surface's local…
-
-**Test against:** `Gs069`, `Gs084`, `Gs098`, `Gs111`, `Gs138`
 
 ### `sew-edge-endpoint-tolerance-reconciliation`
 
@@ -335,6 +299,14 @@ A curve's own type/flag does not report IsClosed()==true (e.g. it is not flagged
 
 <sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
 
+### `tkshh-wire-3d-curve-gap`
+
+*TKShHealing* · 8 fixtures · observed: empty×5, loads×3 · **8/8 carry a written spec** · corpus coverage: COVERED
+
+The 3D curves of two consecutive edges do not meet: the end point of edge n's 3D curve and the start point of edge n+1's 3D curve are separated by more than precision, even though the wire's topology may claim connection. Repair modifies the curve geometry itself - translating/extending curve ends or replacing curve segments - to close the gap (distinct from merely merging vertices or…
+
+**Test against:** `Twi108`, `Twi180`, `Twi189`, `Twi199`, `Twi266`, `Twi068`, `Twi072`, `Twi003`
+
 ### `tkshh-wire-adjacent-vertex-gap`
 
 *TKShHealing* · 8 fixtures · observed: empty×5, loads×3 · **4/8 carry a written spec** · corpus coverage: COVERED
@@ -344,6 +316,14 @@ Consecutive edges of a wire are listed in correct order but do not share a verte
 **Test against:** `Twi003`, `Twi043`, `Twi056`, `Twi116` †, `Twi136` †, `Twi238`, `Twi243` †, `Twi264` †
 
 <sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+
+### `tkshh-wire-tail`
+
+*TKShHealing* · 8 fixtures · observed: empty×7, loads×1 · **8/8 carry a written spec** · corpus coverage: COVERED
+
+A tail (hair): at the junction of two consecutive edges the boundary shoots out and comes straight back, forming a protrusion narrower than a configured max width (and optionally sharper than a max angle). The out-and-back portions must be cut off the two edges and the residual out/back pair removed.
+
+**Test against:** `Twi011`, `Twi077`, `Twi098`, `Twi114`, `Twi122`, `Twi182`, `Twi197`, `Twi215`
 
 ### `tkshh-same-curve-fragmented-edges`
 
@@ -365,6 +345,16 @@ Per-entity repairs elsewhere in the translation pipeline enlarge vertex/edge tol
 
 
 ## T2 loads-and-heals
+
+### `tkshh-wire-nonadjacent-edges-intersect`
+
+*TKShHealing* · 15 fixtures · observed: loads×10, empty×5 · **14/15 carry a written spec** · corpus coverage: COVERED
+
+Two non-adjacent edges of the same wire cross in parameter space (global self-intersection, e.g. a figure-eight or bow-tie contour). Repair splits the edges at the crossing, cuts back, or removes the enclosed sub-segment.
+
+**Test against:** `Twi049`, `Twi076`, `Twi157`, `Twi214`, `Twi232`, `Twi263` †, `Twi249`, `Twi250`, `Twi251`, `Gs011`, `Gs009`, `Twi103` …and 3 more
+
+<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
 
 ### `tkshh-tolerance-out-of-range`
 
@@ -935,6 +925,14 @@ A compound/comp-solid contains one or more degenerate 'sliver' solids -- artifac
 A solid built from a single closed shell has its overall orientation globally inverted: every face is consistently flipped together, so classifying a point at infinity against the resulting solid reports it as 'inside' (i.e. the shell bounds the complement of the intended region -- material and void are swapped). OCCT repairs this by reversing the entire shell (all faces at once) so the…
 
 **Test against:** `Bo024`, `Ps001`, `Tsh010`
+
+### `tkshh-surface-implicit-degenerate-edge`
+
+*TKShHealing* · 3 fixtures · observed: loads×3 · **3/3 carry a written spec** · corpus coverage: COVERED
+
+An edge segment can be geometrically degenerate in 3D (its two endpoints and midpoint all map to nearly the same 3D point) even though it spans a non-trivial 2D parametric distance and is nowhere near one of the surface's canonical analytic singularities (cone apex, sphere pole, torus pinch). This is detected by comparing the 3D span against the 2D parametric span scaled by the surface's local…
+
+**Test against:** `Gs084`, `Gs098`, `Gs111`
 
 ### `bc-empty-wire`
 
