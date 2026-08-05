@@ -2283,7 +2283,7 @@ Verified directly, both previously undocumented in their entries' Descriptions.
 Same decision as (I): repair so the titled defect is actually exercised, or
 re-title as schema/attribute-malformation crash fixtures.
 
-## (L) Eight entries whose Description claims a defect the geometry lacks
+## (L) RESOLVED 2026-08-04 — eight entries whose TITLE claimed a defect the geometry lacks
 
 Found by computing the geometry rather than trusting the prose: de Boor
 sampling of the B-splines, shoelace winding of the shell loops.
@@ -2342,3 +2342,31 @@ way (117 retitle, 0 quarantine, 0 repair).
 **Still open, deliberately:** the Descriptions of the 8 negative controls; the
 undiagnosed crash cause of Twi219/Twi220; and whether the titled wire defects
 that Twi222/224/225/227/231 were meant to cover are exercised anywhere else.
+
+### (L) resolution — 7 retitled, 1 deliberately not
+
+Correction to this section's own wording: these entries have **no `Description`
+field at all**; the false claim lived in the **title**. Fixed by retitling, same
+policy as (H)/(I)/(K).
+
+All seven retitles rest on my own re-computation, not the originating report:
+- **Twi129** control x = [0, 2.5, 5, 7.5, 10], strictly increasing; 400-point de
+  Boor sample -> 0 self-intersections.
+- **Twi151** control x = [-2, -1, 0, 1, 2], strictly increasing; 0 crossings.
+- **Twi172** x-control-points (0,5,5,10) give dx/dt = 15[(1-t)^2 + t^2], min 7.5
+  at t=0.5 — never zero, so no cusp; only dy/dt vanishes. 0 crossings.
+- **Twi188** control x = [0, 5, 10, 5, 10] DOES double back, so the monotonicity
+  shortcut does not apply and sampling was required: 0 crossings over
+  x in [0,10], y in [0,4.44]. Its own `self_intersect=.T.` flag contradicts its
+  geometry — trust the sampled curve, not the flag.
+- **Twi130** pentagon (0,0) (10,0) (15,-2) (15,5) (0,5); all non-adjacent edge
+  pairs tested, 0 crossings.
+- **Tsh106** loop areas 16.0 and 4.0 vs declared tolerance 1.0E-7.
+- **Tsh124** loop areas 10000.0, 100.0, 100.0, 100.0 vs 1.0E-7.
+
+**Tsh089 NOT retitled.** The claim that its wires are non-negligible comes from
+the sub-agent and I could not reproduce it — my shoelace pass found no
+`EDGE_LOOP` in that fixture to measure, so its loops are encoded differently and
+the Tsh106/Tsh124 argument does not transfer. Left with an in-entry Status
+saying exactly that. Re-check with a parser that handles its actual loop
+encoding before assuming it belongs to the group.

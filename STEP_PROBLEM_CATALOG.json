@@ -68411,7 +68411,7 @@
     "closure_defect": null,
     "closure_intent": null,
     "cross_oracle_note": null,
-    "description": "ShapeUpgrade_RemoveInternalWires shell-level skip",
+    "description": "Face wires of area 16 and 4 against a 1e-7 tolerance: neither is negligible and neither may be removed",
     "expected_kernel_behavior": "The 4x4 face's 2x2 inner bound has every oriented edge individually reversed but the list order left unchanged, so consecutive entries do not join — read backwards, the same list is a properly connected clockwise hole. Reorder the oriented edges into a connected chain (reversing the sequence, not just the individual senses) before doing anything else with the wire. The hole encloses 4 square units against a declared accuracy of 1.0E-7, so it is a genuine hole: preserve it, and do not fill it as a negligible-area wire.",
     "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
@@ -68436,7 +68436,7 @@
       "topology"
     ],
     "tier3_assertions": [],
-    "title": "ShapeUpgrade_RemoveInternalWires shell-level skip"
+    "title": "Face wires of area 16 and 4 against a 1e-7 tolerance: neither is negligible and neither may be removed"
   },
   {
     "byte_assertions": [],
@@ -69016,7 +69016,7 @@
     "closure_defect": null,
     "closure_intent": null,
     "cross_oracle_note": null,
-    "description": "ShapeUpgrade_RemoveInternalWires faces-with-multiple-internal-wires",
+    "description": "Face wires of area 10000 and 100 against a 1e-7 tolerance: none is negligible and none may be removed",
     "expected_kernel_behavior": "The 100x100 face has three 10x10 inner bounds whose loops run counter-clockwise, the same sense as the outer bound, so outer and inner boundaries put material on the same side and the face interior is undefined. Classify each wire by containment — all three lie strictly inside the outer loop and are mutually disjoint — then reverse every wire whose sense disagrees with the consensus, so holes are traversed opposite to the outer boundary. Each hole encloses 100 square units against a declared accuracy of 1.0E-7, so none may be discarded as a negligible-area wire, and all three must be settled in one classification pass so the result does not depend on iteration order.",
     "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
@@ -69041,7 +69041,7 @@
       "topology"
     ],
     "tier3_assertions": [],
-    "title": "ShapeUpgrade_RemoveInternalWires faces-with-multiple-internal-wires"
+    "title": "Face wires of area 10000 and 100 against a 1e-7 tolerance: none is negligible and none may be removed"
   },
   {
     "byte_assertions": [],
@@ -78685,7 +78685,7 @@
     "closure_defect": null,
     "closure_intent": null,
     "cross_oracle_note": null,
-    "description": "ShapeFix_Wire.FixSelfIntersectingEdge inflection-self-touch",
+    "description": "Cubic B-spline whose control polygon is strictly x-monotonic, so the curve cannot cross itself: splitting it is a false positive",
     "expected_kernel_behavior": "The single edge is a degree-3 B-spline whose five control points have strictly increasing x (0, 2.5, 5, 7.5, 10), so every control point of its derivative has a positive x component: the curve is x-monotone and cannot cross itself anywhere in its range, despite an S-shaped control polygon that inflects near (5,0,0). Test for self-intersection by subdividing the actual curve and comparing non-adjacent pieces, never by reading the control polygon and never by splitting where curvature changes sign — an inflection is not a crossing — so the correct result here is no self-intersection and no split. The defect that must be reported instead is that the loop holds a single edge whose two endpoints differ, so it does not close.",
     "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
@@ -78711,7 +78711,7 @@
     "tier3_assertions": [
       "shape_null == True"
     ],
-    "title": "ShapeFix_Wire.FixSelfIntersectingEdge inflection-self-touch"
+    "title": "Cubic B-spline whose control polygon is strictly x-monotonic, so the curve cannot cross itself: splitting it is a false positive"
   },
   {
     "byte_assertions": [],
@@ -78719,7 +78719,7 @@
     "closure_defect": null,
     "closure_intent": null,
     "cross_oracle_note": null,
-    "description": "ShapeAnalysis_Wire.CheckIntersectingEdges adjacency exemption",
+    "description": "Simple pentagon with no crossing pair: adjacency-exempt intersection checking must report nothing",
     "expected_kernel_behavior": "The five straight edges form a simple closed pentagon through (0,0), (10,0), (15,-2), (15,5) and (0,5); no pair crosses, including the adjacent pair at (10,0,0) where the second edge dips below the X axis. Do not blanket-exempt adjacent edges from intersection testing — test each consecutive pair over the portions lying outside the tolerance ball around their shared vertex — but on this input that test finds nothing, so the wire must be accepted unchanged. A checker that reports a crossing here is producing a false positive, and trimming to a phantom intersection would destroy a valid boundary.",
     "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
@@ -78745,7 +78745,7 @@
     "tier3_assertions": [
       "shape_null == True"
     ],
-    "title": "ShapeAnalysis_Wire.CheckIntersectingEdges adjacency exemption"
+    "title": "Simple pentagon with no crossing pair: adjacency-exempt intersection checking must report nothing"
   },
   {
     "byte_assertions": [],
@@ -79419,7 +79419,7 @@
     "closure_defect": null,
     "closure_intent": null,
     "cross_oracle_note": null,
-    "description": "ShapeFix_Wire.FixSelfIntersectingEdge cusp-cusp",
+    "description": "Cubic B-spline whose control polygon is strictly x-monotonic, so neither claimed cusp exists: splitting it is a false positive",
     "expected_kernel_behavior": "The edge's curve is a degree-3 B-spline whose five control points have strictly increasing x (-2, -1, 0, 1, 2), so its derivative never vanishes and the curve is x-monotone: it has no cusp and no self-crossing, even though its control polygon dips below the chord. Locate cusp candidates by subdividing the curve and evaluating the derivative, and refuse to split at any parameter where the derivative is non-zero — the correct outcome is to leave this edge intact. Two `VECTOR` entities in the file are also written with two attributes and an inline coordinate list where a direction reference and a magnitude are required, and must be rejected rather than default-filled.",
     "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
     "fixture_kind": null,
@@ -79444,7 +79444,7 @@
       "topology"
     ],
     "tier3_assertions": [],
-    "title": "ShapeFix_Wire.FixSelfIntersectingEdge cusp-cusp"
+    "title": "Cubic B-spline whose control polygon is strictly x-monotonic, so neither claimed cusp exists: splitting it is a false positive"
   },
   {
     "byte_assertions": [],
@@ -80131,7 +80131,7 @@
     "closure_defect": null,
     "closure_intent": null,
     "cross_oracle_note": null,
-    "description": "ShapeFix_Wire.FixSelfIntersectingEdge cusp-edge",
+    "description": "Cubic B-spline with two coincident interior control points: the tangent never vanishes, so the flat spot is a horizontal tangent and not a cusp",
     "expected_kernel_behavior": "The edge's curve is a clamped cubic Bezier with duplicated interior control points, both (5,10), so its derivative's control points are (5,10), (0,0) and (5,-10), and dx/dt = 5(1-t)^2 + 5t^2 is never below 2.5: the tangent never vanishes, the curve is x-monotone, and there is no cusp and no self-intersection. Detect cusps by evaluating the derivative rather than by looking for repeated control points, and return the edge unsplit — the flat spot at t=0.5 is only a horizontal tangent (dy/dt = 0), which is not a cusp. Splitting there would produce two edges where one is correct.",
     "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
@@ -80157,7 +80157,7 @@
     "tier3_assertions": [
       "shape_null == True"
     ],
-    "title": "ShapeFix_Wire.FixSelfIntersectingEdge cusp-edge"
+    "title": "Cubic B-spline with two coincident interior control points: the tangent never vanishes, so the flat spot is a horizontal tangent and not a cusp"
   },
   {
     "byte_assertions": [],
@@ -80688,7 +80688,7 @@
     "closure_defect": null,
     "closure_intent": null,
     "cross_oracle_note": null,
-    "description": "ShapeAnalysis_Wire.CheckSelfIntersectingEdge B-spline-with-loop",
+    "description": "B-spline whose control polygon doubles back yet whose curve has no crossing, while the file's own flag declares it self-intersecting",
     "expected_kernel_behavior": "The edge's B-spline is written with its self-intersection flag set to `.T.`, but sampling the actual curve (degree 3, control points (0,0), (5,5), (10,5), (5,0), (10,0), knots 0/0.5/1 at multiplicities 4/1/4) shows no crossing anywhere in its range. Treat the declared flag as an unverified hint, decide from the geometry by subdividing the curve and comparing non-adjacent pieces over the whole parameter range rather than only its endpoints, and leave the edge intact when no crossing is found — a flag must never on its own license a split. The defect to report instead is that the loop consists of one open edge from (0,0,0) to (10,0,0) and therefore cannot bound a face.",
     "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
     "fixture_kind": null,
@@ -80714,7 +80714,7 @@
     "tier3_assertions": [
       "shape_null == True"
     ],
-    "title": "ShapeAnalysis_Wire.CheckSelfIntersectingEdge B-spline-with-loop"
+    "title": "B-spline whose control polygon doubles back yet whose curve has no crossing, while the file's own flag declares it self-intersecting"
   },
   {
     "byte_assertions": [],
