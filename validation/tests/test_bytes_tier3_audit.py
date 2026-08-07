@@ -26,7 +26,14 @@ from step_corpus._bytes_tier3_audit import audit_all
 # "tier-3 face count cannot exceed declared ADVANCED_FACE" is correct
 # for well-formed faces but doesn't model topology-induced face splits,
 # which is exactly what Tsh056 exercises as its defect mechanism.
-INCONSISTENT_CEILING = 1
+# Bumped 1 -> 6 on 2026-08-06. The five new pairs are NOT contradictions; they
+# are each fixture's actual claim. Tfa258/259/260 declare ONE EDGE_CURVE and the
+# reader synthesises a seam plus a degenerate edge, so tier-3 legitimately sees
+# 4; Tsh263/264 declare 11 ADVANCED_FACE and the solid-merge path produces 12.
+# A fixture whose whole point is "the reader invents topology the file never
+# declared" will always trip a declared-vs-loaded comparison. Bumping with this
+# note is the sanctioned escape hatch documented at the top of this file.
+INCONSISTENT_CEILING = 6
 
 
 @pytest.fixture(scope="module")

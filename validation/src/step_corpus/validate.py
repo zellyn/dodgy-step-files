@@ -3,8 +3,24 @@
 Runs the file through several independent oracles and emits structured output:
 - byte-level signatures (BOM, line endings, NUL bytes, file size)
 - ifcopenshell strict Part-21 parse (rejects malformed)
-- OCCT load with healing on (default; `STEPControl_Reader::TransferRoots`)
-- OCCT load with healing off (precision tunables relaxed)
+- OCCT load, reader-default mode (`STEPControl_Reader::TransferRoots`)
+- OCCT load, alternate reader mode
+
+  NOTE on what these two actually are, because the names oversell them.
+  They are not a healing on/off toggle. The only thing separating them is
+  `read.surfacecurve.mode` (0 = prefer the file's pcurves, 3 = ignore them
+  and rebuild from the 3D curve) plus a few precision tunables. Real
+  healing (ShapeFix/ShapeProcess) is not toggled here at all.
+
+  Measured 2026-08-01 across all 2530 STEP fixtures with the settings
+  genuinely applied: the two modes produce an IDENTICAL summary token for
+  EVERY fixture. So `occt=X/Y` always has Y == X today, and the second
+  token carries no information. It is retained because it costs nothing
+  and would become informative if the alternate branch were ever pointed
+  at a real healing sequence -- which is the open design question in
+  BACKLOG (G). Do not read `occt=shape(1)/shape(1)` as evidence that a
+  fixture survives with healing disabled; nothing in this corpus tests
+  that yet.
 - gmsh load with `Geometry.OCCAutoFix=0` (alternate OCC build, healing disabled)
 - entity-graph summary (entity-type counts)
 
@@ -172,9 +188,17 @@ def parse_occt(path: Path, healing: bool = True) -> dict:
       - exception: Python exception during processing
     """
     try:
-        from OCP.STEPControl import STEPControl_Reader  # type: ignore
+        from OCP.STEPControl import (  # type: ignore
+            STEPControl_Controller,
+            STEPControl_Reader,
+        )
         from OCP.IFSelect import IFSelect_RetDone  # type: ignore
         from OCP.Interface import Interface_Static  # type: ignore
+
+        # Registers the read.* parameters. Until this runs, every
+        # Interface_Static.Set* below silently returns False and stores
+        # nothing. See the fuller note in _oracle_workers.oracle_occt.
+        STEPControl_Controller.Init_s()
 
         if not healing:
             Interface_Static.SetIVal_s("read.precision.mode", 0)

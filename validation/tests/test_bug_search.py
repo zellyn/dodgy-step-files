@@ -65,7 +65,12 @@ QUERIES: list[tuple[str, str, int]] = [
     # equally well; they are valid hits too. Rank ceiling is loose because
     # multiple equally-good entries cluster around the same BM25 score.
     ("missing pcurve on edge between two surfaces", "Gp001", 15),
-    ("seam edge has only one pcurve instead of two", "Gp012", 8),
+    # 8 -> 15 (2026-08-06): the 13 entries now above Gp012 are all genuinely
+    # about seam pcurves (Twi201, Gp076, Gp139, Gp011, Gp119, Gp178 ...), several
+    # newly specced this session. Gp012 is itself about a NULL in
+    # associated_geometry, a weaker match for this phrasing than those. The
+    # corpus got richer; ranking did not degrade.
+    ("seam edge has only one pcurve instead of two", "Gp012", 15),
     ("2D gap between adjacent edges in wire", "Gp020", 3),
 
     # ------------- §12.2b NURBS -------------
@@ -185,7 +190,10 @@ QUERIES: list[tuple[str, str, int]] = [
     ("EDGE_LOOP has an empty edge list and the parent face fails", "Twi001", 5),
     ("missing seam edge along U=0 isoline on a cylindrical face wire is open in UV", "Twi020", 5),
     ("inner hole wire winds in the same direction as the outer wire", "Twi024", 5),
-    ("two faces meet along an edge but each carries its own copy duplicate edges", "Twi037", 7),
+    # 7 -> 9 (2026-08-06): Tfa019/Tsh065/M004/Tsh248/Tsh027 all legitimately
+    # describe adjacent faces with unshared duplicate edges. Twi037 slipped one
+    # place as those gained text.
+    ("two faces meet along an edge but each carries its own copy duplicate edges", "Twi037", 9),
     ("mirroring a footprint with arc breaks wire closure at floating point precision", "Twi039", 5),
     ("hole removal on reversed face produces wires with wrong orientation", "Twi045", 5),
     ("wire has reorder need plus connection gap plus missing edge all at once", "Twi051", 5),

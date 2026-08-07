@@ -54,12 +54,27 @@ def oracle_ifcopenshell(path: str):
 
 def oracle_occt(path: str, healing: bool):
     try:
-        from OCP.STEPControl import STEPControl_Reader  # type: ignore
+        from OCP.STEPControl import (  # type: ignore
+            STEPControl_Controller,
+            STEPControl_Reader,
+        )
         from OCP.IFSelect import IFSelect_RetDone  # type: ignore
         from OCP.Interface import Interface_Static  # type: ignore
     except ImportError as e:
         _emit({"status": "tool_missing", "error": str(e)})
         return
+
+    # REQUIRED before any Interface_Static.Set*. The read.* parameters are
+    # registered by the STEP controller; until it is initialised every
+    # SetIVal_s/SetRVal_s SILENTLY returns False and stores nothing (measured
+    # 2026-08-01: readback stayed 0 for every parameter and every value; after
+    # Init_s() every one round-trips). Without this the settings below are
+    # inert and both branches read with OCCT defaults.
+    #
+    # Landing this is token-neutral: all 2547 fixtures were re-read in both
+    # modes with the fix applied and compared against the catalog's Expected
+    # lines -- 0 real changes. See BACKLOG (G).
+    STEPControl_Controller.Init_s()
 
     if not healing:
         Interface_Static.SetIVal_s("read.precision.mode", 0)
