@@ -366,6 +366,21 @@ def audit_all(entries: Iterable[dict] | None = None) -> list[dict[str, Any]]:
     return out
 
 
+# Fixtures whose WHOLE POINT is that the reader materialises topology the file
+# never declared. For these a declared-vs-loaded comparison must disagree; that
+# disagreement IS the demonstrated behaviour, so failing on it would be
+# backwards. An entry may only appear here with a written reason -- a bare id
+# is not accepted, because the value of this gate is that every exception is
+# explained rather than merely tolerated.
+INTENTIONAL_INCONSISTENT: dict[str, str] = {
+    "Tfa258": "declares 1 EDGE_CURVE; reader synthesises seam + degenerate edge at the sphere pole -> 4 edges",
+    "Tfa259": "declares 1 EDGE_CURVE; reader synthesises seam + degenerate edge at the cone apex (apex below) -> 4 edges",
+    "Tfa260": "declares 1 EDGE_CURVE; reader synthesises seam + degenerate edge at the cone apex (mirrored nappe) -> 4 edges",
+    "Tsh263": "declares 11 ADVANCED_FACE; the shared-face solid merge yields 12",
+    "Tsh264": "declares 11 ADVANCED_FACE; the drop-small-solids operator merge yields 12",
+}
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="step_corpus._bytes_tier3_audit")
     p.add_argument("--json", action="store_true",
@@ -392,12 +407,20 @@ def main(argv: list[str] | None = None) -> int:
     print(f"\nWrote {args.output}")
 
     inconsistent = [r for r in results if r["verdict"] == "inconsistent"]
-    if inconsistent:
-        print(f"\n{len(inconsistent)} inconsistent pairs:")
-        for r in inconsistent:
+    sanctioned = [r for r in inconsistent if r["id"] in INTENTIONAL_INCONSISTENT]
+    unsanctioned = [r for r in inconsistent if r["id"] not in INTENTIONAL_INCONSISTENT]
+
+    if sanctioned:
+        print(f"\n{len(sanctioned)} SANCTIONED declared-vs-loaded gaps "
+              f"(each is the fixture's own claim, not a contradiction):")
+        for r in sanctioned:
+            print(f"  {r['id']:<8} {INTENTIONAL_INCONSISTENT[r['id']]}")
+    if unsanctioned:
+        print(f"\n{len(unsanctioned)} inconsistent pairs:")
+        for r in unsanctioned:
             print(f"  {r['id']:<8} byte={r['byte_claim']!r}  "
                   f"tier3={r['tier3_claim']!r}  reason={r['reason']}")
-    return 1 if inconsistent else 0
+    return 1 if unsanctioned else 0
 
 
 if __name__ == "__main__":
