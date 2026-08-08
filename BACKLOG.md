@@ -2620,6 +2620,34 @@ ill-typed, so it tested nothing. With a synthesised DIRECTION, three of the four
 Same failure shape as the inline-entity mistake above -- **an invalid instrument returns
 a negative that looks like a finding.**
 
+#### The 3 non-confirmed fixtures: a SECOND crash site, same bug shape
+
+Stack traces (`lldb -b -o run -o "bt 2"`) on the three that still crash with every
+`LINE` repaired:
+
+    Gs138   EXC_BAD_ACCESS addr=0x10  StepToGeom::MakeBSplineSurface(...)
+    Twi227  EXC_BAD_ACCESS addr=0x10  StepToGeom::MakeBSplineSurface(...)
+    Twi144  EXC_BAD_ACCESS addr=0x18  StepToGeom::MakeVectorWithMagnitude(...)
+
+So the corpus exercises **two distinct unchecked-downcast null derefs in the same
+STEP-to-geometry converter**, not one:
+
+    site A  MakeVectorWithMagnitude  -- 26 fixtures, from LINE.dir referencing a
+            DIRECTION where a VECTOR is declared. Confirmed by repair.
+    site B  MakeBSplineSurface       -- Gs138, Twi227. Input pattern NOT yet isolated;
+            both files carry a B_SPLINE_SURFACE_WITH_KNOTS.
+
+That generalisation is worth more to an implementer than either fixture: the failure mode
+is "downcast the declared type, use it without checking", and it recurs across entity
+families. A kernel that null-checks every schema-declared downcast in its STEP reader
+avoids the whole class.
+
+**Twi144 is genuinely unexplained.** It hits site A even though all five of its
+`LINE.dir` references were repaired -- verified by re-reading the patched text (all five
+LINEs point at appended `VECTOR` entities) and by confirming all four target DIRECTIONs
+are well-formed 3D directions. The file contains no other `VECTOR`. Whatever reaches
+`MakeVectorWithMagnitude` there is not its LINE directions.
+
 #### Open
 Tsh079/Tsh080/Tsh081 carry 10-12 DIRECTION-referencing LINEs each and still LOAD. The
 2D-pcurve-vs-3D-curve split does not explain them (used as a 2D pcurve: 4/4 crash; only
