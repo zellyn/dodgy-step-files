@@ -2570,6 +2570,26 @@ fires on a plain read while the fixture is still a good bytes-level witness. Bot
 may be exactly that. But a COVERED verdict whose only witness never fires the status it is
 COVERED for is worth an explicit maintainer decision rather than an assumption.
 
+**RESOLVED 2026-08-08 -- and the two cases have OPPOSITE answers.** The discriminator: is the
+defect PRE-HEALED by the reader (legitimate oracle-invisibility) or NOT ENCODED IN THE BYTES at
+all (a weak witness)? Measured both:
+
+- `bc-no-curve-on-surface` -- **legitimate, verdict STANDS.** After transfer, all 4 edges of BOTH
+  Gp175 and Gp091 carry a pcurve (`BRep_Tool::CurveOnSurface` non-null). The bytes genuinely omit
+  the PCURVE (bare LINE as edge_geometry); OCCT SYNTHESISES one during transfer. So BRepCheck
+  never fires because the defect is already repaired before it runs -- the documented
+  oracle-invisible class, not an overclaim. No action needed.
+
+- `bc-unorientable-shape` -- **Bo005 does NOT encode the defect.** Counted edge sharing across
+  EDGE_LOOPs in the raw bytes: Bo005 has **ZERO** edges used by more than one loop, so there is no
+  orientation contradiction present to detect. Tsh075 has exactly one -- `EDGE_CURVE #313` used by
+  EDGE_LOOPs #404 and #415 with the SAME `.T.` sense -- and fires
+  `BRepCheck_UnorientableShape` on both faces live. **Tsh075 promoted to primary witness** in
+  problems.json. Bo005 retained for now: deciding whether it is simply mislabelled, or exercises
+  some other orientation path worth keeping, is a maintainer call, not an automated one.
+
+Original framing kept below for the record:
+
 Concretely:
 - `bc-unorientable-shape` now has a witness that DOES fire live (Tsh075). If Bo005 turns out
   not to demonstrate the mechanism at all, Tsh075 should become the primary and Bo005 either

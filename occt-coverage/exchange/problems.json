@@ -2200,11 +2200,11 @@
     ],
     "subvariants": [],
     "fixture_ids": [
-      "Bo005",
-      "Tsh075"
+      "Tsh075",
+      "Bo005"
     ],
     "coverage_verdict": "COVERED",
-    "notes": "BRepCheck_Status enum value UnorientableShape. | VERIFICATION: Bo005 verified in bytes: shell of planar faces wired into a closed band with one face's same_sense=.F., baking an orientation contradiction into the as-given topology (BRepCheck checks as-given, it does not re-flip); fixture comment records BRepCheck firing UnorientableShape, occt=shape(1). Tsh075/Tsh078 are dedicated Moebius-shell constructions.",
+    "notes": "BRepCheck_Status enum value UnorientableShape. | VERIFICATION: Bo005 verified in bytes: shell of planar faces wired into a closed band with one face's same_sense=.F., baking an orientation contradiction into the as-given topology (BRepCheck checks as-given, it does not re-flip); fixture comment records BRepCheck firing UnorientableShape, occt=shape(1). Tsh075/Tsh078 are dedicated Moebius-shell constructions. | 2026-08-08 MEASURED: Tsh075 promoted to primary witness. Tsh075 shares EDGE_CURVE #313 between EDGE_LOOPs #404/#415 with the SAME .T. sense (a real orientation contradiction) and fires BRepCheck_UnorientableShape live on BOTH faces (IsValid=False). Bo005, the previous sole fixture, has ZERO edges shared between any two loops, so no orientation contradiction is encoded in its bytes at all, and it measures IsValid=True / NoError on every face. Bo005 retained pending a maintainer decision -- see BACKLOG (N).",
     "detect_only": true,
     "audit": "COVERED_FULL_REVERIFY.md: pruned bogus citation(s) ['Tsh078', 'Tsh075'] -- never oracle-run (occt=unknown/unknown), own text says the mechanism crashes a downstream healer -- class now rests on Bo005 alone (single-fixture base). Verdict unchanged (COVERED)."
   },
