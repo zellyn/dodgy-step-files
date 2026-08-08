@@ -32,6 +32,8 @@
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>The edge&#x27;s curve is declared degree 3 with knots (0.0, 1.0) at multiplicities (4,4) — eight knots — but carries only three control points, where a clamped cubic needs four; the identity knot-count = control-point-count + degree + 1 fails. Validate that identity before evaluating any B-spline and reject the curve with a diagnostic naming the entity, rather than reading past the end of the control-point array. Only once a curve is valid may an edge-smallness test run, and that test must measure 3D arc length, or endpoint-and-midpoint coincidence, never the width of the parameter range — a narrow parameter range can carry an arbitrarily long arc.</p></section>
+<section><h2>Notes</h2>
+<p>RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file&#x27;s straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

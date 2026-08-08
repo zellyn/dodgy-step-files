@@ -32,6 +32,8 @@
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>The closing edge is a straight `LINE` from (-5,0,0) to (5,0,0): a diameter chord through the cylinder&#x27;s axis, so it does not lie on the radius-5 surface and no pcurve can be projected for it. Construct a closure on a periodic surface in parameter space rather than in 3D: the wire&#x27;s u values run 0, pi/2, pi, so the closure must continue in the same direction to u=2pi rather than jumping back to u=0, keeping the contour monotone in u and free of self-overlap. If no closure can be placed on the surface — as here — reject the edge with a diagnostic instead of projecting a chord onto an arbitrary meridian.</p></section>
+<section><h2>Notes</h2>
+<p>RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file&#x27;s straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

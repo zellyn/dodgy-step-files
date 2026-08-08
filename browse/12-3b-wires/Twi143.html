@@ -32,6 +32,8 @@
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Reject with a diagnostic naming each unbuildable curve: all five of the wire&#x27;s LINE entities put a DIRECTION where Part 21 requires a `#N` reference to a VECTOR, so no edge curve can be constructed. Once curves can be built, the file still separately describes edge #111 running (0,0)-&gt;(10,0) and edge #121 running (10,0)-&gt;(0,0) back along the identical LINE #110/#120 pair — full-length antiparallel overlap on the same underlying geometry — which a kernel must flag as a degenerate/coincident boundary rather than accept as two independent, non-intersecting edges.</p></section>
+<section><h2>Notes</h2>
+<p>RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file&#x27;s straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

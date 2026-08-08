@@ -27456,28 +27456,32 @@ Three edges forming chain with vertex duplicates: v1→v2(dup)→v3(dup)→v4. F
 
 Wire on a 3D surface (plane) where two edges intersect in 2D parameter space but not in 3D. The healer over-eagerly splits both edges at the parameter-space intersection, missing that the 3D gap should absorb the discrepancy. Tests tolerance-vs-geometry logic in intersection repair.
 - **Expected kernel behavior**: The second edge lies wholly at z=1 while the face's surface is the z=0 plane; projected into the face's parameters it crosses the first edge at (5,5), but in 3D the two are 1.0 unit apart, seven orders of magnitude above the declared accuracy. Qualify every parameter-space crossing against the 3D geometry before repairing it, and split only when the 3D separation at the crossing is within tolerance — so no split may happen here. Report the actual defects instead: the second edge does not lie on the face's surface, the first edge's `LINE` along (1,0,0) does not pass through its declared end vertex (10,10,0), and the two edges share no vertex, so the wire is not a chain at all.
+- **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi138 — ShapeAnalysis_Wire.CheckSmall edge-length comparison
 
 Wire with a tiny edge below the threshold where CheckSmall comparison uses parameter-difference (not arc-length) for some curve types. B-spline with degenerate knot multiplicity creates large 3D arc from small parameter range; checker falsely classifies as small. Tests parameter vs. arc-length measurement.
 - **Expected kernel behavior**: The edge's curve is declared degree 3 with knots (0.0, 1.0) at multiplicities (4,4) — eight knots — but carries only three control points, where a clamped cubic needs four; the identity knot-count = control-point-count + degree + 1 fails. Validate that identity before evaluating any B-spline and reject the curve with a diagnostic naming the entity, rather than reading past the end of the control-point array. Only once a curve is valid may an edge-smallness test run, and that test must measure 3D arc length, or endpoint-and-midpoint coincidence, never the width of the parameter range — a narrow parameter range can carry an arbitrarily long arc.
+- **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi139 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before reorder-seed repair is reached
 - **Status**: retitled 2026-08-07: bytes show 5/5 LINEs (#110, #116, #122, #127, #131) with a DIRECTION entity (#12, #115, #121, #126, #130) in the vector slot instead of a `#N` reference to a VECTOR; the reader aborts in transfer, so the seed-choice defect the old title named is never reached. Same crash class as the Twi218/222/224/225/227/231 cohort. Retitle-not-repair per the Q14 precedent. See BACKLOG (I).
 
 Wire with 5 edges where the reorder algorithm picks edge[2] as seed; reorder propagates from seed but seed had wrong orientation, causing adjacent edges to fail head-to-tail test. Tests seed selection and propagation in wire-order repair.
 - **Expected kernel behavior**: Reject with a diagnostic naming each unbuildable curve: every one of the wire's five LINE entities (#110, #116, #122, #127, #131) has a DIRECTION where Part 21 requires a `#N` reference to a VECTOR, so no edge curve can be constructed at all. A kernel must report the first construction failure per entity rather than dereferencing a null curve; whatever wire-ordering question the pentagon-with-a-reflex-vertex-at-(0.5,0.5) shape was meant to pose is unreachable until every LINE in the file is fixed.
-- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
+- **Notes**: **See also**: Twi226, Twi229. RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi140 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before tail-detection repair is reached
 - **Status**: retitled 2026-08-07: bytes show 2/2 LINEs (#110, #131) with a DIRECTION entity (#12, #130) in the vector slot instead of a `#N` reference to a VECTOR; the reader aborts in transfer, so the tail defect the old title named is never reached. Same crash class as the Twi218/222/224/225/227/231 cohort. Retitle-not-repair per the Q14 precedent. See BACKLOG (I).
 
 Wire with last edge a B-spline whose tangent at endpoint is undefined (degenerate knot with multiplicity = degree+1). CheckTail's tangent calculation fails silently, leaving defective tail undetected. Tests tangent-vector robustness on singular curves.
 - **Expected kernel behavior**: Reject with a diagnostic naming entities #110 and #131: both LINEs put a DIRECTION where Part 21 requires a `#N` reference to a VECTOR, so neither of the wire's two straight edges can be built. Separately, the middle edge's B_SPLINE_CURVE_WITH_KNOTS (#122) repeats its first pole and its last pole back-to-back (poles #102,#102,#120,#120), which collapses the derivative to zero at both ends of that degree-3 curve — a genuinely degenerate tail tangent that a kernel must also flag once the file parses at all, rather than silently accepting an undefined direction.
+- **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi141 — ShapeFix_Wire.FixSelfIntersectingEdge close-loop iteration
 
 Wire forms a near-closed loop with a tiny self-intersecting tail; iteration limit (30 cycles) reached before resolution leaves tail intact. Tests loop-removal convergence and iteration-runaway prevention. Common in real CAD data with micro-features near closure.
 - **Expected kernel behavior**: The first four edges already close a 10x10 square; a fifth edge then runs 0.05 units from the closure vertex (0,0,0) back along the +X axis, lying exactly on top of the first edge for its whole length. Treat the last-versus-first pair as a candidate like any other, detect the collinear overlap, and cut the stub away so the four-edge closed square is restored; the repair must terminate, so bound the number of re-detection passes and fail loudly with a diagnostic if the overlap survives them, rather than exhausting an iteration cap and returning silently. That stub's declared direction (1.0, 0.5, 0.0) also does not pass through its own end vertex (0.05,0,0), and must be rejected on that basis.
+- **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi142 — ShapeFix_Wire.FixDegenerated insertion at index 0
 
@@ -27485,6 +27489,7 @@ Wire with degenerate edge (zero-length) at position 0; FixDegenerated's index lo
 
 **Root cause**: Off-by-one or missing boundary check when index equals 0.
 - **Expected kernel behavior**: The loop's first entry is a zero-length edge: its two distinct vertex instances both sit at (0,0,0). Handle removal at index 0 exactly as at any other index — drop the edge, merge the two coincident vertices into one, and re-close the ring so the last edge's end becomes the new first edge's start, remembering that index 0's predecessor is the last edge and not index -1 — leaving a four-edge closed square. An implementation that special-cases only interior positions leaves a dangling vertex or reads out of range; the fourth edge must also be rejected, since its `LINE` along (0,-1,0) from (10,10,0) never reaches its declared end vertex (0,10,0).
+- **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi143 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before intersecting-edge analysis is reached
 - **Status**: retitled 2026-08-07: bytes show 5/5 LINEs (#110, #120, #133, #143, #151) with a DIRECTION entity (#12, #132, #142, #150) in the vector slot instead of a `#N` reference to a VECTOR (two of the LINEs, #110 and #120, both point at the same #12); the reader aborts in transfer, so the overlap defect the old title named is never reached. Same crash class as the Twi218/222/224/225/227/231 cohort. Retitle-not-repair per the Q14 precedent. See BACKLOG (I).
@@ -27493,6 +27498,7 @@ Two parallel edges coincident along their entire length but in opposite directio
 
 **Root cause**: Direction check doesn't recognize antiparallel coincident edges as intersecting.
 - **Expected kernel behavior**: Reject with a diagnostic naming each unbuildable curve: all five of the wire's LINE entities put a DIRECTION where Part 21 requires a `#N` reference to a VECTOR, so no edge curve can be constructed. Once curves can be built, the file still separately describes edge #111 running (0,0)->(10,0) and edge #121 running (10,0)->(0,0) back along the identical LINE #110/#120 pair — full-length antiparallel overlap on the same underlying geometry — which a kernel must flag as a degenerate/coincident boundary rather than accept as two independent, non-intersecting edges.
+- **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi144 — ShapeFix_Wire.FixSeam non-cylindrical periodic surface
 
@@ -27509,22 +27515,25 @@ Wire on surface where 3D edges have a real gap but parametric 2D curves connect 
 
 **Root cause**: Logic assumes 2D closure guarantees 3D closure; missing independent 3D gap check.
 - **Expected kernel behavior**: Reject with a diagnostic naming each unbuildable curve: all four of the wire's LINE entities put a DIRECTION where Part 21 requires a `#N` reference to a VECTOR, so no edge curve can be built. Once that is fixed, the file still separately places edge #111's end vertex at (10.0,0.0,0.0) while edge #126's start vertex #121 sits at (10.1,0.0,0.0) — a real 0.1-unit 3D gap between consecutive edges — which a kernel must detect by comparing actual endpoint coordinates rather than trusting the EDGE_LOOP's listed order.
-- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
+- **Notes**: **See also**: Twi228. RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi146 — ShapeFix_Wire.FixLacking wrap-around on closed surface
 
 Wire on cylinder missing edge crossing periodic seam; FixLacking inserts edge but in wrong period of cyclic domain (e.g., near u=0 instead of u=2π).
 
 **Root cause**: Period wrapping not accounted when inserting closure edge on periodic surface.
 - **Expected kernel behavior**: The closing edge is a straight `LINE` from (-5,0,0) to (5,0,0): a diameter chord through the cylinder's axis, so it does not lie on the radius-5 surface and no pcurve can be projected for it. Construct a closure on a periodic surface in parameter space rather than in 3D: the wire's u values run 0, pi/2, pi, so the closure must continue in the same direction to u=2pi rather than jumping back to u=0, keeping the contour monotone in u and free of self-overlap. If no closure can be placed on the surface — as here — reject the edge with a diagnostic instead of projecting a chord onto an arbitrary meridian.
+- **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi147 — A direction whose ratio list nests an aggregate where three reals are required makes the reader abort
 - **Status**: retitled 2026-08-02: bytes contain `#128=DIRECTION('',(-1.47552825814757,(1.0,0.0)))`, a nested aggregate where three reals are required. See BACKLOG (K).
 Wire with a gap bridged by extending one edge; the extension creates a self-intersection with another edge. FixGaps3d fails to detect the induced self-intersection before committing the fix.
 - **Expected kernel behavior**: The first edge ends at vertex (5,0,0) and the second begins at a distinct vertex (5.01,0,0): a 0.01 gap on a 10-unit contour, five orders of magnitude above the declared 1.0E-7 accuracy. Close it by changing geometry — extend one edge's line or trim the other to a shared point, and merge the two vertices — rather than by inflating vertex tolerance to 0.01, and re-test the modified edge against every other edge of the wire for newly created crossings or overlaps before committing, backing out or moving the other end if the fix introduces one. The fourth edge's direction entity must be rejected as well: its ratios are written as `(-1.47552825814757,(1.0,0.0))`, a nested aggregate rather than three reals, and must not be guessed at.
+- **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi148 — ShapeAnalysis_Wire.CheckClosed degenerate-tolerance
 Wire whose closing distance is exactly equal to the closure tolerance (1.0E-7). Non-strict equality (==) leads to false-positive closure, masking incomplete loop detection.
 - **Expected kernel behavior**: The wire's last edge ends at (1.0E-7, 0, 0) while its first begins at (0,0,0), so the closure gap is exactly the file's declared distance accuracy of 1.0E-7. Fix one convention for that boundary case and apply it identically in analysis and repair — treating a distance less than or equal to tolerance as coincident is the safe choice, since tolerance means indistinguishable at this accuracy — and then actually merge the two vertices so the wire becomes topologically closed. Reporting closure while leaving two distinct vertices in place is the failure mode: downstream face building still sees an open contour.
+- **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi149 — ShapeFix_Wire.FixDummySeam non-orientable surface
 Wire on non-orientable surface; FixDummySeam assumes orientability and incorrectly removes a seam edge that is actually topology-defining.
@@ -27539,6 +27548,7 @@ Adjacent edges with tangents parallel to within tolerance; CheckLacking's tangen
 - **Status**: NEGATIVE CONTROL, reclassified 2026-08-02. The Description above claims a defect the geometry does not contain: the sampled curve has no crossing; the declared self-intersection is not present in the geometry. Verified by computation (de Boor sampling for the curves, shoelace winding for the shell loops), not by reading the prose. The entry is retained and is GRADEABLE as-is, because the `Expected kernel behavior` states the false-positive-avoidance requirement — a kernel that 'repairs' sound geometry is buggy, and that is exactly what this fixture now tests. The Description is the part that is wrong and still needs a corrective pass. See BACKLOG (L).
 Single edge with a cusp (zero-derivative point); FixSelfIntersectingEdge tries to split at cusp but the parameter is undefined due to degeneracy.
 - **Expected kernel behavior**: The edge's curve is a degree-3 B-spline whose five control points have strictly increasing x (-2, -1, 0, 1, 2), so its derivative never vanishes and the curve is x-monotone: it has no cusp and no self-crossing, even though its control polygon dips below the chord. Locate cusp candidates by subdividing the curve and evaluating the derivative, and refuse to split at any parameter where the derivative is non-zero — the correct outcome is to leave this edge intact. Two `VECTOR` entities in the file are also written with two attributes and an inline coordinate list where a direction reference and a magnitude are required, and must be rejected rather than default-filled.
+- **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi152 — ShapeFix_Wire.FixIntersectingEdges line-segment-vs-circle-arc
 
@@ -28243,6 +28253,7 @@ Surface with seam at u=π/4 (not standard 0 or 2π). FixDummySeam's heuristic as
 **Minimal reproducer**: Wire on cylindrical surface with seam at u=0/2π. Edges ordered sequentially in 3D but wrap around seam in parametric space, causing order reversal in 2D. CheckOrder returns ordering correction but chooses mode that loses seam constraint.
 
 - **Expected kernel behavior**: Reject with a diagnostic naming each unbuildable curve: all three of the wire's LINE entities point at #101, a DIRECTION, where Part 21 requires a `#N` reference to a VECTOR, so no edge curve on this cylindrical wire can be built. The seam-crossing scenario the old title described — PCURVEs parametrized at u=0, u=π/2, and u=π wrapping around a periodic surface — is unreachable until every LINE in the file is fixed.
+- **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi224 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before any 3D gap repair is reached
 - **Status**: retitled 2026-08-02: bytes show 3/3 LINEs with a DIRECTION in the vector slot. Causally confirmed — inserting a real VECTOR and repointing the lines makes the file load (1 root, non-null). The gap defect the old title named is never reached. See BACKLOG (I).
@@ -28254,6 +28265,7 @@ Surface with seam at u=π/4 (not standard 0 or 2π). FixDummySeam's heuristic as
 **Minimal reproducer**: Wire with Edge1 length 1.0 mm, gap 2.5 mm to Edge2 (length 3.0 mm). FixGaps3d must extend Edge1 by 2.5 mm, exceeding its original length and rendering the repair inconsistent.
 
 - **Expected kernel behavior**: Before closing a gap by moving a curve's end, weigh the gap against the edges it would alter: the 2.5-unit separation between the edge ending at (1,0,0) and the edge starting at (3.5,0,0) exceeds the whole 1.0-unit length of the first edge. Refuse to extend an edge by more than its own length — insert a fresh bridging edge between the two free vertices instead, or report the wire as unrepairably open quoting the gap and both edge lengths. Getting that far means refusing to build a curve whose vector attribute holds a direction entity, as all three lines here do, and saying which entity failed rather than dereferencing a null curve.
+- **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi225 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before self-intersection analysis is reached
 - **Status**: retitled 2026-08-02: bytes show 5/5 LINEs with a DIRECTION in the vector slot; the reader aborts before the self-intersection check. See BACKLOG (I).
@@ -28275,7 +28287,7 @@ Surface with seam at u=π/4 (not standard 0 or 2π). FixDummySeam's heuristic as
 
 **Minimal reproducer**: Wire on trimmed plane where Edge2 terminates exactly at boundary u=10, and Edge3 starts there. FixIntersectingEdges detects boundary touch as intersection and inserts spurious vertex, breaking edge sequence.
 - **Expected kernel behavior**: Reject with a diagnostic naming each unbuildable curve: all four of the wire's LINE entities put a DIRECTION where Part 21 requires a `#N` reference to a VECTOR, so no edge curve can be built. Whatever boundary-touch question the (10.0,5.0,0.0)-to-(9.9,5.1,0.0) corner was meant to pose is unreachable until every LINE in the file is fixed.
-- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
+- **Notes**: **See also**: Twi139. RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi227 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before pcurve gap repair is reached
 - **Status**: retitled 2026-08-02: bytes show 5/5 LINEs with a DIRECTION in the vector slot, plus a B-spline surface with a mismatched control-point arity. See BACKLOG (I).
 
@@ -28287,13 +28299,13 @@ Wire on B-spline surface with non-uniform pcurve. FixGaps2d's bridge logic assum
 
 Adjacent vertices at coordinates 1e6 with gap at 1e-6 scale. CheckGap3d's relative tolerance fails because absolute coordinate magnitude dominates comparison, missing the geometrically significant gap.
 - **Expected kernel behavior**: Reject with a diagnostic naming each unbuildable curve: all six of the wire's LINE entities put a DIRECTION where Part 21 requires a `#N` reference to a VECTOR, so no edge curve can be built. Once curves can be built, vertex #111 at (1000005.0,1000000.0,0.0) and vertex #112 at (1000005.0000001,1000000.0000001,0.0) still leave a genuine ~1e-7 gap between edges #131 and #133 at 1e6-scale coordinates — small in absolute terms but the file's declared 1.0E-7 accuracy is exactly that order, so a kernel must compare the actual endpoint distance rather than a scale-relative tolerance that would drown a real gap at this magnitude.
-- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
+- **Notes**: **See also**: Twi145. RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi229 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before degenerate-edge reorder repair is reached
 - **Status**: retitled 2026-08-07: bytes show 5/5 LINEs (#130, #132, #134, #136, #138), all referencing the same DIRECTION entity #102, in the vector slot instead of a `#N` reference to a VECTOR; the reader aborts in transfer, so the all-degenerate defect the old title named is never reached. Same crash class as the Twi218/222/224/225/227/231 cohort. Retitle-not-repair per the Q14 precedent. See BACKLOG (I).
 
 Wire with all edges degenerate (zero-length). FixReorder has no direction to use for ordering and produces unspecified result.
 - **Expected kernel behavior**: Reject with a diagnostic naming each unbuildable curve: all five of the wire's LINE entities put the same DIRECTION (#102) where Part 21 requires a `#N` reference to a VECTOR, so no edge curve can be built. Independently, every one of this wire's five vertices (#110-#114) sits at the identical point (5.0,5.0,0.0), so even a correctly-built wire would have five zero-length edges; a kernel must reject a wire whose vertices are all coincident rather than attempt to order them.
-- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
+- **Notes**: **See also**: Twi139. RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi230 — Two LINEs write an unparseable `#TYPE(...)` token in the vector slot, so the reader aborts before high-knot-count intersection analysis is reached
 - **Status**: retitled 2026-08-07: bytes show LINE #401's third argument written as `#DIRECTION('',(0.0,1.0,0.0))` and LINE #405's as `#DIRECTION('',(0.0,-1.0,0.0))` — a `#` immediately followed by a type name, which is neither a valid `#N` entity reference (references are `#` + digits only) nor a valid inline aggregate. This is a third malformation variant distinct from the inline-aggregate (Twi218-class, no `#` prefix) and wrong-typed-reference (Twi222-class, valid `#N` pointing at the wrong entity type) patterns already catalogued. A later B_SPLINE_CURVE_WITH_KNOTS (#403) repeats the same stray-`#TYPE(...)` error in its pole list (`#CARTESIAN_POINT(...)`), but the reader aborts at #401 first, so the many-knots defect the old title named is never reached. See BACKLOG (I).
 
@@ -28305,6 +28317,7 @@ Wire with high-knot-count B-spline edges. CheckIntersectingEdges's sub-segment c
 
 Wire missing edge where existing path passes through degenerate vertex. FixLacking's insertion logic doesn't account for degenerate intermediate vertices in edge connectivity.
 - **Expected kernel behavior**: The second edge ends on a vertex at (5,5,0) and the next begins on a separate vertex instance at exactly the same point, leaving the wire disconnected in the middle although nothing geometric is missing. Merge vertices that coincide within tolerance and re-point their incident edges at the survivor, rather than inserting a connecting edge that would necessarily have zero length; only a genuine separation in the surface's parameter space justifies inserting one. Because every line in this file carries a direction in the slot reserved for a vector, curve construction has to fail loudly before any of that is attempted.
+- **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi232 — ShapeFix_Wire.FixSelfIntersection two-edges-two-intersections
 
@@ -30929,6 +30942,7 @@ Shell with inverted face orientation. ShapeFix_Shell::Perform called twice; seco
 
 **Fault axis**: `orientation_seam_inconsistency`
 - **Expected kernel behavior**: The closed shell's three faces share no edges at all: each cap is bounded by a single full-period `CIRCLE` edge whose start and end vertex coincide, while the cylindrical wall's loop is closed by straight lines from (-50,0,100) to (50,0,100) and from (-50,0,0) to (50,0,0) — chords through the axis that do not lie on the radius-50 surface. Do not trust the closed-shell declaration: split each full-period closed edge at a parametric break so it can be matched to a neighbour, recompute the free boundaries, and if the wall boundary still cannot be matched to the cap circles, report the shell as open and name the unmatched faces rather than emitting a solid. One `EDGE_CURVE` also names a `VERTEX_POINT` in its curve slot; reject that entity with a diagnostic instead of dereferencing it as geometry.
+- **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh140 — ShapeAnalysis_Shell.CheckOrientedShells curved-faces
 
@@ -31792,6 +31806,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Description**: Edge shared by a PLANE and a CYLINDRICAL_SURFACE; the shared vertex is bound to both surfaces. When FixVertexTolerance runs with face context null, it computes vertex tolerance using only one of the surfaces, underestimating the required value compared to the multi-surface case.
 - **Reproducer recipe**: see `step-examples/12-2a-pcurves/Gp046.stp`; the fixture file's top comment names the specific OCCT method and line range.
 - **Expected kernel behavior**: detect or heal per the named OCCT branch; the fixture demonstrates the buggy input pattern.
+- **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ### Gp047 — ShapeAnalysis_Edge.CheckPCurveRange parameter-domain mismatch
@@ -31800,6 +31815,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Description**: LINE-backed edge whose pcurve is restricted to the parameter interval [0,1] while the EDGE_CURVE's start/end vertex parameters fall at 0.2 and 0.8. CheckPCurveRange must detect that the pcurve domain does not cover the edge's vertex parameter range.
 - **Reproducer recipe**: see `step-examples/12-2a-pcurves/Gp047.stp`; the fixture file's top comment names the specific OCCT method and line range.
 - **Expected kernel behavior**: detect or heal per the named OCCT branch; the fixture demonstrates the buggy input pattern.
+- **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ### Gp048 — ShapeFix_Edge.FixAddPCurve degenerate-curve at cone apex
@@ -31820,6 +31836,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Description**: Two edges share their 3D endpoints; one uses a LINE with parameter range [0,100], the other a CIRCLE arc with parameter range [π,0]. Their 3D point sets overlap but the parameter-space tests in CheckOverlapping do not detect the overlap because the parameter ranges differ in shape and orientation.
 - **Reproducer recipe**: see `step-examples/12-2a-pcurves/Gp049.stp`; the fixture file's top comment names the specific OCCT method and line range.
 - **Expected kernel behavior**: detect or heal per the named OCCT branch; the fixture demonstrates the buggy input pattern.
+- **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 - **Notes**:
 
@@ -32208,6 +32225,7 @@ Edge whose 3D curve and pcurve trace the same geometric path but with reversed p
 **Method**: `ShapeAnalysis_Edge::CheckCurve3dWithPCurve`  
 **Defect class**: `pcurve`  
 
+- **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Gp097 — ShapeFix_Edge.FixAddPCurve composite-curve-on-surface
 
@@ -32228,6 +32246,7 @@ Two edges where an arc is tangent to a line at a single point. CheckOverlapping 
 **Method**: `ShapeAnalysis_Edge::CheckOverlapping`  
 **Defect class**: `incomplete_diagnostics`  
 
+- **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Gp099 — ShapeFix_Edge.FixSameParameter very-long-edge
 
@@ -32237,6 +32256,7 @@ Edge of extreme length (1e6 units). FixSameParameter's tolerance computation und
 **Method**: `ShapeFix_Edge::FixSameParameter`  
 **Defect class**: `tolerance_escalation`  
 
+- **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Gp100 — ShapeAnalysis_Edge.GetEndTangent2d POLYLINE first-point
 
@@ -32463,6 +32483,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Model impact**: Edge projection returns suboptimal endpoint when interior point is nearer at preci level but not at Confusion level
 - **Fixture path**: step-examples/12-2a-pcurves/Gp131.stp
 - **Fixture kind**: scaffold
+- **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Gp132 — PCurve projection tolerance escalation unchecked
 - **Category**: §12.2a pcurves (sub-class: ShapeFix_Edge.FixAddPCurve)

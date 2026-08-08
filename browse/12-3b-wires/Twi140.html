@@ -32,6 +32,8 @@
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Reject with a diagnostic naming entities #110 and #131: both LINEs put a DIRECTION where Part 21 requires a `#N` reference to a VECTOR, so neither of the wire&#x27;s two straight edges can be built. Separately, the middle edge&#x27;s B_SPLINE_CURVE_WITH_KNOTS (#122) repeats its first pole and its last pole back-to-back (poles #102,#102,#120,#120), which collapses the derivative to zero at both ends of that degree-3 curve — a genuinely degenerate tail tangent that a kernel must also flag once the file parses at all, rather than silently accepting an undefined direction.</p></section>
+<section><h2>Notes</h2>
+<p>RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file&#x27;s straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

@@ -32,6 +32,8 @@
 <p>see `step-examples/12-2a-pcurves/Gp047.stp`; the fixture file&#x27;s top comment names the specific OCCT method and line range.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>detect or heal per the named OCCT branch; the fixture demonstrates the buggy input pattern.</p></section>
+<section><h2>Notes</h2>
+<p>RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file&#x27;s straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

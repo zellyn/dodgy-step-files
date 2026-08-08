@@ -32,8 +32,13 @@
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Reject with a diagnostic naming each unbuildable curve: all five of the wire&#x27;s LINE entities put the same DIRECTION (#102) where Part 21 requires a `#N` reference to a VECTOR, so no edge curve can be built. Independently, every one of this wire&#x27;s five vertices (#110-#114) sits at the identical point (5.0,5.0,0.0), so even a correctly-built wire would have five zero-length edges; a kernel must reject a wire whose vertices are all coincident rather than attempt to order them.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Twi139. RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file&#x27;s straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`</p></section>
 <section><h2>Expected validation</h2>
-<p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<p><code></code></p></section>
+<section><h2>Cross-references</h2>
+<p><a href="Twi139.html">Twi139</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
 </section>

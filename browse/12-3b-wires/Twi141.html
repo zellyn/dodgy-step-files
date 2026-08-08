@@ -32,6 +32,8 @@
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>The first four edges already close a 10x10 square; a fifth edge then runs 0.05 units from the closure vertex (0,0,0) back along the +X axis, lying exactly on top of the first edge for its whole length. Treat the last-versus-first pair as a candidate like any other, detect the collinear overlap, and cut the stub away so the four-edge closed square is restored; the repair must terminate, so bound the number of re-detection passes and fail loudly with a diagnostic if the overlap survives them, rather than exhausting an iteration cap and returning silently. That stub&#x27;s declared direction (1.0, 0.5, 0.0) also does not pass through its own end vertex (0.05,0,0), and must be rejected on that basis.</p></section>
+<section><h2>Notes</h2>
+<p>RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file&#x27;s straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>
