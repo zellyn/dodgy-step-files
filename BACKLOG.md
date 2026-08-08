@@ -2885,6 +2885,40 @@ is even more lopsided toward curves: Gp 58, Gn 43, and one each of Gs/M/Pf/Tfa/T
 before writing a structural filter; the two rare ones are exactly where the interesting
 fixtures live.)
 
+### (P.2) 11 more ORPHANED DEFECT CARRIERS found while decomposing the cohort
+
+The 16 fixtures that have faces but still return `empty` were read individually rather
+than regex-judged, because the shape is ambiguous: for some, missing scaffold IS the
+defect. Classified by where the `ADVANCED_FACE` actually sits:
+
+    10  face is inside a GEOMETRIC_CURVE_SET, not a shell
+        Hea009 Tfa003 Tfa018 Tfa061 Tfa068 Tfa073 Tfa156 Fi004 Os007 Os012
+     1  face UNREFERENCED by anything                          Ad047
+     1  face referenced, but not by any shell                   Hea001
+     4  face genuinely in a shell -- scaffold is FINE           Ad118 Wr037 Wr041 A037
+
+**The first 11 cannot demonstrate their titles.** A face inside a `GEOMETRIC_CURVE_SET`
+is not transferred as a face at all, so `occt=empty` is guaranteed by the scaffolding no
+matter what the titled defect is. Ad047 is titled `ADVANCED_FACE same_sense=.F. inverts
+surface normal`, and its face is referenced by nothing whatsoever -- the `same_sense`
+flag is never reached.
+
+This is not a new class: it is exactly [[feedback_orphaned_defect_carrier]], previously
+confirmed on Gn002/Gn007/Gn008/P014/P022. These are 11 more of the same, found from a
+different direction (silent-empty decomposition rather than a targeted sweep), which
+suggests the class is under-counted corpus-wide and deserves a systematic pass.
+
+**A037 is the counter-example that stops this being a bulk edit.** Its title is
+"Implicit / minimalist product structure missing entirely" -- the missing root IS its
+defect, so flagging it would invert the finding. Ad118/Wr037/Wr041 likewise have their
+face properly in a shell. Any sweep for this class must read the title before acting.
+
+### NOT quarantined here, on purpose
+Reachability is verified; **mutation testing is not done**, and per
+[[feedback_orphaned_defect_carrier]] both are wanted before quarantine. Quarantining or
+regenerating fixtures is also a maintainer decision, not an audit's -- see
+[[feedback_scope_discipline]]. Recorded with the evidence so the call can be made.
+
 Not yet done: whether `heal` is the RIGHT expectation for each of the 51 individually
 (for a one-face B-rep with a defective pcurve it plainly is), and whether the 209
 no-face entries deserve prose that distinguishes "recover and continue" from "produce
