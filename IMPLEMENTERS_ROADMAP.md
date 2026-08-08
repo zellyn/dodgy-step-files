@@ -2,7 +2,7 @@
 
 **Audience: you are writing a CAD kernel and need to survive real-world STEP files.** This document is the corpus re-cut along the axis you actually work on.
 
-The catalog ([`STEP_PROBLEM_CATALOG.md`](STEP_PROBLEM_CATALOG.md)) is organised one entry per broken file, which is right for auditing and wrong for building — 3335 entries do not tell you where to start. This page inverts it into the **169 distinct repair mechanisms** those files exercise, ordered so the failures that hurt users most come first, each pointing at the fixtures that prove you got it right (616 fixtures cited).
+The catalog ([`STEP_PROBLEM_CATALOG.md`](STEP_PROBLEM_CATALOG.md)) is organised one entry per broken file, which is right for auditing and wrong for building — 3335 entries do not tell you where to start. This page inverts it into the **169 distinct repair mechanisms** those files exercise, ordered so the failures that hurt users most come first, each pointing at the fixtures that prove you got it right (617 fixtures cited).
 
 > **Generated file — do not edit.** `python3 occt-coverage/make_roadmap.py`.
 > Everything below is joined from `occt-coverage/*/problems.json` and the catalog's CI-verified `Expected validation` lines. No hand-entered claims.
@@ -21,9 +21,9 @@ The tiering below is derived from **observed reference-engine behaviour**, not f
 
 **2448 of the 2530 STEP fixtures (97%) carry a written `Expected kernel behavior`.** The other 82 are real fixtures with real, CI-verified assertions — they are good *tests* — but they do not state what a correct kernel should do, so they teach an implementer nothing on their own. They are marked † below. Most of that remainder is deliberate: an entry whose bytes were found to contradict its own title is left unspecced ON PURPOSE, because a specification written on a disproved claim would propagate the error rather than fix it.
 
-It cites **616 of the 2530 STEP fixtures (24%)**. The other 1914 are real, CI-verified fixtures that simply have not been linked to a named repair mechanism yet — they are reachable through the catalog and [`browse/`](browse/), just not from here. So this is a *starting* map, not an exhaustive one: finishing a tier does not mean you have handled everything the corpus knows about. Growing the linkage is tracked in `occt-coverage/`.
+It cites **617 of the 2530 STEP fixtures (24%)**. The other 1913 are real, CI-verified fixtures that simply have not been linked to a named repair mechanism yet — they are reachable through the catalog and [`browse/`](browse/), just not from here. So this is a *starting* map, not an exhaustive one: finishing a tier does not mean you have handled everything the corpus knows about. Growing the linkage is tracked in `occt-coverage/`.
 
-> Of the two, **linkage is currently the larger gap** (1914 fixtures vs 82).
+> Of the two, **linkage is currently the larger gap** (1913 fixtures vs 82).
 
 ## Tier summary
 
@@ -728,6 +728,14 @@ An edge is shared by more than two faces (non-manifold edge) where the structure
 
 **Test against:** `Bo006`, `Tsh019`, `Tsh232`
 
+### `bc-self-intersecting-wire`
+
+*exchange/brepcheck* · 3 fixtures · observed: loads×3 · **3/3 carry a written spec** · corpus coverage: COVERED
+
+A wire's own edges cross each other in parametric/3D space, making it a non-simple loop.
+
+**Test against:** `Twi286`, `Gs009`, `Gs012`
+
 ### `seq-direct-faces`
 
 *exchange/heal-sequence* · 3 fixtures · observed: loads×3 · **3/3 carry a written spec** · corpus coverage: COVERED
@@ -939,6 +947,22 @@ An edge's declared parametric range (First/Last parameter) does not match the un
 An edge's SameParameter flag asserts 3D-curve-parameter and pcurve-parameter are synchronized (same parameter maps to the same physical point within tolerance), but they are not.
 
 **Test against:** `Gp022`, `Twi065`
+
+### `bc-no-3d-curve`
+
+*exchange/brepcheck* · 2 fixtures · observed: loads×2 · **2/2 carry a written spec** · corpus coverage: COVERED
+
+An edge has no 3D curve representation at all (only a pcurve, or nothing) where one is required.
+
+**Test against:** `Twi047`, `Twi248`
+
+### `bc-no-curve-on-surface`
+
+*exchange/brepcheck* · 2 fixtures · observed: loads×2 · **2/2 carry a written spec** · corpus coverage: COVERED
+
+An edge used as a boundary of a face has no pcurve (2D parametric curve) defined for that face's surface.
+
+**Test against:** `Gp175`, `Gp091`
 
 ### `bc-not-connected`
 
@@ -1230,22 +1254,6 @@ Shell nesting within a solid is topologically inconsistent (shells improperly ne
 
 **Test against:** `Tsh067`
 
-### `bc-no-3d-curve`
-
-*exchange/brepcheck* · 1 fixtures · observed: loads×1 · **1/1 carry a written spec** · corpus coverage: COVERED
-
-An edge has no 3D curve representation at all (only a pcurve, or nothing) where one is required.
-
-**Test against:** `Twi047`
-
-### `bc-no-curve-on-surface`
-
-*exchange/brepcheck* · 1 fixtures · observed: loads×1 · **1/1 carry a written spec** · corpus coverage: COVERED
-
-An edge used as a boundary of a face has no pcurve (2D parametric curve) defined for that face's surface.
-
-**Test against:** `Gp175`
-
 ### `bc-no-surface`
 
 *exchange/brepcheck* · 1 fixtures · observed: loads×1 · **1/1 carry a written spec** · corpus coverage: COVERED
@@ -1269,14 +1277,6 @@ The same face (same TShape) appears more than once within a shell.
 The same wire (same TShape) appears more than once in a face's boundary list.
 
 **Test against:** `Gs031`
-
-### `bc-self-intersecting-wire`
-
-*exchange/brepcheck* · 1 fixtures · observed: loads×1 · **1/1 carry a written spec** · corpus coverage: COVERED
-
-A wire's own edges cross each other in parametric/3D space, making it a non-simple loop.
-
-**Test against:** `Twi286`
 
 ### `bc-unorientable-shape`
 

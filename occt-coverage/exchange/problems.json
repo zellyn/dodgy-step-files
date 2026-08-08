@@ -1742,7 +1742,8 @@
     ],
     "subvariants": [],
     "fixture_ids": [
-      "Twi047"
+      "Twi047",
+      "Twi248"
     ],
     "coverage_verdict": "COVERED",
     "notes": "BRepCheck_Status enum value No3DCurve. | VERIFICATION: Twi047 verified in bytes: four EDGE_CURVEs whose SURFACE_CURVE carries only a PCURVE (no 3D space curve) bound a real square ADVANCED_FACE on a PLANE, so translated edges genuinely lack Curve3D. Twi088 (edge_geometry null, pcurves on adjacent faces) is the secondary variant, though OCC yields empty for it.",
@@ -1796,7 +1797,8 @@
     ],
     "subvariants": [],
     "fixture_ids": [
-      "Gp175"
+      "Gp175",
+      "Gp091"
     ],
     "coverage_verdict": "COVERED",
     "notes": "DOWNGRADED COVERED->GAP (COVERED_FULL_REVERIFY.md): All 4 cited fixtures (Gp001, Gp042, Gp019, Xp002) show occt=signal(11) -- OCCT crashes before BRepCheck can ever run; classic crash-as-coverage, nothing survives live. Surviving/cited fixtures: (none -- no fixture in the corpus reaches this mechanism live). || Prior COVERED notes (fixture_ids were ['Gp001', 'Gp042', 'Gp019', 'Xp002']): BRepCheck_Status enum value NoCurveOnSurface. | VERIFICATION: Gp001/Gp042 construct face-bounding edges with 3D curve but no pcurve on the host surface (both even crash OCCT, signal(11), demonstrating live impact); Gp019 is the composite-surface per-patch-pcurve-missing variant and Xp002 combines pcurve-missing with a periodic seam. A faithful translation yields edges with no curve-on-surface for the face. | Wave-2 (2026-07-12, adversarial verifier) (D1): Gp175 lives via a bare LINE edge_geometry with no SURFACE_CURVE wrapper at all -- cleanly isolated from the Gp001/Gp042 empty-associated_geometry crash confounder (independently re-confirmed those two still crash signal(11), and a hand-built master_representation variant of that crash pattern still crashes regardless of the enum value). Gp175 live oracle: occt=shape(1)/shape(1) gmsh=shape(9), exact Expected-line match. GAP -> COVERED.",
@@ -2037,7 +2039,9 @@
     ],
     "subvariants": [],
     "fixture_ids": [
-      "Twi286"
+      "Twi286",
+      "Gs009",
+      "Gs012"
     ],
     "coverage_verdict": "COVERED",
     "notes": "DOWNGRADED COVERED->GAP (COVERED_FULL_REVERIFY.md): Twi049/Twi076 carry the corpus's explicit fixture-specific 'the validity-checker does not flag [this]... tier-3 valid-flag should be ignored' annotation (confirmed non-firing); Twi157 cites ShapeAnalysis_Wire::CheckSelfIntersection (ShapeHealing, not BRepCheck_Wire -- adjacent mechanism); Xp001 shares Twi049's exact pattern with no independent detection confirmation. Geometry is live/reachable in all 4 but none survive as detect evidence. Surviving/cited fixtures: (none -- no fixture in the corpus reaches this mechanism live). || Prior COVERED notes (fixture_ids were ['Twi049', 'Twi076', 'Twi157', 'Xp001']): BRepCheck_Status enum value SelfIntersectingWire. | VERIFICATION: Twi049 verified: figure-eight EDGE_LOOP of four diagonal edges crossing at (5,5,0) in the UV of a real plane ADVANCED_FACE (occt=shape(1)). Twi076 (pinched figure-eight), Twi157 (CheckSelfIntersection figure-8), Xp001 (self-intersecting wire crossed with encoding defect) reinforce. | Wave-1 (2026-07-12, adversarial verifier): runtime-scaffold: reader's default healing repairs before the checker; scaffold verification confirms the status fires on unhealed geometry (Twi286; Tfa249 precedent). GAP -> COVERED.",
@@ -2196,7 +2200,8 @@
     ],
     "subvariants": [],
     "fixture_ids": [
-      "Bo005"
+      "Bo005",
+      "Tsh075"
     ],
     "coverage_verdict": "COVERED",
     "notes": "BRepCheck_Status enum value UnorientableShape. | VERIFICATION: Bo005 verified in bytes: shell of planar faces wired into a closed band with one face's same_sense=.F., baking an orientation contradiction into the as-given topology (BRepCheck checks as-given, it does not re-flip); fixture comment records BRepCheck firing UnorientableShape, occt=shape(1). Tsh075/Tsh078 are dedicated Moebius-shell constructions.",

@@ -2546,3 +2546,40 @@ Root cause of MY error: one regex, two patterns, one label. The lesson is the sa
 [[feedback_measure_the_claim]] — the check must distinguish the cases the CLAIM distinguishes.
 `_schema_oracle --strict` reporting 0 unexpected violations was also misread as evidence of
 wellformedness; it simply does not check this constraint.
+
+---
+
+## (N) Two COVERED verdicts rest on fixtures that do NOT fire their named BRepCheck status (found 2026-08-08)
+
+Surfaced while searching for additional witnesses for single-fixture mechanisms. Measured
+live (OCP/OCCT 7.8.1, plain `STEPControl_Reader` + `BRepCheck_Analyzer`, no scaffold):
+
+```
+bc-unorientable-shape      verdict COVERED
+  Bo005  (SOLE fixture)  3 faces  IsValid=True   every face BRepCheck_NoError
+  Tsh075 (newly linked)  2 faces  IsValid=False  BOTH faces BRepCheck_UnorientableShape
+
+bc-no-curve-on-surface     verdict COVERED
+  Gp175  (SOLE fixture)  4 edges  IsValid=True   every edge BRepCheck_NoError
+  Gp091  (newly linked)  4 edges  IsValid=True   every edge BRepCheck_NoError
+```
+
+**This is a question, not an accusation.** The corpus has a documented class where the STEP
+reader silently repairs a defect BEFORE `BRepCheck` ever runs, so the status legitimately never
+fires on a plain read while the fixture is still a good bytes-level witness. Both sole fixtures
+may be exactly that. But a COVERED verdict whose only witness never fires the status it is
+COVERED for is worth an explicit maintainer decision rather than an assumption.
+
+Concretely:
+- `bc-unorientable-shape` now has a witness that DOES fire live (Tsh075). If Bo005 turns out
+  not to demonstrate the mechanism at all, Tsh075 should become the primary and Bo005 either
+  re-justified or dropped from the list.
+- `bc-no-curve-on-surface` has NO firing witness. Gp091 was linked because it removes the
+  single-point dependency and rests on exactly the same evidentiary footing as Gp175 (byte-genuine,
+  crash-isolated, reachable) -- deliberately not claimed as better. If the verdict is meant to
+  assert that BRepCheck detects this, it is currently unwitnessed.
+
+Also noted: `Tsh075`'s catalog `Expected validation` reads `occt=unknown/unknown` -- it appears
+never to have been oracle-run. Measured now: `accept`, n_roots=1, 2 faces / 9 edges / 18 vertices.
+NOT filled in here, because the Expected line also carries gmsh and ifc fields that were not
+measured in this pass, and a half-filled line is worse than an honestly-unknown one.
