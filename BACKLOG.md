@@ -2549,6 +2549,65 @@ wellformedness; it simply does not check this constraint.
 
 ---
 
+### CONFIRMED 2026-08-08 by stack trace + intervention — the malformed LINE IS the cause
+
+(M) recorded a correlation (53/56 `signal(11)`) and inferred a mechanism. **Both the
+mechanism and the correlation are now confirmed, with the exact OCCT call site.**
+
+`lldb` on the segfaulting worker, on Gp046:
+
+    EXC_BAD_ACCESS (code=1, address=0x18)
+    StepToGeom::MakeVectorWithMagnitude(opencascade::handle<StepGeom_Vector> const&,
+                                        StepData_Factors const&) + 32
+
+`LINE.dir` is DECLARED as a `VECTOR`. When the file supplies a `#N` pointing at a
+`DIRECTION`, OCCT's downcast to `StepGeom_Vector` yields a NULL handle, and
+`MakeVectorWithMagnitude` dereferences it without a null check. Address 0x18 is the
+field offset, not a wild pointer -- a textbook unchecked-downcast null deref.
+
+Intervention, done properly this time: give each `LINE.dir` a REAL top-level entity,
+`#900001=VECTOR('fix',#dir,1.0);`, and repoint the LINE at it.
+
+    Gp046 Gp047 Gp049 Tsh139 Twi137  -> accept, n_roots=1
+    Gp131 Twi138                     -> accept_silent, n_roots=0
+    **7 of 7 stop crashing.**
+
+#### I got this wrong first, and the reason is worth recording
+My first intervention rewrote the argument INLINE, as
+`LINE('',#20,VECTOR('',DIRECTION('',(0,1)),1.0))`, and reported "crash persists --
+LINE is NOT the cause". That was wrong: **Part-21 does not permit inline entity
+instances as arguments** (they need top-level `#N` ids, complex instances aside), so the
+edit never took effect semantically. The file still contained a broken `LINE.dir` and
+still crashed, exactly as before.
+
+The control did not catch it, because the control was badly chosen: it checked that an
+ALREADY-LOADING file (Tsh079) still loads after patching. A no-op patch passes that test
+trivially. **A control must be able to fail.** The right control is positive: show the
+patch CHANGES a known-crashing file. That is what the top-level-VECTOR version does,
+7 times over. See [[feedback_measure_the_claim]].
+
+#### The face-ablation result stands, and is explained rather than contradicted
+Emptying the shell's face list makes 13/13 crashers load. That is consistent with, not
+contrary to, the LINE mechanism: with no faces, the edge curves are never converted, so
+`MakeVectorWithMagnitude` is never called on the bad `LINE`. **Faces are NECESSARY (they
+trigger the conversion); the malformed `LINE` is the CAUSE.** The structural hypotheses
+tested along the way (single-edge `EDGE_LOOP`; unclosed wire; `FACE_OUTER_BOUND`
+specifically; singleton loop with a non-closed curve) were all refuted by their own
+controls and are all irrelevant -- recorded only so they are not re-derived.
+
+#### Cohort size -- this correction is independent and still holds
+`LINE.dir` being declared a VECTOR also means a reference to a `VECTOR` ENTITY is
+correct Part-21. A sweep matching `LINE('',#a,#b)` finds 63 crash-cohort files, but
+**34 of them reference a VECTOR and are not defective at all**; 25 reference a
+DIRECTION, 4 a CARTESIAN_POINT. The genuinely malformed cohort is **29, not 63**. Any
+sweep must resolve what arg3 POINTS AT, never merely that it is a reference.
+
+#### Open
+Tsh079/Tsh080/Tsh081 carry 10-12 DIRECTION-referencing LINEs each and still LOAD. The
+2D-pcurve-vs-3D-curve split does not explain them (used as a 2D pcurve: 4/4 crash; only
+as a 3D curve: 49/52 = 94.2% crash). Whatever spares those three is unidentified, and it
+is the remaining hole in an otherwise settled mechanism.
+
 ## (N) Two COVERED verdicts rest on fixtures that do NOT fire their named BRepCheck status (found 2026-08-08)
 
 Surfaced while searching for additional witnesses for single-fixture mechanisms. Measured
@@ -2687,11 +2746,17 @@ an empty output dir.
 Those two have not actually run against the current corpus yet.
 
 ### Follow-ups this surfaced, not yet done
-- **795 entries classify `no-oracle`.** Expected to be mostly `Me*` mesh (mesh-tier
-  oracle, not validate2) and `Ip*` import-format, which are legitimately excluded --
-  but that has not been verified. If any STEP fixture is silently missing oracle output,
-  it is invisible to this entire check.
+- ~~**795 entries classify `no-oracle`.**~~ **RESOLVED 2026-08-08, no hole found.**
+  All 795 are `Me*` (762) + `Ip*` (33) -- both legitimately outside the validate2 sweep.
+  **Zero** STEP fixtures are silently missing oracle output.
 - **1100 entries are `outside-allowed`** -- the kernel does not do what the catalog says
-  a correct kernel should. That is a third of the corpus. Some fraction is real,
-  citable OCCT divergence (valuable); some is likely extractor coarseness. Nobody has
-  sampled it. Worth a stratified read before it is either trusted or dismissed.
+  a correct kernel should. Partly characterised 2026-08-08: only **29 distinct
+  (allowed -> observed) pairs**, with the top 5 covering **72 %**, so this is a handful
+  of systematic mappings rather than 1100 independent findings. The four biggest:
+  `reject->heal` 311, `reject->silent-accept` 215, `heal->silent-accept` 151,
+  `heal,reject->silent-accept` 68.
+  **Read the vocabulary with care:** `classify_oracle_output` tags *any* shape-producing
+  file `heal`, so "heal" means "produced shapes", not "repaired anything". The direction
+  of divergence survives that coarseness; the label does not. `heal->silent-accept` (151)
+  is the most interesting slice -- catalog expects repair, kernel returns nothing.
+  Still unsampled per-entry.
