@@ -2913,6 +2913,30 @@ suggests the class is under-counted corpus-wide and deserves a systematic pass.
 defect, so flagging it would invert the finding. Ad118/Wr037/Wr041 likewise have their
 face properly in a shell. Any sweep for this class must read the title before acting.
 
+### Corpus-wide scope of the class, measured (2026-08-08)
+
+Scanned every fixture containing an `ADVANCED_FACE`:
+
+    1701  fixtures contain an ADVANCED_FACE
+    1638  face(s) properly inside a CLOSED_SHELL / OPEN_SHELL   (96.3 %)
+      32  face(s) inside a GEOMETRIC_CURVE_SET instead
+      31  face(s) in no shell at all
+
+So the loose-face population is **63, about 3.7 %** -- concentrated in §12.3c faces (26),
+§12.8 (9), §12.11 (6). But the live oracle on those 63 splits:
+
+    empty 38    shape(1) 14    signal(11) 11
+
+**A loose face does NOT imply the fixture is inert, and this is the trap to avoid in any
+follow-up sweep.** 25 of the 63 still load or crash, so something in those files IS being
+transferred and they may exercise their claim perfectly well. Only the **38 that return
+`empty`** are candidates for the orphaned-carrier concern, and 11 of those are the ones
+enumerated above. The remaining ~27 empty+loose fixtures are the natural next batch --
+but each still needs its title read, exactly as A037 showed.
+
+Bounding the class at 38 candidates (not 63, and not "all faces sections") is the useful
+result here: it is a day of careful work, not a corpus-wide crisis.
+
 ### NOT quarantined here, on purpose
 Reachability is verified; **mutation testing is not done**, and per
 [[feedback_orphaned_defect_carrier]] both are wanted before quarantine. Quarantining or
