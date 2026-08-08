@@ -2,7 +2,7 @@
 
 **Audience: you are writing a CAD kernel and need to survive real-world STEP files.** This document is the corpus re-cut along the axis you actually work on.
 
-The catalog ([`STEP_PROBLEM_CATALOG.md`](STEP_PROBLEM_CATALOG.md)) is organised one entry per broken file, which is right for auditing and wrong for building — 3335 entries do not tell you where to start. This page inverts it into the **169 distinct repair mechanisms** those files exercise, ordered so the failures that hurt users most come first, each pointing at the fixtures that prove you got it right (617 fixtures cited).
+The catalog ([`STEP_PROBLEM_CATALOG.md`](STEP_PROBLEM_CATALOG.md)) is organised one entry per broken file, which is right for auditing and wrong for building — 3335 entries do not tell you where to start. This page inverts it into the **169 distinct repair mechanisms** those files exercise, ordered so the failures that hurt users most come first, each pointing at the fixtures that prove you got it right (619 fixtures cited).
 
 > **Generated file — do not edit.** `python3 occt-coverage/make_roadmap.py`.
 > Everything below is joined from `occt-coverage/*/problems.json` and the catalog's CI-verified `Expected validation` lines. No hand-entered claims.
@@ -21,9 +21,9 @@ The tiering below is derived from **observed reference-engine behaviour**, not f
 
 **2448 of the 2530 STEP fixtures (97%) carry a written `Expected kernel behavior`.** The other 82 are real fixtures with real, CI-verified assertions — they are good *tests* — but they do not state what a correct kernel should do, so they teach an implementer nothing on their own. They are marked † below. Most of that remainder is deliberate: an entry whose bytes were found to contradict its own title is left unspecced ON PURPOSE, because a specification written on a disproved claim would propagate the error rather than fix it.
 
-It cites **617 of the 2530 STEP fixtures (24%)**. The other 1913 are real, CI-verified fixtures that simply have not been linked to a named repair mechanism yet — they are reachable through the catalog and [`browse/`](browse/), just not from here. So this is a *starting* map, not an exhaustive one: finishing a tier does not mean you have handled everything the corpus knows about. Growing the linkage is tracked in `occt-coverage/`.
+It cites **619 of the 2530 STEP fixtures (24%)**. The other 1911 are real, CI-verified fixtures that simply have not been linked to a named repair mechanism yet — they are reachable through the catalog and [`browse/`](browse/), just not from here. So this is a *starting* map, not an exhaustive one: finishing a tier does not mean you have handled everything the corpus knows about. Growing the linkage is tracked in `occt-coverage/`.
 
-> Of the two, **linkage is currently the larger gap** (1913 fixtures vs 82).
+> Of the two, **linkage is currently the larger gap** (1911 fixtures vs 82).
 
 ## Tier summary
 
@@ -579,6 +579,14 @@ Two adjacent edges form a notch: from the shared vertex they run back along (nea
 A subshape's TopAbs_Orientation (FORWARD/REVERSED) is inconsistent with how it is used by its parent (e.g. an edge's orientation within a wire contradicts the wire's implied traversal direction, or a face's orientation contradicts shell consistency).
 
 **Test against:** `Tfa057`, `Ps010`, `Tsh011`, `Ps002`
+
+### `bc-intersecting-wires`
+
+*exchange/brepcheck* · 4 fixtures · observed: loads×4 · **4/4 carry a written spec** · corpus coverage: GAP
+
+Two distinct wires bounding the same face cross each other in parametric space.
+
+**Test against:** `Tfa039`, `Tfa242`, `Gp069`, `Gs155`
 
 ### `bc-invalid-same-range-flag`
 
@@ -1237,14 +1245,6 @@ Two or more edges that are topologically connected (consecutive edges in a wire,
 A shell contains no faces.
 
 **Test against:** `Bo001`
-
-### `bc-intersecting-wires`
-
-*exchange/brepcheck* · 1 fixtures · observed: loads×1 · **1/1 carry a written spec** · corpus coverage: GAP
-
-Two distinct wires bounding the same face cross each other in parametric space.
-
-**Test against:** `Tfa039`
 
 ### `bc-invalid-imbrication-of-shells`
 

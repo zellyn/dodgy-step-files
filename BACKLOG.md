@@ -2603,3 +2603,52 @@ Also noted: `Tsh075`'s catalog `Expected validation` reads `occt=unknown/unknown
 never to have been oracle-run. Measured now: `accept`, n_roots=1, 2 faces / 9 edges / 18 vertices.
 NOT filled in here, because the Expected line also carries gmsh and ifc fields that were not
 measured in this pass, and a half-filled line is worse than an honestly-unknown one.
+
+---
+
+## (O) Corpus-wide BRepCheck survey: a false GAP, and a correction to my own earlier links (2026-08-08)
+
+New probe `validation/probes/brepcheck_survey.py` runs `BRepCheck_Analyzer` over every fixture's
+transferred shape and records which statuses it raises. Unlike the ShapeFix probe in (G), this
+measurement is VALID at this point: BRepCheck is OCCT's validity DETECTOR and the transferred
+shape is exactly what it is meant to inspect.
+
+```
+measured                     2304 fixtures (165 timeout/crash, 609 empty)
+load with geometry           1530
+  BRepCheck INVALID           312   (20.4%)
+distinct statuses raised       11
+  UnorientableShape 142 · EmptyShell 116 · SelfIntersectingWire 31
+  BadOrientationOfSubshape 30 · InvalidImbricationOfWires 13 · NotConnected 9
+  NoSurface 5 · CheckFail 3 · IntersectingWires 3 · RedundantWire 1
+  SubshapeNotInShape 1
+```
+
+**FALSE GAP -- `bc-intersecting-wires`.** Verdict is GAP ("no fixture exercises this"), but three
+fixtures raise `BRepCheck_IntersectingWires` live: `Tfa242` (wires wrapping a toroidal u-seam --
+the closest topical fit), `Gp069`, `Gs155`. All three IsValid=False. The sole cited fixture
+`Tfa039` measures IsValid=True and raises nothing. All three added to `fixture_ids`. Verdict left
+as GAP pending a decision only because GAP may be intended as "nothing DESIGNED for it" rather
+than "nothing exhibits it" -- recommendation is COVERED.
+
+**CORRECTION TO MY OWN WORK EARLIER TODAY -- `bc-self-intersecting-wire`.** In 9a4576d2 I linked
+`Gs009` and `Gs012` to this mechanism. Measurement now shows **neither raises the status**, and
+neither does the original sole fixture `Twi286` -- all three IsValid=True. The links rested on a
+`BRepBuilderAPI_MakePolygon` scaffold that reproduces the bow-tie and does fire; that verified a
+RECONSTRUCTION, not the fixture. I accepted scaffold evidence where fixture evidence was
+available, which is the same error class as (N)'s Bo005 and as the Bo025 tag-vs-geometry mix-up.
+31 other fixtures DO raise it live (Gs011, Gs056, Tfa028, Tfa064, ...), so "the reader always
+pre-heals it" does not explain the non-firing. Links retained with the measurement recorded in
+the class notes rather than silently dropped.
+
+**HOW TO READ THIS SURVEY -- the asymmetry matters.**
+  raises a status -> the defect survives transfer and is detectable. Strong evidence.
+  NoError         -> AMBIGUOUS. Either pre-healed by the reader (legitimate -- confirmed for
+                     Gp175/Gp091, whose bytes omit the PCURVE and where OCCT synthesises one) or
+                     not encoded at all (a bug -- confirmed for Bo005, whose bytes contain zero
+                     edges shared between loops). Distinguish by reading the BYTES. Never conclude
+                     from this output alone.
+
+**Unexploited signal:** 142 fixtures raise `UnorientableShape` and 116 raise `EmptyShell`, against
+2 and 0 cited respectively. That is a large, evidence-backed linkage opportunity for a later pass --
+each candidate still needs a topical check, since raising a status is not the same as being ABOUT it.
