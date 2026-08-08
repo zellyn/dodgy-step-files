@@ -2647,6 +2647,22 @@ together -- all four variants still CRASH(139). Patches verified applied. Gs138 
 carries suspicious knot data (multiplicities written as reals), so it has at least three
 independent malformations and the trigger is whichever one is reached first.
 
+Twi227 was then checked as a possibly-cleaner specimen. It is not. Its surface is
+    B_SPLINE_SURFACE_WITH_KNOTS('bsurf',2,2,(#200..#208),
+      (0.,0.,0.,5.,10.,10.,10.),(0.,0.,0.,3.,10.,10.,10.),
+      (0.,5.,10.),(0.,3.,10.),(1,1,1,1,1,1),(1,1,1,1,1,1),.UNSPECIFIED.)
+against the AP214 signature
+    (name, u_deg, v_deg, ctrl_pts, surface_form, u_closed, v_closed, self_intersect,
+     u_mult, v_mult, u_knots, v_knots, knot_spec)
+-- so besides the flat 9-point list where a 3x3 net is declared, it omits the
+surface_form / closed / self-intersect flags entirely and its knot and multiplicity
+arguments do not line up with their declared positions.
+
+**Conclusion: BOTH site-B specimens are multiply-malformed, so ablation cannot isolate
+the trigger.** Pinning site B down needs a MINIMAL reproducer built from a known-good
+B-spline surface with exactly one defect introduced -- i.e. fixture synthesis, not
+further ablation of these two. That is the right next step and it is not a small one.
+
 That generalisation is worth more to an implementer than either fixture: the failure mode
 is "downcast the declared type, use it without checking", and it recurs across entity
 families. A kernel that null-checks every schema-declared downcast in its STEP reader
