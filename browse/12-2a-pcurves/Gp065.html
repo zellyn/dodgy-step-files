@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic naming the edge: the 3D curve&#x27;s interior knot has multiplicity equal to its degree with non-coincident control points on either side, producing an actual ~5-unit positional jump mid-curve, not merely the pcurve&#x27;s own POLYLINE tangent-extraction quirk; a curve that doesn&#x27;t trace a continuous path cannot bound a face.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

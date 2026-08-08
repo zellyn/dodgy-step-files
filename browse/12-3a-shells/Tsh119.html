@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Face 3 is a degenerate triangle whose three EDGE_CURVEs all run from vertex #26 back to itself (zero length) using a private CARTESIAN_POINT at (20,20,0) shared by no other face. A kernel must never crash on this input: reject the degenerate face (all edges zero-length, self-referencing start/end vertex) with a diagnostic, and when a face carrying an otherwise-unreferenced vertex is dropped, also drop that vertex from the shell rather than leaving it referenced only by already-removed topology.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

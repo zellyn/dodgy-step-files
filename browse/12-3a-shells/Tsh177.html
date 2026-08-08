@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>face_fwd and face_rev both bound the same triangle using the identical three EDGE_CURVE entities (e_ab, e_bc, e_ca), but face_fwd&#x27;s loop uses all three with .T. sense (same_sense=.T., normal +Z) while face_rev&#x27;s uses all three with .F. (same_sense=.F., normal -Z) — every shared edge is used with the same absolute sense in both faces rather than opposite senses, so no consistent flip of either face alone resolves it. Detect that a shared-edge sense conflict cannot be resolved by unilaterally flipping one side before attempting to iterate a fix, and bound any iterative orientation-fix loop by a fixed pass limit that reports non-convergence explicitly rather than looping until an internal counter silently exhausts.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

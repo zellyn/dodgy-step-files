@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Two of the four box faces (bottom and the x=10 side) are authored with inverted normals (same_sense=.T. but their PLANE reference direction and loop winding compose to point inward) while the other two are correct; all four share edges with their neighbours. A kernel must never crash on this input, and any orientation-fix logic that flips a face while visiting its neighbours must use per-call state only — an already-corrected face must never be revisited and flipped again while fixing a later, unrelated face in the same shell.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

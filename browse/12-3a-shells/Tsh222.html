@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>All six faces of this box (bottom, top, front, back, left, right) share their 12 edges correctly with two faces each, and the shell is declared CLOSED_SHELL; only the top face (Z=1) carries same_sense=.F. needing a flip. Flipping a face changes which direction its EDGE_LOOP&#x27;s edges are considered traversed from that face&#x27;s side, so after the flip, re-derive whether the shell&#x27;s edges are still all consistently doubly-shared (closed) rather than assuming the CLOSED_SHELL label authored before the fix still holds; if the flip left any edge inconsistently traversed, report the shell as no longer closed instead of keeping a stale closed flag.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(26) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

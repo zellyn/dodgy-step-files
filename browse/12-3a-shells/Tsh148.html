@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Two triangles share exactly one edge (the diagonal, referenced by both EDGE_LOOPs); their other four edges are each referenced by only one face — a correct, fully manifold pair with four genuine free (boundary) edges, not zero. A free-edge check must report exactly those four boundary edges and must not special-case or discard a non-empty free-edge list as though only an empty result were meaningful; the presence of boundary edges here is the expected, correct topology of a two-triangle open patch.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

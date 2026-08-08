@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic naming the edge, or heal by recomputing the pcurve: correctly evaluating the OFFSET_CURVE_2D pcurve (applying its 0.3 offset, not just its base line) places it at v=0.3, but the 3D edge runs along y=0 on the plane -- the two representations disagree by the full offset distance, which a kernel must not paper over by comparing only the unoffset base curve.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic naming the edge, or heal by recomputing the pcurve from the 3D curve/vertices: the pcurve&#x27;s declared start (UV=(0,0), lifting to 3D (0,0,0)) does not match vertex V1&#x27;s actual 3D position (0.5,0,0), a genuine 0.5-unit disagreement that a kernel must not paper over by checking only the far vertex.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

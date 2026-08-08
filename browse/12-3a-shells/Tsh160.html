@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>All six faces of this unit cube carry same_sense=.F., and every one of the 12 edges is still shared correctly between exactly two faces with opposite traversal — the shell is locally self-consistent everywhere, just globally inside-out. A shared-edge traversal-direction check (each interior edge used once forward, once reversed, by its two faces) finds no inconsistency here, since that test is relative and this shell is uniformly, consistently wrong. Confirm absolute orientation using a signed-volume or centroid-relative-normal test in addition to the relative shared-edge check, and flip every face when the computed enclosed volume comes out negative.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(26) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

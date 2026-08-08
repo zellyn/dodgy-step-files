@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the shell (two edges, `ec1`/`ec2`, in a nested-wire structure) is well-formed at the declared 1.0E-7mm tolerance; the file contains no actual circular reference (each entity is defined once, referenced downward only) -- a correct kernel&#x27;s wire/tolerance traversal must nonetheless include a depth limit and cycle guard as defensive engineering, independent of whether any specific input attempts a cycle.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

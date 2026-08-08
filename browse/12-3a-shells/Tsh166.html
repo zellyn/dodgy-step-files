@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Face0 and Face1 both reference the exact same PLANE entity (one shared surface definition) but each has its own independent set of VERTEX_POINTs and EDGE_CURVEs describing the identical [0,1]x[0,1] region at z=0 — two structurally distinct faces occupying the same surface and footprint. Detect duplicate faces by comparing geometric coincidence of their boundaries (as would be needed even if they used different surface entities), not merely by surface-entity identity; a sewing pass that never checks for co-located boundary geometry leaves both overlapping faces in the output shell.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

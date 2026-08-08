@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Shell 1 (z=0) and Shell 2 (z=10) are each a single unit-square face, ten units apart — far outside the file&#x27;s declared 1e-7 tolerance, so nothing about them calls for sewing together. A kernel must never crash on this input, whatever tolerance context each shell nominally carries: two shells this far apart must be left as separate shells, not merged or bridged.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. The 8-face hexagonal prism mixes two planar caps (same_sense=.T.) with six CYLINDRICAL_SURFACE side faces (all same_sense=.F.), and each side face&#x27;s own EDGE_LOOP closes on a degenerate zero-length EDGE_CURVE (start vertex == end vertex, used twice) rather than a proper seam. A kernel must never crash on this input: reject a face whose loop includes an edge with identical start and end vertices before running any per-face orientation propagation over the prism&#x27;s six curved sides.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

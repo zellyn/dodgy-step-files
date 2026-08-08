@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the shell&#x27;s edge (`mixed_preci_edge`) is well-formed at the declared 1.0E-7mm tolerance. Whether a conservative-tolerance-selection routine validates both endpoints against the chosen bound is an internal-contract property; a correct kernel that picks the tighter of several candidate tolerances for a comparison must actually apply that tolerance to every point being checked, not just use it as a label.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

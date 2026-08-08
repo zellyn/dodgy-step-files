@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. The shell holds two valid unit-quad faces plus a third, &#x27;degenerate&#x27; triangular face whose three edges are ~0.01mm long, built from its own private, unshared vertex set. A kernel must never crash on this input: reject a face whose edges are all near-zero length relative to the model&#x27;s declared 1e-7 tolerance with a diagnostic before any code path that assumes a well-formed, non-degenerate face touches it, rather than following that assumption into undefined behavior.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

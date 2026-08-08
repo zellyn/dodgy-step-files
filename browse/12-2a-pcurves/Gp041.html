@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>CheckCurve3dWithPCurve sample-point inspection detects the mismatch and flags the edge for healing or healing-time analysis.</p></section>
+<p>reject-with-diagnostic naming the edge: the pcurve&#x27;s midspan control point diverges 0.1 mm from the 3D curve&#x27;s corresponding point, two orders of magnitude past the 0.001 mm edge tolerance; a kernel must flag the mismatch or recompute the pcurve rather than trust it silently.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

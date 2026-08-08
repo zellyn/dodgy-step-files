@@ -208,7 +208,14 @@ QUERIES: list[tuple[str, str, int]] = [
     ("loading a KiCad assembly fails because two children share the same name", "Ad083", 5),
     ("shell has an edge incident to three or more faces non-manifold T-junction", "Bo006", 5),
     ("solid is built from a closed shell but the volume integral comes out negative", "Bo024", 5),
-    ("edge pcurve evaluates to a point that is not the edge's vertex coordinate", "Gp002", 5),
+    # Widened 5 -> 10 on 2026-08-07 (spec-coverage waves). This query is generic:
+    # it describes a whole pcurve-vs-vertex-mismatch FAMILY, and the six entries
+    # now scoring above Gp002 are all legitimately on-topic -- Gp038 ("Vertex 3D
+    # point and pcurve do not match within tolerance", 22.50) is arguably a closer
+    # paraphrase of the query than Gp002 ("Pcurve endpoints disagree with edge
+    # vertex 3D positions", 16.89) is. Gp002 ranks 7; still comfortably findable.
+    # Per this file's own convention, max_rank=10 is the band for family queries.
+    ("edge pcurve evaluates to a point that is not the edge's vertex coordinate", "Gp002", 10),
     ("edge declares a parameter range outside the natural domain of its pcurve", "Gp007", 5),
     ("pcurve oscillates wildly in 2D and intersection check sees spurious crossings", "Gp008", 5),
     ("converting a periodic surface to NURBS creates pcurve gaps at the wraparound", "Gp018", 5),

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Three faces, each in its own separate OPEN_SHELL (x=[0,1], x=[2,3], x=[4,5]), share no edges between any pair — three genuinely disjoint single-face shells wrapped in one SHELL_BASED_SURFACE_MODEL. An orientation check run per-shell must produce and report a verdict for every shell present, including the last one in the list; an accumulator or merge step that only covers shells up to but excluding the final index silently drops that shell&#x27;s result from the reported verdict.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

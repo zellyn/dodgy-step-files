@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Of the four faces, face_a and face_b carry same_sense=.T. (already correct) and face_c and face_d carry same_sense=.F. (need flipping) — a shell needing exactly two face corrections, all four faces independent (no shared edges between them). If a repair pass over a shell&#x27;s faces is interrupted partway through (after face_b, before face_c/face_d are reached), its return status must clearly and distinguishably signal an incomplete run — a caller must be able to tell that only some faces were processed, not receive a status indistinguishable from a full, successful pass over all four.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(36) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic: the file contains two coincident 1x1 squares 1.5 micron (0.0015mm) apart in Z, against a declared 1.0E-7mm tolerance -- four orders of magnitude over budget. A correct sewing pass must apply its distance-tolerance filter on every candidate pair (not skip it on a first pass) so an out-of-tolerance pair like this is not silently accepted as a match.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

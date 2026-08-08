@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The CLOSED_SHELL&#x27;s sole face is a unit square whose FACE_OUTER_BOUND loop runs (0,0,0)-&gt;(1,0,0)-&gt;(1,1,0)-&gt;(0,1,0), counter-clockwise about the PLANE&#x27;s own +Z reference direction, but the ADVANCED_FACE carries same_sense=.F.; composing loop sense with same_sense gives an outward normal of -Z. Derive the face&#x27;s true outward direction from that composition (never from the surface&#x27;s raw reference direction alone), detect that the shell&#x27;s one and only face points inward, and flip same_sense to .T.. Separately flag that a single planar face cannot enclose a volume regardless of orientation, so a CLOSED_SHELL label on it is unsound even after the flip.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

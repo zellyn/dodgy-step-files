@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic: the two ADVANCED_FACEs&#x27; facing free edges are measured 0.05mm apart on real face boundaries against a declared 1.000000E-02mm (0.01mm) tolerance -- 5x over budget. A correct kernel must nullify/reject an edge whose achieved tolerance exceeds the caller&#x27;s declared cap rather than returning a merged edge whose real tolerance silently exceeds the contract.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

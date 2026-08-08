@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: two 2x2 square faces exist, one at the origin and one translated +100mm in Y via distinct `AXIS2_PLACEMENT_3D` locations, each face&#x27;s own `PLANE` correctly referencing its own placement. A correct kernel must evaluate each face&#x27;s surface in its own placed (transformed) frame when computing any cross-face tolerance/distance -- comparing raw untransformed surface parameters between the two faces would produce a spurious ~100mm discrepancy that doesn&#x27;t exist in the actual 3D geometry.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

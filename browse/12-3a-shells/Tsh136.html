@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The OPEN_SHELL entity&#x27;s face list is empty — zero ADVANCED_FACE references. Reject a shell with no faces with an explicit diagnostic rather than passing it through downstream processing as if it were a degenerate-but-valid zero-face solid; a shell that resolves to zero faces after parsing is not a legitimate empty part, it is a malformed or truncated topology reference that should be surfaced, not silently accepted.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

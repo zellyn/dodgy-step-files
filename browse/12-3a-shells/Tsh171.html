@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>shell_a&#x27;s face (x=[0,1],y=[0,1]) and shell_b&#x27;s face (x=[0.5,1.5],y=[0.5,1.5]) are two separate OPEN_SHELLs whose interiors overlap over x=[0.5,1],y=[0.5,1], with no shared edges between them. A sewing pass driven only by edge proximity finds nothing to merge and leaves both overlapping faces in place. Also check for interior intersection between faces belonging to different shells being merged, not only edge proximity, and reject or flag the pair with a diagnostic naming the overlap region when two faces&#x27; interiors intersect rather than accepting self-intersecting output topology.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

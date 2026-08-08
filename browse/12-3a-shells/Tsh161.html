@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Two triangles share edge e01 exactly, but the third vertex of the second triangle is offset by 0.001 units in z from where the first triangle&#x27;s geometry would place it — inside typical sewing tolerance but well outside the file&#x27;s declared 1e-7 accuracy. A kernel must never crash on this input: any merge or adjustment made to reconcile near-coincident geometry during sewing must be recorded (which vertices/edges moved, and by how much) so the operation is auditable, not applied as an untracked silent adjustment.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

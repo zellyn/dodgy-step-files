@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic naming both edges: edge1 (0,0,0)-(3,0,0) and edge2 (1,0,0)-(2,0,0) are coincident and collinear over the interior sub-segment [1,2], a genuine overlapping-wire condition even though neither edge&#x27;s endpoints coincide with the other&#x27;s.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

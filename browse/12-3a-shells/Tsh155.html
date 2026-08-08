@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Face0&#x27;s EDGE_LOOP has all vertices at x=0, y=[0,0.0001] and Face1&#x27;s at x=1, y=[0,0.0001] — both collapse to a zero-width sliver (effectively a line segment), giving each face a normal computed as a zero (or near-zero) vector via the standard cross-product construction. Check face area against the model&#x27;s declared tolerance before computing or using a face&#x27;s normal for orientation classification, and skip or explicitly flag degenerate-area faces rather than letting an ill-defined normal feed into and silently corrupt an orientation verdict.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

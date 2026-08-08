@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The four faces (bottom, top, front, back) form a fully closed quad box — every boundary edge is shared between exactly two of them, so there are no free edges — yet the shell is declared OPEN_SHELL, and two of the four faces carry same_sense=.F. needing a flip. After fixing the face orientations, re-derive whether the shell is now closed by checking edge-sharing directly (every edge used by exactly two faces, oppositely) rather than trusting a closed/open flag that was set once at authoring time and never re-evaluated after the topology changed; a shell whose edges are all now properly shared should be reported as closed regardless of what type it was declared as.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(24) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

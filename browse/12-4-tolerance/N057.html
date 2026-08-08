@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the shell&#x27;s two faces load fine; the file&#x27;s only *applied* tolerance is the boilerplate 1.0E-7mm (`GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT` referenced by the actual `MANIFOLD_SURFACE_SHAPE_REPRESENTATION`). The claimed per-face values (1e-3, 8e-3) exist as `UNCERTAINTY_MEASURE_WITH_UNIT` instances but are never placed inside any `GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT` at all -- they are free-floating, unreferenced numbers, not per-face tolerances (STEP has no such attribute on `ADVANCED_FACE`). A correct kernel loads the shell at 1e-7mm and never sees the decorative pair.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

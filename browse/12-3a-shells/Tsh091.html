@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Face B&#x27;s four VERTEX_POINTs all sit at (2,0,0), so its EDGE_LOOP has four zero-length EDGE_CURVEs and zero area, alongside a valid unit-quad Face A at x=[0,1]. Detect the zero-area face and reject it before any sewing pass runs: sewing by edge-proximity has no non-degenerate edge on Face B to match against, so a fixer that only checks proximity will pass the sliver straight through into the output shell instead of excluding it.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

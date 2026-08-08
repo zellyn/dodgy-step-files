@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Three triangular faces form a ring, each pair sharing one edge (e01, e12, e20), and every shared edge is referenced with ORIENTED_EDGE sense .T. by both faces that use it — a three-way orientation conflict where fixing any one face&#x27;s sense against one neighbour necessarily creates a new conflict with the other. Detect this kind of closed dependency cycle among the faces before attempting sequential per-face fixes, and resolve it as a single global constraint-satisfaction problem (or report the cycle explicitly) rather than repeatedly re-flipping faces in sequence, which can cycle indefinitely without ever reaching a consistent shell.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Four of the pyramid&#x27;s five faces (base plus south/east/north sides) carry same_sense=.T.; the west side carries .F. with its EDGE_LOOP also authored with reversed edge senses relative to the other three side faces. A kernel must never crash on this input, and after applying an orientation fix it must re-verify the shell against the same consistency test used to detect the defect before reporting success — declaring the fix done without that re-check can leave the reported status disagreeing with the shell&#x27;s actual, still-inconsistent state.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

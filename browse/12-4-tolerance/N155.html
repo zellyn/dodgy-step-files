@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the pin-face shape is a well-formed wireframe container declaring 1.0E-4mm (&#x27;checkpin_fallback_tol&#x27;). Whether an internal precision-fallback API silently substitutes a default when called with a negative precision argument is a runtime API-contract property, not something this static file can trigger -- a correct kernel&#x27;s precision-taking APIs should reject (not silently substitute a fallback for) an invalid negative precision argument, surfacing the error to the caller.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

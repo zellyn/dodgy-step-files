@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Three mutually perpendicular triangular faces (xy-, xz-, yz-plane) all share a single VERTEX_POINT at the origin, with no shared edges between any pair — a non-manifold vertex where three faces meet at a point rather than along an edge. A kernel must never crash on this input: an orientation-propagation algorithm written only in terms of edge-adjacent neighbour pairs has no defined notion of &#x27;consistent&#x27; for three faces meeting only at a point, so this configuration must be detected and reported as a non-manifold vertex rather than fed into pairwise edge-based propagation logic that has nothing to propagate along.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

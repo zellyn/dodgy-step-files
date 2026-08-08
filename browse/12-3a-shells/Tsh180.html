@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The CLOSED_SHELL&#x27;s single face has three collinear vertices — (0,0,0), (1,0,0), (2,0,0) all on the x-axis — so its cross-product-based normal is the zero vector, undefined for classification. Detect zero-area faces (collinear or coincident vertices) before attempting a normal-based orientation test, and report the degenerate face explicitly with a diagnostic rather than letting an undefined normal flow into and silently produce an unexplained negative or false classification result.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

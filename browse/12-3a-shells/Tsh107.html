@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Three faces form a corner and share edges pairwise (Face1-Face2, Face2-Face3, Face1-Face3), and Face3 alone carries same_sense=.F.. Propagating a flip decision face-by-face from a mismatched shared edge is not enough on its own: derive the target orientation for every face from a single fixed-point pass over all shared-edge sense comparisons and apply it once, rather than re-evaluating and re-flipping faces repeatedly as their neighbours change — an implementation that keeps re-checking already-visited faces against newly flipped neighbours can flip Face3 back and forth without ever converging.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

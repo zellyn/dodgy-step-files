@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The 8-face hexagonal prism (hex base, hex top, 6 lateral faces) has its odd-indexed lateral faces&#x27; normals authored pointing inward while the base, top, and even-indexed laterals point outward — alternating correct/incorrect orientation around the perimeter. Resolving this by pairwise propagation from one lateral face to the next can oscillate (each fix at one shared edge reintroduces a conflict at the next). Resolve orientation for a closed ring of faces as a single pass evaluating every shared-edge sense simultaneously against a common outward reference (such as consistency with the two planar caps) rather than sequentially propagating and re-flipping around the ring.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(38) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

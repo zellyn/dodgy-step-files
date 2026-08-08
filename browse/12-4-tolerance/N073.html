@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the 5x5 square face loads fine at the applied boilerplate 1.0E-7mm. The claimed 1e-2mm value sits in an unreferenced second representation context -- dead data. STEP carries no triangulation/mesh-deflection state at all (that is a tessellation-time concept, not a Part-21 attribute), so the claimed null-triangulation defect cannot be encoded here; a correct kernel just builds the plane face.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

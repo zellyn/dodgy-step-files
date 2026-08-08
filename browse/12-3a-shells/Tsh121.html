@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Face 1 sits at z=0 and Face 2 at z=0.0001 mm, an offset one thousand times the file&#x27;s declared 1e-7 distance-accuracy — well outside tolerance and therefore two genuinely separate, non-coincident faces, not a sewing candidate. A kernel must never crash on this input: compare the offset against the model&#x27;s own declared tolerance before attempting any merge, and leave faces that far apart unmerged.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

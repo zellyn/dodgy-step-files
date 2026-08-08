@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic: the curved face&#x27;s declared tolerance is exactly `LENGTH_MEASURE(0.0)` (labelled &#x27;nan_precision&#x27;), applied via the file&#x27;s live `GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT` alongside the boilerplate 1e-7mm entry. A zero declared tolerance is not itself NaN, but it is a degenerate value a correct kernel should refuse to use for distance comparisons (any positive separation would then always read as &#x27;exceeds tolerance&#x27;, and the file offers a saner value (1e-7mm) right alongside it) -- flag the zero entry and fall back to the file&#x27;s other declared uncertainty rather than silently comparing against a literal 0.0 floor.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

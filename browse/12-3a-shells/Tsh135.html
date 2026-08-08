@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The two faces share three edges along their common boundary, all coincident within tolerance, but only the first pair is wired to the same EDGE_CURVE entity; the other two pairs are separate, unmerged EDGE_CURVEs at matching coordinates. A sewing pass must check every candidate edge pair along a shared boundary independently rather than stopping after merging the first match — partial sewing (one shared edge merged, two left duplicated) leaves the shell in a worse, inconsistent state than either fully sewn or fully unsewn.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(14) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

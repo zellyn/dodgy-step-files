@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The OPEN_SHELL holds two unit-square faces, one at x=[0,1] and one at x=[10,11], sharing no vertex or edge — two disconnected topological components inside a single shell entity. An orientation check that propagates from one seed face along shared edges will never reach the second component. Enumerate connected components by edge/vertex adjacency first, then evaluate and report orientation per component; a single verdict for the whole shell silently omits any component the seed traversal never reaches.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

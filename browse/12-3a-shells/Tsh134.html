@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The shared boundary between the two faces is authored as two separate EDGE_CURVE entities whose endpoint VERTEX_POINTs are numerically coincident in 3D but are distinct entities (not shared VERTEX_POINT references). A kernel must recognize such edges as candidates for merging by comparing their endpoint coordinates against the model&#x27;s declared tolerance, not by checking whether they already share a VERTEX_POINT entity — entity-identity comparison alone misses this pair entirely and leaves the shell open at a seam that is geometrically closed.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>BREP_WITH_VOIDS references an outer CLOSED_SHELL (2 representative faces of a 2x2x2 cube, z=0 and z=2) and one void, an ORIENTED_CLOSED_SHELL wrapping a second CLOSED_SHELL (2 representative faces of a 1x1x1 cube offset to (0.5,0.5,0.5)..(1.5,1.5,1.5)) with orientation .T.. When promoting this to a solid representation, carry the void shell(s) through into the result — dropping BREP_WITH_VOIDS&#x27;s void list during solid construction silently turns a hollow part into a solid block, discarding the cavity the input explicitly declared.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(36) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Face A (z=0) and Face B (z=1) each reference the same four named EDGE_CURVEs (&#x27;seam_e0&#x27;,&#x27;seam_e1&#x27;,&#x27;seam_conn0&#x27;,&#x27;seam_conn1&#x27;), Face A with .T. orientation and Face B with .F. — a properly shared, internal pair of faces. Classify an edge as free or shared strictly by how many faces reference it (here: two, with opposite traversal), never by inspecting the EDGE_CURVE&#x27;s name string; a name-based classifier that treats these matched, dual-referenced curves as free edges is wrong regardless of what they are named.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

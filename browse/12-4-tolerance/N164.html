@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic: the triangle&#x27;s edge loop is measured with a genuine 0.05mm gap, against a declared &#x27;loop_closure_gap&#x27; tolerance of 5.0E-2mm (i.e. the gap again sits exactly at the file&#x27;s own declared value, with no independently smaller closure threshold encoded). A correct kernel&#x27;s loop-closure check must not silently accept an at-or-above-tolerance gap as closed without validation -- it should compute the actual gap and compare it explicitly against whatever closure tolerance is in force, reporting the boundary case.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

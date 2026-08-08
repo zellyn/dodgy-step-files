@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the single-face shell is well-formed; the declared tolerance is 1.23E-7mm. STEP carries no tessellation/mesh-derived-tolerance attribute at all (mesh deflection is a runtime tessellation concept, not a Part-21 entity) -- a correct kernel must derive edge/vertex tolerance from the analytical curve/surface geometry the file actually encodes, never from a mesh that doesn&#x27;t exist at import time.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the 10x10 square face loads fine at the applied boilerplate 1.0E-7mm. The claimed &#x27;curve_sampling&#x27;=1e-3 / &#x27;mesh_deflection&#x27;=0.1 pair sits in an unreferenced second representation context -- dead data, and STEP carries no mesh-deflection attribute at all for a face&#x27;s edges (deflection is a tessellation-time, not Part-21, concept). A correct kernel builds the plain square face using only the live 1e-7mm value.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

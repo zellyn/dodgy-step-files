@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept-and-repair: edges e0/e1 are ordinary unit-length lines; e2 (`e2_no_curve_fails`) is a genuinely zero-length `LINE` (`VECTOR` magnitude 0.0) between two vertices that share the same coordinates (2.0,0.0,0.0) though they are distinct `CARTESIAN_POINT` instances. A correct kernel should detect and drop (or merge the endpoints of) the zero-length edge and still return the two valid edges -- an all-or-nothing failure that discards e0/e1 because e2 is degenerate is the wrong behavior, but so is silently keeping a zero-length edge as if it were normal.</p></section>
 <section><h2>Notes</h2>
 <p>Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>

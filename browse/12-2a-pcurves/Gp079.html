@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic naming the edge: the pcurve&#x27;s LINE has a zero-length direction vector (VECTOR magnitude 0.0), collapsing the entire 2D representation to a single UV point, which cannot represent a finite-length 3D edge regardless of any overlap-detection tolerance question.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

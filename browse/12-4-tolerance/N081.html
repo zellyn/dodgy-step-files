@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the closed 4-edge face is well-formed at the declared 1.0E-7mm tolerance; `EDGE_CURVE.SameParameter` is set `.T.` and the file&#x27;s single 3D `LINE` has no pcurve to disagree with it. Divergent sampling between two different internal distance-evaluation code paths is a property of a specific implementation, not something this file&#x27;s bytes can encode or falsify -- a correct kernel should use one consistent sampling strategy regardless of the same-parameter flag&#x27;s value.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

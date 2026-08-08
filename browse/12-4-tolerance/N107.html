@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the 4-edge closed shell is well-formed; the declared tolerance is 1.000000E-04mm. Whether an internal tolerance-accumulation history list uses a stale pointer across repeated calls is an implementation detail of one specific traversal algorithm; a correct kernel&#x27;s tolerance-aggregation pass must produce the same result on repeated invocations over the same unchanged shape (idempotence), regardless of internal caching strategy.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

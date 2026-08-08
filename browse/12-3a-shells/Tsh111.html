@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. The single ADVANCED_FACE is bounded by a 48-edge loop that visits two rings at z=0 and z=1.5 connected by vertical edges — a boundary that is not planar — yet the face&#x27;s underlying surface is declared as a flat PLANE. A kernel must validate that a face&#x27;s boundary loop actually lies on its declared surface (or is within tolerance of it) before doing any topology work with that face, and reject with a diagnostic naming the surface/boundary mismatch instead of processing a face whose loop cannot be consistently parametrized on the surface it claims to bound.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

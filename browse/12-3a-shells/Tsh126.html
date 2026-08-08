@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Both faces lie on the exact same PLANE (z=0) and share an edge at x=5 — a coplanar, abutting pair rather than faces meeting at a dihedral angle. A kernel must never crash on this input: an orientation check that relies on comparing face normals across a shared edge is degenerate for coplanar neighbours (the normals are identical either way) and must fall back to comparing the shared edge&#x27;s traversal direction in each face&#x27;s loop instead of returning an inconclusive or undefined result.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

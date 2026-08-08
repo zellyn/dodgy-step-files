@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic naming the edge: the 3D curve has a genuine 1.5-unit positional gap at its interior knot, and separately the pcurve&#x27;s own parameter range collapses to 1e-8, a near-point 2D curve for a 5-unit 3D edge; either defect alone should stop a kernel from accepting it silently.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

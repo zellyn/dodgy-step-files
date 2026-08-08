@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the shape is well-formed at the declared 1.0E-7mm tolerance. Whether a weighted-average tolerance computation double-counts reversed edges in its denominator is an internal aggregation-algorithm property, not something this file&#x27;s bytes can trigger -- a correct kernel&#x27;s weighted average must count each edge once in the denominator regardless of its `ORIENTED_EDGE` sense.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

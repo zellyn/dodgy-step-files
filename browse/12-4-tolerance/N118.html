@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic: the edge&#x27;s pcurve is described as having a genuine 0.5-unit discontinuity at u=0.5 between two B-spline segments. Whether a specific sampling routine &#x27;inflates&#x27; tolerance to 0.5 to paper over the jump is an internal implementation detail, but the underlying pattern -- a pcurve with a real C0 break -- is a genuine defect class; a correct kernel should detect the discontinuity directly (compare segment endpoints at the shared parameter) and reject or explicitly re-stitch the pcurve rather than silently absorbing the 0.5mm jump into an inflated edge tolerance.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>face A (same_sense=.T.) and face B (same_sense=.F.) are congruent unit squares at Z=0 with no shared edges between them. Detecting that B is congruent to A must trigger a single, coordinated resolution — drop one or force them to the same orientation — rather than flagging the duplication and then flipping only A independently; independent per-face flipping leaves A at +Z and B at -Z, two coincident faces with opposite outward normals.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

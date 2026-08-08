@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the B-spline-bounded face loads fine at the applied boilerplate 1.0E-7mm. The claimed 1e-5mm &#x27;original curve tolerance&#x27; sits in an unreferenced second representation context -- dead data, never wired to the shape. A correct kernel builds the face and evaluates the B-spline over its declared knot domain [0,10] directly; there is no encoded parameter-range clamp to react to.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

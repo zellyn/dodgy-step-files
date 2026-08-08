@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>face A (unit square at Z=0) and face B (unit square at Z=5) sit in one OPEN_SHELL with no vertex or edge in common — two disconnected components inside a single shell entity, five units apart. A shell-partitioning pass that traverses edge connectivity from only one starting face will reach face A and its own four edges but never discover face B. Seed a fresh traversal from every face not yet visited by a prior traversal, not just the first face in the list, so every connected component — including ones with no path from the first seed — is found and reported.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

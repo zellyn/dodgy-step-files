@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the shape is well-formed at the declared 1.0E-7mm tolerance. Whether an edge shared by 6+ faces overflows a fixed-size internal buffer during tolerance sampling is an implementation detail of one specific algorithm, not something this file&#x27;s topology alone can force -- a correct kernel&#x27;s per-edge face-intersection sampling must size its working storage to the edge&#x27;s actual face count, not a hardcoded constant.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

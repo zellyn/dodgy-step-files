@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The SHELL_BASED_SURFACE_MODEL references two independent OPEN_SHELLs (Shell1 with a unit-square face at z=0, Shell2 with one at z=2). A repair pass that iterates the shells of a compound container must visit every shell in the list, not just the first; silently stopping after Shell1 leaves Shell2 completely unprocessed and unreported, which is indistinguishable from data loss to a caller who only sees the first shell&#x27;s outcome.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

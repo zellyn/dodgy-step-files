@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept, with a floor: the single edge is ordinary (unit length, straight line); the declared tolerance is 1.0E-15mm, which is below double-precision&#x27;s representable relative resolution at unit-coordinate scale (~2.2e-16 absolute ULP, i.e. only ~4-5 representable steps of headroom). A correct kernel should clamp such a sub-working-precision declared tolerance up to a sane floor (documented, not silently invented) and report the clamp, rather than either pretending to honor 1e-15mm literally or silently substituting an undocumented larger value.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

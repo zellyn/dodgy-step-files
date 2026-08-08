@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The CLOSED_SHELL wraps exactly one unit-square ADVANCED_FACE with same_sense=.T., so there is no second face to compare against for a relative orientation check. Special-case shells with fewer than two faces: do not run the pairwise consistency test at all (it is vacuous with one face) and do not report a pass/fail orientation verdict derived from a comparison that never happened. Separately note that a single planar face wrapped as CLOSED_SHELL cannot enclose a volume no matter how it is oriented.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

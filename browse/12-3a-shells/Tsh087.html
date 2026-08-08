@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The shell&#x27;s middle ADVANCED_FACE has all four VERTEX_POINTs collapsed onto (1,0,0), so every one of its four EDGE_CURVEs has zero length and the face has zero area. Detect and drop that degenerate face from the OPEN_SHELL&#x27;s face list before any face-by-face repair pass runs — removing an entry mid-iteration over a list captured before the removal is exactly what corrupts the walk. After the drop, the two remaining unit-quad faces (x=[0,1] and x=[1,2]) are geometrically adjacent at x=1 but each references its own separate EDGE_CURVE there, so the shell stays open unless those coincident-but-distinct boundary edges are also merged.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(19) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

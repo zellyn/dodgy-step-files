@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The OPEN_SHELL has five faces of a unit cube (bottom + four sides) and no top face, so the four top-rim edges are each referenced by exactly one face — genuine free edges, not a defect to silently erase. A repair pass must not remove or reroute an edge purely because it is free; free edges on an OPEN_SHELL are the expected, correct encoding of an intentionally open box. Preserve them and report the shell&#x27;s boundary (4 free edges forming the top opening) rather than collapsing or discarding topology in an attempt to force closure.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: 1x1 square face loads fine at the applied boilerplate 1.0E-7mm. The &#x27;vertex_tolerance&#x27;/&#x27;edge_tolerance&#x27; pair (both 1e-3) sits in a second, unreferenced representation context -- dead data never wired into the shape&#x27;s actual `SHAPE_DEFINITION_REPRESENTATION` chain. A correct kernel never observes those two values.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

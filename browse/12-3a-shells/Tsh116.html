@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Five of the cube&#x27;s six ADVANCED_FACEs carry same_sense=.T. and the top face (z=10) carries same_sense=.F. while its EDGE_LOOP is also wired with every ORIENTED_EDGE reversed relative to the other faces&#x27; convention — a single face whose orientation disagrees with its five neighbours across shared edges. Detect the minority face by checking, for each shared edge, that the two faces using it traverse it in opposite directions; the top face fails that test against all four of its neighbours, so flip it alone rather than the other five.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

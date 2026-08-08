@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the four edges genuinely sit at (1e10, 1e10, 1e10)-scale coordinates, 1mm apart, with a declared tolerance of 1.0mm. At this coordinate magnitude double-precision&#x27;s absolute ULP is about 2e-6mm, comfortably below the declared 1mm tolerance -- so the value is representable and enforceable; a correct kernel should apply the tolerance as an absolute (not naively coordinate-relative) quantity and must not treat &#x27;far from the origin&#x27; alone as a reason to reject it.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

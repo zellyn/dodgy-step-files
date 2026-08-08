@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the edge runs through a genuine `CONICAL_SURFACE` apex (0,0,0, half-angle 30 deg) from a base point; the file is a well-formed wireframe container declaring 1.0E-7mm tolerance. Curvature diverging at a cone apex is a real, well-known removable singularity; a correct kernel must special-case apex-touching parameters (assign a bounded, sane tolerance) rather than letting a generic curvature-based sampler blow up there -- this holds whether or not OCCT&#x27;s own wireframe-container transfer happens to build a shape from this particular file.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

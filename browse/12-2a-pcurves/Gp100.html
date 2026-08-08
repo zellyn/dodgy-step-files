@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic naming the edge: the 3D curve has a genuine 1.5-unit positional gap at its interior knot, independent of the pcurve&#x27;s own degenerate first POLYLINE segment (a zero-length CP[0]-&gt;CP[1] step); either defect alone is sufficient grounds to reject.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the two independent edges are well-formed; the declared tolerances (1.0E-12 &#x27;ultra_tight_preci1&#x27;, 5.0E-1 &#x27;coarse_preci2&#x27;) are both live global values, not bound to specific edges. A correct kernel should not average them into a single midpoint threshold -- use the tighter declared value (or a sane precision floor above 1e-12mm) so neither edge&#x27;s stated precision is silently masked.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

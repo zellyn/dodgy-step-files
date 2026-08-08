@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Face 1&#x27;s hole loop (FACE_BOUND, entity #111) and Face 2&#x27;s outer loop (FACE_OUTER_BOUND, entity #112) both reference the exact same EDGE_LOOP entity (#99) — one loop instance shared as both an inner boundary of one face and the outer boundary of a different face. Treat this as a structural error, not two independent boundaries: an EDGE_LOOP used as a face&#x27;s own boundary must not simultaneously bound a second, unrelated face. Reject with a diagnostic naming the shared EDGE_LOOP and both referencing faces rather than silently processing Face 1&#x27;s hole as if it were independent of Face 2&#x27;s outer wire — the two faces are not topologically independent as authored, since editing one loop reference reshapes both faces at once.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

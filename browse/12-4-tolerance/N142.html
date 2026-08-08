@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the wireframe container is well-formed, declaring 1.0E-7mm tolerance. Whether a Bezier-conversion split-parameter test uses a one-sided (asymmetric) comparison that fails when arguments are swapped is an internal-algorithm property, not something this file&#x27;s bytes encode -- a correct kernel&#x27;s parameter-proximity tests must use `abs(a-b) &lt; tol`, not a directional subtraction that only works for one ordering of its operands.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Face1 (x=[0,2], y=[0,1]) and Face2 (x=[1,3], y=[0,1]) both lie on z=0 and their footprints overlap over x=[1,2]; each face has its own four independent EDGE_CURVEs with no entity shared between the two loops. A repair pass that only walks each face&#x27;s own boundary independently cannot see this overlap. Detect interior overlap between coplanar faces by intersecting their boundaries in the surface&#x27;s own parameter space, and reject or flag the pair with a diagnostic naming the overlapping region rather than accepting two faces that claim the same material twice.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

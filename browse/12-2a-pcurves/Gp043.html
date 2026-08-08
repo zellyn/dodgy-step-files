@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>FixReversed2d attempts to reverse PCURVE but the knot-vector corruption causes wrong parameter mapping during edge reconstruction.</p></section>
+<p>heal by reflecting the pcurve&#x27;s knot vector to match the reversed 3D curve/edge direction (SameSense=.F.), or reject with a diagnostic: as supplied, the pcurve&#x27;s control points still run forward (u=0-&gt;1) while the edge traverses the opposite direction, so a consumer that trusts the pcurve&#x27;s raw parametrization visits the wrong boundary segment first.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the 3-edge star wire is well-formed (hub at origin, spokes to (1,0,0)/(0,1,0)/(0,0,1)); both declared tolerances (1.0E-5 &#x27;hub_vertex_tol&#x27;, 1.0E-4 &#x27;spoke_edge_tol&#x27;) are live, applied global values in the same `GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT` -- STEP has no mechanism to bind either value to a specific vertex or edge despite the suggestive labels, so a correct kernel should use the tighter of the two (1e-5mm) as its working precision for the whole wire rather than trying to route the labels to specific sub-elements.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

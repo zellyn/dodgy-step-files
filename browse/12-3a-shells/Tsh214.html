@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>face_a and face_b are geometrically identical unit squares (same PLANE placement, same boundary geometry, (0,0,0)-(1,1,0)) but face_b additionally carries same_sense=.F. to differ in sense while sharing the same footprint. Detecting a duplicate face is not sufficient on its own — the duplicate must be resolved (dropped, or unified with the original&#x27;s orientation) as part of the same pass that detects it; computing an orientation fix for the duplicate independently of the original, after merely noting the duplication, leaves two faces at the same location with inconsistent, independently-derived orientations.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

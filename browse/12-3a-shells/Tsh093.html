@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Both of the shell&#x27;s faces have EDGE_CURVEs whose start and end VERTEX_POINT are identical, so every edge is zero length and both faces are degenerate. A fixer that rejects every face for this reason must not return a silent, unflagged empty shell: an empty OPEN_SHELL that results from rejecting all input faces is indistinguishable from a legitimately empty part unless the rejection is reported explicitly, so surface an error or diagnostic naming the rejected face count rather than succeeding quietly on zero faces.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

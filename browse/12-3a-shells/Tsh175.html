@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>face_a (x=[0,1],y=[0,1]) and face_b (x=[1,2],y=[1,2]) share exactly one VERTEX_POINT, at (1,1,0), and no EDGE_CURVE — a non-manifold, vertex-only contact between two faces that otherwise don&#x27;t touch. An orientation or connectivity check that only propagates along shared edges will never notice this contact at all. Detect vertex-level adjacency separately from edge-level adjacency, and report the shell as non-manifold at that vertex rather than silently treating the two faces as unrelated simply because no edge connects them.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

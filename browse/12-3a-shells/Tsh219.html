@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>face A (same_sense=.T.) and face B (same_sense=.F.) are geometrically congruent unit squares at Z=0 sharing no edges with each other, and face C is a distinct unit square at Z=1. Detecting that A and B are congruent duplicates must trigger deduplication (drop one, or unify their orientation), not just a warning followed by independently fixing each; fixing A and B independently produces opposite outward normals (+Z and -Z) for two faces that occupy the same location, and because A/B don&#x27;t actually share topology with C, C&#x27;s edges remain free regardless — the closure criterion depends on edge sharing, which duplication does not create.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

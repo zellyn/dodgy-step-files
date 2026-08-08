@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the closed 2-edge face (B-spline arc + straight closing edge) is well-formed at the declared 1.0E-7mm tolerance. Sample-count-related deviation underestimation on a B-spline is a property of a specific tolerance-computation algorithm&#x27;s internal sampling density, not something a static Part-21 file can encode or trigger -- a correct kernel just needs its own curve-deviation sampling to be adaptive (denser near curvature peaks) rather than fixed-count, independent of what this file declares.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

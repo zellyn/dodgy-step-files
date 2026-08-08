@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. The two triangular faces share edge e01 exactly but their third vertices are only 0.0005mm apart in z (5.0,5.0,0.005 vs 5.0,5.0,0.0055) against a declared 1e-7 tolerance — well outside it, so the faces are genuinely distinct, not a coincidence to merge, but the dihedral angle between them is only ~0.001 rad. A kernel must handle near-tangent (small but nonzero) dihedral angles without special casing that assumes a minimum angle; reject or accept the faces as authored, but never let a near-zero-angle comparison run out of numerical range and crash.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

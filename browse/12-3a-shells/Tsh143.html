@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Face1 and Face2 share the same vertex pair at x=1 (v10, v11) but each uses its own separate EDGE_CURVE entity for that boundary — two distinct LINE curves with matching endpoints rather than one shared curve. An edge-pairing check that only compares entity identity will miss this: compare the actual curve geometry (start/end points, and for non-line curves the underlying curve type and parametrization) between edges that share a vertex pair, and flag a mismatch when two faces bound the same nominal edge with materially different curve definitions.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(16) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

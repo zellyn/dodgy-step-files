@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the 2-edge wire (with one shared vertex) is a well-formed wireframe container declaring 1.0E-7mm tolerance. Whether a tolerance-aggregation pass mutates its own iteration state while iterating (an iterator-invalidation bug) is an internal implementation property, not something this small, ordinary topology can force by itself -- a correct kernel&#x27;s tolerance-accumulation pass must not mutate the structure it is iterating over, independent of what any particular input file contains.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

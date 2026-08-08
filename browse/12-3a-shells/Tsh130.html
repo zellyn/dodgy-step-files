@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The shell is typed CLOSED_SHELL but wraps only 5 of a unit cube&#x27;s 6 faces (right face at x=1 is absent), leaving the 4 edges of the missing face&#x27;s rim referenced by exactly one face each — genuine free edges. Verify closure by checking that every edge referenced by the shell&#x27;s faces is used by exactly two faces before accepting a CLOSED_SHELL label; here that check fails on 4 edges, so reject the CLOSED_SHELL claim with a diagnostic naming the open boundary rather than trusting the entity type name over the actual edge-reference topology.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(25) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

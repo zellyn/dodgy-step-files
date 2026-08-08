@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the shell&#x27;s face is well-formed at the declared 1.0E-7mm tolerance. Whether a `LimitTolerance`-style routine correctly handles the degenerate case tmax==tmin is an internal-contract property; a correct kernel should either require strict ordering (tmin &lt; tmax) at the API boundary, or explicitly define the equal-bounds case as &#x27;clamp everything to that single value&#x27; -- but must not silently no-op when the bounds coincide.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

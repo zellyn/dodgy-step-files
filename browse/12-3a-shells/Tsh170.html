@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>face_left (x=[0,1]) and face_right (x=[1,2]) share one EDGE_CURVE at x=1 exactly — true zero-gap coincidence, traversed forward by face_left&#x27;s loop and reversed by face_right&#x27;s, and both faces already carry same_sense=.T.. This is already correct, unambiguous topology (exact zero distance is the strongest possible case for &#x27;coincident&#x27;, not an edge case to special-case away): an orientation-propagation implementation must treat exact-zero-distance shared edges the same as any within-tolerance match rather than routing them into separate, ambiguous handling; the correct output is simply that both faces are already consistently oriented.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

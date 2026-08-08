@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the junction vertex&#x27;s declared tolerance (1e-3) legitimately exceeds the file&#x27;s global default (1e-7) and is large enough to reconcile the edges meeting there; a kernel must use each vertex&#x27;s own declared (or derived-maximum) tolerance for continuity checks rather than assuming a single global value applies everywhere.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

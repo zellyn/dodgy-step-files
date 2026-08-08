@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the two edges are measured with a genuine 0.05mm gap in Z, and the file&#x27;s only declared tolerance is that same value, 5.0E-2mm (&#x27;raw_write_gap&#x27;) -- the gap sits exactly at the file&#x27;s own declared working precision, not comfortably inside or outside it. A correct kernel faced with a gap exactly at its declared tolerance should report the boundary condition explicitly (rather than silently merging or silently rejecting) since there is no independent, smaller &#x27;cap&#x27; value encoded in this file to check the computed tolerance against.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

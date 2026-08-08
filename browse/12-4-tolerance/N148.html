@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept-and-repair: the two ADVANCED_FACEs&#x27; facing free edges are measured 0.1mm apart on real face boundaries (edge lengths 5.0mm and 4.9mm, a 2% length mismatch) against a declared 1.0E-7mm tolerance -- the gap is six orders of magnitude over budget relative to the file&#x27;s own precision. A correct kernel should compute the true separation from actual 3D geometry regardless of near-parity in edge length, and either close the 0.1mm gap by merging or report it explicitly rather than picking a direction based on which edge happens to be longer.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

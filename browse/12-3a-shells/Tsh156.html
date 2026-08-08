@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Shell1 (OPEN_SHELL #400) has two planar faces sharing a LINE-curve seam at x=[0,10],y=[0,10]; Shell2 (OPEN_SHELL #401) has a single face on a B_SPLINE_SURFACE_WITH_KNOTS whose boundary at the matching seam position uses a B_SPLINE_CURVE instead of a LINE. A kernel must never crash on this input: when merging or comparing edges at a shared seam position across shells, compare their actual sampled geometry rather than assuming curve types match, and reject or convert rather than blindly splicing a LINE boundary to a B-spline one.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

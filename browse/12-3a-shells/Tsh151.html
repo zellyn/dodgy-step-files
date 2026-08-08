@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Face1/Face2 (left/right walls, z=[0,10]) and Face3/Face4 (bottom/top strips) form an open box; the seam at x=1,z=10 is authored with Face1&#x27;s vertex placed to 0.00001 precision and Face2&#x27;s to only 0.001 — a hundredfold tolerance mismatch on the same physical seam. Resolve a shared seam using the loosest (largest) of the tolerances declared by the faces meeting there, not the tightest; using the tight value can reject a join that the looser face&#x27;s own authored precision supports, leaving a gap that should have been closed.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

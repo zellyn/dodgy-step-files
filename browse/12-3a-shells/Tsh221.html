@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Both faces (A at Z=0, B at Z=1, connected by shared vertical edges) carry same_sense=.F. and both need to be flipped to .T. to be consistently outward-facing. An orientation-fix operation invoked a second time on an already-corrected shell must start from the shell&#x27;s current, already-fixed state and detect that both faces are now correctly oriented; it must not reapply a set of flip operations recorded during the first invocation and flip both faces back to .F..</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>One ADVANCED_FACE is a valid quad; the other has all four VERTEX_POINTs collapsed to (1,1,0), giving a zero-length EDGE_LOOP and zero area. A cross-product-based normal on a zero-area loop is the zero vector, which is undefined for orientation purposes. Detect the degenerate face&#x27;s zero area before computing its normal and exclude it from the orientation-consistency pass (or report it explicitly) rather than letting an undefined normal silently produce a meaningless orientation verdict.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

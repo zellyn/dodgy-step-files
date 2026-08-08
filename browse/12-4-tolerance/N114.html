@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic: the edge&#x27;s B-spline curve genuinely has one control point at (1.0E+308, 0.0, 0.0) -- effectively double-precision&#x27;s overflow boundary -- while its two endpoint vertices sit at (0,0,0) and (1,0,0), 1mm apart, against a declared 1.0E-7mm tolerance. Evaluating this curve risks overflow/Inf in any bounding-box or deviation computation; a correct kernel should reject the curve as unrepresentable at working precision rather than attempt to compute a tolerance or deviation against it.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

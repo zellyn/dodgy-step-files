@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic: the wireframe container declares 5.0E-2mm as its only tolerance value (labelled &#x27;sewing_gap&#x27;, living in the file&#x27;s live `GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT&#x27;) -- there is no independently-encoded, smaller &#x27;cap&#x27; value in this file to compare it against. A correct kernel should still treat any computed edge tolerance that reaches the outer edge of what the file itself declares as worth an explicit report; whatever internal cap a caller supplies at runtime, the sewing routine must actually reject (not silently accept) a merge whose true tolerance exceeds that cap.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

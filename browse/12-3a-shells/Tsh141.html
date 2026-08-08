@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Face1 (x=[0,1], y=[0,2]) and Face2 occupy the same footprint but Face2 is authored with same_sense=.F. as a folded-back duplicate; the two faces share one true edge at x=1, and each also has a free edge at x=0 that is geometrically coincident with the other&#x27;s (distance 0) but backed by separate EDGE_CURVE entities. A sewing pass must be able to pair two free edges belonging to the same shell when their endpoints coincide within tolerance, even though pairing them means the shell effectively closes on itself (self-sewing); rejecting a same-shell pairing outright because both edges originate from the same OPEN_SHELL misses this legitimate case.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

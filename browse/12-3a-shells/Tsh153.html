@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Two OPEN_SHELLs (Shell1: faces at x=[0,1] and x=[1,2]; Shell2: faces at x=[2,3] and x=[3,4]) are wrapped through three nested SHELL_BASED_SURFACE_MODEL / representation levels before reaching the PRODUCT_DEFINITION. A shell enumerator must recurse through every wrapping level present in the file, not stop at a fixed depth; capping recursion below the actual nesting depth here drops the innermost shell (or its faces) from the enumerated result even though it is fully present in the data.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

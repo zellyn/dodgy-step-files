@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the 4-edge closed face is well-formed and loads normally; the declared tolerance is 1.0E-7mm. The comment&#x27;s &#x27;no PCURVE entities&#x27; framing describes the ordinary AP214 idiom of a 3D-curve-only `EDGE_CURVE` on a planar `ADVANCED_FACE` with no explicit pcurve -- this is common and valid (planar faces don&#x27;t require pcurves), not a null-pointer trigger; a correct kernel builds the face directly from the 3D curve.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

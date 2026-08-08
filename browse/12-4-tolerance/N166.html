@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the shell&#x27;s face is well-formed at the declared 1.0E-7mm tolerance. Whether an internal range-filter uses `&gt;=` vs `&lt;=` at its bounds is an implementation-contract property; a correct kernel&#x27;s own in-range vertex filter must use consistent, correctly-oriented inequalities (matching whatever inclusive/exclusive convention it documents) so in-range and out-of-range elements are never swapped.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

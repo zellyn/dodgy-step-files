@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>All three triangular faces (A, B, C) share the identical central edge from V_origin(0,0,0) to V_top(0,0,1) — one edge incident to three faces, non-manifold by definition (a manifold edge has exactly two incident faces). Detect and explicitly report edges with three or more incident faces as non-manifold before running any per-pair orientation-consistency logic across them; a general-purpose non-manifold check (bounded by the actual number of incident faces, however large) is required here, not pairwise comparison assumed to apply only to ordinary two-face edges.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Of the tetrahedron&#x27;s four faces, three (base, front, right) carry same_sense=.T. and the fourth (left, sharing edges with both base and right) carries .F., while all six edges are shared correctly (no free edges). A kernel must never crash on this input, and resolving orientation from only immediate pairwise adjacency is not sufficient: the propagation must continue until every face&#x27;s orientation has been checked against all of its neighbours, not just the first one visited, or a single dissenting face like this one can be missed.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the shell loads fine at the applied boilerplate 1.0E-7mm (`#9009`). The claimed 1.0E-2mm &#x27;tessellation-derived&#x27; tolerance sits in a second, unreferenced representation context (`#110`) -- dead data never linked to the actual shape representation. STEP carries no tessellation/mesh-deflection attribute at all, so a correct kernel has nothing to conflate with curve-geometry tolerance here; it just builds the shell at 1e-7mm.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

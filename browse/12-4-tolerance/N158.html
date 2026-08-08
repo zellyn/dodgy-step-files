@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the wireframe container is well-formed, declaring 1.0E-7mm tolerance. Whether a tolerance-evaluation routine correctly applies a surface&#x27;s placement transform before comparing points is an internal-algorithm property; a correct kernel must always evaluate geometry in its actual placed (world) frame for any cross-entity distance/tolerance computation, never in an untransformed local frame, regardless of what any specific file&#x27;s placements happen to be.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

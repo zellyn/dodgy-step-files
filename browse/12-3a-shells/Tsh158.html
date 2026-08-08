@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Three cylindrical band faces share a seam along the circular boundary; the seam edge is referenced with the same ORIENTED_EDGE sense (.T.) in adjacent faces&#x27; loops in some places rather than the opposite sense a manifold pair requires. A kernel must never crash on this input: classify a shared edge as free or properly shared by checking both its 3D proximity and its traversal direction in each referencing face&#x27;s loop, since a proximity-only check cannot distinguish a correctly shared seam from two faces that happen to run the same edge the same way.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

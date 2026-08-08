@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the TRIMMED_CURVE&#x27;s declared parameter range [1.5,3.5] lies safely inside its LINE basis&#x27;s full extent, and the pcurve matches it exactly, so a kernel that respects the declared trim (rather than extending to the full untrimmed basis) produces the correct, shorter edge.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Two EDGE_CURVEs both start or end at the same shared vertex, but the LINE geometry underlying one of them does not actually pass through that vertex&#x27;s coordinates — a topological match with a geometric discontinuity. A kernel must never crash on this input: a free-edge or connectivity check based only on shared VERTEX_POINT identity is not sufficient — verify that each edge&#x27;s curve geometry actually reaches the vertex coordinates it claims to reference, and report a mismatch as a defect rather than treating vertex-identity alone as proof of geometric continuity.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

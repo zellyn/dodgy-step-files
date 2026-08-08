@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>All 12 edges of this 6-face unit-cube CLOSED_SHELL are each referenced by exactly two faces with opposite ORIENTED_EDGE senses — a fully manifold, already-closed shell with no free or duplicate edges. Check edge-manifold status (every edge used exactly twice, oppositely) before running any sewing pass, and when it already holds, leave the shell untouched; re-sewing an already-closed shell risks introducing near-duplicate geometry or tolerance drift that a shell needing no repair should never acquire.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(26) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

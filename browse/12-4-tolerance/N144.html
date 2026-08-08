@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the 2-edge chain is well-formed; the declared tolerances (1.0E-3 &#x27;v1_tight_tol&#x27;, 1.0E-2 &#x27;v0v2_coarse_tol&#x27;) are live global values, not bound to the specific shared vertex the labels imply -- STEP has no per-vertex tolerance entity. A correct kernel uses the tighter value (1e-3mm) as its working precision across the whole chain rather than trying to track per-vertex provenance through a concatenation.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>All three faces (A in the XY-plane, B below it, C above it) reference the identical EDGE_CURVE running from (0,0,0) to (1,0,0) — a single edge incident to three faces at once, which is non-manifold (a valid manifold edge has exactly two incident faces). Detect edges with three or more incident faces as a distinct, explicitly reported non-manifold condition before running any per-pair orientation-consistency logic on that edge; treating it as an ordinary shared edge and running pairwise checks over all three faces has no well-defined &#x27;consistent&#x27; answer and risks unbounded pairwise work as the incident-face count grows.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

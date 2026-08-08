@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>face_pos (same_sense=.T., normal +Z) and face_neg (same_sense=.F., normal -Z) are geometrically identical unit squares at z=0 with entirely separate EDGE_CURVE entities, sitting in two separate OPEN_SHELLs. Before merging coincident edges across shells during sewing, check whether the faces meeting there have opposing normals; two faces occupying the same location with opposite orientation are not a sewing candidate — merging them produces a geometrically degenerate result where positive and negative material cancel — so detect and reject that specific case with a diagnostic instead of merging blindly on proximity alone.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

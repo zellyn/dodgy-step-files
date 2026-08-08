@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the single free-standing point is well-formed at the declared 1.0E-7mm tolerance; it is not an &#x27;empty shape&#x27; -- it is a shape consisting of exactly one vertex and no edges/faces. A correct kernel should return a genuine 1-vertex shape (as this file&#x27;s own oracle measurement confirms: 1 vertex) and must not conflate &#x27;a global-tolerance aggregate over zero edges/faces&#x27; with &#x27;no geometry at all&#x27; -- those are different conditions and should be distinguishable in any diagnostic output.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

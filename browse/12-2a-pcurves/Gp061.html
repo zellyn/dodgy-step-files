@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic naming the edge, or heal by recomputing the pcurve from the 3D curve: even though the edge is only 0.001 units long, its pcurve bows 0.1 UV-units off the straight path implied by the 3D LINE; a kernel must validate pcurve/3D-curve agreement with an absolute or analytic check, not a sample count that shrinks to uselessness on short edges.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

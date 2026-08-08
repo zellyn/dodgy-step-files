@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the 1mm edge is well-formed; the file declares `UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7))` inside a `GLOBAL_UNIT_ASSIGNED_CONTEXT` that specifies millimetre length units (`SI_UNIT(.MILLI.,.METRE.)`) -- so the declared value is unambiguously 1e-7mm, not metres; there is no genuine unit mismatch encoded in this file (the claimed 10000x metre/mm confusion would require the unit context itself to say METRE, which it does not). A correct kernel simply reads the tolerance in the units the file&#x27;s own `GLOBAL_UNIT_ASSIGNED_CONTEXT` specifies and applies 1e-7mm directly.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

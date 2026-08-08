@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>heal: the 5 vertices are genuinely clustered within 5e-9mm of (1,1,1) (measured directly from coordinates), well inside the file&#x27;s declared 1.0E-7mm tolerance. A correct kernel should merge all 5 into a single vertex and drop the 4 chained near-zero-length edges rather than building a degenerate 4-edge polyline whose total extent (~2e-8mm) is two orders of magnitude below the working precision.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

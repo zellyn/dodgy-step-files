@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the single-face closed shell is well-formed at the declared 1.0E-7mm tolerance; it genuinely contains three distinct `EDGE_CURVE` instances all built on the identical `LINE` between the same two vertices (v1,v2) -- three coincident duplicate edges. A correct kernel&#x27;s overlap/coincidence check must produce a consistent verdict regardless of how many duplicates are compared pairwise vs. as a group (transitivity: if A overlaps B and B overlaps C, A must be reported as overlapping C too); it should also flag the 3-way duplication itself as a topology defect worth healing (collapsing to one edge).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

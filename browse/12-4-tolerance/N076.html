@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the 3-segment wire (v0-v1-v2-v3) is well-formed; the only *applied* tolerance is 5.0E-6mm (&#x27;edge_tol_nominal&#x27;, live in the file&#x27;s `GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT&#x27;). The other two per-edge values the comment describes (8e-6, 3e-6) are not backed by any `UNCERTAINTY_MEASURE_WITH_UNIT` entity at all -- they exist only as decorative substrings in the `EDGE_CURVE` label strings (&#x27;e1_tol8e6&#x27;, &#x27;e2_tol3e6&#x27;), and STEP has no per-edge tolerance attribute for them to occupy anyway. A correct kernel builds the plain 3-edge wire at the single declared 5e-6mm precision.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

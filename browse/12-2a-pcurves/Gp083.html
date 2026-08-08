@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the two EDGE_CURVEs&#x27; pcurves are offset by exactly one full period (2pi) on the periodic cylindrical surface even though their 3D geometry is identical; a kernel that normalizes pcurve U-parameters modulo the surface&#x27;s period before comparing recognizes the true coincidence instead of reporting a false non-overlap.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

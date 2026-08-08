@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the wire&#x27;s shared vertices are well-formed at the declared 1.0E-7mm tolerance. Whether a recursive tolerance-limiting pass visits a shared vertex more than once (double-mutation) is an internal traversal property; a correct kernel&#x27;s tolerance-limiting pass must be idempotent per unique sub-shape (track visited entities, or make the operation commutative/idempotent) so a vertex shared by multiple wire segments is not clamped multiple times with compounding effect.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

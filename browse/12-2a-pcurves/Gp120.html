@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: direct evaluation of both composite-pcurve segments&#x27; boundary derivatives shows identical tangent vectors (1,-1) at the shared join, confirming genuine C1 continuity despite the asymmetric-looking control polygon; a kernel must trust the computed derivative, not the visual appearance of the control points, when judging smoothness.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-08-07 (title-vs-bytes audit): retitled/redescribed — original claimed the composite pcurve&#x27;s segment join has a G0-only tangent discontinuity (`ShapeAnalysis_Edge.GetEndTangent2d` &quot;fails&quot; on it); live evaluation of both segments&#x27; boundary derivatives (Geom2d_BSplineCurve::D1) shows the tangent vectors at the join are identical, (1,-1) on both sides, so no discontinuity exists in the bytes for any reader to detect or heal. Synonyms: &quot;composite pcurve join accidentally smooth&quot;, &quot;symmetric control-point excursions cancel intended kink&quot;, &quot;G0-looking join is actually C1&quot;.</p></section>
 <section><h2>Expected validation</h2>

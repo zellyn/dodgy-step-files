@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the single edge runs from the cone&#x27;s genuine apex (0,0,0), where `CONICAL_SURFACE` u,v is a real removable-degeneracy point (the whole apex circle collapses to one 3D point regardless of parameter), to a base point (0.5,0,1). A correct kernel should recognize apex vertices as a special case and assign them a positive, sane tolerance derived from the surrounding surface geometry (not the literal 0.0 that naive curvature-based sampling would produce there, and not an unbounded value either).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

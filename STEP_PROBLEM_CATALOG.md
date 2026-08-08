@@ -30475,6 +30475,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 ### Tsh084 — ShapeAnalysis_Shell.CheckOrientedShells closed-shell self-test
 
 Single CLOSED_SHELL containing one face with inwardly-oriented normal (inside-out solid). Detector must classify geometric orientation before propagating fixes; fixture passes validate2 despite reversed normal, exposing tier-3 lint class.
+- **Expected kernel behavior**: The CLOSED_SHELL's sole face is a unit square whose FACE_OUTER_BOUND loop runs (0,0,0)->(1,0,0)->(1,1,0)->(0,1,0), counter-clockwise about the PLANE's own +Z reference direction, but the ADVANCED_FACE carries same_sense=.F.; composing loop sense with same_sense gives an outward normal of -Z. Derive the face's true outward direction from that composition (never from the surface's raw reference direction alone), detect that the shell's one and only face points inward, and flip same_sense to .T.. Separately flag that a single planar face cannot enclose a volume regardless of orientation, so a CLOSED_SHELL label on it is unsound even after the flip.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tsh085 — ShapeFix_Shell.FixFaceOrientation transition-point
@@ -30492,11 +30493,13 @@ Compound of two shells with opposite orientation conventions: one outward-normal
 ### Tsh087 — ShapeFix_Shell.Perform face-removal during iteration
 
 Shell with three faces where middle face (intentionally degenerate or marked for removal) gets excised during Perform loop. Subsequent iteration references stale face index from before removal, causing index bounds violation or silent data corruption.
+- **Expected kernel behavior**: The shell's middle ADVANCED_FACE has all four VERTEX_POINTs collapsed onto (1,0,0), so every one of its four EDGE_CURVEs has zero length and the face has zero area. Detect and drop that degenerate face from the OPEN_SHELL's face list before any face-by-face repair pass runs — removing an entry mid-iteration over a list captured before the removal is exactly what corrupts the walk. After the drop, the two remaining unit-quad faces (x=[0,1] and x=[1,2]) are geometrically adjacent at x=1 but each references its own separate EDGE_CURVE there, so the shell stays open unless those coincident-but-distinct boundary edges are also merged.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(19) ifc=schema_n/a`
 ### Tsh088 — ShapeAnalysis_Shell.LoadShells orientation-from-compound
 
 Compound with two shells exhibiting mixed FACE_OUTER_BOUND orientation flags (.T. and .F. on respective outer bounds). LoadShells must preserve mixed flags but loses one during compound decomposition, normalizing both to same orientation.
+- **Expected kernel behavior**: Shell 1's sole face carries FACE_OUTER_BOUND orientation .T. and Shell 2's sole face carries .F. — two independently authored, unrelated single-face shells inside one COMPOUND, not two faces of a shared solid that must agree. Preserve each shell's FACE_OUTER_BOUND flag exactly as authored when descending into the compound; normalizing both to the same value just because only one flag is tracked during traversal silently inverts Shell 2's boundary sense.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(2)/shape(2) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh089 — ShapeUpgrade_RemoveInternalWires tolerance-based removal
@@ -30516,16 +30519,19 @@ Single-face closed shell with inverted orientation flag (.F. on FACE_OUTER_BOUND
 ### Tsh091 — ShapeUpgrade_ShellSewing.Apply degenerate-face sliver
 
 Shell containing one regular face and one degenerate "sliver" face whose four vertices all occupy the same coordinates (2,0,0). All edges collapse to zero length. Tests sliver detection in `Apply` before sewing. Expected: sliver rejected. Likely failure: No degenerate check; included in output shell, causing downstream failures.
+- **Expected kernel behavior**: Face B's four VERTEX_POINTs all sit at (2,0,0), so its EDGE_LOOP has four zero-length EDGE_CURVEs and zero area, alongside a valid unit-quad Face A at x=[0,1]. Detect the zero-area face and reject it before any sewing pass runs: sewing by edge-proximity has no non-degenerate edge on Face B to match against, so a fixer that only checks proximity will pass the sliver straight through into the output shell instead of excluding it.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
 ### Tsh092 — ShapeAnalysis_Shell.CheckOrientedShells nested-shell cavity
 
 Compound containing two shells: outer (10×10 base) and inner (2×2 at height 5-7). Tests `CheckOrientedShells` with nesting topology (cavity). Expected: both shells recognized as valid; outer outward, inner inward. Likely failure: Inner shell misclassified as inverted; reports outer as wrongly oriented.
+- **Expected kernel behavior**: The outer shell is a single 10x10 face at z=0 with FACE_OUTER_BOUND .T.; the inner shell is a single 2x2 face at z=5, entirely inside the outer footprint, with FACE_OUTER_BOUND .F.. Test containment before judging orientation — the inner shell's extent lies wholly within the outer shell's — and when it does, accept the inner shell's flipped bound as the cavity marker it is instead of flagging it as a wrongly oriented outer boundary; only shells that are not contained in another should be held to the plain outward-normal convention.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(2)/shape(2) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh093 — ShapeFix_Shell.Perform empty-output handling
 
 Shell with two faces whose vertices all collapse to near-degenerate edges (e.g., edge from P to same P with zero direction). Tests `Perform` when all faces get rejected during fixing. Expected: diagnostic flag set or exception. Likely failure: Returns empty shell silently; no error flag; caller unaware that output is invalid.
+- **Expected kernel behavior**: Both of the shell's faces have EDGE_CURVEs whose start and end VERTEX_POINT are identical, so every edge is zero length and both faces are degenerate. A fixer that rejects every face for this reason must not return a silent, unflagged empty shell: an empty OPEN_SHELL that results from rejecting all input faces is indistinguishable from a legitimately empty part unless the rejection is reported explicitly, so surface an error or diagnostic naming the rejected face count rather than succeeding quietly on zero faces.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`
 ### Tsh094 — ShapeFix_Shell.FixFaceOrientation duplicate-face removal
@@ -30564,6 +30570,7 @@ Shell contains a degenerate face (zero-area, e.g. all vertices collapsed to sing
 
 **Minimal reproducer**: Create face with all vertices at same point; call CheckOrientedShells; expect error or rejection, observe classification attempt with undefined normal.
 
+- **Expected kernel behavior**: One ADVANCED_FACE is a valid quad; the other has all four VERTEX_POINTs collapsed to (1,1,0), giving a zero-length EDGE_LOOP and zero area. A cross-product-based normal on a zero-area loop is the zero vector, which is undefined for orientation purposes. Detect the degenerate face's zero area before computing its normal and exclude it from the orientation-consistency pass (or report it explicitly) rather than letting an undefined normal silently produce a meaningless orientation verdict.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
 ### Tsh097 — ShapeFix_Shell.Perform context-state accumulation
@@ -30576,9 +30583,11 @@ Perform runs multiple sub-fixers (FixFaceOrientation, FixWireGaps, FixShellOrien
 
 **Minimal reproducer**: Create ShapeFix_Shell with misoriented faces; call Perform() twice; observe myStatus on second call reflects first failure, not second success.
 
+- **Expected kernel behavior**: Face A's FACE_OUTER_BOUND is .F. and Face B's is .T. on two adjacent faces — a genuine orientation conflict needing repair. Any multi-pass orientation-fix loop must derive its verdict solely from the shell's current topology on each pass, never from bookkeeping left over from an earlier pass on this or another shell: re-running the fixer on an already-fixed shell must reproduce the same result, not silently reintroduce the original conflict because prior-pass state was carried forward.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh098 — ShapeUpgrade_RemoveLocations.Remove location-after-traversal
+- **Status**: FLAGGED 2026-08-07 (12-3a-shells unspec pass) — Comment claims 'RemoveLocations removes top-level shell location but face AXIS2_PLACEMENT_3D (5,3,2) is retained.' The file contains exactly ONE AXIS2_PLACEMENT_3D entity total (#33, origin (5,3,2)), used directly by the face's PLANE. There is no second, parent-level location/transform entity anywhere in the file to be 'removed' -- no MAPPED_ITEM, no representation-level placement, nothing. The face is simply and consistently translated to (5,3,2) as authored. Nothing in the bytes demonstrates a location-removal-propagation defect; the fixture does not exercise the claimed mechanism.
 
 **Axis**: `location-transform` | **Source**: wave-14
 
@@ -30592,6 +30601,7 @@ During MakeNewShape traversal, shape's location is removed from top-level entity
 ### Tsh099 — ShapeAnalysis_Shell.CheckOrientedShells one-face-shell
 
 Single ADVANCED_FACE wrapped as CLOSED_SHELL. The "shell orientation" checker reports a verdict despite orientation being meaningful only for ≥2 faces. Exposes analyzer's blind assumption about shell complexity.
+- **Expected kernel behavior**: The CLOSED_SHELL wraps exactly one unit-square ADVANCED_FACE with same_sense=.T., so there is no second face to compare against for a relative orientation check. Special-case shells with fewer than two faces: do not run the pairwise consistency test at all (it is vacuous with one face) and do not report a pass/fail orientation verdict derived from a comparison that never happened. Separately note that a single planar face wrapped as CLOSED_SHELL cannot enclose a volume no matter how it is oriented.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tsh100 — ShapeFix_Shell.FixFaceOrientation tangent-edge propagation
@@ -30609,11 +30619,13 @@ Two shells with closest vertices offset by (0.0005, 0.0005, 0) — within tolera
 ### Tsh102 — ShapeFix_Solid.SolidFromShell hollow-solid cavity loss
 
 Outer shell (0–2, 0–2, 0–2) contains inner shell (0.5–1.5, 0.5–1.5, 0.5–1.5). SolidFromShell converts to MANIFOLD_SOLID_BREP with cavity but loses cavity orientation markers, making downstream cavity operations unsafe.
+- **Expected kernel behavior**: BREP_WITH_VOIDS references an outer CLOSED_SHELL (2 representative faces of a 2x2x2 cube, z=0 and z=2) and one void, an ORIENTED_CLOSED_SHELL wrapping a second CLOSED_SHELL (2 representative faces of a 1x1x1 cube offset to (0.5,0.5,0.5)..(1.5,1.5,1.5)) with orientation .T.. When promoting this to a solid representation, carry the void shell(s) through into the result — dropping BREP_WITH_VOIDS's void list during solid construction silently turns a hollow part into a solid block, discarding the cavity the input explicitly declared.
 - **Tier-3 assertion**: n_faces_total == 4
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(36) ifc=schema_n/a`
 ### Tsh103 — ShapeAnalysis_Shell.FreeEdges seam-edge classification
 
 Two faces (z=0, z=1) with named seam edges ('seam_e0', 'seam_e1', 'seam_conn0', 'seam_conn1'). FreeEdges incorrectly classifies matched seam pairs as free, violating closed-shell invariant.
+- **Expected kernel behavior**: Face A (z=0) and Face B (z=1) each reference the same four named EDGE_CURVEs ('seam_e0','seam_e1','seam_conn0','seam_conn1'), Face A with .T. orientation and Face B with .F. — a properly shared, internal pair of faces. Classify an edge as free or shared strictly by how many faces reference it (here: two, with opposite traversal), never by inspecting the EDGE_CURVE's name string; a name-based classifier that treats these matched, dual-referenced curves as free edges is wrong regardless of what they are named.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh104 — ShapeFix_Shell.FixFaceOrientation reverse-edge propagation
@@ -30629,6 +30641,7 @@ Shell where one face's edge is referenced with `.F.` by a neighbor; orientation 
 Shell with two disjoint sub-shells (not topologically connected); CheckOrientedShells reports a single verdict instead of per-component. Contains two isolated square faces (Component 1 at origin, Component 2 at x=10) with no shared edges. CheckOrientedShells must detect and report orientation issues per connected component.
 
 **File:** `Tsh105.stp`
+- **Expected kernel behavior**: The OPEN_SHELL holds two unit-square faces, one at x=[0,1] and one at x=[10,11], sharing no vertex or edge — two disconnected topological components inside a single shell entity. An orientation check that propagates from one seed face along shared edges will never reach the second component. Enumerate connected components by edge/vertex adjacency first, then evaluate and report orientation per component; a single verdict for the whole shell silently omits any component the seed traversal never reaches.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh106 — Face wires of area 16 and 4 against a 1e-7 tolerance: neither is negligible and neither may be removed
@@ -30645,6 +30658,7 @@ Shell-level RemoveInternalWires is called but doesn't propagate to face-level in
 Perform's orientation pass runs FixFaceOrientation then re-checks; the recheck flips orientation again when invariant is achieved (oscillation). Three-face corner shell where each pair shares edges; subtle orientation inconsistencies cause FixFaceOrientation to flip Face 3, then recheck flips it back, creating oscillation loop.
 
 **File:** `Tsh107.stp`
+- **Expected kernel behavior**: Three faces form a corner and share edges pairwise (Face1-Face2, Face2-Face3, Face1-Face3), and Face3 alone carries same_sense=.F.. Propagating a flip decision face-by-face from a mismatched shared edge is not enough on its own: derive the target orientation for every face from a single fixed-point pass over all shared-edge sense comparisons and apply it once, rather than re-evaluating and re-flipping faces repeatedly as their neighbours change — an implementation that keeps re-checking already-visited faces against newly flipped neighbours can flip Face3 back and forth without ever converging.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`
 ### Tsh108 — A vector entity that names itself as its own direction makes the reader abort
@@ -30657,6 +30671,7 @@ Sewing tolerance set to 0.0; Apply should reject or use Confusion as minimum but
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh109 — ShapeFix_Shell.Perform rejection orphan vertices
 Face rejection in Perform() configured to reject faces failing checks creates orphan vertices. When a single face is rejected from a multi-face shell, its vertices become unreferenced by remaining faces, and downstream operations dereference invalid geometry pointers.
+- **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. The shell holds two valid unit-quad faces plus a third, 'degenerate' triangular face whose three edges are ~0.01mm long, built from its own private, unshared vertex set. A kernel must never crash on this input: reject a face whose edges are all near-zero length relative to the model's declared 1e-7 tolerance with a diagnostic before any code path that assumes a well-formed, non-degenerate face touches it, rather than following that assumption into undefined behavior.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh110 — ShapeUpgrade_ShellSewing tolerance-scale interaction
 Sewing operation tolerance (0.01) exceeds vertex uncertainty (0.001) by 10x. Apply() merges vertices with gap 0.005 (within sewing tolerance but outside uncertainty), causing precision loss. Tolerance hierarchy unclear: which precedence should govern merge decisions?
@@ -30664,6 +30679,7 @@ Sewing operation tolerance (0.01) exceeds vertex uncertainty (0.001) by 10x. App
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh111 — ShapeAnalysis_Shell.CheckOrientedShells torus topology
 Single face spanning complete torus (genus 1, Euler χ=0) fails orientation validation logic. Algorithm assumes χ=2 (sphere topology). Torus face with looped parameterization violates orientation propagation heuristics for genus-0 shells.
+- **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. The single ADVANCED_FACE is bounded by a 48-edge loop that visits two rings at z=0 and z=1.5 connected by vertical edges — a boundary that is not planar — yet the face's underlying surface is declared as a flat PLANE. A kernel must validate that a face's boundary loop actually lies on its declared surface (or is within tolerance of it) before doing any topology work with that face, and reject with a diagnostic naming the surface/boundary mismatch instead of processing a face whose loop cannot be consistently parametrized on the surface it claims to bound.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh112 — ShapeFix_Shell.FixFaceOrientation T-junction ambiguity
 Three faces meet at one shared edge: two outer faces and one inner (back) face. Orientation propagation in FixFaceOrientation must choose neighbor to follow from edge adjacency, creating ambiguity in traversal order. Picking wrong path inverts inner face incorrectly.
@@ -30675,36 +30691,44 @@ Two FACE_BOUND entities in different faces reference identical EDGE_LOOP id (#50
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh114 — wedge near-tangent dihedral angle
 Two triangular faces meeting at shared edge with near-zero dihedral angle (~0.001 rad). Sewing tolerance triggers phantom face generation near the wedge tip. Tests numerical instability in angle-based topology merging.
+- **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. The two triangular faces share edge e01 exactly but their third vertices are only 0.0005mm apart in z (5.0,5.0,0.005 vs 5.0,5.0,0.0055) against a declared 1e-7 tolerance — well outside it, so the faces are genuinely distinct, not a coincidence to merge, but the dihedral angle between them is only ~0.001 rad. A kernel must handle near-tangent (small but nonzero) dihedral angles without special casing that assumes a minimum angle; reject or accept the faces as authored, but never let a near-zero-angle comparison run out of numerical range and crash.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh115 — orientation flag mismatch (CLOSED_SHELL single face)
 Single PLANE face in CLOSED_SHELL with same_sense=.F. on outer bound; content normal points outward (+Z) but flag reversal creates consistency violation. Tests orientation-validation logic for degenerate shells.
+- **Expected kernel behavior**: The single-face CLOSED_SHELL has a FACE_OUTER_BOUND loop that runs counter-clockwise about the PLANE's +Z reference direction, but the FACE_OUTER_BOUND orientation flag itself is .F. and the ADVANCED_FACE's own same_sense is also .F. — two independent reversal flags on the same face. Compose both flags together with the loop's authored winding to get the single true outward direction (here, the double reversal cancels and the material-side normal is +Z as originally authored); do not treat either flag in isolation as decisive, or a doubly-reversed face is misread as inverted when it is not.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh116 — lone inverted face in 6-face cube
 6-face cube shell where face[3] (top, z=10) has orientation reversed (.F.); all other 5 faces correctly oriented (.T.). FixFaceOrientation must detect and flip the minority-orientation face.
+- **Expected kernel behavior**: Five of the cube's six ADVANCED_FACEs carry same_sense=.T. and the top face (z=10) carries same_sense=.F. while its EDGE_LOOP is also wired with every ORIENTED_EDGE reversed relative to the other faces' convention — a single face whose orientation disagrees with its five neighbours across shared edges. Detect the minority face by checking, for each shared edge, that the two faces using it traverse it in opposite directions; the top face fails that test against all four of its neighbours, so flip it alone rather than the other five.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh117 — aliased EDGE_LOOP (inner bound references outer of another face)
 Two-face shell: Face 1 quad with hole (inner FACE_BOUND) and Face 2 separate quad. Inner FACE_BOUND of Face 1 references same EDGE_LOOP id (#99) as outer bound of Face 2. Tests edge-loop aliasing detection.
+- **Expected kernel behavior**: Face 1's hole loop (FACE_BOUND, entity #111) and Face 2's outer loop (FACE_OUTER_BOUND, entity #112) both reference the exact same EDGE_LOOP entity (#99) — one loop instance shared as both an inner boundary of one face and the outer boundary of a different face. Treat this as a structural error, not two independent boundaries: an EDGE_LOOP used as a face's own boundary must not simultaneously bound a second, unrelated face. Reject with a diagnostic naming the shared EDGE_LOOP and both referencing faces rather than silently processing Face 1's hole as if it were independent of Face 2's outer wire — the two faces are not topologically independent as authored, since editing one loop reference reshapes both faces at once.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh118 — 5-face open box (missing top, free edges on rim)
 Box shell with bottom + 4 sides; top face omitted, creating free edges on the upper rim. Perform might mistakenly remove free edges and collapse topology. Tests manifold boundary preservation.
+- **Expected kernel behavior**: The OPEN_SHELL has five faces of a unit cube (bottom + four sides) and no top face, so the four top-rim edges are each referenced by exactly one face — genuine free edges, not a defect to silently erase. A repair pass must not remove or reroute an edge purely because it is free; free edges on an OPEN_SHELL are the expected, correct encoding of an intentionally open box. Preserve them and report the shell's boundary (4 free edges forming the top opening) rather than collapsing or discarding topology in an attempt to force closure.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh119 — ShapeFix_Shell.Perform unused-vertex retention
 **Defect**: Shell where `ShapeFix_Shell::Perform` removes a degenerate face; vertex used only by that face becomes orphaned in shell topology, leaked to parent structure.
 **Pattern**: Three-face shell; Face 3 is degenerate triangle at single point using orphan vertex #26; Perform removes Face 3 but orphan remains in shell edge/vertex graph.
 **Severity**: CEILING (v0.3 tier-3 validation).
 - **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Face 3 is a degenerate triangle whose three EDGE_CURVEs all run from vertex #26 back to itself (zero length) using a private CARTESIAN_POINT at (20,20,0) shared by no other face. A kernel must never crash on this input: reject the degenerate face (all edges zero-length, self-referencing start/end vertex) with a diagnostic, and when a face carrying an otherwise-unreferenced vertex is dropped, also drop that vertex from the shell rather than leaving it referenced only by already-removed topology.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh120 — ShapeAnalysis_Shell.CheckOrientedShells uniform-orientation wrong direction
 **Defect**: All faces have consistent orientation flag (both .T.) but normals systematically inverted (inside-out solid). `CheckOrientedShells` consistency test passes but geometric test fails.
 **Pattern**: Two-face shell; Face 1 plane normal defined as (0,0,-1) instead of (0,0,+1); Face 2 plane normal as (0,+1,0) instead of (0,-1,0). Both faces use .T. orientation flag. Faces share edge #51.
 **Severity**: CEILING (v0.3 tier-3 validation).
 - **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Both faces carry same_sense=.T. — internally consistent with each other — but each PLANE's own AXIS2_PLACEMENT_3D reference direction is authored pointing into the notional solid rather than out of it (bottom face normal +Z instead of -Z; front face normal +Y instead of -Y), so the pair is self-consistent yet globally inside-out. A kernel must never crash on this input, and a same_sense agreement check between neighbours is not sufficient on its own to certify orientation — it must also be checked against an independent signal such as a computed enclosed-volume sign or a centroid-relative normal test.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh121 — ShapeUpgrade_ShellSewing.ApplySewing tolerance-cascade
 **Defect**: First sewing pass produces valid shell; second sewing pass on output is no-op but tolerance epsilon accumulates in edge geometry, causing downstream healing failures.
 **Pattern**: Two-face shell with parallel planes offset by 0.0001mm (tolerance threshold). Face 1 at z=0; Face 2 at z=0.0001. Both have identical edge loop structure but separate edge geometries. Sewing should merge but tolerance causes drift.
 **Severity**: CEILING (v0.3 tier-3 validation).
 - **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Face 1 sits at z=0 and Face 2 at z=0.0001 mm, an offset one thousand times the file's declared 1e-7 distance-accuracy — well outside tolerance and therefore two genuinely separate, non-coincident faces, not a sewing candidate. A kernel must never crash on this input: compare the offset against the model's own declared tolerance before attempting any merge, and leave faces that far apart unmerged.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh122 — ShapeFix_Shell.FixFaceOrientation across-edge propagation
 **Defect**: Two faces share edge #51 with consistent same-sense flags (.T. and .T.) but propagation logic expects alternating flags; internal edge reversal blocks correct orientation propagation.
@@ -30718,6 +30742,7 @@ Box shell with bottom + 4 sides; top face omitted, creating free edges on the up
 **Pattern**: Two-face shell; Face 1 (bottom, z=0) traverses #51 as .T.; Face 2 (front, y=0) also traverses #51 as .T. Both go from vertex #20 to vertex #21, creating non-manifold configuration.
 **Severity**: CEILING (v0.3 tier-3 validation).
 - **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Face 1 and Face 2 both reference the same EDGE_CURVE (named 'shared_edge') with ORIENTED_EDGE sense .T. in both faces' loops — a manifold pair must traverse a shared edge in opposite directions, one .T. and one .F., so this is a genuine non-manifold encoding. A kernel must never crash on this input: detect that an edge is used with the same sense by both of its referencing faces and reject with a diagnostic naming the edge and both faces, rather than treating same-direction double use as an ordinary shared edge.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh124 — Face wires of area 10000 and 100 against a 1e-7 tolerance: none is negligible and none may be removed
 - **Status**: retitled 2026-08-04 — verified independently 2026-08-04: shoelace areas of the four edge loops are 10000.0, 100.0, 100.0, 100.0 against the file's declared 1.0E-7 tolerance — nine to eleven orders of magnitude above negligible. NEGATIVE CONTROL. The old title named a self-intersection/cusp/negligible-wire defect the geometry does not contain. Retitle-not-repair per the Q14 precedent; the `Expected kernel behavior` already states the false-positive-avoidance requirement. See BACKLOG (L).
@@ -30730,15 +30755,18 @@ Face with 3 internal wires (holes); RemoveInternalWires iterates internal wires 
 ### Tsh125 — ShapeFix_Shell.Perform recursive context
 
 Shell with 4 faces requiring orientation fixing; Perform calls FixFaceOrientation which calls Perform recursively; recursion termination uses depth counter but doesn't reset for sibling-face processing. Second invocation encounters depth state from first face.
+- **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Two of the four box faces (bottom and the x=10 side) are authored with inverted normals (same_sense=.T. but their PLANE reference direction and loop winding compose to point inward) while the other two are correct; all four share edges with their neighbours. A kernel must never crash on this input, and any orientation-fix logic that flips a face while visiting its neighbours must use per-call state only — an already-corrected face must never be revisited and flipped again while fixing a later, unrelated face in the same shell.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 - **Notes**:
 ### Tsh126 — ShapeAnalysis_Shell.CheckOrientedShells coplanar-faces
 
 Shell with two coplanar abutting faces sharing an edge; CheckOrientedShells treats them as a flat surface and reports inconclusive result. Face normals are collinear; orientation check fails to distinguish manifold from non-manifold.
+- **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Both faces lie on the exact same PLANE (z=0) and share an edge at x=5 — a coplanar, abutting pair rather than faces meeting at a dihedral angle. A kernel must never crash on this input: an orientation check that relies on comparing face normals across a shared edge is degenerate for coplanar neighbours (the normals are identical either way) and must fall back to comparing the shared edge's traversal direction in each face's loop instead of returning an inconclusive or undefined result.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh127 — ShapeUpgrade_ShellSewing.Apply different-shell-tolerances
 
 Two shells in sewing input (Shell 1 and Shell 2) have implicitly different tolerance contexts; Apply uses first shell's tolerance, ignoring second's. Tolerance mismatch causes stitching to miss seams or create gaps.
+- **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Shell 1 (z=0) and Shell 2 (z=10) are each a single unit-square face, ten units apart — far outside the file's declared 1e-7 tolerance, so nothing about them calls for sewing together. A kernel must never crash on this input, whatever tolerance context each shell nominally carries: two shells this far apart must be left as separate shells, not merged or bridged.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh128 — ShapeFix_Shell.FixFaceOrientation early-exit
 
@@ -30749,18 +30777,21 @@ Shell with 5 faces; Perform's early-exit condition (myStatus contains FAIL2) tri
 **Defect**: ShapeFix_Shell.Perform receives COMPOUND with multiple CLOSED_SHELLs; processes first shell only, silently ignores rest.
 **Expected**: All shells should be processed or error raised.
 **Fixture**: Two unit squares in parallel planes (z=0, z=2) wrapped in COMPOUND; SHELL_BASED_SURFACE_MODEL contains both.
+- **Expected kernel behavior**: The SHELL_BASED_SURFACE_MODEL references two independent OPEN_SHELLs (Shell1 with a unit-square face at z=0, Shell2 with one at z=2). A repair pass that iterates the shells of a compound container must visit every shell in the list, not just the first; silently stopping after Shell1 leaves Shell2 completely unprocessed and unreported, which is indistinguishable from data loss to a caller who only sees the first shell's outcome.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh130 — ShapeAnalysis_Shell.CheckOrientedShells closed-shell-with-free-edges
 **Defect**: CLOSED_SHELL entity marker claims closure, but topology has free edges (5 cube faces; one missing = free boundary).
 **Expected**: CheckOrientedShells should validate that CLOSED marker matches actual topological closure.
 **Fixture**: Cube topology missing one face (right face omitted); CLOSED_SHELL claims closure with 5 faces only.
+- **Expected kernel behavior**: The shell is typed CLOSED_SHELL but wraps only 5 of a unit cube's 6 faces (right face at x=1 is absent), leaving the 4 edges of the missing face's rim referenced by exactly one face each — genuine free edges. Verify closure by checking that every edge referenced by the shell's faces is used by exactly two faces before accepting a CLOSED_SHELL label; here that check fails on 4 edges, so reject the CLOSED_SHELL claim with a diagnostic naming the open boundary rather than trusting the entity type name over the actual edge-reference topology.
 - **Tier-3 assertion**: n_faces_total == 5
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(25) ifc=schema_n/a`
 ### Tsh131 — ShapeUpgrade_ShellSewing.Apply already-sewn
 **Defect**: Sewing input is already well-formed sewn shell with matching edge pairs; Apply proceeds anyway, accumulating tolerance noise on merged edges.
 **Expected**: Apply should detect sewn closure and short-circuit without re-processing.
 **Fixture**: Perfect cube (6 faces, all edges shared); CLOSED_SHELL with no free boundaries or duplicate edges.
+- **Expected kernel behavior**: All 12 edges of this 6-face unit-cube CLOSED_SHELL are each referenced by exactly two faces with opposite ORIENTED_EDGE senses — a fully manifold, already-closed shell with no free or duplicate edges. Check edge-manifold status (every edge used exactly twice, oppositely) before running any sewing pass, and when it already holds, leave the shell untouched; re-sewing an already-closed shell risks introducing near-duplicate geometry or tolerance drift that a shell needing no repair should never acquire.
 - **Tier-3 assertion**: n_faces_total == 6
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(26) ifc=schema_n/a`
 ### Tsh132 — ShapeFix_Shell.FixFaceOrientation flat-shell
@@ -30771,6 +30802,7 @@ Shell with 5 faces; Perform's early-exit condition (myStatus contains FAIL2) tri
 - **Tier-3 assertion**: n_faces_total == 4
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(25) ifc=schema_n/a`
 ### Tsh133 — ShapeUpgrade_RemoveLocations.Remove top-down
+- **Status**: FLAGGED 2026-08-07 (12-3a-shells unspec pass) — Comment claims 'top-level AXIS2_PLACEMENT_3D at (0,0,0) is the parent location ... RemoveLocations.Remove strips parent location but leaves child stale.' Same issue as Tsh098: the file contains exactly ONE AXIS2_PLACEMENT_3D entity total (#33, origin (1,0,0)), used directly by the face's PLANE. There is no separate parent-level placement at (0,0,0) or anywhere else in the file. The claimed two-level parent/child transform structure does not exist in the bytes.
 **Defect**: RemoveLocations called top-down on COMPOUND with transformed sub-shapes; parent transform removed but child local transforms stale.
 **Expected**: Child geometry should update when parent location removed.
 **Fixture**: COMPOUND containing transformed shell instances with AXIS2_PLACEMENT_3D refs; top-level cascading removal.
@@ -30779,26 +30811,31 @@ Shell with 5 faces; Perform's early-exit condition (myStatus contains FAIL2) tri
 ### Tsh134 — CheckOrientedShells edge-tolerance
 
 Shell with two adjacent faces sharing an edge within geometric tolerance (1.0E-7mm) but with slightly offset vertex positions (within tolerance, but identity-mismatch triggers false-positive). Tests ShapeAnalysis_Shell::CheckOrientedShells vertex-matching using identity rather than tolerance-aware comparison.
+- **Expected kernel behavior**: The shared boundary between the two faces is authored as two separate EDGE_CURVE entities whose endpoint VERTEX_POINTs are numerically coincident in 3D but are distinct entities (not shared VERTEX_POINT references). A kernel must recognize such edges as candidates for merging by comparing their endpoint coordinates against the model's declared tolerance, not by checking whether they already share a VERTEX_POINT entity — entity-identity comparison alone misses this pair entirely and leaves the shell open at a seam that is geometrically closed.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh135 — ShapeUpgrade_ShellSewing.Apply face-with-multiple-edges-to-merge
 
 Two faces with three edges each that should all sew; Apply merges first matching edge-pair and ignores remaining two edges. Tests ShapeUpgrade_ShellSewing::Apply incomplete multi-edge merge detection.
+- **Expected kernel behavior**: The two faces share three edges along their common boundary, all coincident within tolerance, but only the first pair is wired to the same EDGE_CURVE entity; the other two pairs are separate, unmerged EDGE_CURVEs at matching coordinates. A sewing pass must check every candidate edge pair along a shared boundary independently rather than stopping after merging the first match — partial sewing (one shared edge merged, two left duplicated) leaves the shell in a worse, inconsistent state than either fully sewn or fully unsewn.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(14) ifc=schema_n/a`
 ### Tsh136 — ShapeFix_Shell.FixFaceOrientation degenerate-shell-empty
 
 Empty shell (zero faces). ShapeFix_Shell::FixFaceOrientation iterates zero times over face list but returns success status, masking the degenerate input.
+- **Expected kernel behavior**: The OPEN_SHELL entity's face list is empty — zero ADVANCED_FACE references. Reject a shell with no faces with an explicit diagnostic rather than passing it through downstream processing as if it were a degenerate-but-valid zero-face solid; a shell that resolves to zero faces after parsing is not a legitimate empty part, it is a malformed or truncated topology reference that should be surfaced, not silently accepted.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh137 — ShapeAnalysis_Shell.LoadShells nested-compound
 
 Compound containing compound containing shell. ShapeAnalysis_Shell::LoadShells recursive descent terminates at first nesting level, failing to extract inner shell.
+- **Expected kernel behavior**: The single face sits inside an OPEN_SHELL, which sits inside a COMPOUND nested within another COMPOUND before reaching the SHELL_BASED_SURFACE_MODEL. A shell enumerator must recurse through every level of nested COMPOUND wrapping, not assume a fixed nesting depth; stopping recursion early or capping it at a hard-coded depth drops shells that are structurally present but nested one level deeper than the cap expects.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tsh138 — ShapeFix_Shell.Perform repeated-call-state
 
 Shell with inverted face orientation. ShapeFix_Shell::Perform called twice; second call reuses myStatus from first Perform without reset, skipping needed orientation fixes. Tests state-accumulation regression.
+- **Expected kernel behavior**: Of the shell's two faces, one carries same_sense=.T. and the other .F. — a genuine, single orientation conflict on a shared edge. Any stateful orientation-fix implementation must reach the same, correct verdict (flip the inconsistent face) whether it is invoked once from a clean state or repeatedly on the same shell; state accumulated from unrelated prior invocations must never change the outcome for this shell's two faces.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 ### Tsh139 — ShapeFix_Shell.FixFaceOrientation cylindrical-shell
@@ -30821,6 +30858,7 @@ Shell with inverted face orientation. ShapeFix_Shell::Perform called twice; seco
 **Expected behavior**: CheckOrientedShells should validate curved-face normals separately.
 
 **Fault axis**: `curved_face_normal_fallacy`
+- **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. The three-face open shell mixes two planar caps (z=0, z=50) with a CYLINDRICAL_SURFACE side face bounded by two full circular edges; the cylindrical face carries same_sense=.F. and one cap also carries same_sense=.F.. A kernel must never crash on this input, and an orientation-consistency check written only in terms of a planar face normal cannot be applied unmodified to a curved face — it needs the surface's own local normal field (varying with parameter) rather than a single fixed direction, or curved faces are misclassified by construction.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh141 — ShapeUpgrade_ShellSewing.Apply self-sewing
 
@@ -30833,6 +30871,7 @@ Shell with inverted face orientation. ShapeFix_Shell::Perform called twice; seco
 **Fault axis**: `self_pairing_rejection`
 
 **Notes**: OCCT exchange-layer coverage audit (occt-coverage/exchange/) byte-verified the previous version: it placed the two faces side-by-side (free edges at x=0 and x=2, 2.0mm apart) while its own comment claimed they were "geometrically coincident" — not demonstrated. Fixed by folding Face2 back 180° flat over Face1's own footprint (same PLANE entity, same_sense=.F.) so Face2's far edge lands at the EXACT same coordinates as Face1's free edge (x=0, y=[0,2]) via genuinely distinct, unmerged VERTEX_POINT/EDGE_CURVE entities — a real coincident-but-unmerged self-sewing candidate pair. NEEDS-ORACLE-REFRESH: the fold-back changes the shell from two disjoint footprints to two fully-overlapping (opposite-sense) footprints, so the recorded `occt=shape(1)/shape(1) gmsh=shape(15)` baseline below was computed against the old side-by-side geometry and has not been re-verified against a live oracle for the new fold-back geometry.
+- **Expected kernel behavior**: Face1 (x=[0,1], y=[0,2]) and Face2 occupy the same footprint but Face2 is authored with same_sense=.F. as a folded-back duplicate; the two faces share one true edge at x=1, and each also has a free edge at x=0 that is geometrically coincident with the other's (distance 0) but backed by separate EDGE_CURVE entities. A sewing pass must be able to pair two free edges belonging to the same shell when their endpoints coincide within tolerance, even though pairing them means the shell effectively closes on itself (self-sewing); rejecting a same-shell pairing outright because both edges originate from the same OPEN_SHELL misses this legitimate case.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 ### Tsh142 — ShapeFix_Shell.Perform overlapping-faces
@@ -30844,6 +30883,7 @@ Shell with inverted face orientation. ShapeFix_Shell::Perform called twice; seco
 **Expected behavior**: Perform should detect overlap and either split or reject the input.
 
 **Fault axis**: `undetected_face_overlap`
+- **Expected kernel behavior**: Face1 (x=[0,2], y=[0,1]) and Face2 (x=[1,3], y=[0,1]) both lie on z=0 and their footprints overlap over x=[1,2]; each face has its own four independent EDGE_CURVEs with no entity shared between the two loops. A repair pass that only walks each face's own boundary independently cannot see this overlap. Detect interior overlap between coplanar faces by intersecting their boundaries in the surface's own parameter space, and reject or flag the pair with a diagnostic naming the overlapping region rather than accepting two faces that claim the same material twice.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh143 — ShapeAnalysis_Shell.BadEdges shared-edge-with-different-curves
@@ -30855,6 +30895,7 @@ Shell with inverted face orientation. ShapeFix_Shell::Perform called twice; seco
 **Expected behavior**: BadEdges should flag curve-geometry inconsistency.
 
 **Fault axis**: `curve_geometry_mismatch`
+- **Expected kernel behavior**: Face1 and Face2 share the same vertex pair at x=1 (v10, v11) but each uses its own separate EDGE_CURVE entity for that boundary — two distinct LINE curves with matching endpoints rather than one shared curve. An edge-pairing check that only compares entity identity will miss this: compare the actual curve geometry (start/end points, and for non-line curves the underlying curve type and parametrization) between edges that share a vertex pair, and flag a mismatch when two faces bound the same nominal edge with materially different curve definitions.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(16) ifc=schema_n/a`
 ### Tsh144 — ShapeFix_Shell.FixFaceOrientation T-shaped-non-manifold
@@ -30866,21 +30907,25 @@ Shell with three faces meeting at a shared edge. FixFaceOrientation picks one or
 ### Tsh145 — ShapeAnalysis_Shell.CheckOrientedShells one-face-shell-edge-cases
 
 Single-face shell with orientation flag set to `.F.` (reversed). CheckOrientedShells semantics for 1-face shells are undocumented; tests whether solver correctly handles the edge case of a minimal manifold.
+- **Expected kernel behavior**: The OPEN_SHELL holds exactly one unit-square face whose PLANE normal is +Z but whose ADVANCED_FACE same_sense is .F., so the composed outward direction is -Z. With no second face to compare against, an orientation-consistency test between faces cannot run. Determine the correct orientation for a lone face directly from its own bound geometry (loop winding versus the surface's own normal) rather than skipping the check entirely because there is nothing to propagate from, and flip same_sense to .T. once that direct check shows the face points inward.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tsh146 — ShapeUpgrade_ShellSewing.Apply different-tolerance-per-face
 
 Two coplanar faces with a 10x tolerance difference (0.001 vs 0.0001 units at shared edge). Apply uses global tolerance only; reproduces missing per-face tolerance tracking during sewing.
+- **Expected kernel behavior**: Face1 (x=[0,1]) and Face2 (x=[1,2]) share one EDGE_CURVE at x=1, but Face1's shared vertex is authored with a 0.0001-unit tolerance context and Face2's with 0.001 — a tenfold difference for the same physical edge. A sewing pass must resolve a shared edge using the larger (looser) of the two faces' declared tolerances, not whichever tolerance the pass happens to apply first; using the tighter value alone can reject a connection the looser face's own authored precision would accept.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 ### Tsh147 — ShapeFix_Shell.Perform fix-then-revert
 
 Two adjacent faces sharing an edge; second face has inverted orientation. Perform fixes orientation but subsequent FixFaceOrientation pass reverts fix due to status flag confusion. Tests repeated-pass stability.
+- **Expected kernel behavior**: Face1 (x=[0,1]) carries same_sense=.T. with an outward normal and Face2 (x=[1,2]) carries same_sense=.F. — a genuine single-face orientation defect on their shared edge at x=1. Fixing Face2's orientation must be a stable, idempotent operation: re-running the orientation check afterward must confirm the shell is now consistent and must not undo the correction based on a status value computed before the fix was applied.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 ### Tsh148 — ShapeAnalysis_Shell.FreeEdges count-zero
 
 Two-triangle shell with all edges shared between faces (no free boundary). FreeEdges should return empty, but algorithm may misinterpret empty list as "uninitialized".
+- **Expected kernel behavior**: Two triangles share exactly one edge (the diagonal, referenced by both EDGE_LOOPs); their other four edges are each referenced by only one face — a correct, fully manifold pair with four genuine free (boundary) edges, not zero. A free-edge check must report exactly those four boundary edges and must not special-case or discard a non-empty free-edge list as though only an empty result were meaningful; the presence of boundary edges here is the expected, correct topology of a two-triangle open patch.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
 ### Tsh149 — ShapeFix_Shell.FixFaceOrientation hexagonal-shell
@@ -30891,6 +30936,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3a-shells/Tsh149.stp`
 
+- **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. The 8-face hexagonal prism mixes two planar caps (same_sense=.T.) with six CYLINDRICAL_SURFACE side faces (all same_sense=.F.), and each side face's own EDGE_LOOP closes on a degenerate zero-length EDGE_CURVE (start vertex == end vertex, used twice) rather than a proper seam. A kernel must never crash on this input: reject a face whose loop includes an edge with identical start and end vertices before running any per-face orientation propagation over the prism's six curved sides.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh150 — ShapeAnalysis_Shell.CheckOrientedShells thin-shell
 
@@ -30900,6 +30946,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3a-shells/Tsh150.stp`
 
+- **Expected kernel behavior**: The six faces form a 1x1x0.001 slab: bottom and top planar caps 0.001mm apart, and four side faces of the same 0.001mm height — one side face (same_sense=.F.) breaks the otherwise-consistent orientation of the other five. At this aspect ratio the side faces' normals are nearly parallel to the top/bottom caps' normals, so a normal- vector-angle comparison between faces is numerically unreliable. Detect the inconsistent side face using the shared-edge traversal-direction test (each interior edge used once forward and once reversed by its two faces) rather than comparing face normals directly, since normal comparison degenerates for a shell this thin.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(26) ifc=schema_n/a`
 ### Tsh151 — ShapeUpgrade_ShellSewing.Apply asymmetric-tolerance
@@ -30910,6 +30957,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3a-shells/Tsh151.stp`
 
+- **Expected kernel behavior**: Face1/Face2 (left/right walls, z=[0,10]) and Face3/Face4 (bottom/top strips) form an open box; the seam at x=1,z=10 is authored with Face1's vertex placed to 0.00001 precision and Face2's to only 0.001 — a hundredfold tolerance mismatch on the same physical seam. Resolve a shared seam using the loosest (largest) of the tolerances declared by the faces meeting there, not the tightest; using the tight value can reject a join that the looser face's own authored precision supports, leaving a gap that should have been closed.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Tsh152 — ShapeFix_Shell.Perform large-shell-pagination
@@ -30920,6 +30968,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3a-shells/Tsh152.stp`
 
+- **Expected kernel behavior**: The five faces (x=[0,1] through x=[4,5]) form one contiguous OPEN_SHELL with no internal batching markers in the data itself — any processing-order batching is an implementation detail of the fixer, not something encoded in the file. Whatever batch size a repair pass uses internally, it must process every face in the shell's list exactly once, including the one at the final index; an off-by-one batch boundary that skips the last face in a batch (or the shell) silently leaves one face unprocessed and unreported.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(33) ifc=schema_n/a`
 ### Tsh153 — ShapeAnalysis_Shell.LoadShells with-deeply-nested-compound
@@ -30930,6 +30979,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3a-shells/Tsh153.stp`
 
+- **Expected kernel behavior**: Two OPEN_SHELLs (Shell1: faces at x=[0,1] and x=[1,2]; Shell2: faces at x=[2,3] and x=[3,4]) are wrapped through three nested SHELL_BASED_SURFACE_MODEL / representation levels before reaching the PRODUCT_DEFINITION. A shell enumerator must recurse through every wrapping level present in the file, not stop at a fixed depth; capping recursion below the actual nesting depth here drops the innermost shell (or its faces) from the enumerated result even though it is fully present in the data.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh154 — ShapeFix_Shell.FixFaceOrientation pyramid-with-apex
@@ -30940,6 +30990,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 
 **Impact**: Inconsistent face normals in closed shell; breaks downstream solid construction and manifoldness verification.
 
+- **Expected kernel behavior**: Three of the four faces around the shared apex vertex (0.5,0.5,1) carry same_sense=.T. and one (TriFace2, the left/x=0 side) carries .F. — a single inconsistent face in an apex fan where every face shares an edge with two others through the apex. Resolve orientation for an apex-fan topology by taking a consensus across all faces meeting at the shared apex vertex, not by propagating pairwise between only immediately adjacent faces; adjacency-only propagation can converge without ever comparing the two faces that actually disagree.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 ### Tsh155 — ShapeAnalysis_Shell.CheckOrientedShells with-degenerate-shell
@@ -30950,6 +31001,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 
 **Impact**: Invalid orientation verdict masks topological defect; degenerate geometry undetected by normal-based heuristic.
 
+- **Expected kernel behavior**: Face0's EDGE_LOOP has all vertices at x=0, y=[0,0.0001] and Face1's at x=1, y=[0,0.0001] — both collapse to a zero-width sliver (effectively a line segment), giving each face a normal computed as a zero (or near-zero) vector via the standard cross-product construction. Check face area against the model's declared tolerance before computing or using a face's normal for orientation classification, and skip or explicitly flag degenerate-area faces rather than letting an ill-defined normal feed into and silently corrupt an orientation verdict.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh156 — ShapeUpgrade_ShellSewing.Apply mismatch-curve-types
@@ -30960,6 +31012,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 
 **Impact**: Merged shell contains mixed curve types at same edge; downstream algorithms expect uniform representation.
 
+- **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Shell1 (OPEN_SHELL #400) has two planar faces sharing a LINE-curve seam at x=[0,10],y=[0,10]; Shell2 (OPEN_SHELL #401) has a single face on a B_SPLINE_SURFACE_WITH_KNOTS whose boundary at the matching seam position uses a B_SPLINE_CURVE instead of a LINE. A kernel must never crash on this input: when merging or comparing edges at a shared seam position across shells, compare their actual sampled geometry rather than assuming curve types match, and reject or convert rather than blindly splicing a LINE boundary to a B-spline one.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh157 — ShapeFix_Shell.Perform circular-fix-dependency
 
@@ -30969,6 +31022,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 
 **Impact**: Algorithm may not terminate or apply fixes inconsistently; status flags unreliable.
 
+- **Expected kernel behavior**: Three triangular faces form a ring, each pair sharing one edge (e01, e12, e20), and every shared edge is referenced with ORIENTED_EDGE sense .T. by both faces that use it — a three-way orientation conflict where fixing any one face's sense against one neighbour necessarily creates a new conflict with the other. Detect this kind of closed dependency cycle among the faces before attempting sequential per-face fixes, and resolve it as a single global constraint-satisfaction problem (or report the cycle explicitly) rather than repeatedly re-flipping faces in sequence, which can cycle indefinitely without ever reaching a consistent shell.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Tsh158 — ShapeAnalysis_Shell.BadEdges seam-edge-direction
@@ -30978,6 +31032,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 **Trigger**: Periodic surface with seam edge traversed same way on both halves; BadEdges checks 3D proximity, not parametric direction.
 
 **Impact**: Seam edge direction inconsistency undetected; breaks surface continuity assumptions in downstream healing.
+- **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Three cylindrical band faces share a seam along the circular boundary; the seam edge is referenced with the same ORIENTED_EDGE sense (.T.) in adjacent faces' loops in some places rather than the opposite sense a manifold pair requires. A kernel must never crash on this input: classify a shared edge as free or properly shared by checking both its 3D proximity and its traversal direction in each referencing face's loop, since a proximity-only check cannot distinguish a correctly shared seam from two faces that happen to run the same edge the same way.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh159 — ShapeFix_Shell.FixFaceOrientation tetrahedron-flipped
 
@@ -30985,6 +31040,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 
 **Fixture**: Regular tetrahedron with west face marked `.F.` (inverted); all other faces outward-oriented. Edge reuse ensures no free edges, but face4's flipped same_sense breaks propagation chain.
 
+- **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Of the tetrahedron's four faces, three (base, front, right) carry same_sense=.T. and the fourth (left, sharing edges with both base and right) carries .F., while all six edges are shared correctly (no free edges). A kernel must never crash on this input, and resolving orientation from only immediate pairwise adjacency is not sufficient: the propagation must continue until every face's orientation has been checked against all of its neighbours, not just the first one visited, or a single dissenting face like this one can be missed.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh160 — ShapeAnalysis_Shell.CheckOrientedShells inverted-trace
 
@@ -30992,6 +31048,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 
 **Fixture**: Unit cube with all 6 faces marked `.F.` (inverted), all edge windings consistent locally but globally inside-out. Tests whether orientation consensus detects absolute inversion vs. relative inconsistency.
 
+- **Expected kernel behavior**: All six faces of this unit cube carry same_sense=.F., and every one of the 12 edges is still shared correctly between exactly two faces with opposite traversal — the shell is locally self-consistent everywhere, just globally inside-out. A shared-edge traversal-direction check (each interior edge used once forward, once reversed, by its two faces) finds no inconsistency here, since that test is relative and this shell is uniformly, consistently wrong. Confirm absolute orientation using a signed-volume or centroid-relative-normal test in addition to the relative shared-edge check, and flip every face when the computed enclosed volume comes out negative.
 - **Tier-3 assertion**: n_faces_total == 6
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(26) ifc=schema_n/a`
 ### Tsh161 — ShapeUpgrade_ShellSewing.Apply with-history-tracking
@@ -31000,6 +31057,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 
 **Fixture**: Two coplanar triangles sharing one edge, second triangle vertex offset by 0.001 units in z to simulate near-coincident geometry requiring sewing. Valid output, but history-map defect breaks change auditing.
 
+- **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Two triangles share edge e01 exactly, but the third vertex of the second triangle is offset by 0.001 units in z from where the first triangle's geometry would place it — inside typical sewing tolerance but well outside the file's declared 1e-7 accuracy. A kernel must never crash on this input: any merge or adjustment made to reconcile near-coincident geometry during sewing must be recorded (which vertices/edges moved, and by how much) so the operation is auditable, not applied as an untracked silent adjustment.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh162 — ShapeFix_Shell.Perform reports-fixed-but-still-broken
 
@@ -31007,6 +31065,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 
 **Fixture**: Square base + 4 triangular sides. West face's same_sense=`.F.` and reversed edges simulate state where simple flip detection passes but deeper consistency checks fail. Perform's exit condition is satisfied prematurely.
 
+- **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Four of the pyramid's five faces (base plus south/east/north sides) carry same_sense=.T.; the west side carries .F. with its EDGE_LOOP also authored with reversed edge senses relative to the other three side faces. A kernel must never crash on this input, and after applying an orientation fix it must re-verify the shell against the same consistency test used to detect the defect before reporting success — declaring the fix done without that re-check can leave the reported status disagreeing with the shell's actual, still-inconsistent state.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh163 — ShapeAnalysis_Shell.FreeEdges edge-by-vertex-coincidence
 
@@ -31016,12 +31075,14 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 
 
 **Catalog**: Wave 43 baseline — 5 STEP shell fixtures targeting OCCT heal subsystem consensus/orientation/sewing/history defects. All fixtures use AUTOMOTIVE_DESIGN v3.1.1 schema, SHELL_BASED_SURFACE_MODEL wrapper, and mandatory PRODUCT chain. ID range Tsh159–Tsh163.
+- **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Two EDGE_CURVEs both start or end at the same shared vertex, but the LINE geometry underlying one of them does not actually pass through that vertex's coordinates — a topological match with a geometric discontinuity. A kernel must never crash on this input: a free-edge or connectivity check based only on shared VERTEX_POINT identity is not sufficient — verify that each edge's curve geometry actually reaches the vertex coordinates it claims to reference, and report a mismatch as a defect rather than treating vertex-identity alone as proof of geometric continuity.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh164 — ShapeFix_Shell.Perform with-context-pollution
 
 **Defect class**: state_accumulation | ShapeFix_Shell.Perform.context_null_initialize
 
 Shell from previous fix pass that left context state behind; Perform() inherits stale ShapeBuild_ReShape state. Multiple sequential calls without Context().IsNull() check reuse accumulated reshape operations, causing double-fixes on identical geometry.
+- **Expected kernel behavior**: Face0 (x=[0,1]) carries same_sense=.T. and Face1 (x=[1,2]) carries same_sense=.F. — one genuinely inconsistent face sharing a seam edge with a correct one. Repairing Face1's orientation must not have any effect on Face0, which was already correct before the fix ran; an orientation-fix operation invoked more than once, or invoked after other unrelated repairs, must always start from the shell's actual current state and never carry forward adjustments queued for entities outside the current shell.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 ### Tsh165 — ShapeAnalysis_Shell.CheckOrientedShells multi-component
@@ -31029,6 +31090,7 @@ Shell from previous fix pass that left context state behind; Perform() inherits 
 **Defect class**: verdict_merge_loss | ShapeAnalysis_Shell.CheckOrientedShells_at142
 
 Shell with 3 disjoint sub-shells (isolated face clusters). CheckOrientedShells reports per-component but verdict-merge logic loses one sub-shell from final verdict. Tests compound decomposition robustness.
+- **Expected kernel behavior**: Three faces, each in its own separate OPEN_SHELL (x=[0,1], x=[2,3], x=[4,5]), share no edges between any pair — three genuinely disjoint single-face shells wrapped in one SHELL_BASED_SURFACE_MODEL. An orientation check run per-shell must produce and report a verdict for every shell present, including the last one in the list; an accumulator or merge step that only covers shells up to but excluding the final index silently drops that shell's result from the reported verdict.
 - **Tier-3 assertion**: n_faces_total == 3
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 ### Tsh166 — ShapeUpgrade_ShellSewing.Apply face-with-same-base
@@ -31036,6 +31098,7 @@ Shell with 3 disjoint sub-shells (isolated face clusters). CheckOrientedShells r
 **Defect class**: deduplication_skip | ShapeUpgrade_ShellSewing.Apply_at83
 
 Sewing input has two faces sharing the same underlying surface entity (PLANE reference). Apply doesn't detect duplication and produces overlapping output faces. Tests surface identity checking.
+- **Expected kernel behavior**: Face0 and Face1 both reference the exact same PLANE entity (one shared surface definition) but each has its own independent set of VERTEX_POINTs and EDGE_CURVEs describing the identical [0,1]x[0,1] region at z=0 — two structurally distinct faces occupying the same surface and footprint. Detect duplicate faces by comparing geometric coincidence of their boundaries (as would be needed even if they used different surface entities), not merely by surface-entity identity; a sewing pass that never checks for co-located boundary geometry leaves both overlapping faces in the output shell.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh167 — ShapeFix_Shell.FixFaceOrientation with-empty-loop
@@ -31043,6 +31106,7 @@ Sewing input has two faces sharing the same underlying surface entity (PLANE ref
 **Defect class**: edge_loop_degeneracy | ShapeFix_Shell.FixFaceOrientation_at1428
 
 Shell with one face whose outer loop is empty (zero edges). FixFaceOrientation produces arbitrary orientation for degenerate face. Tests boundary validation in orientation fix.
+- **Expected kernel behavior**: One face (face_deg, at x=[1,2]) has a FACE_OUTER_BOUND wrapping an EDGE_LOOP with zero ORIENTED_EDGEs — a structurally present but empty loop — alongside a valid neighbouring unit-square face at x=[0,1]. Validate that a face's outer loop contains at least one edge before attempting to derive an outward normal or orientation from it; an empty loop carries no traversal information at all, so same_sense on that face cannot be confirmed or denied and must be reported as indeterminate rather than accepted as authored.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
 ### Tsh168 — ShapeAnalysis_Shell.LoadShells skipping-non-shell
@@ -31050,30 +31114,36 @@ Shell with one face whose outer loop is empty (zero edges). FixFaceOrientation p
 **Defect class**: silent_filtering | ShapeAnalysis_Shell.LoadShells_at46
 
 Input compound has mixed entities (shells + solids + faces). LoadShells filters to shells only and silently ignores non-shell children without warning. Tests compound entity filtering semantics.
+- **Expected kernel behavior**: The SHELL_BASED_SURFACE_MODEL wraps one OPEN_SHELL containing a unit-square face at x=[0,1], and separately contains a second, bare ADVANCED_FACE at x=[2,3] that is not wrapped in any OPEN_SHELL or CLOSED_SHELL at all. When enumerating faces from a surface model, warn or report when a compound child is a bare face rather than a shell subtype; silently skipping non-shell children means the bare face's geometry exists in the file but is never surfaced to any downstream shell-based analysis, with no diagnostic marking the gap.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tsh169 — ShapeFix_Shell.Perform shell-with-floating-faces
 
 Shell containing disconnected faces not reachable from main topology. Perform() fails to isolate floating face; output shell retains unpredictable adjacency.
+- **Expected kernel behavior**: face_main (x=[0,1]) and face_float (x=[3,4]) sit two units apart inside the same OPEN_SHELL entity, sharing no edge or vertex. A repair pass that walks edge adjacency from a single starting face will never reach face_float and must not silently retain it, unexamined, in the output shell as though it belonged to the same connected component; detect the disconnection and either isolate face_float into its own shell or report it as an unreachable component of the input shell.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh170 — ShapeAnalysis_Shell.CheckOrientedShells with-zero-tolerance
 
 Adjacent faces with exact edge coincidence. CheckOrientedShells(tolerance=0) produces ambiguous match verdicts; adjacent-face orientation propagation undefined.
+- **Expected kernel behavior**: face_left (x=[0,1]) and face_right (x=[1,2]) share one EDGE_CURVE at x=1 exactly — true zero-gap coincidence, traversed forward by face_left's loop and reversed by face_right's, and both faces already carry same_sense=.T.. This is already correct, unambiguous topology (exact zero distance is the strongest possible case for 'coincident', not an edge case to special-case away): an orientation-propagation implementation must treat exact-zero-distance shared edges the same as any within-tolerance match rather than routing them into separate, ambiguous handling; the correct output is simply that both faces are already consistently oriented.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 ### Tsh171 — ShapeUpgrade_ShellSewing.Apply with-cross-shell-intersection
 
 Two distinct shells geometrically overlapping. Apply() ignores intersection; merged shell contains self-intersecting face topology.
+- **Expected kernel behavior**: shell_a's face (x=[0,1],y=[0,1]) and shell_b's face (x=[0.5,1.5],y=[0.5,1.5]) are two separate OPEN_SHELLs whose interiors overlap over x=[0.5,1],y=[0.5,1], with no shared edges between them. A sewing pass driven only by edge proximity finds nothing to merge and leaves both overlapping faces in place. Also check for interior intersection between faces belonging to different shells being merged, not only edge proximity, and reject or flag the pair with a diagnostic naming the overlap region when two faces' interiors intersect rather than accepting self-intersecting output topology.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh172 — ShapeFix_Shell.FixFaceOrientation with-3-faces-sharing-vertex
 
 Non-manifold vertex shared by three faces with conflicting outward normals. FixFaceOrientation() orientation propagation cannot resolve 3-way conflict.
+- **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Three mutually perpendicular triangular faces (xy-, xz-, yz-plane) all share a single VERTEX_POINT at the origin, with no shared edges between any pair — a non-manifold vertex where three faces meet at a point rather than along an edge. A kernel must never crash on this input: an orientation-propagation algorithm written only in terms of edge-adjacent neighbour pairs has no defined notion of 'consistent' for three faces meeting only at a point, so this configuration must be detected and reported as a non-manifold vertex rather than fed into pairwise edge-based propagation logic that has nothing to propagate along.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh173 — ShapeAnalysis_Shell.LoadShells with-recursive-compound
 
 Compound with nested shell references. LoadShells() recursion incomplete when detecting cyclic structure; verdict incomplete or truncated.
+- **Expected kernel behavior**: shell_outer (unit square x=[0,1],y=[0,1]) and shell_inner (smaller square x=[0.2,0.8],y=[0.2,0.8], both z=0) are two separate OPEN_SHELLs referenced by one SHELL_BASED_SURFACE_MODEL — a flat, one-level list, not an actually recursive nested structure, despite both shells living at the same coordinate region. A shell enumerator must walk every shell entity referenced by the surface model regardless of how many were expected; an enumerator that stops after finding what it assumes is the only relevant shell silently drops shell_inner and any faces reachable only through it.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh174 — ShapeFix_Shell.FixFaceOrientation with-empty-shell-after-fix
@@ -31083,6 +31153,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 **Trigger**: Degenerate faces (zero-area, line-like geometry) that fail topological validation. When Perform clears all faces, a subsequent FixFaceOrientation call succeeds on empty shell, masking the repair failure.
 
 **Input**: Shell with two coplanar degenerate faces (line segments with opposite orientations). Each forms a closed loop via reversed edge self-references.
+- **Expected kernel behavior**: Both faces are collinear, zero-area triangles: face_degen_a runs (0,0,0)->(1,0,0)->(2,0,0) and face_degen_b runs (0,0,0)->(-1,0,0)->(-2,0,0), each a degenerate sliver with no real area. Removing both degenerate faces from the shell is correct, but the resulting empty shell must be reported distinctly from success on a normal, non-empty shell — a repair operation that reports the same 'succeeded' status whether it fixed faces or removed every face down to none gives the caller no way to tell those two very different outcomes apart.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
 ### Tsh175 — ShapeAnalysis_Shell.CheckOrientedShells with-self-touching-shell
@@ -31092,6 +31163,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 **Trigger**: Two separate faces sharing exactly one vertex with no edge adjacency. Edge-based analysis skips non-edge topological contacts, allowing misorientation to pass validation.
 
 **Input**: Shell with two square faces meeting at diagonal corner (1,1). First face: [0,1]x[0,1]; second: [1,2]x[1,2]. Both on same plane, sharing only vertex point.
+- **Expected kernel behavior**: face_a (x=[0,1],y=[0,1]) and face_b (x=[1,2],y=[1,2]) share exactly one VERTEX_POINT, at (1,1,0), and no EDGE_CURVE — a non-manifold, vertex-only contact between two faces that otherwise don't touch. An orientation or connectivity check that only propagates along shared edges will never notice this contact at all. Detect vertex-level adjacency separately from edge-level adjacency, and report the shell as non-manifold at that vertex rather than silently treating the two faces as unrelated simply because no edge connects them.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`
 ### Tsh176 — ShapeUpgrade_ShellSewing.Apply with-coincident-but-different-orientation
@@ -31101,6 +31173,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 **Trigger**: Identical geometry (same vertices, edges, surface) with opposite face orientations (+Z vs. -Z). Sewing algorithm merges without orientation conflict detection.
 
 **Input**: Compound with two open shells. Shell 1: square [0,1]x[0,1] on plane Z=0 with normal +Z. Shell 2: identical square with normal -Z (all edges reversed). No shared edge loop between them.
+- **Expected kernel behavior**: face_pos (same_sense=.T., normal +Z) and face_neg (same_sense=.F., normal -Z) are geometrically identical unit squares at z=0 with entirely separate EDGE_CURVE entities, sitting in two separate OPEN_SHELLs. Before merging coincident edges across shells during sewing, check whether the faces meeting there have opposing normals; two faces occupying the same location with opposite orientation are not a sewing candidate — merging them produces a geometrically degenerate result where positive and negative material cancel — so detect and reject that specific case with a diagnostic instead of merging blindly on proximity alone.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh177 — ShapeFix_Shell.Perform infinite-loop-detection
@@ -31110,6 +31183,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 **Trigger**: Multiple faces sharing same edge loop with conflicting orientations. Attempting to fix face 1's orientation invalidates face 2's fix. Counter-based loop detection exhausts iteration limit before convergence.
 
 **Input**: Shell with two faces sharing same triangular edge loop. Face 1: normal +Z. Face 2: normal -Z (reversed). Fix oscillates between correcting face orientations without global stabilization.
+- **Expected kernel behavior**: face_fwd and face_rev both bound the same triangle using the identical three EDGE_CURVE entities (e_ab, e_bc, e_ca), but face_fwd's loop uses all three with .T. sense (same_sense=.T., normal +Z) while face_rev's uses all three with .F. (same_sense=.F., normal -Z) — every shared edge is used with the same absolute sense in both faces rather than opposite senses, so no consistent flip of either face alone resolves it. Detect that a shared-edge sense conflict cannot be resolved by unilaterally flipping one side before attempting to iterate a fix, and bound any iterative orientation-fix loop by a fixed pass limit that reports non-convergence explicitly rather than looping until an internal counter silently exhausts.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
 ### Tsh178 — ShapeAnalysis_Shell.FreeEdges with-degenerate-edges
@@ -31119,6 +31193,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 **Trigger**: Zero-length edges (same start/end vertex) created by degenerate curves. FreeEdges classification treats them as boundary edges despite not topologically bounding any face.
 
 **Input**: Shell with one normal triangular face and three separate degenerate self-loop edges (zero-length from each triangle vertex back to itself). FreeEdges analysis should exclude degenerates; instead counts all three as free edges. OCCT loads this with 4 faces (the triangle plus 3 degenerate edges promoted to faces by the parser).
+- **Expected kernel behavior**: Alongside the one valid triangular face, the shell also contains three separate zero-length EDGE_CURVEs (each running from a vertex back to itself) that are not referenced by any face's EDGE_LOOP at all. A free-edge check enumerates edges referenced by exactly one face; edges that appear in the shell's entity set but are not used by any face's loop are not free edges of the topology and must be excluded from that count entirely, not reported as though they bounded the triangle.
 - **Tier-3 assertion**: n_faces_total == 4
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
 ### Tsh179 — ShapeFix_Shell.FixFaceOrientation hex-prism orientation propagation oscillation
@@ -31126,6 +31201,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Trigger**: Call FixFaceOrientation() on shell with 8 faces (hex base, top, 6 lateral faces); propagation walks edges and flips orientation at each lateral face inconsistently
 - **Expected failure**: Lateral faces alternate between correct and flipped normals; final state oscillates between two invalid patterns
 - **Test assertion**: Shell orientation state after Perform() should stabilize, not oscillate between two configurations
+- **Expected kernel behavior**: The 8-face hexagonal prism (hex base, hex top, 6 lateral faces) has its odd-indexed lateral faces' normals authored pointing inward while the base, top, and even-indexed laterals point outward — alternating correct/incorrect orientation around the perimeter. Resolving this by pairwise propagation from one lateral face to the next can oscillate (each fix at one shared edge reintroduces a conflict at the next). Resolve orientation for a closed ring of faces as a single pass evaluating every shared-edge sense simultaneously against a common outward reference (such as consistency with the two planar caps) rather than sequentially propagating and re-flipping around the ring.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(38) ifc=schema_n/a`
 ### Tsh180 — ShapeAnalysis_Shell.CheckOrientedShells single-face zero-area
@@ -31133,6 +31209,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Trigger**: Call CheckOrientedShells() on CLOSED_SHELL with one degenerate face (e.g., all edges collinear or all vertices coplanar in line)
 - **Expected failure**: Normal-based orientation test produces NaN or inf during determinant computation; returns false instead of exception-free classification
 - **Test assertion**: CheckOrientedShells() should classify shell orientation without raising exception, even for zero-area faces
+- **Expected kernel behavior**: The CLOSED_SHELL's single face has three collinear vertices — (0,0,0), (1,0,0), (2,0,0) all on the x-axis — so its cross-product-based normal is the zero vector, undefined for classification. Detect zero-area faces (collinear or coincident vertices) before attempting a normal-based orientation test, and report the degenerate face explicitly with a diagnostic rather than letting an undefined normal flow into and silently produce an unexplained negative or false classification result.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 ### Tsh181 — ShapeUpgrade_ShellSewing.Apply bridge tolerance too large
@@ -31148,6 +31225,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Trigger**: Call Perform() to fix shell where removed face and remaining face share edge; edge list in remaining face still contains reference to removed edge
 - **Expected failure**: Dangling reference causes downstream topology query to fail (e.g., edge iteration on remaining face)
 - **Test assertion**: After Perform(), all edges in remaining faces must exist in shell edge set; no dangling references
+- **Expected kernel behavior**: face_good (a valid triangle) and face_bad (an invalid triangle using self-referencing edge geometry) both reference the same shared EDGE_CURVE (e_shared, from v0 to v1). When face_bad is removed as invalid, every remaining face's ORIENTED_EDGE that referenced the removed face's boundary — including face_good's use of e_shared, which was valid and must be kept — must have its back-references to the removed face cleaned up as part of the same removal step; leaving a stale reference to a no-longer-present face on an edge that a surviving face still legitimately uses will corrupt any later traversal of that edge's face list.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
 ### Tsh183 — ShapeAnalysis_Shell.LoadShells with-shell-marker-but-no-faces
@@ -31155,6 +31233,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Trigger**: Call LoadShells() on SHELL_BASED_SURFACE_MODEL containing CLOSED_SHELL('name',()) with empty face list
 - **Expected failure**: Result contains empty shell entry; CheckOrientedShells() on empty shell causes null dereference or assertion on normal computation
 - **Test assertion**: LoadShells() should skip or flag empty shells; downstream operations should not receive empty shell instances
+- **Expected kernel behavior**: The CLOSED_SHELL entity is present but its face list is empty — `CLOSED_SHELL('empty',())`, zero ADVANCED_FACE references, which is syntactically valid STEP. Detect and reject (or explicitly flag) a shell with zero faces before any downstream analysis that assumes at least one face to iterate over, such as computing a normal or an orientation verdict; passing an empty face list into logic that expects at least one face is exactly the kind of input a defensive kernel must guard against rather than processing blindly.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Tsh184 — ShapeFix_Shell.FixFaceOrientation duplicate-face inconsistency
@@ -31486,68 +31565,83 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tsh214 — ShapeFix_Shell.FixFaceOrientation.duplicate_faces_undetected
 — Duplicate faces in shell; aMapAdded detects but only warns; independent orientation fixes create inconsistency.
+- **Expected kernel behavior**: face_a and face_b are geometrically identical unit squares (same PLANE placement, same boundary geometry, (0,0,0)-(1,1,0)) but face_b additionally carries same_sense=.F. to differ in sense while sharing the same footprint. Detecting a duplicate face is not sufficient on its own — the duplicate must be resolved (dropped, or unified with the original's orientation) as part of the same pass that detects it; computing an orientation fix for the duplicate independently of the original, after merely noting the duplication, leaves two faces at the same location with inconsistent, independently-derived orientations.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a`
 ### Tsh215 — ShapeFix_Shell.Perform.context_null_initialize
 — Multiple Perform() calls reuse stale context; SetContext state accumulation applies reshape operations twice.
+- **Expected kernel behavior**: The single unit-square face carries same_sense=.F., needing exactly one orientation correction (a flip to .T.). An orientation-fix operation applied to an already-fixed shape must be idempotent: invoking it a second time on the same shell must detect that the face is now correctly oriented and make no further change, rather than reapplying a stored flip operation and flipping the face back to .F..
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tsh216 — ShapeFix_Shell.Perform.progress_abort_inconsistency
 — User abort during face-fix loop indistinguishable from failure; myStatus/return value mismatch.
+- **Expected kernel behavior**: Of the four faces, face_a and face_b carry same_sense=.T. (already correct) and face_c and face_d carry same_sense=.F. (need flipping) — a shell needing exactly two face corrections, all four faces independent (no shared edges between them). If a repair pass over a shell's faces is interrupted partway through (after face_b, before face_c/face_d are reached), its return status must clearly and distinguishably signal an incomplete run — a caller must be able to tell that only some faces were processed, not receive a status indistinguishable from a full, successful pass over all four.
 - **Tier-3 assertion**: n_faces_total == 4
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(36) ifc=schema_n/a`
 ### Tsh217 — ShapeFix_Shell.Perform.closed_flag_sync_failure
 — Closed() flag out-of-sync with HasFreeEdges after FixFaceOrientation; breaks downstream solid construction.
+- **Expected kernel behavior**: The four faces (bottom, top, front, back) form a fully closed quad box — every boundary edge is shared between exactly two of them, so there are no free edges — yet the shell is declared OPEN_SHELL, and two of the four faces carry same_sense=.F. needing a flip. After fixing the face orientations, re-derive whether the shell is now closed by checking edge-sharing directly (every edge used by exactly two faces, oppositely) rather than trusting a closed/open flag that was set once at authoring time and never re-evaluated after the topology changed; a shell whose edges are all now properly shared should be reported as closed regardless of what type it was declared as.
 - **Tier-3 assertion**: n_faces_total == 4
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(24) ifc=schema_n/a`
 ### Tsh218 — ShapeFix_Shell.FixFaceOrientation.shells_extraction_loss
 — GetShells() fails to partition disconnected face clusters; edge-classification gap creates orphaned faces.
 
+- **Expected kernel behavior**: face A (unit square at Z=0) and face B (unit square at Z=5) sit in one OPEN_SHELL with no vertex or edge in common — two disconnected components inside a single shell entity, five units apart. A shell-partitioning pass that traverses edge connectivity from only one starting face will reach face A and its own four edges but never discover face B. Seed a fresh traversal from every face not yet visited by a prior traversal, not just the first face in the list, so every connected component — including ones with no path from the first seed — is found and reported.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh219 — duplicate_faces_undetected
 Duplicate faces in shell; `aMapAdded` only warns. Independent orientation fixes yield inconsistent outward directions. Closure criterion fails.
+- **Expected kernel behavior**: face A (same_sense=.T.) and face B (same_sense=.F.) are geometrically congruent unit squares at Z=0 sharing no edges with each other, and face C is a distinct unit square at Z=1. Detecting that A and B are congruent duplicates must trigger deduplication (drop one, or unify their orientation), not just a warning followed by independently fixing each; fixing A and B independently produces opposite outward normals (+Z and -Z) for two faces that occupy the same location, and because A/B don't actually share topology with C, C's edges remain free regardless — the closure criterion depends on edge sharing, which duplication does not create.
 - **Tier-3 assertion**: n_faces_total == 3
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`
 ### Tsh220 — multiconnect_edge_loop_unbounded
 Non-manifold shell with 3+ faces per edge; unbounded iteration without complexity guard causes O(n²) behavior. Pathological mesh triggers hang.
+- **Expected kernel behavior**: All three faces (A in the XY-plane, B below it, C above it) reference the identical EDGE_CURVE running from (0,0,0) to (1,0,0) — a single edge incident to three faces at once, which is non-manifold (a valid manifold edge has exactly two incident faces). Detect edges with three or more incident faces as a distinct, explicitly reported non-manifold condition before running any per-pair orientation-consistency logic on that edge; treating it as an ordinary shared edge and running pairwise checks over all three faces has no well-defined 'consistent' answer and risks unbounded pairwise work as the incident-face count grows.
 - **Tier-3 assertion**: n_faces_total == 3
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 ### Tsh221 — context_null_initialize
 Multiple `Perform()` calls reuse stale context; accumulated reshape operations apply twice. Stale context state causes double-fixing of face orientations.
+- **Expected kernel behavior**: Both faces (A at Z=0, B at Z=1, connected by shared vertical edges) carry same_sense=.F. and both need to be flipped to .T. to be consistently outward-facing. An orientation-fix operation invoked a second time on an already-corrected shell must start from the shell's current, already-fixed state and detect that both faces are now correctly oriented; it must not reapply a set of flip operations recorded during the first invocation and flip both faces back to .F..
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh222 — closed_flag_sync_failure
 Shell marked closed but contains free edges after face orientation fix. `Closed()` flag not reset; downstream solid construction assumes watertight but topology invalid.
+- **Expected kernel behavior**: All six faces of this box (bottom, top, front, back, left, right) share their 12 edges correctly with two faces each, and the shell is declared CLOSED_SHELL; only the top face (Z=1) carries same_sense=.F. needing a flip. Flipping a face changes which direction its EDGE_LOOP's edges are considered traversed from that face's side, so after the flip, re-derive whether the shell's edges are still all consistently doubly-shared (closed) rather than assuming the CLOSED_SHELL label authored before the fix still holds; if the flip left any edge inconsistently traversed, report the shell as no longer closed instead of keeping a stale closed flag.
 - **Tier-3 assertion**: n_faces_total == 6
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(26) ifc=schema_n/a`
 ### Tsh223 — shells_extraction_loss
 `GetShells()` fails to partition all faces; remaining faces discarded or orphaned. Incomplete decomposition breaks topology validation and orientation analysis.
+- **Expected kernel behavior**: face A (Z=0) and face B (Z=10) sit in one OPEN_SHELL with no shared vertex or edge — two disconnected components ten units apart. A partitioning traversal seeded only from face A reaches face A and its own edges but has no path to face B. Seed a traversal from every face in the shell that a prior traversal has not already visited, not from a single fixed starting face, so every disconnected component — including ones unreachable from the first seed — is included in the partitioned result.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh224 — ShapeFix_Shell.FixFaceOrientation duplicate_faces_undetected
 
 Shell with two congruent unit-square faces (at z=0, z=1). aMapAdded tracks duplicates but only warns; FixFaceOrientation flips one, leaves other unchanged. Inconsistent outward directions result.
+- **Expected kernel behavior**: face A (same_sense=.T.) and face B (same_sense=.F.) are congruent unit squares at Z=0 with no shared edges between them. Detecting that B is congruent to A must trigger a single, coordinated resolution — drop one or force them to the same orientation — rather than flagging the duplication and then flipping only A independently; independent per-face flipping leaves A at +Z and B at -Z, two coincident faces with opposite outward normals.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh225 — ShapeFix_Shell.FixFaceOrientation multiconnect_edge_loop_unbounded
 
 Three triangular faces meeting at shared central edge (non-manifold, 3+ incident). isAccountMultiConex loop iterates without bound on pathological mesh; O(n^2) complexity pathological behavior.
+- **Expected kernel behavior**: All three triangular faces (A, B, C) share the identical central edge from V_origin(0,0,0) to V_top(0,0,1) — one edge incident to three faces, non-manifold by definition (a manifold edge has exactly two incident faces). Detect and explicitly report edges with three or more incident faces as non-manifold before running any per-pair orientation-consistency logic across them; a general-purpose non-manifold check (bounded by the actual number of incident faces, however large) is required here, not pairwise comparison assumed to apply only to ordinary two-face edges.
 - **Tier-3 assertion**: n_faces_total == 3
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 ### Tsh226 — ShapeFix_Shell.FixFaceOrientation shells_extraction_loss
 
 Two isolated unit-square face clusters (5.0+ units apart, no shared edges). GetShells() fails partition; unreachable face cluster orphaned, incomplete shell decomposition.
+- **Expected kernel behavior**: face A (X=[0,1],Y=[0,1]) and face B (X=[6,7],Y=[0,1]) sit in one OPEN_SHELL, both at Z=0, five units apart in X with no shared vertex or edge — two disconnected components. A partitioning traversal seeded only from face A never reaches face B. Seed a traversal from every face not already covered by a prior traversal rather than from a single starting face, so both components are found; the specific X-offset used to separate the faces is incidental, the structural requirement is the same as any disconnected-shell case — every face must be reachable from some seed.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh227 — ShapeFix_Shell.FixFaceOrientation error_faces_mebius_assumption
 
 Two coplanar unit squares with ambiguous orientations. aErrFaces mis-classified as Mobius-leaf; intrinsic non-orientability unconfirmed, spurious single-face shells created.
+- **Expected kernel behavior**: face A (same_sense=.T.) and face B (same_sense=.F.) are two coplanar, adjacent unit squares (z=0) sharing edge e_mid at x=1, referenced with opposite ORIENTED_EDGE sense by each face's loop — an ordinary, resolvable orientation conflict, not a non-orientable (Mobius-like) surface. Before treating a face pair that resists a simple sense-based fix as non-orientable, verify non-orientability directly (for instance, by checking whether consistent orientation is achievable via any assignment, not just the first one tried); two coplanar, ordinarily-oriented squares must not be classified as a Mobius-type case and split into spurious single-face shells.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 ### Tsh228 — ShapeFix_Shell.Perform closed_flag_sync_failure
 
 Three triangular faces forming incomplete closure (free edge between faces 1–2). Shell.Closed() flag marked true but HasFreeEdges detects edge post-FixFaceOrientation; sync breaks.
+- **Expected kernel behavior**: The three triangular faces share edges correctly around the shared apex (V_apex(0,0,1)) but the base edge from V_a to V_c is referenced by only one face — a genuine free (boundary) edge — while the shell is declared CLOSED_SHELL. After running any orientation-fix pass, re-derive the shell's closed/open status by checking that every edge is shared by exactly two faces, rather than leaving the CLOSED_SHELL label from authoring time unexamined; here that check fails on the base edge, so the shell must be reported as open (not closed) despite its declared entity type.
 - **Tier-3 assertion**: n_faces_total == 3
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
 ### Gp040 — Pcurves emitted by default duplicate / contradict the surface 3D curve
@@ -31573,6 +31667,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Defect**: Midspan 3D curve point (5,0,0) maps to PCURVE point (5.1,0,0) — 0.1 mm divergence exceeding edge tolerance 0.001 mm.
 - **Healer impact**: CheckCurve3dWithPCurve sample-point inspection detects the mismatch and flags the edge for healing or healing-time analysis.
 - **File**: `step-examples/12-2a-pcurves/Gp041.stp`
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the pcurve's midspan control point diverges 0.1 mm from the 3D curve's corresponding point, two orders of magnitude past the 0.001 mm edge tolerance; a kernel must flag the mismatch or recompute the pcurve rather than trust it silently.
 - **Tier-3 assertion**: shape_null == False
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp042 — Edge on planar face missing PCURVE despite 3D curve geometry.
@@ -31589,6 +31684,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Defect**: Reversing parametric direction without re-evaluating knot domain leaves stale multiplicity data. Naive range flip keeps knot structure intact even though parameter direction is inverted.
 - **Healer impact**: FixReversed2d attempts to reverse PCURVE but the knot-vector corruption causes wrong parameter mapping during edge reconstruction.
 - **File**: `step-examples/12-2a-pcurves/Gp043.stp`
+- **Expected kernel behavior**: heal by reflecting the pcurve's knot vector to match the reversed 3D curve/edge direction (SameSense=.F.), or reject with a diagnostic: as supplied, the pcurve's control points still run forward (u=0->1) while the edge traverses the opposite direction, so a consumer that trusts the pcurve's raw parametrization visits the wrong boundary segment first.
 - **Tier-3 assertion**: shape_null == False
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp044 — Endpoint-bias projection picks wrong candidate when multiple equidistant points exist.
@@ -31597,6 +31693,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Defect**: Both endpoints and interior point are equidistant from probe point. Project's endpoint-bias returns endpoint distance even when interior local-min is the true projection. PCURVE maps to wrong parameter bounds.
 - **Healer impact**: Project returns suboptimal projection result, causing downstream healers to misalign PCURVE parameter mapping or report stale boundary conditions.
 - **File**: `step-examples/12-2a-pcurves/Gp044.stp`
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge, or heal by re-projecting the pcurve from the 3D curve: the 3D curve bows to y=2 at midspan while its pcurve stays flat at v=0, so the two representations of the same edge disagree by 2 units in-plane.
 - **Tier-3 assertion**: shape_null == False
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp045 — Edge copy during SameParameter recomputation inherits stale parameter range when curve is BSpline.
@@ -31721,10 +31818,9 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 **Sources**: OCCT `src/ShapeFix/ShapeFix_Edge.cxx:695`  
 **Description**: Edge has only 2D pcurve on trimmed face; FixAddCurve3d builds 3D curve from pcurve but ignores face trim bounds, extending past boundary.  
 **Reproducer**: Create rectangular-trimmed surface; edge with pcurve beyond trim limits; call FixAddCurve3d; verify 3D curve respects trim range.  
-**Expected kernel behavior**: FixAddCurve3d clips generated 3D curve to face trim extent before assignment.  
-- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
-
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge, or clamp to the trim domain: the pcurve's UV endpoint (1.3,0.8) lies outside the host RECTANGULAR_TRIMMED_SURFACE's own declared domain (u in [0,1]), so the edge boundary runs off the trimmed face it is supposed to bound.
 - **Tier-3 assertion**: load == "ok"
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 
 ### Gp058 — ShapeAnalysis_Edge.CheckPCurveRange degenerate-vertex parameters
 
@@ -31759,16 +31855,19 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 
 ### Gp061 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve sample-count threshold
 Very short edge (0.001 units on cylindrical surface) triggers sample-count collapse to 2, skipping midspan validation between 3D curve and pcurve. Reproduces OCCT scaling logic that reduces samples below viable threshold for short edges.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge, or heal by recomputing the pcurve from the 3D curve: even though the edge is only 0.001 units long, its pcurve bows 0.1 UV-units off the straight path implied by the 3D LINE; a kernel must validate pcurve/3D-curve agreement with an absolute or analytic check, not a sample count that shrinks to uselessness on short edges.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### Gp062 — ShapeFix_Edge.FixAddPCurve trimmed-surface boundary
 Edge on RECTANGULAR_TRIMMED_SURFACE (u,v ∈ [0,1]) with 3D endpoint at (1.0, 1.1, 0.0), extending beyond v_max trim boundary. FixAddPCurve constructs pcurve without validating trim window constraints.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the 3D edge endpoint (1.0,1.1,0.0) and its pcurve both project to v=1.1, beyond the host RECTANGULAR_TRIMMED_SURFACE's declared v_max=1.0, so the edge extends past the face's own trim boundary.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gp063 — ShapeAnalysis_Edge.CheckOverlapping bounded-curve trim
 Two edges share identical 3D line but with non-overlapping parameter ranges: edge1 covers parameter [0,5], edge2 covers [10,15]. CheckOverlapping fails to intersect trim domains and falsely reports overlap.
+- **Expected kernel behavior**: accept: edge1's trim [0,5] and edge2's trim [10,15] on the shared infinite LINE are disjoint in 3D (segments (0-5,0,0) and (10-15,0,0) never touch), so a kernel that intersects trim domains before reporting overlap correctly treats them as non-overlapping despite sharing an underlying curve.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gp064 — ShapeFix_Edge.FixRemovePCurve degenerate-on-cone
@@ -31778,6 +31877,7 @@ Edge at cone apex where 3D curve has zero length (degenerate point). PCurve is p
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp065 — ShapeAnalysis_Edge.GetEndTangent2d POLYLINE variant
 Pcurve as POLYLINE with 5 control points: (0,0)→(0.5,0)→(1,1)→(2,0.5)→(5,0). GetEndTangent2d uses last two points to compute first-endpoint tangent, returning direction (3,-0.5) instead of correct (1,0).
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the 3D curve's interior knot has multiplicity equal to its degree with non-coincident control points on either side, producing an actual ~5-unit positional jump mid-curve, not merely the pcurve's own POLYLINE tangent-extraction quirk; a curve that doesn't trace a continuous path cannot bound a face.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp066 — ShapeFix_Edge.FixSameParameter selection-bias tolerance comparison
@@ -31800,6 +31900,7 @@ Pcurve as POLYLINE with 5 control points: (0,0)→(0.5,0)→(1,1)→(2,0.5)→(5
 
 **Trigger**: `ShapeAnalysis_Edge::CheckCurve3dWithPCurve()` will miss the out-of-window mismatch due to trim masking.
 
+- **Expected kernel behavior**: accept: the TRIMMED_CURVE's declared range [0.5,1.0] lies entirely within the second span of the underlying B-spline, away from the discontinuous interior knot at t=0.3, so the curve actually used by the edge is smooth over its own domain; a kernel must validate only the declared trim range, not the full untrimmed basis curve.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp068 — ShapeFix_Edge.FixReversed2d circular-curve range
@@ -31810,6 +31911,7 @@ Pcurve as POLYLINE with 5 control points: (0,0)→(0.5,0)→(1,1)→(2,0.5)→(5
 
 **Trigger**: `ShapeFix_Edge::FixReversed2d()` on reversed orientation will produce malformed circular-parameter edge.
 
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the 3D curve backing this reversed edge has an actual positional discontinuity (non-coincident control points at a same-degree-multiplicity interior knot), independent of whether the circular pcurve's reversed range is remapped correctly; a kernel must not silently accept a curve that jumps in space.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp069 — ShapeAnalysis_Edge.CheckOverlapping common-sub-pattern miss
@@ -31820,6 +31922,7 @@ Pcurve as POLYLINE with 5 control points: (0,0)→(0.5,0)→(1,1)→(2,0.5)→(5
 
 **Trigger**: `ShapeAnalysis_Edge::CheckOverlapping(edge1, edge2)` will return false (no overlap detected) despite interior sharing.
 
+- **Expected kernel behavior**: reject-with-diagnostic naming both edges: edge1 (0,0,0)-(3,0,0) and edge2 (1,0,0)-(2,0,0) are coincident and collinear over the interior sub-segment [1,2], a genuine overlapping-wire condition even though neither edge's endpoints coincide with the other's.
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 5
@@ -31833,6 +31936,7 @@ Pcurve as POLYLINE with 5 control points: (0,0)→(0.5,0)→(1,1)→(2,0.5)→(5
 
 **Trigger**: Sequential `ShapeFix_Edge::FixVertexTolerance()` calls on both edges will double-escalate the shared vertex.
 
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: independent of how vertex tolerance gets escalated, both edges sharing the origin vertex carry 3D curves with an actual 1.5-unit positional gap at their interior knot, so neither curve traces a continuous path and the shared vertex cannot anchor a valid wire.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp071 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve scaled-host-surface
@@ -31841,6 +31945,7 @@ Pcurve as POLYLINE with 5 control points: (0,0)→(0.5,0)→(1,1)→(2,0.5)→(5
 
 **Fixture**: Plane with Z-axis direction scaled to 2.0; 3D line and pcurve both parametrically correct but 3D validation fails due to scale mismatch.
 
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the edge's 3D curve carries a genuine 1.5-unit positional gap at its interior knot (non-coincident control points across a same-degree-multiplicity knot), which alone makes the curve discontinuous; the host plane's non-unit Z-axis direction (magnitude 2) is a secondary malformation a kernel should also flag or normalize.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp072 — ShapeFix_Edge.FixAddPCurve B-spline projection failure
@@ -31849,6 +31954,7 @@ Pcurve as POLYLINE with 5 control points: (0,0)→(0.5,0)→(1,1)→(2,0.5)→(5
 
 **Fixture**: Plane surface Z=0; cubic B-spline 3D curve with control point offset 0.001 perpendicular to plane; no pcurve initially, triggers projection logic.
 
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the edge's 3D curve carries a genuine 1.5-unit positional gap at its interior knot, far more severe than the 0.001 mm off-plane control point noted in the description; no pcurve projection can produce a valid, continuous boundary from a discontinuous 3D curve.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp073 — ShapeAnalysis_Edge.CheckSameParameter periodic-domain
@@ -31866,6 +31972,7 @@ Pcurve as POLYLINE with 5 control points: (0,0)→(0.5,0)→(1,1)→(2,0.5)→(5
 
 **Fixture**: Plane surface; B-spline 3D curve with control point at 1.999999999999 (engineered to hit FP cliff); tight tolerance 1.0E-15; recomputation cycles.
 
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: independent of the engineered floating-point-cliff control point, the 3D curve has a genuine 1.5-unit positional gap at its interior knot, a real discontinuity no tolerance-precision handling can heal away.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp075 — ShapeAnalysis_Edge.CheckOverlapping with surfaces
@@ -31873,6 +31980,7 @@ Pcurve as POLYLINE with 5 control points: (0,0)→(0.5,0)→(1,1)→(2,0.5)→(5
 **Defect**: Two edges on two different host surfaces that happen to coincide in 3D (same line segment). `CheckOverlapping` uses host-surface metadata and sees them as distinct despite 3D coincidence.
 
 **Fixture**: Two plane surfaces (different entities, both Z=0); identical 3D line segment on each; edges form two separate faces sharing the 3D line; metadata-based check misses overlap.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the 3D curve on face A has a genuine 1.5-unit positional gap at its interior knot, independent of whether the coincident edge on face B is cross-referenced by a surface-identity-aware overlap check.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp076 — ShapeFix_Edge.FixAddPCurve periodic-surface-seam
@@ -31884,25 +31992,30 @@ Edge 3D curve lies on cylindrical seam (u=0); FixAddPCurve constructs pcurve at 
 ### Gp077 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve sampling-period-mismatch
 
 PCurve has period 2π but 3D curve has period 4π (double helix wrap); uniform parameter sampling misaligns 3D/2D comparisons.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the 3D curve has a genuine 1.5-unit positional (Z) gap at its interior knot, a real discontinuity distinct from -- and more severe than -- the declared 4pi-vs-2pi period mismatch between the 3D curve and its pcurve.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp078 — ShapeFix_Edge.FixSameParameter near-degenerate
 
 3D curve length (1e-8) is just above Confusion threshold; FixSameParameter's degenerate check fails to catch this boundary case.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the 3D curve has a genuine positional gap of half its own total length at the interior knot (t=0.5), so despite the edge's overall length (1e-8) sitting just above the confusion threshold, the curve itself is discontinuous, not merely short.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp079 — ShapeAnalysis_Edge.CheckOverlapping degenerate-pcurve
 
 One edge's pcurve is degenerate (collapsed to point); CheckOverlapping's 2D intersection logic reports false overlap with non-degenerate edges.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the pcurve's LINE has a zero-length direction vector (VECTOR magnitude 0.0), collapsing the entire 2D representation to a single UV point, which cannot represent a finite-length 3D edge regardless of any overlap-detection tolerance question.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp080 — ShapeFix_Edge.FixReversed2d offset-curve handling
 
 PCurve is OFFSET_CURVE wrapping a line; FixReversed2d reverses the line but forgets to flip offset direction, inverting the pcurve.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the 3D curve backing this reversed edge has a genuine 1.5-unit positional gap at its interior knot, independent of whether the reversed OFFSET_CURVE_2D pcurve correctly flips its offset sign; a discontinuous 3D curve cannot bound a face regardless of pcurve handling.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp081 — CheckSameParameter periodic-shift normalization
 Periodic surface edge whose 3D and 2D parameters disagree by exactly 2π (one full period); CheckSameParameter fails to normalize periodic parameters before comparison, incorrectly reporting mismatch.
+- **Expected kernel behavior**: accept: the pcurve is offset by exactly one full period (2pi) from the canonical [0,pi] representation of the same arc on the periodic cylindrical surface; a kernel that normalizes periodic pcurve parameters modulo the surface's period before comparing against the 3D curve correctly recognizes this as identical geometry, not a mismatch.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
@@ -31913,10 +32026,12 @@ Periodic surface edge whose 3D and 2D parameters disagree by exactly 2π (one fu
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp082 — FixAddCurve3d trim-domain extension
 Edge on trimmed surface where the natural 3D-from-pcurve curve extends past the trim boundary; FixAddCurve3d builds the full extent instead of respecting trim domain.
+- **Expected kernel behavior**: accept: the TRIMMED_CURVE's declared parameter range [1.5,3.5] lies safely inside its LINE basis's full extent, and the pcurve matches it exactly, so a kernel that respects the declared trim (rather than extending to the full untrimmed basis) produces the correct, shorter edge.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp083 — CheckOverlapping period-shifted edges
 Two edges on periodic surface where their 3D geometry coincides but their 2D pcurves are in different periods (offset by 2π); CheckOverlapping reports them as non-overlapping.
+- **Expected kernel behavior**: accept: the two EDGE_CURVEs' pcurves are offset by exactly one full period (2pi) on the periodic cylindrical surface even though their 3D geometry is identical; a kernel that normalizes pcurve U-parameters modulo the surface's period before comparing recognizes the true coincidence instead of reporting a false non-overlap.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
@@ -31929,6 +32044,7 @@ Two edges on periodic surface where their 3D geometry coincides but their 2D pcu
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Gp084 — FixSameParameter cone-apex singularity tolerance
 Edge near cone apex where geometric tolerance diverges due to apex singularity; FixSameParameter clamps tolerance and produces incorrect magnitude without accounting for local metric scaling.
+- **Expected kernel behavior**: accept: the edge pair approaching the cone apex (v=0.01) is well-formed -- 3D curves, pcurves and vertices are all mutually consistent at the reduced local scale near the singularity -- so a kernel that scales its tolerance test by the local metric (v*sin(half-angle)) rather than a fixed absolute tolerance validates it correctly.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cone"
 - **Tier-3 assertion**: edge[0].curve_type == "circle"
@@ -31938,6 +32054,7 @@ Edge near cone apex where geometric tolerance diverges due to apex singularity; 
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp085 — GetEndTangent2d ellipse derivative asymmetry
 P-curve is an ELLIPSE entity; GetEndTangent2d uses finite-difference fallback whose result depends on parameter direction (increasing vs decreasing); assumes parameter increases only.
+- **Expected kernel behavior**: accept: the reversed edge's ELLIPSE pcurve and its 3D CIRCLE counterpart remain a consistent parametric pair under SameSense=.F.; a kernel computing the end tangent must evaluate the derivative in the edge's actual traversal direction, not assume parameter-increasing order unconditionally.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: edge[3].curve_type == "circle"
 - **Tier-3 assertion**: edge[3].analytic.radius == 1.0
@@ -31951,33 +32068,40 @@ Edge with B-spline 3D curve spanning [0,5] but B-spline pcurve spanning [0,10]. 
 ### Gp087 — FixAddPCurve high-curvature near-tangent
 
 Edge near surface contact where two B-spline surfaces are near-tangent (curvature ~0.6–0.62). FixAddPCurve projects edge onto first surface but receives multiple candidate projections. Algorithm picks arbitrary candidate without disambiguating. Defect: projection multiplicity not resolved; no heuristic for tangency context.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the 3D curve has a genuine 1.5-unit positional gap at its interior knot in addition to lacking any pcurve at all; a kernel cannot synthesize a valid pcurve by projection when the 3D curve itself is discontinuous.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp088 — CheckSameParameter B-spline parameter shift
 
 Edge with B-spline 3D curve and B-spline pcurve; 3D knot vector [0,1,2] but pcurve knot vector [0.1,1.1,2.1]. CheckSameParameter compares parameter ranges at unshifted positions and reports false mismatch. Defect: method assumes knot vectors aligned; does not account for parameter space shift.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the 3D curve has a genuine 1.5-unit positional gap at its interior knot, so no amount of shifting the pcurve's knot domain to align with the 3D curve's range can produce a valid, continuous edge.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp089 — FixReversed2d trimmed-circle
 
 Pcurve TRIMMED_CURVE wrapping CIRCLE; 3D edge is TRIMMED_CURVE wrapping CIRCLE with different trim parameters. FixReversed2d reverses the circle geometry but ignores trim bounds, causing parameter reversal to overshoot. Defect: circle-reversal logic does not propagate trim-parameter semantics.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the 3D curve backing this reversed edge has a genuine 1.5-unit positional gap at its interior knot, independent of whether the reversed circular-arc pcurve correctly propagates its trim bounds; a discontinuous 3D curve cannot bound a face regardless of pcurve handling.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp090 — CheckOverlapping spline-vs-line
 
 Two edges on same plane: one is LINE, other is B-spline degree-1 with control points at endpoints (equivalent to line geometrically). CheckOverlapping compares types strictly (LINE vs B_SPLINE_CURVE) and reports non-overlapping despite coincident geometry. Defect: type-exact matching; no geometric equivalence check.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the 3D curve has a genuine 1.5-unit positional gap at its interior knot, so whether an adjacent LINE edge is recognized as geometrically coincident with this B-spline edge is moot -- the B-spline edge is invalid on its own terms.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp091 — ShapeFix_Edge.FixSameParameter pcurve absent
 Edge with 3D curve but missing pcurve entirely; FixSameParameter attempts SameParameter calculation on null pcurve, producing NaN tolerance. Fixture has LINE edge without pcurve on PLANE face.
+- **Expected kernel behavior**: accept, provided the kernel synthesizes the missing pcurve by projecting the 3D LINE onto the host PLANE: the edge's 3D geometry is clean and well-formed, and an analytic line lies entirely within the plane, so projection is exact and unambiguous, not a NaN-producing edge case.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp092 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve degenerate-pcurve
 Edge whose pcurve degenerates to single point; CheckCurve3dWithPCurve treats degenerate as trivially agreeing with 3D curve. Fixture has LINE edge with B_SPLINE_CURVE pcurve parametrized to single point [0,0].
+- **Expected kernel behavior**: accept: the pcurve's direction vector has magnitude 1e-7, at the edge of representability, but the underlying 3D LINE and vertices are clean and consistent, so a kernel should treat the near-degenerate pcurve as harmless and rebuild it from the 3D curve rather than trusting or rejecting it outright.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp093 — ShapeFix_Edge.FixAddPCurve construct-on-conical-surface near-apex
 Edge near cone apex where (u,v) projection is mathematically unstable; FixAddPCurve constructs pcurve with NaN coordinates. Fixture has LINE edge on CONICAL_SURFACE at apex singularity (parameter space [0.001,0.001]→[0.002,0.002]).
+- **Expected kernel behavior**: accept: the bare edge's 3D LINE runs cleanly from v=0.001 to v=0.002 near the cone apex, and the surrounding wire (bottom/top arcs at those radii) is consistent, so a kernel that clamps the UV projection near the apex singularity rather than propagating NaN produces a valid face.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cone"
 - **Tier-3 assertion**: edge[0].curve_type == "circle"
@@ -31987,10 +32111,12 @@ Edge near cone apex where (u,v) projection is mathematically unstable; FixAddPCu
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp094 — ShapeAnalysis_Edge.CheckOverlapping curves-tangent-at-endpoint
 Two edges meeting tangentially at shared endpoint; CheckOverlapping's interior-intersection test ignores boundary tangency. Fixture has LINE+B_SPLINE_CURVE edges meeting at common vertex with tangent alignment.
+- **Expected kernel behavior**: accept: the LINE and B-spline edges meeting tangentially at (2,0,0) share only that single boundary point with matching tangent direction -- a legitimate smooth vertex join, not an interior overlap -- so a kernel's interior-intersection test must not flag boundary tangency as overlap.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
 ### Gp095 — ShapeFix_Edge.FixVertexTolerance face-vertex-conflict
 Vertex shared by two faces with conflicting tolerance requirements; FixVertexTolerance picks first face's requirement, ignoring second. Fixture has vertex #31 on two PLANE faces with independent BRep_Tool::Tolerance() values.
+- **Expected kernel behavior**: accept: the shared vertex sits 0.005 units off nominal on both adjoining faces, well inside a tolerance a kernel is expected to escalate to cover every incident edge; deriving the vertex tolerance from only the first face's requirement and never re-validating the second is the bug to avoid, not the escalation itself.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 ### Gp096 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve direction-reversed-but-coincident
@@ -32010,6 +32136,7 @@ Edge with COMPOSITE_CURVE as its 3D curve. FixAddPCurve constructs the pcurve fr
 **Method**: `ShapeFix_Edge::FixAddPCurve`  
 **Defect class**: `curve-extraction-failure`  
 
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the 3D curve has a genuine 1.5-unit positional gap at its interior knot, so the composite pcurve's segment-traversal question is moot -- the edge is invalid regardless of whether every composite segment is walked.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp098 — ShapeAnalysis_Edge.CheckOverlapping arc-tangent-to-line
@@ -32037,6 +32164,7 @@ PCURVE as POLYLINE. GetEndTangent2d uses last two points for last endpoint but f
 **Fixture**: STEP file with POLYLINE (3D and 2D) with multiple segments.  
 **Method**: `ShapeAnalysis_Edge::GetEndTangent2d`  
 **Defect class**: `selective_vertex_checking`
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the 3D curve has a genuine 1.5-unit positional gap at its interior knot, independent of the pcurve's own degenerate first POLYLINE segment (a zero-length CP[0]->CP[1] step); either defect alone is sufficient grounds to reject.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp101 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve sample-skip near-endpoint
@@ -32062,17 +32190,20 @@ Plane edge whose 3D curve is OFFSET_CURVE (0.2 offset from base B-spline). PCurv
 ### Gp105 — ShapeAnalysis_Edge.CheckOverlapping zero-tolerance-overlap
 
 Two edges with literally coincident 3D geometry (identical LINE 0→5 in x-axis, identical pcurves). Both reference same plane surface. CheckOverlapping with zero tolerance reports non-overlapping due to floating-point comparison; misses exact coincidence.
+- **Expected kernel behavior**: accept: the two EDGE_CURVEs are exactly, bit-for-bit coincident in 3D and 2D on the same base LINE and PLANE, so a kernel comparing curve identity (not just numeric proximity) recognizes the zero-tolerance exact match rather than relying on a strictly-greater-than-zero floating comparison that misses it.
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### Gp106 — CheckSameParameter spline-vs-spline-shifted
 
 Edge with B-spline 3D curve and B-spline pcurve; pcurve's parameter range [1,2] is shifted 1.0 unit from 3D curve [0,1]. CheckSameParameter compares raw ranges and reports false mismatch despite representing identical geometry.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the 3D curve has a genuine 1.5-unit positional gap at its interior knot, so no amount of shifting the pcurve's knot domain to align with the 3D curve's range can produce a valid, continuous edge.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp107 — FixSameParameter degenerate-on-spline
 
 Edge whose 3D curve is B-spline of degree 0 (control-point-only, no smoothing). FixSameParameter identifies it as degenerate but does not invoke degenerate-edge fix path.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the 3D curve's interior knot carries a genuine 1.5-unit positional gap distinct from its start/end-coincident control points; a curve whose first and last control points coincide is not automatically degenerate everywhere, and the mid-curve discontinuity must be reported on its own terms.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp108 — CheckPCurveRange B-spline-out-of-knot
@@ -32085,16 +32216,19 @@ Pcurve B-spline with knot range [0,5] used on edge parametrized [-1,6]. CheckPCu
 ### Gp109 — FixReversed2d composite-pcurve
 
 Pcurve is COMPOSITE_CURVE with two line segments. FixReversed2d reverses parameter direction but leaves segment order unchanged, producing invalid geometry.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the 3D curve has a genuine 1.5-unit positional gap at its interior knot, so whether the reversed edge's composite pcurve correctly reorders its segments is moot -- the edge is invalid regardless.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp110 — GetEndTangent2d zero-derivative
 
 Pcurve B-spline with zero tangent derivative at endpoint (last two control points coincident). GetEndTangent2d returns NaN instead of computing fallback tangent from interior curvature.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the 3D curve has a genuine 1.5-unit positional gap at its interior knot, so the pcurve's coincident final control points (yielding a zero end-tangent) are secondary -- a kernel must reject the curve for the positional discontinuity regardless of how it handles the degenerate tangent.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp111 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve different-trim-ranges
 
 3D curve range [0,1] and pcurve range [0.2, 0.8] cover different portions. CheckCurve3dWithPCurve samples uniform parameter space and compares wrong portions of geometry.
+- **Expected kernel behavior**: accept: two pcurves are supplied for the same edge, one spanning the full [0,5] range and one only [1,4]; a kernel should validate against the pcurve whose domain actually covers the edge's declared parameter range rather than sampling uniformly across both and flagging a spurious mismatch where the shorter one simply doesn't reach.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp112 — ShapeFix_Edge.FixAddPCurve scaled-surface
@@ -32108,6 +32242,7 @@ Two edges with equivalent geometry but different curve types: one LINE and one B
 ### Gp114 — ShapeFix_Edge.FixSameParameter periodic-curve-with-non-periodic-pcurve
 
 Closed 3D curve (circle) but pcurve is non-periodic line on plane. FixSameParameter forces periodicity mismatch between 3D and parametric representations.
+- **Expected kernel behavior**: accept: the edge's 3D geometry is a genuinely periodic TRIMMED_CURVE(CIRCLE) but its pcurve is a plain non-periodic LINE; periodicity is a property of the surface's parametrization, not a requirement that every representation curve itself carry a periodic flag, so a kernel should accept a non-periodic pcurve for a periodic 3D curve as long as the endpoints agree.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: edge[0].curve_type == "circle"
 - **Tier-3 assertion**: edge[0].analytic.radius == 2.5
@@ -32115,10 +32250,12 @@ Closed 3D curve (circle) but pcurve is non-periodic line on plane. FixSameParame
 ### Gp115 — ShapeAnalysis_Edge.GetEndTangent2d tangent-mid-knot
 
 Pcurve B-spline with knot at exact endpoint. GetEndTangent2d evaluates derivative at knot which produces discontinuous tangent result at boundary.
+- **Expected kernel behavior**: accept: the pcurve has a genuine tangent kink at its interior knot (t=0.5), but the edge's endpoint tangent (t=1.0) is computed from the clamped final span and is well-defined; a kernel must evaluate end tangents locally at the boundary, not let an interior discontinuity elsewhere on the curve corrupt an unrelated endpoint query.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp116 — Sphere pole singularity in pcurve
 ShapeAnalysis_Edge.CheckCurve3dWithPCurve fails when pcurve passes through sphere pole (u=π/2) where tangent is undefined. Sampling uses NaN comparisons that can fail.
+- **Expected kernel behavior**: accept: the edge runs along a meridian from the equator to the north pole, where the sphere's U-parameter is genuinely indeterminate at v=pi/2; a kernel must special-case the pole (trusting only the V-coordinate there) rather than attempting a full UV inversion that necessarily produces NaN.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "sphere"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
@@ -32127,14 +32264,17 @@ ShapeAnalysis_Edge.CheckCurve3dWithPCurve fails when pcurve passes through spher
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
 ### Gp117 — Closed pcurve, open 3D curve mismatch
 ShapeFix_Edge.FixAddCurve3d constructs wrong 3D curve when pcurve is closed circle but edge is open. Closure doesn't match edge vertices.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the pcurve is declared closed (its first and last control points coincide) while the edge's 3D LINE is open and non-repeating; a kernel must not silently reconstruct a 3D curve from a pcurve whose closure flag contradicts the edge's actual topology.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp118 — Very-many-samples high-curvature edge
 ShapeAnalysis_Edge.CheckCurve3dWithPCurve under-samples long B-spline with sharp oscillations; log-scaling still misses fine features.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the 3D curve has a genuine 1.5-unit positional gap at its interior knot in addition to a separate high-curvature control-point spike; a kernel that samples adaptively by curvature would still need to reject the curve for the outright discontinuity.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp119 — Cylinder seam-edge pcurve ambiguity
 ShapeFix_Edge.FixSameParameter handles seam edge (u=0 vs u=2π) ambiguously; pcurve parameter mismatch between 0 and 2π.
+- **Expected kernel behavior**: accept: the seam edge's pcurve is expressed at u=2pi rather than the canonical u=0, but these are the same point on the periodic cylindrical surface; a kernel must normalize seam pcurve parameters modulo the surface period before comparing rather than requiring one fixed canonical branch.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
@@ -32146,16 +32286,19 @@ ShapeFix_Edge.FixSameParameter handles seam edge (u=0 vs u=2π) ambiguously; pcu
 ### Gp120 — Two-segment COMPOSITE_CURVE_ON_SURFACE join has matching tangent vectors on both sides (no discontinuity despite asymmetric control-point excursions)
 COMPOSITE_CURVE_ON_SURFACE with two B-spline pcurve segments ('kink_seg1', 'kink_seg2') meant to join with a tangent kink at UV=(2,0): seg1's control points bow to +v (0,0)→(1.5,0.5)→(2,0) and seg2's bow to -v (2,0)→(2.5,-0.5)→(4,0), which looks asymmetric by eye. Direct evaluation (Geom2d D1) shows the end-of-seg1 and start-of-seg2 tangent vectors are both exactly (1,-1) — angle difference 0.0deg — because each quadratic segment's boundary derivative is 2*(P1-P0)/(P2-P1) and the two control-point triples are point-symmetric about the join, which cancels the intended asymmetry. The join is C1, not merely G0/kinked.
 - **Notes**: Corrected 2026-08-07 (title-vs-bytes audit): retitled/redescribed — original claimed the composite pcurve's segment join has a G0-only tangent discontinuity (`ShapeAnalysis_Edge.GetEndTangent2d` "fails" on it); live evaluation of both segments' boundary derivatives (Geom2d_BSplineCurve::D1) shows the tangent vectors at the join are identical, (1,-1) on both sides, so no discontinuity exists in the bytes for any reader to detect or heal. Synonyms: "composite pcurve join accidentally smooth", "symmetric control-point excursions cancel intended kink", "G0-looking join is actually C1".
+- **Expected kernel behavior**: accept: direct evaluation of both composite-pcurve segments' boundary derivatives shows identical tangent vectors (1,-1) at the shared join, confirming genuine C1 continuity despite the asymmetric-looking control polygon; a kernel must trust the computed derivative, not the visual appearance of the control points, when judging smoothness.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp121 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve OFFSET_CURVE
 
 Edge with 3D OFFSET_CURVE wrapping a line. CheckCurve3dWithPCurve samples but offset application uses base-curve normal, ignoring offset distance.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge, or heal by recomputing the pcurve: correctly evaluating the OFFSET_CURVE_2D pcurve (applying its 0.3 offset, not just its base line) places it at v=0.3, but the 3D edge runs along y=0 on the plane -- the two representations disagree by the full offset distance, which a kernel must not paper over by comparing only the unoffset base curve.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp122 — ShapeFix_Edge.FixAddPCurve B-spline-on-trimmed-surface
 
 Edge on RECTANGULAR_TRIMMED_SURFACE wrapping B-spline. FixAddPCurve constructs pcurve in base-surface coords, missing trim translation.
+- **Expected kernel behavior**: accept: RECTANGULAR_TRIMMED_SURFACE does not redefine the origin of its basis surface's parametrization, it only restricts the domain, so the pcurve's UV coordinates (which match the base PLANE's global frame) are already correctly aligned with the trimmed face; no coordinate translation is needed or missing.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp123 — ShapeAnalysis_Edge.CheckPCurveRange CIRCLE with-large-radius
@@ -32167,11 +32310,13 @@ Pcurve is CIRCLE with radius 1e6 but edge parameters [0, 0.001]. CheckPCurveRang
 ### Gp124 — ShapeFix_Edge.FixReversed2d HYPERBOLA
 
 Pcurve is HYPERBOLA with reversed edge orientation. FixReversed2d's reversal doesn't handle asymptote-direction invariant.
+- **Expected kernel behavior**: accept: the reversed edge's HYPERBOLA pcurve and 3D curve are both used unmodified with SameSense=.F. signalling the traversal direction, exactly as STEP topology is meant to work; a kernel handles orientation via the topological flag rather than rewriting the curve's own parametrization, so no asymptote-direction bug arises from this pattern.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp125 — ShapeAnalysis_Edge.GetEndTangent2d at-trim-boundary
 
 Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim boundary, producing wrong direction.
+- **Expected kernel behavior**: accept: the trimmed curve's declared range starts exactly at the interior knot (t=0.5) where the untrimmed basis has only C0 continuity, but the edge only uses the curve from that knot onward; a kernel evaluating the trimmed curve's start tangent from its own one-sided (right) derivative, not the discarded left-side span, gets a well-defined, correct answer.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp126 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve plane-projection mismatch
@@ -32459,36 +32604,44 @@ Periodic P-curve with parameter range straddling 2π boundary; validation assume
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### Gp152 — ShapeAnalysis_Edge.CheckVerticesWithPCurve location_transformation_semantics
 Edge bound to surface with non-identity location; P-curve endpoint transform omitted from vertex distance check. Analyzer fails to apply surface location xform to V1/V2 projections. Reproduces line 539 defect.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the 3D curve carries a genuine 1.5-unit positional gap at its interior knot, so whether pcurve endpoints are checked in the surface's local or world frame is secondary -- the curve itself is discontinuous under any frame.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp153 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve planar_surface_bypass
 3D line and 2D P-curve endpoints mismatch on planar surface; consistency check skipped for plane geometry. Analyzer silently passes despite V2 at (3,1,0) ≠ P-curve projection. Reproduces line 384 defect.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: independent of whether a PLANE-specific fast path skips 3D/pcurve consistency sampling, the 3D curve carries a genuine 1.5-unit positional gap at its interior knot, and separately its pcurve endpoint projects to v=1 while the vertex sits at v=0; either defect alone is sufficient to reject.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp154 — ShapeAnalysis_Edge.CheckVerticesWithPCurve selective_vertex_checking
 First vertex offset from 3D curve start; distance check omitted when vtx==2 parameter set. Analyzer masks V1 discrepancy while checking V2. Reproduces line 533 defect.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge, or heal by recomputing the pcurve from the 3D curve/vertices: the pcurve's declared start (UV=(0,0), lifting to 3D (0,0,0)) does not match vertex V1's actual 3D position (0.5,0,0), a genuine 0.5-unit disagreement that a kernel must not paper over by checking only the far vertex.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp155 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve pcurve_extraction_failure
 Empty P-curve representation with null curve data; extraction fails silently at FAIL1 status. Analyzer masks missing parametric curve without reporting diagnostic. Reproduces line 391 defect.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the PCURVE's DEFINITIONAL_REPRESENTATION carries an empty curve list (no 2D curve at all), and independently the 3D curve has a genuine 1.5-unit positional gap at its interior knot; a kernel must surface a diagnostic for the missing pcurve rather than silently proceed as if it were present.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp156 — ShapeAnalysis_Edge.GetEndTangent2d `parameter_degeneracy_precision`
 Parameter delta below Precision::PConfusion skips tangent difference computation. Analyzer omits validation when (cl - cf) falls below confusion threshold, failing to report parametrically-degenerate edges. B-spline pcurve with negligible range [0, 1e-8].
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the 3D curve has a genuine 1.5-unit positional gap at its interior knot, and separately the pcurve's own parameter range collapses to 1e-8, a near-point 2D curve for a 5-unit 3D edge; either defect alone should stop a kernel from accepting it silently.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp157 — ShapeAnalysis_Surface.ProjectDegenerated `lazy-singularity-init`
 Projector proceeds without triggering ComputeSingularities. Degenerate edge-points near apex project incorrectly; singularity loci undetected. Cone surface with edge approaching apex singularity at u=0.
+- **Expected kernel behavior**: accept: the edge's 3D LINE and pcurve run cleanly from just off the apex (v=0.05) to the base rim, and the wire is fully consistent; a kernel that computes cone singularity loci lazily, on first use rather than eagerly at surface construction, still produces correct near-apex projections as long as it computes them before use.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cone"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp158 — ShapeAnalysis_Surface.ProjectDegenerated `whole-edge-degenerate`
 All pcurve points collapse to singularity; even-spacing fallback not triggered. Inconsistent parametric values remain unmapped. Cone with entire pcurve at u=0 (apex), varying v ∈ [0, 1].
+- **Expected kernel behavior**: accept: the pcurve runs along one of the cone's iso-parametric ruling lines, which is a genuine, non-degenerate 3D line except exactly at the apex point; a kernel must judge degeneracy from the realized 3D geometry, not merely from a UV parameter value lying on the surface's nominal singular locus.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cone"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
 ### Gp159 — ShapeAnalysis_Surface.ProjectDegenerated `partial-edge-collapse`
 First half of pcurve near singularity not collapsed to parameter. Mixed degenerate/non-degenerate segment fails healing signal propagation. Sphere with pcurve starting at pole (u≈0.01), ending equator (u=0.5).
+- **Expected kernel behavior**: accept: the edge runs from just off the north pole toward the equator; the near-pole portion is a well-defined meridian arc, so a kernel tracking degenerate/non-degenerate transitions along a single edge must handle the boundary between them locally rather than requiring the whole edge to be uniformly classified.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "sphere"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
@@ -32496,55 +32649,66 @@ First half of pcurve near singularity not collapsed to parameter. Mixed degenera
 ### Gp160 — ShapeAnalysis_Surface.ProjectDegenerated `singularity-tolerance-threshold`
 Singularity tolerance exceeds requested precision; tolerance filter passes high-tolerance singularities. Degenerate points project onto cone apex with unvalidated precision consistency. Cone with gradient approach toward u=0 singularity.
 
+- **Expected kernel behavior**: accept: the pcurve runs along a cone ruling line from v=0.02 to v=0.5, a fully regular curve in 3D that only degenerates exactly at v=0 (never reached); a kernel's singularity tolerance for judging proximity to the apex must not be so loose that it misclassifies ordinary points on a ruling line as degenerate.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cone"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp161 — seam_detection_1843
 
 Seam edge with unreversed pcurve equality check without parametric domain validation. BSpline surface with dual pcurves; orientation loss on merge. Line 1843: `aFaceSeq.Length() == 1` check branches onto unreversed equality without orientation tracking.
+- **Expected kernel behavior**: accept: the seam edge correctly carries two pcurves, one at each side of the U-period boundary, with matching but oppositely-oriented 2D geometry, exactly as a seam on a periodic surface requires; a kernel must track each pcurve's own orientation independently rather than collapsing the pair via an unreversed equality check that could silently drop one side's orientation.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gp162 — line_circle_reparametrization_2106
 
 TrimmedCurve wrapping Line/Circle skips geometric basis validation during reparametrization. Non-canonical curve geometry mapping failure. Line 2106–2139: Type detection via Geom2dAdaptor fails to unwrap trimmed geometry, producing incorrect parameter mapping.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the 3D curve has a genuine 1.5-unit positional gap at its interior knot; whether a fast-path reparametrization branch correctly unwraps a trimmed-line pcurve is immaterial once the 3D geometry itself is discontinuous.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp163 — circle_parameter_1930
 
 Circle parametrization assumes aNewF ≤ aNewL without handling periodic wraparound. Torus seam edge spanning parameter discontinuity (2π → 0). Line 1930: `ElCLib::Parameter()` returns angles on opposite sides of 2π; swap logic (line 1932) produces inverted range.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the 3D curve has a genuine positional gap at its interior knot, independent of whether the seam pcurve's angle range correctly handles the 2pi wraparound; the curve itself does not trace a continuous path.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp164 — range_mismatch_2055
 
 3D edge range compared to 2D pcurve range without periodic parametrization validation. Cylindrical surface with circular parametrization discontinuity. Line 2055–2060: `aRange3d` vs. `aRange` mismatch with periodic surfaces triggers false reparametrization.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the 3D curve has a genuine 1.5-unit positional gap at its interior knot, so any apparent mismatch between the pcurve's arc-length-scaled range and the 3D curve's angular range is secondary to the curve's outright discontinuity.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp165 — vertex_tolerance_mismatch_1971
 
 Vertex tolerance extracted without validation against accumulating tolerance array. Edge chain with heterogeneous vertex tolerances triggers incoherent continuity checks. Line 1971–1972: `TopExp::CommonVertex()` retrieves unvalidated tolerance; `aTolVerSeq.Append()` stores unsorted values.
 
+- **Expected kernel behavior**: accept: the junction vertex's declared tolerance (1e-3) legitimately exceeds the file's global default (1e-7) and is large enough to reconcile the edges meeting there; a kernel must use each vertex's own declared (or derived-maximum) tolerance for continuity checks rather than assuming a single global value applies everywhere.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "plane"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
 ### Gp166 — `ProjectDegenerated.whole-edge-degenerate`
 Conical surface with entire pcurve collapsing to apex singularity. Fixtures force redistribution of degenerate points along non-degenerate parametric axis.
+- **Expected kernel behavior**: accept: the pcurve runs along a cone ruling line, a genuine non-degenerate 3D curve except exactly at the apex point; a kernel must not treat every point on the nominal singular u-line as itself singular.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp167 — `ProjectDegenerated.partial-edge-collapse`
 Spherical surface with half-edge pcurve near pole (singularity), tail normal. Tests collapse of degenerate segment endpoint to singularity parameter.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the 3D curve has a genuine 1.5-unit positional gap at its interior knot, so how expensive it is to classify the pole-adjacent portion of the pcurve as degenerate is moot -- the curve is already invalid on its own terms.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp168 — `ProjectDegenerated.lazy-compute`
 Toroidal surface with meridian edge. Singularities computed lazily without revalidation; traversing torus singularity boundaries triggers stale cache.
+- **Expected kernel behavior**: accept: the pcurve crosses the torus's V=0/2pi meridian boundary but the underlying geometry is continuous across that boundary once V is treated modulo 2pi; a kernel must recompute singularity/seam data whenever it crosses a periodic boundary rather than trusting a stale prior computation.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Gp169 — `ProjectDegenerated.dual-distance-logic`
 B-spline surface with 3D curve initial gap. Pcurve distance metrics inconsistently recompute; direct vs. recomputed gap comparison diverges.
+- **Expected kernel behavior**: accept: the 0.08-unit gap between the pcurve's implied start and the 3D LINE's declared start is below the file's heal threshold and the surrounding wire is otherwise consistent; a kernel computing pcurve-to-3D distance on a non-uniform B-spline surface must use one consistent distance metric rather than comparing two computations that diverge under non-uniform parametrization.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "bspline"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Gp170 — `ProjectDegenerated.iso-flag-unvalidated`
 Planar surface with U-iso degenerate edge. U-constant pcurve lacks coordinate-axis consistency check; flag used without validation.
+- **Expected kernel behavior**: reject-with-diagnostic naming the edge: the 3D curve has a genuine 1.5-unit positional gap at its interior knot, so whether a heuristic near-constant-U flag fires on the slightly drifting pcurve is a secondary concern next to the curve's outright discontinuity.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
@@ -33265,6 +33429,7 @@ Defect: GlobalTolerance(shape, type, 0=avg) computes weighted average tolerance,
 but weight assignment inverts for nested shapes—shell's faces are counted twice,
 skewing the average toward face tolerances and violating unbiased averaging
 semantics across all geometry types.
+- **Expected kernel behavior**: accept: the shell's two faces load fine; the file's only *applied* tolerance is the boilerplate 1.0E-7mm (`GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT` referenced by the actual `MANIFOLD_SURFACE_SHAPE_REPRESENTATION`). The claimed per-face values (1e-3, 8e-3) exist as `UNCERTAINTY_MEASURE_WITH_UNIT` instances but are never placed inside any `GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT` at all -- they are free-floating, unreferenced numbers, not per-face tolerances (STEP has no such attribute on `ADVANCED_FACE`). A correct kernel loads the shell at 1e-7mm and never sees the decorative pair.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### N058 — BRepLib.SameRange null-pcurve null-check dereference
@@ -33273,6 +33438,7 @@ Defect: SameRange rescales PCurve domains to match 3D edge parameter range, but
 assumes the PCurve exists. When an edge has a null 2D curve on a face (parametric
 curve extraction failed), SameRange dereferences the null pointer without check,
 masking the failure and corrupting downstream edge state.
+- **Expected kernel behavior**: accept: the 4-edge closed face is well-formed and loads normally; the declared tolerance is 1.0E-7mm. The comment's 'no PCURVE entities' framing describes the ordinary AP214 idiom of a 3D-curve-only `EDGE_CURVE` on a planar `ADVANCED_FACE` with no explicit pcurve -- this is common and valid (planar faces don't require pcurves), not a null-pointer trigger; a correct kernel builds the face directly from the 3D curve.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N059 — BRepLib.UpdateEdgeTol sampling-grid undersample
@@ -33281,6 +33447,7 @@ Defect: UpdateEdgeTol uses 23-sample default grid to detect maximum distance
 between 3D curve and 2D parametric curve. On B-spline edges with high-curvature
 peaks between sample points, the peak distance is never observed, causing
 underestimated edge tolerance that fails later validation.
+- **Expected kernel behavior**: accept: the closed 2-edge face (B-spline arc + straight closing edge) is well-formed at the declared 1.0E-7mm tolerance. Sample-count-related deviation underestimation on a B-spline is a property of a specific tolerance-computation algorithm's internal sampling density, not something a static Part-21 file can encode or trigger -- a correct kernel just needs its own curve-deviation sampling to be adaptive (denser near curvature peaks) rather than fixed-count, independent of what this file declares.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 ### N060 — ShapeFix_Edge.FixSameParameter SameParameterEdge upper-bound
@@ -33289,6 +33456,7 @@ Defect: FixSameParameter computes tolerance to synchronize 3D and parametric
 curves; when computed tolerance exceeds user ceiling, silently clamps without
 flagging. Caller sees "tolerances fixed" but edge is actually incompatible—
 same-parameter constraint cannot be achieved at the ceiling value.
+- **Expected kernel behavior**: accept: the closed 4-edge face loads fine at the file's only *applied* tolerance, the boilerplate 1.0E-7mm. The claimed 'user ceiling' value (1.0E-2, `#40`) sits in a second `GEOMETRIC_REPRESENTATION_CONTEXT` that is never referenced by any `*_SHAPE_REPRESENTATION` -- it is dead data. STEP also has no per-edge parameter-domain-mismatch-tolerance attribute for the claimed clamp to act on, so a correct kernel just builds the ordinary square face.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N061 — BRepLib.BoundingVertex bounding-sphere under-estimate
@@ -33301,6 +33469,7 @@ same-parameter constraint cannot be achieved at the ceiling value.
 
 **Expected behavior**: Bounding sphere radius ≥ 1e-8; heuristic produces ~0.0 (machine epsilon).
 
+- **Expected kernel behavior**: heal: the 5 vertices are genuinely clustered within 5e-9mm of (1,1,1) (measured directly from coordinates), well inside the file's declared 1.0E-7mm tolerance. A correct kernel should merge all 5 into a single vertex and drop the 4 chained near-zero-length edges rather than building a degenerate 4-edge polyline whose total extent (~2e-8mm) is two orders of magnitude below the working precision.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N062 — ShapeAnalysis_ShapeTolerance.GlobalTolerance min/max dispatch
@@ -33313,6 +33482,7 @@ same-parameter constraint cannot be achieved at the ceiling value.
 
 **Expected behavior**: GlobalTolerance(mode=-1) should consistently return 1e-3; actual behavior depends on traversal order.
 
+- **Expected kernel behavior**: accept: 1x1 square face loads fine at the applied boilerplate 1.0E-7mm. The 'vertex_tolerance'/'edge_tolerance' pair (both 1e-3) sits in a second, unreferenced representation context -- dead data never wired into the shape's actual `SHAPE_DEFINITION_REPRESENTATION` chain. A correct kernel never observes those two values.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N063 — ShapeFix_Edge.FixVertexTolerance escalation cascade
@@ -33325,6 +33495,7 @@ same-parameter constraint cannot be achieved at the ceiling value.
 
 **Expected behavior**: After two FixVertexTolerance calls, vertex tolerance should be ≤ max(edge tolerances) = 1e-4; actual behavior escalates beyond this.
 
+- **Expected kernel behavior**: accept: the 3-edge star wire is well-formed (hub at origin, spokes to (1,0,0)/(0,1,0)/(0,0,1)); both declared tolerances (1.0E-5 'hub_vertex_tol', 1.0E-4 'spoke_edge_tol') are live, applied global values in the same `GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT` -- STEP has no mechanism to bind either value to a specific vertex or edge despite the suggestive labels, so a correct kernel should use the tighter of the two (1e-5mm) as its working precision for the whole wire rather than trying to route the labels to specific sub-elements.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N064 — ShapeAnalysis_Edge.CheckPoints precision asymmetry
@@ -33337,6 +33508,7 @@ same-parameter constraint cannot be achieved at the ceiling value.
 
 **Expected behavior**: CheckPoints should validate each endpoint against its own tolerance; actual behavior uses a single conflated value.
 
+- **Expected kernel behavior**: accept: the 4-edge face loads fine at the applied boilerplate 1.0E-7mm. The 'coarse_tolerance'=1e-2 / 'fine_tolerance'=1e-5 pair sits in an unreferenced second representation context (`#42`, never used by any shape representation) -- dead data, not a real per-vertex asymmetry. A correct kernel builds the plain square using only the live 1e-7mm value.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N065 — ShapeFix_ShapeTolerance.LimitTolerance partial-tree application
@@ -33354,26 +33526,31 @@ same-parameter constraint cannot be achieved at the ceiling value.
 ### N066 — ShapeAnalysis_ShapeTolerance.OverTolerance >= vs > comparison
 
 OverTolerance comparison operator bug: method uses `>=` instead of `>` when comparing vertex tolerance against threshold, flagging 0.0 tolerance as exceeding any positive threshold. Root cause: boundary condition equality treated as over-tolerance state rather than at-threshold state. Fixture: vertex with 0.0 declared tolerance, global context 1e-3. OverTolerance(shape, 1e-3) should return false; with bug returns true.
+- **Expected kernel behavior**: accept: 1x1 square face loads fine at the applied boilerplate 1.0E-7mm. The claimed 'zero_vertex_tolerance'=0.0 / 'threshold'=1e-3 pair lives in an unreferenced second representation context, never linked to the shape -- dead data. A correct kernel never evaluates an over-tolerance comparison against it.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N067 — ShapeFix_ShapeTolerance.SetTolerance compound cascade incomplete
 
 SetTolerance recursion stops at shell boundary: compound→shell descent succeeds, but faces within the shell remain unmodified. Tolerance propagation violates transitivity contract. Root cause: sub-shape iteration halts at first boundary-type mismatch rather than continuing depth-first. Fixture: two-face shell inside compound with initial tolerance 0.1; SetTolerance(compound, 0.001) leaves face tolerance unchanged.
+- **Expected kernel behavior**: accept: the two-triangle open shell loads fine at the applied boilerplate 1.0E-7mm. The claimed 0.1mm 'initial tolerance' sits in a second, unreferenced representation context -- dead data, not the shell's actual working tolerance. A correct kernel builds both triangles using only the live 1e-7mm value.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(14) ifc=schema_n/a`
 ### N068 — BRepLib.UpdateInnerTolerances minimal 2-point sampling
 
 UpdateInnerTolerances edge-tolerance computation samples B-spline at endpoints only (2 samples), missing interior curvature. Deviation at mid-curve peak not captured in tolerance estimate. Root cause: sample-count hardcoded to 2 or loop exits early. Fixture: 4-control-point B-spline with 5-unit bulge at center, parameterized [0,1], global context 1e-4. Endpoint sampling misses interior curvature requiring ~1e-2 tolerance.
+- **Expected kernel behavior**: accept: the B-spline-bounded face loads fine at the applied boilerplate 1.0E-7mm. The 1.0E-4mm value describing 'peak curvature deviation' sits in an unreferenced second representation context -- dead data, never wired to the actual shape representation. A correct kernel builds the face at 1e-7mm and independently samples the B-spline curve as densely as its own algorithm requires; the claimed 2-sample undersampling is an implementation detail no static file can encode or falsify.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 ### N069 — ShapeAnalysis_Edge.CheckOverlapping parameter vs arc-length scale
 
 Overlap detection compares edges by parameter distance, not arc length, causing false positives when parameter ranges differ in scale. Edge1 domain [0,1] vs Edge2 domain [0,100] both represent same 1mm geometry; parameter distance 0.5 is dimensionless. Root cause: tolerance comparison uses parameter delta without range normalization. Fixture: two overlapping 1mm lines with parameter domains [0,1] and [0,100].
+- **Expected kernel behavior**: accept: the 4-edge face (containing the two collinear 1mm sub-edges e1/e2 with differently-scaled parameter domains) loads fine at the applied boilerplate 1.0E-7mm. The claimed 1e-2 'user-facing' tolerance sits in an unreferenced second representation context -- dead data. A correct kernel builds the face and, if it needs to compare two edges for overlap, must normalize by arc length rather than raw parameter delta -- but that is an internal algorithm property, not something this file's bytes exercise.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N070 — ShapeFix_ShapeTolerance.LimitTolerance zero lower-bound as no-op marker
 
 LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips upper check entirely; shape with 0.5mm tolerance receives no enforcement of 0.01mm upper limit. Root cause: conditional uses single `if(lower>0)` gate for entire tolerance-clamping logic. Fixture: triangle face with 0.5mm tolerance; LimitTolerance(..., 0, 0.01) leaves tolerance at 0.5mm instead of clamping to 0.01mm.
+- **Expected kernel behavior**: accept: the triangle face loads fine at the applied boilerplate 1.0E-7mm. The claimed 0.5mm 'declared tolerance' sits in an unreferenced second representation context -- dead data, never linked to the actual shape representation. A correct kernel never applies (or needs to clamp) the 0.5mm value.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### N071 — BRepLib.UpdateEdgeTol surface-mesh consistency unchecked
@@ -33386,6 +33563,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 
 **Bug:** returns 0.001mm; mesh contribution unchecked.
 
+- **Expected kernel behavior**: accept: the 10x10 square face loads fine at the applied boilerplate 1.0E-7mm. The claimed 'curve_sampling'=1e-3 / 'mesh_deflection'=0.1 pair sits in an unreferenced second representation context -- dead data, and STEP carries no mesh-deflection attribute at all for a face's edges (deflection is a tessellation-time, not Part-21, concept). A correct kernel builds the plain square face using only the live 1e-7mm value.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N072 — ShapeFix_Edge.FixSameParameter precision-loss via TempSameRange
@@ -33398,6 +33576,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 
 **Bug:** tolerance not updated; effective precision worsens silently.
 
+- **Expected kernel behavior**: accept: the B-spline-bounded face loads fine at the applied boilerplate 1.0E-7mm. The claimed 1e-5mm 'original curve tolerance' sits in an unreferenced second representation context -- dead data, never wired to the shape. A correct kernel builds the face and evaluates the B-spline over its declared knot domain [0,10] directly; there is no encoded parameter-range clamp to react to.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 ### N073 — BRepLib.UpdateDeflection null-triangulation skip
@@ -33410,6 +33589,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 
 **Bug:** silent no-op; deflection state uninitialized.
 
+- **Expected kernel behavior**: accept: the 5x5 square face loads fine at the applied boilerplate 1.0E-7mm. The claimed 1e-2mm value sits in an unreferenced second representation context -- dead data. STEP carries no triangulation/mesh-deflection state at all (that is a tessellation-time concept, not a Part-21 attribute), so the claimed null-triangulation defect cannot be encoded here; a correct kernel just builds the plane face.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N074 — ShapeAnalysis_Edge.CheckPoints colinear-points shortcut
@@ -33443,6 +33623,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 
 **Trigger**: Invoke ShapeAnalysis_ShapeTolerance::AddTolerance(shape, tol_value, mode=true) twice on the same shape. Expected: each call independently aggregates; Observed: second call adds to remnant state from first call.
 
+- **Expected kernel behavior**: accept: the 3-segment wire (v0-v1-v2-v3) is well-formed; the only *applied* tolerance is 5.0E-6mm ('edge_tol_nominal', live in the file's `GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT'). The other two per-edge values the comment describes (8e-6, 3e-6) are not backed by any `UNCERTAINTY_MEASURE_WITH_UNIT` entity at all -- they exist only as decorative substrings in the `EDGE_CURVE` label strings ('e1_tol8e6', 'e2_tol3e6'), and STEP has no per-edge tolerance attribute for them to occupy anyway. A correct kernel builds the plain 3-edge wire at the single declared 5e-6mm precision.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N077 — BRepLib.BuildCurves3d batch-batch failure
@@ -33453,6 +33634,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 
 **Trigger**: Call BRepLib::BuildCurves3d(edge_set) where edge_set contains {edge1_valid, edge2_valid, edge3_no_curve}. Expected: return false + report which edges succeeded; Observed: return false with no granularity.
 
+- **Expected kernel behavior**: accept-and-repair: edges e0/e1 are ordinary unit-length lines; e2 (`e2_no_curve_fails`) is a genuinely zero-length `LINE` (`VECTOR` magnitude 0.0) between two vertices that share the same coordinates (2.0,0.0,0.0) though they are distinct `CARTESIAN_POINT` instances. A correct kernel should detect and drop (or merge the endpoints of) the zero-length edge and still return the two valid edges -- an all-or-nothing failure that discards e0/e1 because e2 is degenerate is the wrong behavior, but so is silently keeping a zero-length edge as if it were normal.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Notes**: Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
@@ -33464,6 +33646,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 
 **Trigger**: Call ShapeFix_Edge::FixSameParameter on the edge. Expected: preserve 1e-16 tolerance through interior check; Observed: clamp to floor (1e-7), losing the declared spec.
 
+- **Expected kernel behavior**: accept, with a floor: the single edge is ordinary (unit length, straight line); the declared tolerance is 1.0E-15mm, which is below double-precision's representable relative resolution at unit-coordinate scale (~2.2e-16 absolute ULP, i.e. only ~4-5 representable steps of headroom). A correct kernel should clamp such a sub-working-precision declared tolerance up to a sane floor (documented, not silently invented) and report the clamp, rather than either pretending to honor 1e-15mm literally or silently substituting an undocumented larger value.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Notes**:
@@ -33495,6 +33678,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 
 **Source**: OCCT_HEAL_COVERAGE_V3.md § BRepLib.UpdateEdgeTol (UET-002, low-confidence)
 
+- **Expected kernel behavior**: accept: the closed 4-edge face is well-formed at the declared 1.0E-7mm tolerance; `EDGE_CURVE.SameParameter` is set `.T.` and the file's single 3D `LINE` has no pcurve to disagree with it. Divergent sampling between two different internal distance-evaluation code paths is a property of a specific implementation, not something this file's bytes can encode or falsify -- a correct kernel should use one consistent sampling strategy regardless of the same-parameter flag's value.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N082 — ShapeAnalysis_ShapeTolerance.AddTolerance shape-type membership
@@ -33505,6 +33689,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 
 **Source**: OCCT_HEAL_COVERAGE_V3.md § ShapeAnalysis_ShapeTolerance.AddTolerance_at240
 
+- **Expected kernel behavior**: accept: the two-face open shell is well-formed at the declared 1.0E-7mm tolerance. Double-counting a sub-shape's tolerance once per containment level is a property of a specific traversal implementation, not something this file's bytes can trigger -- a correct kernel's tolerance aggregation must visit each unique sub-shape exactly once regardless of how many containers reference it.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a`
 ### N083 — ShapeFix_ShapeTolerance.SetTolerance compound + nested
@@ -33515,6 +33700,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 
 **Source**: OCCT_HEAL_COVERAGE_V3.md § ShapeFix_ShapeTolerance.SetTolerance_at145 (recursive_double_mutation)
 
+- **Expected kernel behavior**: accept: the 1x1 square face (nested under a single `CLOSED_SHELL`) is well-formed at the declared 1.0E-7mm tolerance. The claimed 'compound->solid->shell' recursion-stopping defect describes an internal traversal implementation detail, not something this flat single-shell file can encode or exercise -- a correct kernel's tolerance propagation must recurse through every nesting level (compound, solid, shell, face, edge, vertex) it actually contains.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N084 — BRepLib.UpdateInnerTolerances degenerate-edge postcondition
@@ -33534,27 +33720,33 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 **Fixture**: Edge with vertices V1_tight (tol=0.001) and V2_loose (tol=0.01); CheckPoints computes average tolerance, masking asymmetric precision requirements.
 
 **Source**: OCCT_HEAL_COVERAGE_V3.md § ShapeAnalysis_Edge.CheckPoints_at435 (SQUARED_DISTANCE_THRESHOLD)
+- **Expected kernel behavior**: accept: the 4-edge closed face is well-formed at the declared 1.0E-7mm tolerance. STEP has no per-vertex tolerance attribute for the claimed 10x asymmetric vertex-tolerance scenario to be encoded in -- a correct kernel just builds the plain square face and, if it does track separate per-endpoint precision internally, must not silently collapse two distinct declared precisions into one averaged value.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N086 — Closed BSpline SameParameter wrapping
 ShapeFix_Edge.FixSameParameter fails to account for parameter wrapping in periodic B-splines. Computes SameParameter assuming open curve; closed spline edges with v ∈ [0,2π) incorrectly flagged as non-same-parameter when edge uses modulo arithmetic.
+- **Expected kernel behavior**: accept: the closed B-spline-bounded face is well-formed at the declared 1.0E-7mm tolerance. Whether the underlying curve is periodic/closed and whether a same-parameter check correctly handles v-domain wraparound is an internal algorithm property; a correct kernel's same-parameter comparison must account for periodic parameter wraparound (treating v and v+period as equal) rather than assuming an open domain.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### N087 — CheckOverlapping parameterization mismatch
 ShapeAnalysis_Edge.CheckOverlapping compares parametric parameter values directly without normalizing parameterization speed. Two edges following identical 3D geometry but with different speed (arc-length vs. chord-length) parameter domains fail overlap detection; parameter-space comparison yields false negative.
+- **Expected kernel behavior**: accept: the two-face shape is well-formed at the declared 1.0E-7mm tolerance. Comparing two edges' parameterization speeds (arc-length vs. raw parameter) for overlap detection is an internal algorithm property; a correct kernel's overlap/coincidence check must operate in a speed-invariant space (e.g. arc length or 3D sampling) rather than comparing raw parameter deltas across edges with different parameterizations.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 ### N088 — Vertex at cone apex zero tolerance
 BRepLib.UpdateInnerTolerances samples curve at parameter points to compute vertex tolerance, but cone apex (singular point) has zero radius. Computation returns 0.0 tolerance; edge touching apex incorrectly marked as arbitrarily small tolerance constraint instead of recognizing degeneracy.
+- **Expected kernel behavior**: accept: the single edge runs from the cone's genuine apex (0,0,0), where `CONICAL_SURFACE` u,v is a real removable-degeneracy point (the whole apex circle collapses to one 3D point regardless of parameter), to a base point (0.5,0,1). A correct kernel should recognize apex vertices as a special case and assign them a positive, sane tolerance derived from the surrounding surface geometry (not the literal 0.0 that naive curvature-based sampling would produce there, and not an unbounded value either).
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "cone"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### N089 — LimitTolerance recursion stops at WIRE
 ShapeFix_ShapeTolerance.LimitTolerance with mode=TopAbs_VERTEX recursively applies limits to faces and wires but fails to descend into wire's edge collection or edge's vertex endpoints. Shell with deeply nested geometry (Face→Wire→Edge→Vertex) applies tolerance only to Face/Wire level; innermost vertices unconstrained.
+- **Expected kernel behavior**: accept: the wire is well-formed at the declared 1.0E-7mm tolerance. Whether a `LimitTolerance`-style pass fully descends through wire->edge->vertex is an internal traversal property; a correct kernel's tolerance-limiting pass must reach every vertex transitively, regardless of how many intermediate topology levels (wire, edge) sit between the call site and the vertex.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N090 — GlobalTolerance weighted mode edge direction bug
 ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts forward and reversed edges separately for denominator but sums their tolerance contributions. Shape with N/2 forward + N/2 reversed edges computed as avg(tol_sum) / (2N) instead of / N; weighting factor doubled, result halved.
+- **Expected kernel behavior**: accept: the shape is well-formed at the declared 1.0E-7mm tolerance. Whether a weighted-average tolerance computation double-counts reversed edges in its denominator is an internal aggregation-algorithm property, not something this file's bytes can trigger -- a correct kernel's weighted average must count each edge once in the denominator regardless of its `ORIENTED_EDGE` sense.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 ### N091 — ShapeFix_Edge.FixSameParameter wrong-floor-clamp
@@ -33565,6 +33757,7 @@ ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts fo
 
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N091.stp`
 
+- **Expected kernel behavior**: accept: the open-shell face is well-formed; the declared context tolerance is 1.000000E-10mm (ultra-tight). STEP has no per-edge ideal-tolerance attribute for the claimed 1e-9-vs-1e-7-floor scenario -- a correct kernel should not impose an undocumented internal floor above the file's own declared precision; if it must clamp for numerical safety, the floor should sit below the file's declared context tolerance, not above it.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
 ### N092 — ShapeAnalysis_ShapeTolerance.AddTolerance type-mismatch
@@ -33575,6 +33768,7 @@ ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts fo
 
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N092.stp`
 
+- **Expected kernel behavior**: accept: the single-face open shell is well-formed at the declared 1.0E-7mm tolerance; the file contains no `WIRE`-type sub-shape at all (only the `ADVANCED_FACE`'s implicit boundary wire), so the claimed 'silently skips WIRE entries' scenario has nothing to skip here -- a correct kernel just builds the one triangular face.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### N093 — BRepLib.UpdateInnerTolerances on-degenerate-curve
@@ -33595,6 +33789,7 @@ ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts fo
 
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N094.stp`
 
+- **Expected kernel behavior**: accept: the two-edge open-shell face is well-formed at the declared 1.0E-7mm tolerance; STEP carries no per-edge tolerance attribute for the claimed 1e-10-vs-1e-3 extreme-mismatch scenario to be encoded in. A correct kernel's own shared-vertex tolerance computation (whatever it tracks internally) must never underflow to a value smaller than any of its incident edges' tolerances -- the invariant tol(vertex) >= max(tol(edges)) should hold by construction, not by chance.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N095 — ShapeAnalysis_Edge.CheckPoints tolerance-aware-distance
@@ -33604,6 +33799,7 @@ ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts fo
 **Pattern**: Edge with endpoints in different precision contexts (1e-9 vs 1e-3). CheckPoints uses min() instead of directional thresholds, incorrectly harmonizes asymmetric precision.
 
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N095.stp`
+- **Expected kernel behavior**: accept: the open-shell face is well-formed at the declared 1.0E-7mm tolerance; STEP carries no per-vertex precision attribute for the claimed 1e-9-vs-1e-3 asymmetric scenario. A correct kernel comparing two independently-toleranced endpoints should apply each endpoint's own bound directionally rather than collapsing both to a single min() value, which would over-constrain the looser side.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N096 — BRepLib.UpdateInnerTolerances cone-apex-singularity
@@ -33614,6 +33810,7 @@ ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts fo
 
 **Expected failure**: UpdateInnerTolerances reports NaN, Inf, or excessive tolerance on shared apex vertex.
 
+- **Expected kernel behavior**: accept: the edge runs through a genuine `CONICAL_SURFACE` apex (0,0,0, half-angle 30 deg) from a base point; the file is a well-formed wireframe container declaring 1.0E-7mm tolerance. Curvature diverging at a cone apex is a real, well-known removable singularity; a correct kernel must special-case apex-touching parameters (assign a bounded, sane tolerance) rather than letting a generic curvature-based sampler blow up there -- this holds whether or not OCCT's own wireframe-container transfer happens to build a shape from this particular file.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N097 — ShapeFix_ShapeTolerance.LimitTolerance same-min-and-max
@@ -33624,6 +33821,7 @@ ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts fo
 
 **Expected behavior**: All tolerances normalized to 0.001. **Actual**: Unchanged.
 
+- **Expected kernel behavior**: accept: the quad face is well-formed; the two declared tolerances (5.0E-4 'tol_v0', 2.0E-3 'tol_v1') are live global values, not bound to specific vertices despite the labels. A correct kernel uses the tighter value (5e-4mm) as its working precision; calling `LimitTolerance` with equal min/max bounds is a runtime-only scenario this static file cannot itself trigger.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N098 — ShapeAnalysis_ShapeTolerance.GlobalTolerance empty-shape
@@ -33634,6 +33832,7 @@ ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts fo
 
 **Expected**: Flag "no data" or distinct sentinel value. **Actual**: Returns 0.
 
+- **Expected kernel behavior**: accept: the single free-standing point is well-formed at the declared 1.0E-7mm tolerance; it is not an 'empty shape' -- it is a shape consisting of exactly one vertex and no edges/faces. A correct kernel should return a genuine 1-vertex shape (as this file's own oracle measurement confirms: 1 vertex) and must not conflate 'a global-tolerance aggregate over zero edges/faces' with 'no geometry at all' -- those are different conditions and should be distinguishable in any diagnostic output.
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
@@ -33645,6 +33844,7 @@ ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts fo
 
 **Expected failure**: Memory access violation, incorrect tolerance computation, or platform-dependent crash.
 
+- **Expected kernel behavior**: accept: the shape is well-formed at the declared 1.0E-7mm tolerance. Whether an edge shared by 6+ faces overflows a fixed-size internal buffer during tolerance sampling is an implementation detail of one specific algorithm, not something this file's topology alone can force -- a correct kernel's per-edge face-intersection sampling must size its working storage to the edge's actual face count, not a hardcoded constant.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N100 — ShapeAnalysis_Edge.CheckPoints precision-asymmetry-extreme
@@ -33658,41 +33858,50 @@ ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts fo
 Average threshold ≈ 0.5. E1 fails individual but passes average. E2 passes individual but fails average. Result: asymmetric, false-negative verdicts.
 
 **Expected failure**: CheckPoints returns incorrect boolean for both pairs.
+- **Expected kernel behavior**: accept: the two independent line edges are well-formed; the declared tolerances (1.0E-15 'ultra_tight_preci1', 1.0 'coarse_preci2') are both live global values in the same context, not bound to specific edges despite the labels. A correct kernel should not average two such wildly separated declared tolerances -- use the tighter (1e-15mm, or a sane working-precision floor above it) rather than a midpoint that masks both.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N101 — ShapeFix_Edge.FixVertexTolerance reset-on-fix
 Vertex tolerance escalated during initial edge check, then silently reset to base value when FixVertexTolerance executes. Defect: no error on tolerance loss; downstream checks see degraded tolerance state and fail inconsistently.
+- **Expected kernel behavior**: accept: the single-face closed shell is well-formed at the declared 1.0E-7mm tolerance. Whether an internal vertex-tolerance-escalation value is silently reset by a later fix pass is an internal state-management property; a correct kernel's tolerance-fixing pass must be idempotent and monotonic (never silently lower a tolerance that a prior, valid pass raised) without needing to encode that history in the file itself.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N102 — ShapeAnalysis_Edge.CheckOverlapping multi-curve three-way overlap
 Three edges share identical 3D LINE geometry. CheckOverlapping designed for pairwise comparison; three-way case produces inconsistent verdicts (edge 1-2 vs 2-3 vs 1-3). Defect: voting inconsistency in overlap classification.
+- **Expected kernel behavior**: accept: the single-face closed shell is well-formed at the declared 1.0E-7mm tolerance; it genuinely contains three distinct `EDGE_CURVE` instances all built on the identical `LINE` between the same two vertices (v1,v2) -- three coincident duplicate edges. A correct kernel's overlap/coincidence check must produce a consistent verdict regardless of how many duplicates are compared pairwise vs. as a group (transitivity: if A overlaps B and B overlaps C, A must be reported as overlapping C too); it should also flag the 3-way duplication itself as a topology defect worth healing (collapsing to one edge).
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N103 — BRepLib.UpdateEdgeTol negative-coverage sparse sampling
 Edge tolerance recomputed via interpolation across sampled sub-regions. Sparse sampling leaves gaps with zero coverage; interpolation breaks down, produces NaN or infinite tolerance in unsampled zone. Defect: interpolation instability on sparse sample sets.
+- **Expected kernel behavior**: accept: the open shell (edge1 then a short edge2) is well-formed at the declared 1.0E-7mm tolerance. Whether a sparse-sampling interpolation scheme produces NaN/Inf in an unsampled gap is an internal algorithm property, not something this file's topology alone can force -- a correct kernel's tolerance interpolation must be well-defined (bounded, finite) everywhere in an edge's parameter domain, including short edges with few natural sample points.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N104 — ShapeFix_ShapeTolerance.SetTolerance applied-to-frozen-shape
 SetTolerance called on shape already marked immutable by downstream API (e.g., post-validate). Modification executes silently without error; tolerance state becomes corrupt (cached vs. actual mismatch). Defect: no precondition validation; silent state mutation.
+- **Expected kernel behavior**: accept: the 4-edge closed shell is well-formed at the declared 1.0E-7mm tolerance. Whether a kernel's internal API allows tolerance mutation on a shape already marked post-validation-immutable is a runtime state-management property; STEP itself carries no immutability flag, so there is nothing in this file to trigger the claimed scenario -- a correct kernel simply builds the well-formed shell and, if it exposes an immutability concept internally, must enforce it at the API boundary rather than silently allowing mutation.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N105 — ShapeAnalysis_Edge.CheckOverlapping coincident-but-different-direction
 Two edges geometrically coincident but opposite-directed (edge 1: v1→v2, edge 2: v2→v1). CheckOverlapping reports 3D overlap, but direction-strict check fails. Defect: direction invariance missing; conflicting verdicts on same geometry.
+- **Expected kernel behavior**: accept: the closed shell's face genuinely contains two `EDGE_CURVE` instances on the identical `LINE`, one forward (`.T.`) and one reversed (`.F.`) -- a coincident, oppositely-directed duplicate pair -- at the declared 1.0E-7mm tolerance. A correct kernel's coincidence/overlap check must be orientation-invariant: two edges occupying the same 3D locus are the same duplicate-geometry defect regardless of which one is flagged forward vs. reversed, and both should be flagged for healing (collapse to one edge with consistent orientation).
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N106 — ShapeFix_Edge.FixVertexTolerance vertex-on-singular-surface
 
 Vertex tolerance evaluation on cone apex (singular surface point). FixVertexTolerance evaluates surface curvature at apex, producing unbounded tolerance due to infinite curvature. Edge from apex to base point on cone surface with parametric tolerance inference. Tests geometry curvature singularity handling.
+- **Expected kernel behavior**: accept: the single edge runs from the cone's genuine apex vertex (0,0,0) to a base point (1,0,0) on a `CONE` of half-angle 0.5 rad. A correct kernel should treat the apex as a removable singularity with a well-defined, positive, bounded tolerance derived from nearby surface curvature -- not the unbounded value that direct curvature evaluation at the exact apex parameter would produce.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### N107 — ShapeAnalysis_ShapeTolerance.AddTolerance with-history
 
 AddTolerance call updates internal history list; list pointer becomes stale after first update. Closed rectangular face with four edges on plane. Triggers history tracking mechanism during tolerance accumulation across recursive shape graph traversal.
+- **Expected kernel behavior**: accept: the 4-edge closed shell is well-formed; the declared tolerance is 1.000000E-04mm. Whether an internal tolerance-accumulation history list uses a stale pointer across repeated calls is an implementation detail of one specific traversal algorithm; a correct kernel's tolerance-aggregation pass must produce the same result on repeated invocations over the same unchanged shape (idempotence), regardless of internal caching strategy.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N108 — BRepLib.SameRange clamped-range
 
 SameRange called on edge with parameter range [0.999, 1.001] near parametric boundary. Rounding logic fails to detect range adjustment needed; function returns success without actual parameter synchronization. Linear edge on plane tests range clamping behavior.
+- **Expected kernel behavior**: accept: the closed shell's edge is well-formed; the declared tolerance is 1.0E-7mm. Whether a same-range/parameter-sync routine correctly handles a near-boundary input range like [0.999,1.001] is an internal numerical-robustness property; a correct kernel's range-clamping logic must not silently report success without actually re-synchronizing the curve's parameterization, regardless of how close the input range sits to a domain boundary.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N109 — ShapeFix_ShapeTolerance.SetTolerance with-cyclic-reference
@@ -33703,36 +33912,42 @@ Shape with cyclic reference in sub-shape graph; SetTolerance recursion lacks cyc
 ### N110 — ShapeAnalysis_Edge.CheckPoints precision-vs-projection-distance
 
 CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 internally. Verdict based on smaller internal threshold contradicts caller's tolerance specification. Long linear edge (100mm) tests precision asymmetry in point-pair distance evaluation.
+- **Expected kernel behavior**: accept: the 100mm test edge is well-formed; the declared tolerance is 1.000000E-06mm. Whether an internal point-comparison routine silently substitutes a tighter threshold than the caller specified is an implementation-contract property; a correct kernel must honor the tolerance value the caller (or, here, the file) actually declares for any point-validation check, not a different hardcoded internal value.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N111 — FixVertexTolerance vertex-tolerance-from-tessellation
 **Defect**: ShapeFix_Edge.FixVertexTolerance computes vertex tolerance from tessellation that's been internally simplified; uses simplified mesh tolerance instead of original geometry.
 **Pattern**: Single-face shell with edge; UNCERTAINTY_MEASURE_WITH_UNIT set to 1.23E-7 (tessellation-derived tolerance).
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N111.stp`
+- **Expected kernel behavior**: accept: the single-face shell is well-formed; the declared tolerance is 1.23E-7mm. STEP carries no tessellation/mesh-derived-tolerance attribute at all (mesh deflection is a runtime tessellation concept, not a Part-21 entity) -- a correct kernel must derive edge/vertex tolerance from the analytical curve/surface geometry the file actually encodes, never from a mesh that doesn't exist at import time.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### N112 — CheckOverlapping with-tolerance-zero
 **Defect**: ShapeAnalysis_Edge.CheckOverlapping called with absolute tolerance 0; algorithm uses internal epsilon but reports as "no tolerance".
 **Pattern**: Two overlapping edges (line1 and line2-overlapping) with 1.0E-8 vertical offset; UNCERTAINTY_MEASURE set to 0.0.
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N112.stp`
+- **Expected kernel behavior**: accept-and-repair: the two edges are measured with a genuine 1.0E-8mm vertical offset between them, while the file declares `UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(0.0))` as its accuracy value. A literal zero declared tolerance is degenerate; a correct kernel should fall back to a sane working-precision floor (well above the file's own 1e-8mm actual offset, so the two edges still read as coincident) rather than either crashing on a zero divisor or silently treating zero as 'infinitely strict'.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
 ### N113 — UpdateEdgeTol with-coincident-vertices
 **Defect**: BRepLib.UpdateEdgeTol on edge with start and end vertices coincident (degenerate); divides by edge length producing inf tolerance.
 **Pattern**: Degenerate edge where both vertices reference same point (#1); edge length is zero.
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N113.stp`
+- **Expected kernel behavior**: reject-with-diagnostic: the face's only boundary edge is a genuine zero-length self-loop (`EDGE_CURVE` from vertex #2 to itself, `VECTOR` magnitude 0.0) -- the face has zero perimeter and therefore zero area. This is a degenerate placeholder, not a real face; a correct kernel should reject it (or drop it from the shell) rather than reporting a finite or infinite tolerance for a boundary that encloses nothing.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### N114 — FixSameParameter with-NaN-input
 **Defect**: ShapeFix_Edge.FixSameParameter with edge whose 3D curve has NaN control point; NaN propagates through tolerance computation.
 **Pattern**: B-spline curve with control points including extreme values (1.0E+308 / -1.0E+308) representing NaN knot configuration.
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N114.stp`
+- **Expected kernel behavior**: reject-with-diagnostic: the edge's B-spline curve genuinely has one control point at (1.0E+308, 0.0, 0.0) -- effectively double-precision's overflow boundary -- while its two endpoint vertices sit at (0,0,0) and (1,0,0), 1mm apart, against a declared 1.0E-7mm tolerance. Evaluating this curve risks overflow/Inf in any bounding-box or deviation computation; a correct kernel should reject the curve as unrepresentable at working precision rather than attempt to compute a tolerance or deviation against it.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### N115 — OverTolerance threshold-equality
 **Defect**: ShapeAnalysis_ShapeTolerance.OverTolerance with vertex tolerance exactly equal to threshold; non-strict comparison includes threshold in "over" result.
 **Pattern**: Single edge with vertex tolerance set to 0.5 mm, matching UNCERTAINTY_MEASURE threshold value.
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N115.stp`
+- **Expected kernel behavior**: accept: the single-face shell is well-formed; the declared tolerance is 1.0E-7mm. Whether a strict-vs-non-strict comparison at an exact-equality threshold flags an at-threshold vertex as 'over tolerance' is an implementation-contract property (`>` vs `>=`); a correct kernel's own over-tolerance predicate should treat a value exactly equal to the threshold as in-tolerance (use `>`, not `>=`), consistent with how a boundary-inclusive tolerance ball is normally defined.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N116 — ShapeFix_Edge.FixVertexTolerance shared-by-many-edges
@@ -33740,6 +33955,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 **Defect**: Vertex used by 4+ edges; `FixVertexTolerance` iterates per-edge but writes back to the shared vertex, overwriting previous results. Final tolerance reflects only the last edge that touched it, losing constraints from earlier edges. Each iteration recalculates and overwrites the vertex tolerance field without accumulating maxima.
 
 **Reproducer**: Star topology with a central hub vertex (#11) shared by 4 radial edges, each demanding a different tolerance (1e-2, 1e-3, 1e-4, 1e-5). The algorithm processes edges in order, overwriting the hub's tolerance 4 times. Downstream operations see only the last (1e-5) value instead of the maximum required (1e-2).
+- **Expected kernel behavior**: accept: the star topology (hub shared by 4 spoke edges) is well-formed; the declared tolerance is 1.0E-7mm. STEP carries no per-edge tolerance attribute for the claimed four distinct spoke tolerances (1e-2..1e-5) -- a correct kernel's own vertex-tolerance computation, if it aggregates contributions from multiple incident edges, must take the maximum across all of them, not just retain whichever edge was processed last.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N117 — ShapeAnalysis_Edge.CheckOverlapping mixed-curve-orientation
@@ -33747,6 +33963,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 **Defect**: Overlapping edges where one is traversed forward and the other backward (geometrically identical path); `CheckOverlapping`'s directional test compares tangent directions and reports no overlap when they differ, even though the 3D curves are coincident. This masks topology errors where duplicate geometry should be detected.
 
 **Reproducer**: Two identical line segments (0,0,0) to (10,0,0), one with EDGE_CURVE forward direction (+X), one backward (−X direction). Both form a wire boundary loop. The directional mismatch causes the overlap check to return false negative.
+- **Expected kernel behavior**: accept-and-repair: the open-shell face genuinely contains two `EDGE_CURVE` instances on the identical `LINE` between the same two vertices, one forward and one reversed -- an exact-duplicate coincident pair -- at the declared 1.0E-7mm tolerance. A correct kernel's overlap/coincidence detector must be direction-invariant (compare the underlying 3D loci, not tangent-vector sign) so this duplicate is flagged and merged rather than silently passed through as two distinct edges.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N118 — BRepLib.UpdateEdgeTol with-pcurve-discontinuity
@@ -33754,6 +33971,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 **Defect**: Edge whose pcurve has a C0 discontinuity in the middle; `UpdateEdgeTol` samples uniformly and the discontinuity contaminates one sample's tolerance calculation, inflating the entire edge tolerance to hide the discontinuity instead of reporting healing failure.
 
 **Reproducer**: Single edge spanning (0,0,0) to (10,0,0) in 3D with a composite pcurve consisting of two B-spline segments meeting at u=0.5. Segment A ends at (5.0, 0.0) in uv; segment B begins at (5.0, 0.5)—a 0.5-unit jump in v. Uniform sampling hits this discontinuity and inflates the edge tolerance to 0.5 rather than reporting the gap.
+- **Expected kernel behavior**: reject-with-diagnostic: the edge's pcurve is described as having a genuine 0.5-unit discontinuity at u=0.5 between two B-spline segments. Whether a specific sampling routine 'inflates' tolerance to 0.5 to paper over the jump is an internal implementation detail, but the underlying pattern -- a pcurve with a real C0 break -- is a genuine defect class; a correct kernel should detect the discontinuity directly (compare segment endpoints at the shared parameter) and reject or explicitly re-stitch the pcurve rather than silently absorbing the 0.5mm jump into an inflated edge tolerance.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N119 — ShapeFix_ShapeTolerance.LimitTolerance with-very-large-shape
@@ -33761,6 +33979,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 **Defect**: Shape with coordinates at 1e10 scale; `LimitTolerance`'s relative comparison underflows because input tolerance has no scale awareness. A tolerance of 1.0 is reasonable for coords at 1e10 (relative precision 1e−10), but relative checks like `(tol / MAX_COORD)` underflow to zero, causing the method to reject valid tolerances and report spurious violations.
 
 **Reproducer**: Single edge at (1e10, 1e10, 1e10) to (1e10, 1e10+1, 1e10) with nominal tolerance 1.0 in the uncertainty context. LimitTolerance's internal relative ratio test underflows, flagging this as an invalid tolerance configuration.
+- **Expected kernel behavior**: accept: the four edges genuinely sit at (1e10, 1e10, 1e10)-scale coordinates, 1mm apart, with a declared tolerance of 1.0mm. At this coordinate magnitude double-precision's absolute ULP is about 2e-6mm, comfortably below the declared 1mm tolerance -- so the value is representable and enforceable; a correct kernel should apply the tolerance as an absolute (not naively coordinate-relative) quantity and must not treat 'far from the origin' alone as a reason to reject it.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N120 — ShapeAnalysis_ShapeTolerance.GlobalTolerance averaging-over-empty
@@ -33768,6 +33987,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 **Defect**: Call `GlobalTolerance` with mode=avg on a shape containing no vertices/edges of the requested type; division-by-zero produces NaN. The method accumulates sum across elements and divides by count at the end, but does not guard against empty iteration.
 
 **Reproducer**: Closed shell with a single triangular face and three boundary edges, but no free (isolated) vertices. Calling `GlobalTolerance` with selector=VERTEX and mode=averaging iterates over an empty vertex set, dividing total(0) by count(0) to produce NaN.
+- **Expected kernel behavior**: accept: the single triangular face (3 vertices, all incident to edges -- none free-standing) is well-formed at the declared 1.0E-7mm tolerance. A correct kernel's tolerance-averaging routine must guard the empty-set case (0 free vertices here) and return an explicit 'no such elements' result rather than computing 0/0 -- but since this file's vertices are all edge-attached, any correctly-implemented kernel simply has nothing to divide by zero over in the first place.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### N121 — ShapeFix_Edge.FixVertexTolerance with-tessellation-only-context
@@ -33775,12 +33995,14 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 **Defect category:** Tolerance recovery / fallback logic  
 **Input pattern:** Edge on untessellated face with high vertex tolerance requirement  
 **Triggering condition:** Surface has no triangulation data; FixVertexTolerance falls back to hardcoded 1e-7 instead of computing from analytical geometry or raising diagnostic error
+- **Expected kernel behavior**: accept: the shell loads fine at the applied boilerplate 1.0E-7mm (`#9009`). The claimed 1.0E-2mm 'tessellation-derived' tolerance sits in a second, unreferenced representation context (`#110`) -- dead data never linked to the actual shape representation. STEP carries no tessellation/mesh-deflection attribute at all, so a correct kernel has nothing to conflate with curve-geometry tolerance here; it just builds the shell at 1e-7mm.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### N122 — ShapeAnalysis_Edge.CheckPoints with-NaN-precision-input
 
 **Defect category:** Numeric validation / NaN propagation  
 **Input pattern:** Edge with parametric sample points; precision parameter initialized to 0.0 or missing  
 **Triggering condition:** NaN comparisons in point validation loop; `dist > NaN` always false, skipping tolerance checks
+- **Expected kernel behavior**: reject-with-diagnostic: the curved face's declared tolerance is exactly `LENGTH_MEASURE(0.0)` (labelled 'nan_precision'), applied via the file's live `GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT` alongside the boilerplate 1e-7mm entry. A zero declared tolerance is not itself NaN, but it is a degenerate value a correct kernel should refuse to use for distance comparisons (any positive separation would then always read as 'exceeds tolerance', and the file offers a saner value (1e-7mm) right alongside it) -- flag the zero entry and fall back to the file's other declared uncertainty rather than silently comparing against a literal 0.0 floor.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### N123 — BRepLib.UpdateEdgeTol with-edge-on-degenerate-surface
@@ -33795,6 +34017,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 **Defect category:** Recursion depth control  
 **Input pattern:** Deeply nested COMPOUND_SHAPE structure (50+ levels of nesting)  
 **Triggering condition:** SetTolerance recurses on compound children without stack depth guard; uncontrolled recursion exhausts stack
+- **Expected kernel behavior**: accept: the triangular face is genuinely wrapped in 50 nested `COMPOUND_SHAPE` levels (confirmed by counting the entities), each a trivial single-child wrapper around the previous. A correct kernel's shape traversal (recursive or iterative) must handle at least this much nesting depth without a stack guard rejecting well-formed input; 50 levels is deep but not adversarial, and the resulting shape is the same single triangle regardless of wrapper depth.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### N125 — ShapeAnalysis_ShapeTolerance.AddTolerance concurrent-modification
@@ -33802,6 +34025,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 **Defect category:** Iterator invalidation / concurrent modification  
 **Input pattern:** Shell-based model with shared face/edge references; tolerance map iteration and modification in same pass  
 **Triggering condition:** AddTolerance mutates tolerance map while iterating; topology map corruption or inconsistent state on shared geometry
+- **Expected kernel behavior**: accept: the 2-edge wire (with one shared vertex) is a well-formed wireframe container declaring 1.0E-7mm tolerance. Whether a tolerance-aggregation pass mutates its own iteration state while iterating (an iterator-invalidation bug) is an internal implementation property, not something this small, ordinary topology can force by itself -- a correct kernel's tolerance-accumulation pass must not mutate the structure it is iterating over, independent of what any particular input file contains.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N126 — ShapeAnalysis_ShapeTolerance.InTolerance vertex-filtering-inverted
@@ -33927,6 +34151,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Trigger**: arrDist(n) > tolerance not validated; tabDst index unprotected
 - **Impact**: Out-of-tolerance edges pass as false matches (distance=0.5, tol=0.1)
 - **Axiom**: All distance candidates MUST be filtered against tolerance ceiling
+- **Expected kernel behavior**: reject-with-diagnostic: the shell's two edges (`ec1`, `ec2`) are described as 0.5mm apart against a declared 0.1mm tolerance -- 5x over budget. A correct kernel's candidate-matching filter must reject (or explicitly report) any pair whose measured distance exceeds the declared tolerance rather than letting an unfiltered candidate through to a later stage.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N138 — ShapeAnalysis_Edge.CheckPoints.tolerance_conservatism_fail
@@ -33934,6 +34159,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Trigger**: Tightest precision bound chosen (1e-8) but not enforced on both endpoints
 - **Impact**: Precision-varying edges (5e-7 sep > 1e-8 tol) incorrectly rejected
 - **Axiom**: Conservative tolerance selection MUST validate all endpoints within bound
+- **Expected kernel behavior**: accept: the shell's edge (`mixed_preci_edge`) is well-formed at the declared 1.0E-7mm tolerance. Whether a conservative-tolerance-selection routine validates both endpoints against the chosen bound is an internal-contract property; a correct kernel that picks the tighter of several candidate tolerances for a comparison must actually apply that tolerance to every point being checked, not just use it as a label.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N139 — ShapeAnalysis_ShapeTolerance.OuterWire.tolerance_layer_recursion
@@ -33941,6 +34167,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Trigger**: Circular wire references with tolerance propagation; no cycle counter
 - **Impact**: Stack exhaustion or infinite loops in tolerance validation chains
 - **Axiom**: Tolerance layer traversal MUST include depth limits and cycle detection
+- **Expected kernel behavior**: accept: the shell (two edges, `ec1`/`ec2`, in a nested-wire structure) is well-formed at the declared 1.0E-7mm tolerance; the file contains no actual circular reference (each entity is defined once, referenced downward only) -- a correct kernel's wire/tolerance traversal must nonetheless include a depth limit and cycle guard as defensive engineering, independent of whether any specific input attempts a cycle.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N140 — ShapeAnalysis_Surface.Continuity.tolerance_interval_mismatch
@@ -33954,6 +34181,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - DIRECTION ratios ≈ unit
 - No forward references
 - ISO-10303-21 header line 1
+- **Expected kernel behavior**: accept: the shell (two edges on two differently-named surfaces) is well-formed at the declared 1.0E-7mm tolerance. Whether a continuity check across a parameter-domain boundary scales its comparison by the ambient tolerance is an internal-algorithm property; a correct kernel's boundary-continuity test must scale any parameter-space gap comparison by the relevant surface's actual metric (so a parametric gap is judged in real distance units, not raw parameter units) rather than comparing raw parameter deltas against a length-unit tolerance.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N141 — ShapeFix_IntersectionTool.FixIntEdges tolerance_selection
@@ -33971,6 +34199,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Reproducer**: myUSplitValues above myUSplitParams; condition fails when param > parU.
 - **Impact**: Loop exits prematurely, skipping valid parameter splits.
 - **STEP**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N142.stp`
+- **Expected kernel behavior**: accept: the wireframe container is well-formed, declaring 1.0E-7mm tolerance. Whether a Bezier-conversion split-parameter test uses a one-sided (asymmetric) comparison that fails when arguments are swapped is an internal-algorithm property, not something this file's bytes encode -- a correct kernel's parameter-proximity tests must use `abs(a-b) < tol`, not a directional subtraction that only works for one ordering of its operands.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N143 — ShapeUpgrade_RemoveLocations.MakeNewShape null-reference-tolerance
@@ -33979,6 +34208,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Reproducer**: Edge with compound anAncShape not in map; RebuildShape receives null face.
 - **Impact**: UpdateEdge call fails silently; 2D curve updates skipped.
 - **STEP**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N143.stp`
+- **Expected kernel behavior**: accept: the wireframe container is well-formed, declaring 1.0E-7mm tolerance. Whether an internal shape-rebuild pass looks up a face in a map before that face has been registered is an internal sequencing bug in one specific implementation, not something this small topology can force by itself -- a correct kernel's rebuild pass must register (or otherwise make available) every referenced sub-shape before consumers look it up, and must surface an explicit error rather than silently skipping an update on a missed lookup.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N144 — ShapeUpgrade_UnifySameDomain.UnionPCurves vertex_tolerance_mismatch
@@ -33987,6 +34217,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Reproducer**: Shared vertex V1(tol=1e-3) and V2(tol=1e-2) at junction; max_tolerance_tracking inconsistent.
 - **Impact**: Concatenated PCurve has mismatched tolerance across chain.
 - **STEP**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N144.stp`
+- **Expected kernel behavior**: accept: the 2-edge chain is well-formed; the declared tolerances (1.0E-3 'v1_tight_tol', 1.0E-2 'v0v2_coarse_tol') are live global values, not bound to the specific shared vertex the labels imply -- STEP has no per-vertex tolerance entity. A correct kernel uses the tighter value (1e-3mm) as its working precision across the whole chain rather than trying to track per-vertex provenance through a concatenation.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N145 — BRepBuilderAPI_Sewing.SameParameterEdge setMaxTolerance-bypass-raw-write
@@ -33995,24 +34226,28 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Reproducer**: MaxTolerance=0.01 cap; computed tolerance=0.05; raw write at line 1168 ignores cap.
 - **Impact**: Edge tolerance exceeds API contract; cap enforcement violated.
 - **STEP**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N145.stp`
+- **Expected kernel behavior**: reject-with-diagnostic: the wireframe container declares 5.0E-2mm as its only tolerance value (labelled 'sewing_gap', living in the file's live `GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT') -- there is no independently-encoded, smaller 'cap' value in this file to compare it against. A correct kernel should still treat any computed edge tolerance that reaches the outer edge of what the file itself declares as worth an explicit report; whatever internal cap a caller supplies at runtime, the sewing routine must actually reject (not silently accept) a merge whose true tolerance exceeds that cap.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N146 — EvaluateDistances.zero_angle_count_guard
 
 BRepBuilderAPI_Sewing angular precision defect: division-by-zero on degenerate surface (zero D1 normal magnitude). nbComputedAngle guard missing; tabAng becomes NaN when evaluating edges on plane/point-like geometry. Mechanism is wired into 2 real ADVANCED_FACEs: the candidate edge pair (e0_degen, e1_degen_coincident) sits on the live free boundary between two faces, exactly coincident (zero distance, perfectly parallel).
 **Fixture kind**: scaffold (kernel-test-pair: shape provides the coincident-edge-on-real-faces setup; EvaluateDistances runtime invocation required to reproduce the NaN)
+- **Expected kernel behavior**: accept: the two ADVANCED_FACEs' facing free edges are measured exactly coincident (0mm apart, parallel) on real face boundaries, well within the file's declared 1.0E-7mm tolerance. A correct kernel should sew/merge them without producing NaN or undefined angle state at the zero-separation case -- a distance of exactly 0 is the strongest possible case for merging, not an edge case to guard against.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### N147 — FindCandidates.acceptance_criteria_composite_filter
 
 Composite AND condition omitted: candidates exceeding myTolerance (0.15 > 0.1) with undersized coverage falsely accepted. Full condition (aMaxDist<=tol AND arrLen>minTol) required but first clause alone applied. Mechanism is wired into 2 real ADVANCED_FACEs: the candidate edge pair (eA, eB_offset) sits on the live free boundary between two faces, 0.15mm apart (over myTolerance=0.1mm).
 **Fixture kind**: scaffold (kernel-test-pair: shape provides the over-tolerance candidate-edge-on-real-faces setup; FindCandidates runtime invocation required to reproduce)
+- **Expected kernel behavior**: reject-with-diagnostic (or accept-with-gap-report): the two ADVANCED_FACEs' facing free edges are measured 0.15mm apart on real face boundaries against a declared 0.1000mm tolerance -- 50% over budget. A correct kernel must not sew these edges as coincident; it should either leave them separate or report an explicit over-tolerance gap rather than accepting the candidate pair on a partial (single-clause) check.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### N148 — EvaluateDistances.projection_direction_selection
 
 Curve-length comparison fails at parity (5.0 vs 4.9): backwards projection direction selected, reporting distance to far branch. True separation 0.1 masked when lengths nearly equal. Mechanism is wired into 2 real ADVANCED_FACEs: the near-parity-length candidate edge pair (eA_5mm, eB_4p9mm) sits on the live free boundary between two faces, 0.1mm apart.
 **Fixture kind**: scaffold (kernel-test-pair: shape provides the near-parity-length candidate-edge-on-real-faces setup; EvaluateDistances runtime invocation required to reproduce)
+- **Expected kernel behavior**: accept-and-repair: the two ADVANCED_FACEs' facing free edges are measured 0.1mm apart on real face boundaries (edge lengths 5.0mm and 4.9mm, a 2% length mismatch) against a declared 1.0E-7mm tolerance -- the gap is six orders of magnitude over budget relative to the file's own precision. A correct kernel should compute the true separation from actual 3D geometry regardless of near-parity in edge length, and either close the 0.1mm gap by merging or report it explicitly rather than picking a direction based on which edge happens to be longer.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### N149 — FindCandidates.equidistant_precision_test
@@ -34026,6 +34261,7 @@ Precision-equality guard absent: candidates differing by 1e-11 inserted as disti
 
 V-parameter gap detection missing: curves separated by 1.0 in V (gap beyond overlap tolerance) proceed to distInner/distOuter logic. dist<0 check omitted; non-overlapping geometries incorrectly merged on U-closed surfaces. Mechanism is wired into 2 real full-revolution ADVANCED_FACEs on the same U-closed CYLINDRICAL_SURFACE (seam edges eA_v0_to_v1, eB_v2_to_v3), separated 1.0mm in V(Z).
 **Fixture kind**: scaffold (kernel-test-pair: shape provides the V-gap-on-U-closed-surface setup; IsMergedClosed runtime invocation required to reproduce)
+- **Expected kernel behavior**: reject-with-diagnostic: the two full-revolution cylindrical band faces sit on the same U-closed `CYLINDRICAL_SURFACE` but are measured 1.0mm apart in V (Z) against a declared 1.0E-7mm tolerance -- seven orders of magnitude over budget. A correct kernel's closed-surface merge test must include a genuine 'V-gap exceeds tolerance' guard (not merge on U-closure alone) and keep the two bands separate.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(14) ifc=schema_n/a`
 ### N151 — `BRepBuilderAPI_Sewing.SameParameterEdge.recursive-tolerance-comparison`
@@ -34037,6 +34273,7 @@ V-parameter gap detection missing: curves separated by 1.0 in V (gap beyond over
 
 **Fixture kind**: scaffold (kernel-test-pair: shape provides the first-attempt-tolerance candidate-edge-on-real-faces setup; SameParameterEdge runtime invocation required to reproduce the recursive-retry comparison)
 
+- **Expected kernel behavior**: accept-and-repair: the two ADVANCED_FACEs' facing free edges are measured 0.08mm apart on real face boundaries against a declared 8.000000E-02mm (0.08mm) tolerance -- exactly at the boundary. A correct kernel should close this at-tolerance gap by merging the vertices (widening tolerance to the measured 0.08mm and reporting the change) rather than leaving the result in an ambiguous accept/reject state; whatever internal retry sequence a same-parameter solver uses, later attempts must never be accepted if they produce a *worse* (larger) residual than an earlier one.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### N152 — `BRepBuilderAPI_Sewing.SameParameterEdge.location-transform-in-tolerance-eval`
@@ -34047,6 +34284,7 @@ V-parameter gap detection missing: curves separated by 1.0 in V (gap beyond over
 **Falsifiable**: D0 evaluation must use `aS->Transformed(loc2)` not raw `aS`. The defect is runtime-only — STEP cannot encode the asymmetric kernel-call; it provides only the geometric setup.  
 **Fixture kind**: scaffold (kernel-test-pair: shape only; runtime invocation required to reproduce)
 
+- **Expected kernel behavior**: accept: two 2x2 square faces exist, one at the origin and one translated +100mm in Y via distinct `AXIS2_PLACEMENT_3D` locations, each face's own `PLANE` correctly referencing its own placement. A correct kernel must evaluate each face's surface in its own placed (transformed) frame when computing any cross-face tolerance/distance -- comparing raw untransformed surface parameters between the two faces would produce a spurious ~100mm discrepancy that doesn't exist in the actual 3D geometry.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### N153 — `BRepBuilderAPI_Sewing.SameParameterEdge.final-tolerance-validation`
@@ -34058,6 +34296,7 @@ V-parameter gap detection missing: curves separated by 1.0 in V (gap beyond over
 
 **Fixture kind**: scaffold (kernel-test-pair: shape provides the over-MaxTolerance candidate-edge-on-real-faces setup; SameParameterEdge runtime invocation required to reproduce the final-gate bypass)
 
+- **Expected kernel behavior**: reject-with-diagnostic: the two ADVANCED_FACEs' facing free edges are measured 0.05mm apart on real face boundaries against a declared 1.000000E-02mm (0.01mm) tolerance -- 5x over budget. A correct kernel must nullify/reject an edge whose achieved tolerance exceeds the caller's declared cap rather than returning a merged edge whose real tolerance silently exceeds the contract.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### N154 — `ShapeUpgrade_UnifySameDomain.MergeSubSeq.circle_spatial_closure_tolerance`
@@ -34067,6 +34306,7 @@ V-parameter gap detection missing: curves separated by 1.0 in V (gap beyond over
 **Reproducer**: Circle arc V0…V1: V0.IsSame(V1)=false but Pnt(V0).Distance(Pnt(V1))≈1e-8, myTolerance=1e-7. Without check: open chain; with: isClosed=true.  
 **Falsifiable**: Spatial distance threshold `aP0.SquareDistance(aP1) <= (aTol*aTol)` overrides topological identity. Omit check; non-identical endpoints treated as open.
 
+- **Expected kernel behavior**: accept-and-repair: the wire's two endpoints are topologically distinct vertices (`V0`, `V1`, not the same `VERTEX_POINT` instance) but are measured spatially coincident to within about 1e-8mm, well inside the file's declared 1.0E-7mm tolerance. A correct kernel should treat vertices within tolerance as the same point for closure purposes and report the wire as closed, but should also normalize the topology (merge V0/V1 into one vertex record) rather than leaving a spatially-closed-but-topologically-open inconsistency for downstream code to rediscover.
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: n_edges_total == 2
@@ -34079,65 +34319,81 @@ V-parameter gap detection missing: curves separated by 1.0 in V (gap beyond over
 **Reproducer**: Load this fixture, then call `ShapeAnalysis_CheckSmallFace::SetPrecision(-1.0)` followed by `CheckPin()` on the loaded face. Without the `if (myPrecision < 0) toler = 1.e-4` guard, comparisons receive negative tolerance and IsoStat results are undefined.  
 **Falsifiable**: Guard `if (myPrecision < 0) toler = 1.e-4` prevents invalid tolerance propagation. Remove; negative precision passes through to undefined behavior.  
 **Fixture kind**: scaffold (kernel-test-pair: shape only; runtime invocation required to reproduce)
+- **Expected kernel behavior**: accept: the pin-face shape is a well-formed wireframe container declaring 1.0E-4mm ('checkpin_fallback_tol'). Whether an internal precision-fallback API silently substitutes a default when called with a negative precision argument is a runtime API-contract property, not something this static file can trigger -- a correct kernel's precision-taking APIs should reject (not silently substitute a fallback for) an invalid negative precision argument, surfacing the error to the caller.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N156 — tolerance_asymmetry conflation
 Extreme precision asymmetry (preci1=1e-12, preci2=0.5) in CheckPoints logic; dual squared-distance condition masks both tolerance extremes, creating false-negative distance checks.
+- **Expected kernel behavior**: accept: the two independent edges are well-formed; the declared tolerances (1.0E-12 'ultra_tight_preci1', 5.0E-1 'coarse_preci2') are both live global values, not bound to specific edges. A correct kernel should not average them into a single midpoint threshold -- use the tighter declared value (or a sane precision floor above 1e-12mm) so neither edge's stated precision is silently masked.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N157 — distance_tolerance_filter_second_pass bypass
 BRepBuilderAPI_Sewing omits distance threshold check; out-of-tolerance candidates (tabDst=0.8 exceeding myTolerance=0.1) included in comparison via bypassed filter.
+- **Expected kernel behavior**: reject-with-diagnostic: the two edges are measured 0.8mm apart against a declared 0.1mm tolerance -- 8x over budget. A correct kernel's candidate-distance filter must reject (or explicitly report) any pair this far outside the declared tolerance rather than accepting it because an earlier filter stage happened to pass.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N158 — location_transform_in_tolerance_eval bypass
 SameParameterEdge tolerance computation ignores surface location placement; edge on transformed surface (translate +100mm, rotate 45°) yields false tolerance sans transform.
+- **Expected kernel behavior**: accept: the wireframe container is well-formed, declaring 1.0E-7mm tolerance. Whether a tolerance-evaluation routine correctly applies a surface's placement transform before comparing points is an internal-algorithm property; a correct kernel must always evaluate geometry in its actual placed (world) frame for any cross-entity distance/tolerance computation, never in an untransformed local frame, regardless of what any specific file's placements happen to be.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Notes**:
 ### N159 — direct_BRep_TEdge_tolerance_write bypass
 Raw write to BRep_TEdge bypasses SetMaxTolerance API validation; computed tolerance (0.05) exceeds cap (0.01) via direct memory write.
+- **Expected kernel behavior**: accept: the two edges are measured with a genuine 0.05mm gap in Z, and the file's only declared tolerance is that same value, 5.0E-2mm ('raw_write_gap') -- the gap sits exactly at the file's own declared working precision, not comfortably inside or outside it. A correct kernel faced with a gap exactly at its declared tolerance should report the boundary condition explicitly (rather than silently merging or silently rejecting) since there is no independent, smaller 'cap' value encoded in this file to check the computed tolerance against.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N160 — ComputeTol overflow_error tolerance corruption
 Mismatch between 3D and 2D curves (error 1e10+) accumulated into SameParameter tolerance; no early abort causes corruption when degenerate 2D paired with 3D line.
 
+- **Expected kernel behavior**: reject-with-diagnostic: the wireframe container is well-formed, declaring 1.0E-7mm tolerance. STEP encodes no separate 2D-parameter-space entity here for the claimed [0,1e10] degenerate-pcurve scenario to live in (the file only carries the 3D line) -- a correct kernel's same-parameter/tolerance accumulation must still include an explicit sanity bound (reject or clamp mismatches many orders of magnitude beyond the declared context tolerance) rather than accumulating an unbounded value with no early-exit.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N161 — `tolerance_escalation` — unbounded multiplier
 Tolerance escalation during sewing lacks upper bound. Factor 1000× applied without capping; initial 1e-7 becomes 1e-4. Tests BRepBuilderAPI_Sewing escalation validation.
+- **Expected kernel behavior**: accept: the wireframe container is well-formed, declaring 1.0E-7mm tolerance ('initial_tol'). Whether an internal tolerance-escalation routine applies an uncapped multiplicative factor during sewing is a runtime algorithm property, not something this file's bytes alone can trigger -- a correct kernel's tolerance-escalation logic must cap any multiplicative growth (e.g. to a small fixed multiple of the original declared value, or to an explicit ceiling) and report when the cap is hit, rather than letting repeated escalation run unbounded.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N162 — `tolerance_selection` — coarse fallback unvalidated
 Fine tolerance unavailable; fallback to coarse without magnitude check. 0.1 mm coarse applied without confirming safety. Tests ShapeAnalysis precision fallback logic.
+- **Expected kernel behavior**: accept: the wire is well-formed; the declared tolerances (1.0E-1 'coarse_fallback_tol', 1.0E-7 'unavailable_fine_tol') are both live global values in the same context. A correct kernel should prefer the tighter declared value (1e-7mm) as its working precision rather than falling back to the coarser one without checking whether the fine value is actually usable.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N163 — `precision_tolerance` — mixed-unit-scale mismatch
 Tolerance declared in metre (1e-7) unscaled against millimetre coordinates (1.0). Factor-of-10000 discrepancy. Tests unit consistency in precision handling.
+- **Expected kernel behavior**: accept: the 1mm edge is well-formed; the file declares `UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7))` inside a `GLOBAL_UNIT_ASSIGNED_CONTEXT` that specifies millimetre length units (`SI_UNIT(.MILLI.,.METRE.)`) -- so the declared value is unambiguously 1e-7mm, not metres; there is no genuine unit mismatch encoded in this file (the claimed 10000x metre/mm confusion would require the unit context itself to say METRE, which it does not). A correct kernel simply reads the tolerance in the units the file's own `GLOBAL_UNIT_ASSIGNED_CONTEXT` specifies and applies 1e-7mm directly.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N164 — `tolerance_closure` — EDGE_LOOP gap exceeds threshold
 Edge loop gap (0.05 mm) accepted despite closure tolerance (0.01 mm). BRepBuilderAPI_Sewing skips gap validation. Tests loop closure enforcement.
+- **Expected kernel behavior**: reject-with-diagnostic: the triangle's edge loop is measured with a genuine 0.05mm gap, against a declared 'loop_closure_gap' tolerance of 5.0E-2mm (i.e. the gap again sits exactly at the file's own declared value, with no independently smaller closure threshold encoded). A correct kernel's loop-closure check must not silently accept an at-or-above-tolerance gap as closed without validation -- it should compute the actual gap and compare it explicitly against whatever closure tolerance is in force, reporting the boundary case.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N165 — `tolerance_conservatism` — no safety margin
 Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single-ULP boundary case. Tests conservative threshold application.
 
+- **Expected kernel behavior**: accept-and-repair: the two edges are measured 0.099999mm apart against a declared 0.1mm tolerance -- inside by a margin of only 1e-6mm (0.001% of the tolerance budget), though this is nowhere near an actual float64 ULP at this magnitude (~1.4e-17). A correct kernel should still merge them as within-tolerance (0.099999 < 0.1), but given the razor-thin margin it is reasonable to log/report a near-boundary match for review rather than merging with the same silent confidence as a comfortably-inside case.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Notes**: Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
 ### N166 — InTolerance VERTEX inverted-comparison bug | ShapeAnalysis_ShapeTolerance | tolerance | ShapeAnalysis_ShapeTolerance.InTolerance.vertex_tolerance_filtering_BUGGY | vertex range filter uses >= instead of <= | tolerance-regression | reproducible | true
+- **Expected kernel behavior**: accept: the shell's face is well-formed at the declared 1.0E-7mm tolerance. Whether an internal range-filter uses `>=` vs `<=` at its bounds is an implementation-contract property; a correct kernel's own in-range vertex filter must use consistent, correctly-oriented inequalities (matching whatever inclusive/exclusive convention it documents) so in-range and out-of-range elements are never swapped.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### N167 — LimitTolerance iamax boundary-condition flip | ShapeFix_ShapeTolerance | tolerance | ShapeFix_ShapeTolerance.LimitTolerance.iamax_logic_flip | equality check (tmax >= tmin) semantically requires (tmax > tmin), edge case unchecked | boundary-condition-ambiguity | reproducible | true
+- **Expected kernel behavior**: accept: the shell's face is well-formed at the declared 1.0E-7mm tolerance. Whether a `LimitTolerance`-style routine correctly handles the degenerate case tmax==tmin is an internal-contract property; a correct kernel should either require strict ordering (tmin < tmax) at the API boundary, or explicitly define the equal-bounds case as 'clamp everything to that single value' -- but must not silently no-op when the bounds coincide.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### N168 — LimitTolerance recursive WIRE double-mutation | ShapeFix_ShapeTolerance | double-mutation | ShapeFix_ShapeTolerance.LimitTolerance.recursive_wire_vertices | shared vertices in wire mutated twice on single call | double-mutation | reproducible | true
+- **Expected kernel behavior**: accept: the wire's shared vertices are well-formed at the declared 1.0E-7mm tolerance. Whether a recursive tolerance-limiting pass visits a shared vertex more than once (double-mutation) is an internal traversal property; a correct kernel's tolerance-limiting pass must be idempotent per unique sub-shape (track visited entities, or make the operation commutative/idempotent) so a vertex shared by multiple wire segments is not clamped multiple times with compounding effect.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### N169 — GetTolerance mixed-precision accumulation | BRep_Tool | tolerance | BRep_Tool::GetTolerance | accumulates vertex/edge tolerances without precision normalization | precision-tolerance-mismatch | reproducible | true
+- **Expected kernel behavior**: accept: the shell's face is well-formed at the declared 1.0E-7mm tolerance. Whether a tolerance-accumulation routine mixes vertex- and edge-level contributions without normalizing for their different precision contexts is an internal-algorithm property; a correct kernel's own aggregate-tolerance query must combine sub-shape tolerances consistently (e.g. always take the maximum) rather than blending values that were computed under different precision assumptions.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### N170 — Sewing unevaluated distance filter bypass | BRepBuilderAPI_Sewing | tolerance | BRepBuilderAPI_Sewing.AnalysisNearestEdges.unevaluated_distance_filter_first_pass | first-pass distance check bypassed, over-tolerance edges enter candidate pool | kernel-pair | reproducible | true
+- **Expected kernel behavior**: reject-with-diagnostic: the file contains two coincident 1x1 squares 1.5 micron (0.0015mm) apart in Z, against a declared 1.0E-7mm tolerance -- four orders of magnitude over budget. A correct sewing pass must apply its distance-tolerance filter on every candidate pair (not skip it on a first pass) so an out-of-tolerance pair like this is not silently accepted as a match.
 - **Tier-3 assertion**: n_faces_total == 2
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### M161 — Reader does not validate cross-references; dangling references silently accepted

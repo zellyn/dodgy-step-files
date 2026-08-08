@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The single-face CLOSED_SHELL has a FACE_OUTER_BOUND loop that runs counter-clockwise about the PLANE&#x27;s +Z reference direction, but the FACE_OUTER_BOUND orientation flag itself is .F. and the ADVANCED_FACE&#x27;s own same_sense is also .F. — two independent reversal flags on the same face. Compose both flags together with the loop&#x27;s authored winding to get the single true outward direction (here, the double reversal cancels and the material-side normal is +Z as originally authored); do not treat either flag in isolation as decisive, or a doubly-reversed face is misread as inverted when it is not.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

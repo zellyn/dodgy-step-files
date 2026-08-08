@@ -2469,6 +2469,54 @@ All three segfault, and all three titles name a pcurve/edge-comparison SCENARIO 
 execute on a file the reader crashes on. Apply the (I)/(L) precedent: verify whether the
 titled defect is ALSO encoded before retitling — retitle-not-regenerate either way.
 
+**EXTENDED 2026-08-07 by the §12-2a spec wave: the pcurve crash cohort is 10, not 3.** All
+ten are left deliberately unspecced and flagged. Each carries a STRUCTURAL malformation that
+crashes the reader before the titled algorithmic scenario can run:
+
+```
+Gp096  #22/#42 LINE arg3 = CARTESIAN_POINT      exit=139   "direction-reversed-but-coincident"
+Gp098  same, PLUS #71=CIRCLE(...,#70,1.0) where exit=139   "arc-tangent-to-line"
+       #70 is a bare CARTESIAN_POINT, not an
+       AXIS2_PLACEMENT_2D
+Gp099  same, PLUS VERTEX_POINT('',(0,0,0)) —    exit=139   "very-long-edge"
+       inline tuple where a CARTESIAN_POINT
+       reference is required            [VERIFIED from bytes]
+Gp056  EDGE_CURVE with SIX positional args; an  crash      "LOCATION-transform mismatch"
+Gp060  extra .T. is spliced between the second
+       vertex and the curve reference. ISO
+       defines five.                    [VERIFIED from bytes: Gp056 reads
+       EDGE_CURVE('edge_with_pcurve',#60,#61,.T.,#40,.T.)]
+Gp101  B_SPLINE_CURVE_WITH_KNOTS with wrong     crash      "sample-skip" /
+Gp102  field count/order, a stray                          "toroidal-projection" /
+Gp104  AXIS2_PLACEMENT_3D among the knot                   "offset-curve tolerance"
+       vectors, and VERTEX_POINT given inline
+       tuples.  [NOT independently verified — my own entity regex failed to
+       match these at all, which is consistent with severe malformation but is
+       not proof. Re-check before acting.]
+Gp112  no malformed LINE/B-spline; an OPEN       crash     titled algorithmic claims
+Gp113  FACE_OUTER_BOUND (Gp112: single
+       non-closing edge) and a two-edge "loop"
+       tracing A->B twice instead of A->B->A
+```
+
+**Also flagged by the same wave — specced as accept, because the titled "bug" is not one.**
+These are NOT crashes; the bytes show correct or acceptable geometry that the title frames as
+a defect: Gp067/Gp082 (trim window correctly limits validation), Gp081/Gp083/Gp119 (pcurve
+offset by exactly one 2*pi surface period — mathematically identical geometry),
+Gp105 (bit-for-bit coincident duplicate edges), Gp122 (RECTANGULAR_TRIMMED_SURFACE does not
+shift the coordinate origin per ISO-10303-42, so the pcurve UVs are already correct — the
+title misreads the entity semantics), Gp124 (ordinary SameSense=.F. reversed-edge encoding),
+Gp157/158/160/166 (pcurves along cone ruling lines are non-degenerate except exactly at the
+apex; titles overclaim "whole-edge-degenerate"), Gp094/165/169.
+
+**Unlabelled shared primary defect — worth its own pass.** ~35 of the ~72 speccable §12-2a
+entries (mostly Gp087-Gp170) share a defect none of their titles name: a degree-2 B-spline
+interior knot at multiplicity degree+1 whose flanking control points are NOT coincident,
+producing a real few-unit POSITIONAL GAP mid-curve (not merely a C0 tangent kink). It
+dominates whatever narrower mechanism each title claims. They are specced as
+reject-with-diagnostic on the verified discontinuity, with the titled mechanism kept as
+secondary context — but the titles themselves still under-describe the files.
+
 The other 5 hits are already honest and need NO action; they are useful controls:
 - `Ad030` — title literally says "Type-confusion via mis-typed reference (CARTESIAN_POINT used
   as DIRECTION)". Exactly correct. Proof the corpus labels this class correctly when it knows.

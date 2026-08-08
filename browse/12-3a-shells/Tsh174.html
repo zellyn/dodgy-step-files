@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Both faces are collinear, zero-area triangles: face_degen_a runs (0,0,0)-&gt;(1,0,0)-&gt;(2,0,0) and face_degen_b runs (0,0,0)-&gt;(-1,0,0)-&gt;(-2,0,0), each a degenerate sliver with no real area. Removing both degenerate faces from the shell is correct, but the resulting empty shell must be reported distinctly from success on a normal, non-empty shell — a repair operation that reports the same &#x27;succeeded&#x27; status whether it fixed faces or removed every face down to none gives the caller no way to tell those two very different outcomes apart.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

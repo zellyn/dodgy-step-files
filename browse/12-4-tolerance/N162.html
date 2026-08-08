@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the wire is well-formed; the declared tolerances (1.0E-1 &#x27;coarse_fallback_tol&#x27;, 1.0E-7 &#x27;unavailable_fine_tol&#x27;) are both live global values in the same context. A correct kernel should prefer the tighter declared value (1e-7mm) as its working precision rather than falling back to the coarser one without checking whether the fine value is actually usable.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

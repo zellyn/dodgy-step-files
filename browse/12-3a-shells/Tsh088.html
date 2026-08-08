@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Shell 1&#x27;s sole face carries FACE_OUTER_BOUND orientation .T. and Shell 2&#x27;s sole face carries .F. — two independently authored, unrelated single-face shells inside one COMPOUND, not two faces of a shared solid that must agree. Preserve each shell&#x27;s FACE_OUTER_BOUND flag exactly as authored when descending into the compound; normalizing both to the same value just because only one flag is tracked during traversal silently inverts Shell 2&#x27;s boundary sense.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(2)/shape(2) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

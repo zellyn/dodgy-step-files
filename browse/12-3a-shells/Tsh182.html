@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>face_good (a valid triangle) and face_bad (an invalid triangle using self-referencing edge geometry) both reference the same shared EDGE_CURVE (e_shared, from v0 to v1). When face_bad is removed as invalid, every remaining face&#x27;s ORIENTED_EDGE that referenced the removed face&#x27;s boundary — including face_good&#x27;s use of e_shared, which was valid and must be kept — must have its back-references to the removed face cleaned up as part of the same removal step; leaving a stale reference to a no-longer-present face on an edge that a surviving face still legitimately uses will corrupt any later traversal of that edge&#x27;s face list.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

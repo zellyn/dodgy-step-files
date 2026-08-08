@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the wireframe container is well-formed, declaring 1.0E-7mm tolerance. Whether an internal shape-rebuild pass looks up a face in a map before that face has been registered is an internal sequencing bug in one specific implementation, not something this small topology can force by itself -- a correct kernel&#x27;s rebuild pass must register (or otherwise make available) every referenced sub-shape before consumers look it up, and must surface an explicit error rather than silently skipping an update on a missed lookup.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

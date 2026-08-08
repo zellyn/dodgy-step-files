@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the closed shell&#x27;s edge is well-formed; the declared tolerance is 1.0E-7mm. Whether a same-range/parameter-sync routine correctly handles a near-boundary input range like [0.999,1.001] is an internal numerical-robustness property; a correct kernel&#x27;s range-clamping logic must not silently report success without actually re-synchronizing the curve&#x27;s parameterization, regardless of how close the input range sits to a domain boundary.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

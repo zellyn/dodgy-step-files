@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the pcurve is offset by exactly one full period (2pi) from the canonical [0,pi] representation of the same arc on the periodic cylindrical surface; a kernel that normalizes periodic pcurve parameters modulo the surface&#x27;s period before comparing against the 3D curve correctly recognizes this as identical geometry, not a mismatch.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

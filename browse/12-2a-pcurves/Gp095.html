@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the shared vertex sits 0.005 units off nominal on both adjoining faces, well inside a tolerance a kernel is expected to escalate to cover every incident edge; deriving the vertex tolerance from only the first face&#x27;s requirement and never re-validating the second is the bug to avoid, not the escalation itself.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

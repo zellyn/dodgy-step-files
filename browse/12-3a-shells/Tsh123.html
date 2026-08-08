@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Face 1 and Face 2 both reference the same EDGE_CURVE (named &#x27;shared_edge&#x27;) with ORIENTED_EDGE sense .T. in both faces&#x27; loops — a manifold pair must traverse a shared edge in opposite directions, one .T. and one .F., so this is a genuine non-manifold encoding. A kernel must never crash on this input: detect that an edge is used with the same sense by both of its referencing faces and reject with a diagnostic naming the edge and both faces, rather than treating same-direction double use as an ordinary shared edge.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

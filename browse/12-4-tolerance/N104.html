@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the 4-edge closed shell is well-formed at the declared 1.0E-7mm tolerance. Whether a kernel&#x27;s internal API allows tolerance mutation on a shape already marked post-validation-immutable is a runtime state-management property; STEP itself carries no immutability flag, so there is nothing in this file to trigger the claimed scenario -- a correct kernel simply builds the well-formed shell and, if it exposes an immutability concept internally, must enforce it at the API boundary rather than silently allowing mutation.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

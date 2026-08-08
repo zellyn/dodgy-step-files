@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the closed 4-edge face loads fine at the file&#x27;s only *applied* tolerance, the boilerplate 1.0E-7mm. The claimed &#x27;user ceiling&#x27; value (1.0E-2, `#40`) sits in a second `GEOMETRIC_REPRESENTATION_CONTEXT` that is never referenced by any `*_SHAPE_REPRESENTATION` -- it is dead data. STEP also has no per-edge parameter-domain-mismatch-tolerance attribute for the claimed clamp to act on, so a correct kernel just builds the ordinary square face.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

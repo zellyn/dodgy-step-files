@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the triangular face is genuinely wrapped in 50 nested `COMPOUND_SHAPE` levels (confirmed by counting the entities), each a trivial single-child wrapper around the previous. A correct kernel&#x27;s shape traversal (recursive or iterative) must handle at least this much nesting depth without a stack guard rejecting well-formed input; 50 levels is deep but not adversarial, and the resulting shape is the same single triangle regardless of wrapper depth.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

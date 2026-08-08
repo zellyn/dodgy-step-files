@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the TRIMMED_CURVE&#x27;s declared range [0.5,1.0] lies entirely within the second span of the underlying B-spline, away from the discontinuous interior knot at t=0.3, so the curve actually used by the edge is smooth over its own domain; a kernel must validate only the declared trim range, not the full untrimmed basis curve.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

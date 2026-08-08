@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>face_main (x=[0,1]) and face_float (x=[3,4]) sit two units apart inside the same OPEN_SHELL entity, sharing no edge or vertex. A repair pass that walks edge adjacency from a single starting face will never reach face_float and must not silently retain it, unexamined, in the output shell as though it belonged to the same connected component; detect the disconnection and either isolate face_float into its own shell or report it as an unreachable component of the input shell.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

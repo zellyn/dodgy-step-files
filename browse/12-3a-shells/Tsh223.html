@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>face A (Z=0) and face B (Z=10) sit in one OPEN_SHELL with no shared vertex or edge — two disconnected components ten units apart. A partitioning traversal seeded only from face A reaches face A and its own edges but has no path to face B. Seed a traversal from every face in the shell that a prior traversal has not already visited, not from a single fixed starting face, so every disconnected component — including ones unreachable from the first seed — is included in the partitioned result.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic: the face&#x27;s only boundary edge is a genuine zero-length self-loop (`EDGE_CURVE` from vertex #2 to itself, `VECTOR` magnitude 0.0) -- the face has zero perimeter and therefore zero area. This is a degenerate placeholder, not a real face; a correct kernel should reject it (or drop it from the shell) rather than reporting a finite or infinite tolerance for a boundary that encloses nothing.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the triangle face loads fine at the applied boilerplate 1.0E-7mm. The claimed 0.5mm &#x27;declared tolerance&#x27; sits in an unreferenced second representation context -- dead data, never linked to the actual shape representation. A correct kernel never applies (or needs to clamp) the 0.5mm value.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

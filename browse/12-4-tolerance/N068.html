@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the B-spline-bounded face loads fine at the applied boilerplate 1.0E-7mm. The 1.0E-4mm value describing &#x27;peak curvature deviation&#x27; sits in an unreferenced second representation context -- dead data, never wired to the actual shape representation. A correct kernel builds the face at 1e-7mm and independently samples the B-spline curve as densely as its own algorithm requires; the claimed 2-sample undersampling is an implementation detail no static file can encode or falsify.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

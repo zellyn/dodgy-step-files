@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Face0 (x=[0,1]) carries same_sense=.T. and Face1 (x=[1,2]) carries same_sense=.F. — one genuinely inconsistent face sharing a seam edge with a correct one. Repairing Face1&#x27;s orientation must not have any effect on Face0, which was already correct before the fix ran; an orientation-fix operation invoked more than once, or invoked after other unrelated repairs, must always start from the shell&#x27;s actual current state and never carry forward adjustments queued for entities outside the current shell.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: two pcurves are supplied for the same edge, one spanning the full [0,5] range and one only [1,4]; a kernel should validate against the pcurve whose domain actually covers the edge&#x27;s declared parameter range rather than sampling uniformly across both and flagging a spurious mismatch where the shorter one simply doesn&#x27;t reach.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

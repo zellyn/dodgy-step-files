@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the open-shell face is well-formed; the declared context tolerance is 1.000000E-10mm (ultra-tight). STEP has no per-edge ideal-tolerance attribute for the claimed 1e-9-vs-1e-7-floor scenario -- a correct kernel should not impose an undocumented internal floor above the file&#x27;s own declared precision; if it must clamp for numerical safety, the floor should sit below the file&#x27;s declared context tolerance, not above it.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

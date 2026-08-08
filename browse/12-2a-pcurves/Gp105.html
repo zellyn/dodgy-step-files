@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the two EDGE_CURVEs are exactly, bit-for-bit coincident in 3D and 2D on the same base LINE and PLANE, so a kernel comparing curve identity (not just numeric proximity) recognizes the zero-tolerance exact match rather than relying on a strictly-greater-than-zero floating comparison that misses it.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

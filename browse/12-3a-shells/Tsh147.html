@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Face1 (x=[0,1]) carries same_sense=.T. with an outward normal and Face2 (x=[1,2]) carries same_sense=.F. — a genuine single-face orientation defect on their shared edge at x=1. Fixing Face2&#x27;s orientation must be a stable, idempotent operation: re-running the orientation check afterward must confirm the shell is now consistent and must not undo the correction based on a status value computed before the fix was applied.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

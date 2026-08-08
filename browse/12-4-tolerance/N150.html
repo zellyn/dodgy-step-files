@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic: the two full-revolution cylindrical band faces sit on the same U-closed `CYLINDRICAL_SURFACE` but are measured 1.0mm apart in V (Z) against a declared 1.0E-7mm tolerance -- seven orders of magnitude over budget. A correct kernel&#x27;s closed-surface merge test must include a genuine &#x27;V-gap exceeds tolerance&#x27; guard (not merge on U-closure alone) and keep the two bands separate.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(14) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

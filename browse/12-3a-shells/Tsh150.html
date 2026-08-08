@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The six faces form a 1x1x0.001 slab: bottom and top planar caps 0.001mm apart, and four side faces of the same 0.001mm height — one side face (same_sense=.F.) breaks the otherwise-consistent orientation of the other five. At this aspect ratio the side faces&#x27; normals are nearly parallel to the top/bottom caps&#x27; normals, so a normal- vector-angle comparison between faces is numerically unreliable. Detect the inconsistent side face using the shared-edge traversal-direction test (each interior edge used once forward and once reversed by its two faces) rather than comparing face normals directly, since normal comparison degenerates for a shell this thin.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(26) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

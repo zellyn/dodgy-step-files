@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Face A&#x27;s FACE_OUTER_BOUND is .F. and Face B&#x27;s is .T. on two adjacent faces — a genuine orientation conflict needing repair. Any multi-pass orientation-fix loop must derive its verdict solely from the shell&#x27;s current topology on each pass, never from bookkeeping left over from an earlier pass on this or another shell: re-running the fixer on an already-fixed shell must reproduce the same result, not silently reintroduce the original conflict because prior-pass state was carried forward.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the single edge runs from the cone&#x27;s genuine apex vertex (0,0,0) to a base point (1,0,0) on a `CONE` of half-angle 0.5 rad. A correct kernel should treat the apex as a removable singularity with a well-defined, positive, bounded tolerance derived from nearby surface curvature -- not the unbounded value that direct curvature evaluation at the exact apex parameter would produce.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

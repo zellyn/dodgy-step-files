@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Both faces carry same_sense=.T. — internally consistent with each other — but each PLANE&#x27;s own AXIS2_PLACEMENT_3D reference direction is authored pointing into the notional solid rather than out of it (bottom face normal +Z instead of -Z; front face normal +Y instead of -Y), so the pair is self-consistent yet globally inside-out. A kernel must never crash on this input, and a same_sense agreement check between neighbours is not sufficient on its own to certify orientation — it must also be checked against an independent signal such as a computed enclosed-volume sign or a centroid-relative normal test.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

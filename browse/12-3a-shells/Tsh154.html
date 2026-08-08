@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Three of the four faces around the shared apex vertex (0.5,0.5,1) carry same_sense=.T. and one (TriFace2, the left/x=0 side) carries .F. — a single inconsistent face in an apex fan where every face shares an edge with two others through the apex. Resolve orientation for an apex-fan topology by taking a consensus across all faces meeting at the shared apex vertex, not by propagating pairwise between only immediately adjacent faces; adjacency-only propagation can converge without ever comparing the two faces that actually disagree.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

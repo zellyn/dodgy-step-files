@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the single-face closed shell is well-formed at the declared 1.0E-7mm tolerance. Whether an internal vertex-tolerance-escalation value is silently reset by a later fix pass is an internal state-management property; a correct kernel&#x27;s tolerance-fixing pass must be idempotent and monotonic (never silently lower a tolerance that a prior, valid pass raised) without needing to encode that history in the file itself.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

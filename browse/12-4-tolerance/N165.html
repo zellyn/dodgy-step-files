@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept-and-repair: the two edges are measured 0.099999mm apart against a declared 0.1mm tolerance -- inside by a margin of only 1e-6mm (0.001% of the tolerance budget), though this is nowhere near an actual float64 ULP at this magnitude (~1.4e-17). A correct kernel should still merge them as within-tolerance (0.099999 &lt; 0.1), but given the razor-thin margin it is reasonable to log/report a near-boundary match for review rather than merging with the same silent confidence as a comfortably-inside case.</p></section>
 <section><h2>Notes</h2>
 <p>Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).</p></section>
 <section><h2>Expected validation</h2>

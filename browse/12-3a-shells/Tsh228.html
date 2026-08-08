@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>The three triangular faces share edges correctly around the shared apex (V_apex(0,0,1)) but the base edge from V_a to V_c is referenced by only one face — a genuine free (boundary) edge — while the shell is declared CLOSED_SHELL. After running any orientation-fix pass, re-derive the shell&#x27;s closed/open status by checking that every edge is shared by exactly two faces, rather than leaving the CLOSED_SHELL label from authoring time unexamined; here that check fails on the base edge, so the shell must be reported as open (not closed) despite its declared entity type.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
