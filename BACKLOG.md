@@ -2637,6 +2637,16 @@ STEP-to-geometry converter**, not one:
     site B  MakeBSplineSurface       -- Gs138, Twi227. Input pattern NOT yet isolated;
             both files carry a B_SPLINE_SURFACE_WITH_KNOTS.
 
+Site B hypothesis TESTED AND REFUTED (2026-08-08). Gs138's surface declares
+`B_SPLINE_SURFACE_WITH_KNOTS('',1,1,(#20,#21,#22,#23),...)` -- a FLAT control-point list
+where the schema declares a list-of-lists (a 2D net), which looked like the same
+wrong-shape-then-unchecked-downcast story as site A. Reshaping it to `((#20,#21),
+(#22,#23))` does NOT stop the crash. Neither does repairing the file's other defect
+(`#70=LINE('',#60,#60)`, whose direction slot points at a CARTESIAN_POINT), nor both
+together -- all four variants still CRASH(139). Patches verified applied. Gs138 also
+carries suspicious knot data (multiplicities written as reals), so it has at least three
+independent malformations and the trigger is whichever one is reached first.
+
 That generalisation is worth more to an implementer than either fixture: the failure mode
 is "downcast the declared type, use it without checking", and it recurs across entity
 families. A kernel that null-checks every schema-declared downcast in its STEP reader
