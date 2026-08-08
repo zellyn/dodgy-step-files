@@ -2968,6 +2968,36 @@ alone cannot distinguish "face in a curve set because the fixture is about that"
 "face in a curve set by accident" -- only the prose says which. A bytes-only sweep would
 have flagged all 38.
 
+### Final narrowing: ~14, because a loose face only matters if the DEFECT is face-borne
+
+Of the 21 silent candidates, the loose face is only relevant when the titled defect is
+actually carried by the face or its wires/surface. Triaged by title:
+
+    14  defect is plausibly FACE-BORNE -- loose face may really block the demo:
+        Ad046 Ad047 Fi002 Hea001 Hea009 Os002 Os003 Os007 Tfa003 Tfa018 Tfa061
+        Tfa068 Tfa073 Tfa075
+     5  defect is NOT about the face -- loose face is IRRELEVANT to the claim:
+        Ad005 (dangling forward reference), Ad051 (non-existent entity number),
+        Ad098 (infinite recursion after Boolean cut), N044 (PMI persistent IDs),
+        Tfa063 (stack overflow in RemoveSmallFaces)
+     2  ambiguous: Os012, Os023
+
+For the 5, the face is incidental scaffolding; a parser fixture about a dangling `#N`
+does not need its face to transfer in order to demonstrate anything. Flagging them would
+repeat the A037 mistake in a new costume.
+
+**This triage is a KEYWORD HEURISTIC over titles, not a verdict.** It is a work-ordering
+aid: start with the 14, and confirm per entry against the bytes before changing anything.
+
+### Net effect of this whole thread
+    63  fixtures corpus-wide have an ADVANCED_FACE outside any shell
+    38  of those return `empty` (the other 25 load or crash -- NOT inert)
+    21  of those have entry text that is silent about the curve-set hosting
+        (17 already declare it, several via dated truth-in-labeling audits)
+   ~14  of those have a defect that is actually face-borne
+A 4-stage narrowing, each stage measured. The first number would have been a bad bug
+report; the last is a morning's work.
+
 ### NOT quarantined here, on purpose
 Reachability is verified; **mutation testing is not done**, and per
 [[feedback_orphaned_defect_carrier]] both are wanted before quarantine. Quarantining or
