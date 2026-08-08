@@ -2831,4 +2831,43 @@ Those two have not actually run against the current corpus yet.
   file `heal`, so "heal" means "produced shapes", not "repaired anything". The direction
   of divergence survives that coarseness; the label does not. `heal->silent-accept` (151)
   is the most interesting slice -- catalog expects repair, kernel returns nothing.
-  Still unsampled per-entry.
+  **SAMPLED AND DECOMPOSED 2026-08-08 -- see below.**
+
+### (P.1) `heal -> silent-accept` decomposed: 51 fixtures are real silent total loss
+
+The cohort (277 entries where prose allows `heal` and the oracle observes
+`silent-accept`) is not one thing. `silent-accept` here is NOT vocabulary coarseness --
+it derives from `occt_heal_off == "empty"`, which is unambiguous -- so this tests the
+CATALOG's claim, not the tag. Split structurally:
+
+    209  no faces in the file at all      -> returning nothing is CORRECT. NOT a finding.
+                                            Mostly Ad* adversarial parser-robustness
+                                            fixtures, where prose "heal" means "do not
+                                            crash", not "produce a solid".
+     51  COMPLETE, REACHABLE B-rep        -> REAL SILENT TOTAL LOSS.
+     12  faces+shell, not wrapped in a solid/model
+      5  faces but no representation root
+
+The 51 are the valuable slice, and they are verified rather than counted: each has an
+`ADVANCED_FACE` **actually referenced by a CLOSED_SHELL/OPEN_SHELL**, a
+`SHAPE_DEFINITION_REPRESENTATION` root, and a solid/surface-model wrapper. (Entity counts
+alone would not do -- a file can carry faces and shells that are never connected, cf.
+[[feedback_orphaned_defect_carrier]].) Spot-checked live on Gp033/Gp067/Gp071/Gp074/
+Gp076: all return `{"status":"accept_silent","n_roots":0,"shape_null":true}`.
+
+**Section concentration is the finding:** 26 in §12.2b (nurbs), 24 in §12.2a (pcurves),
+1 in §12.2c. So *a defective curve on the only face causes OCCT to drop the entire
+B-rep silently* -- not a partial result, not a repaired face, nothing. For an
+implementer that is the sharpest statement in this whole cohort: **curve-level defects
+escalate to total geometry loss**, and a kernel that mirrors OCCT here will lose user
+data without a diagnostic.
+
+    Gn009 Gn013 Gn014 Gn017 Gn019 Gn031 Gn032 Gn034 Gn038 Gn039 Gn056 Gn062 Gn067
+    Gn071 Gn072 Gn074 Gn076 Gn080 Gn082 Gn083 Gn150 Gn151 Gn153 Gn156 Gn160 Gn162
+    Gp033 Gp067 Gp071 Gp074 Gp076 Gp087 Gp126 Gp128 Gp129 Gp130 Gp132 Gp133 Gp134
+    Gp135 Gp136 Gp137 Gp139 Gp142 Gp143 Gp144 Gp145 Gp146 Gp147 Gp150 Gs025
+
+Not yet done: whether `heal` is the RIGHT expectation for each of the 51 individually
+(for a one-face B-rep with a defective pcurve it plainly is), and whether the 209
+no-face entries deserve prose that distinguishes "recover and continue" from "produce
+geometry". The latter is a wording pass, not a defect.
