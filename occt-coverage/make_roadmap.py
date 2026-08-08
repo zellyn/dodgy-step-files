@@ -180,21 +180,34 @@ def main() -> None:
 
     A("## What this page does *not* cover")
     A("")
+    # Both gaps are stated with live numbers, and whichever is currently the
+    # LARGER one is named as such. Hard-coding "spec coverage is the biggest
+    # gap" was true at 70% and became wrong at 97% -- the page must not keep
+    # asserting a ranking it no longer measures.
     n_spec = sum(1 for f in tok if f in specced)
-    A(f"**Only {n_spec} of the {len(tok)} STEP fixtures ({100.0*n_spec/len(tok):.0f}%) carry a written "
-      "`Expected kernel behavior`.** The remainder are real fixtures with real, CI-verified "
-      "assertions — they are good *tests* — but they do not state what a correct kernel should do, "
-      "so they teach an implementer nothing on their own. They are marked † below. This is the "
-      "corpus's largest known gap against its own purpose, and it is tracked, not hidden.")
-    A("")
     total_fix = len(tok)
-    pct = 100.0 * n_fix / total_fix if total_fix else 0.0
-    A(f"It cites **{n_fix} of the {total_fix} STEP fixtures ({pct:.0f}%)**. The rest are real, "
-      "CI-verified fixtures that simply have not been linked to a named repair mechanism yet — "
-      "they are reachable through the catalog and "
+    spec_pct = 100.0 * n_spec / total_fix if total_fix else 0.0
+    link_pct = 100.0 * n_fix / total_fix if total_fix else 0.0
+    spec_gap, link_gap = total_fix - n_spec, total_fix - n_fix
+    biggest = "linkage" if link_gap > spec_gap else "spec coverage"
+
+    A(f"**{n_spec} of the {total_fix} STEP fixtures ({spec_pct:.0f}%) carry a written "
+      f"`Expected kernel behavior`.** The other {spec_gap} are real fixtures with real, "
+      "CI-verified assertions — they are good *tests* — but they do not state what a correct "
+      "kernel should do, so they teach an implementer nothing on their own. They are marked † "
+      "below. Most of that remainder is deliberate: an entry whose bytes were found to "
+      "contradict its own title is left unspecced ON PURPOSE, because a specification written "
+      "on a disproved claim would propagate the error rather than fix it.")
+    A("")
+    A(f"It cites **{n_fix} of the {total_fix} STEP fixtures ({link_pct:.0f}%)**. The other "
+      f"{link_gap} are real, CI-verified fixtures that simply have not been linked to a named "
+      "repair mechanism yet — they are reachable through the catalog and "
       "[`browse/`](browse/), just not from here. So this is a *starting* map, not an "
       "exhaustive one: finishing a tier does not mean you have handled everything the corpus "
       "knows about. Growing the linkage is tracked in `occt-coverage/`.")
+    A("")
+    A(f"> Of the two, **{biggest} is currently the larger gap** "
+      f"({max(spec_gap, link_gap)} fixtures vs {min(spec_gap, link_gap)}).")
     A("")
 
     A("## Tier summary")

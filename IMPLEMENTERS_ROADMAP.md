@@ -19,9 +19,11 @@ The tiering below is derived from **observed reference-engine behaviour**, not f
 
 ## What this page does *not* cover
 
-**Only 1782 of the 2530 STEP fixtures (70%) carry a written `Expected kernel behavior`.** The remainder are real fixtures with real, CI-verified assertions — they are good *tests* — but they do not state what a correct kernel should do, so they teach an implementer nothing on their own. They are marked † below. This is the corpus's largest known gap against its own purpose, and it is tracked, not hidden.
+**2448 of the 2530 STEP fixtures (97%) carry a written `Expected kernel behavior`.** The other 82 are real fixtures with real, CI-verified assertions — they are good *tests* — but they do not state what a correct kernel should do, so they teach an implementer nothing on their own. They are marked † below. Most of that remainder is deliberate: an entry whose bytes were found to contradict its own title is left unspecced ON PURPOSE, because a specification written on a disproved claim would propagate the error rather than fix it.
 
-It cites **615 of the 2530 STEP fixtures (24%)**. The rest are real, CI-verified fixtures that simply have not been linked to a named repair mechanism yet — they are reachable through the catalog and [`browse/`](browse/), just not from here. So this is a *starting* map, not an exhaustive one: finishing a tier does not mean you have handled everything the corpus knows about. Growing the linkage is tracked in `occt-coverage/`.
+It cites **615 of the 2530 STEP fixtures (24%)**. The other 1915 are real, CI-verified fixtures that simply have not been linked to a named repair mechanism yet — they are reachable through the catalog and [`browse/`](browse/), just not from here. So this is a *starting* map, not an exhaustive one: finishing a tier does not mean you have handled everything the corpus knows about. Growing the linkage is tracked in `occt-coverage/`.
+
+> Of the two, **linkage is currently the larger gap** (1915 fixtures vs 82).
 
 ## Tier summary
 
@@ -44,7 +46,7 @@ A face contains a wire that encloses (near-)zero area in UV -- a sliver loop, a 
 
 ### `tkshh-shell-inconsistent-face-orientation`
 
-*TKShHealing* · 13 fixtures · observed: loads×8, crash×5 · **12/13 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 13 fixtures · observed: loads×8, crash×5 · **13/13 carry a written spec** · corpus coverage: COVERED
 
 A shell's constituent faces have inconsistent orientation relative to each other -- some faces are flipped relative to a globally-consistent (outward-facing) convention, possibly combined with exact-duplicate faces, edges shared by three or more faces (non-manifold connectivity), or a mismatch between the shell's cached Closed flag and its actual free-edge state. OCCT repairs this by…
 
@@ -52,7 +54,7 @@ A shell's constituent faces have inconsistent orientation relative to each other
 
 ### `tkshh-edge-3d-2d-parameterization-mismatch`
 
-*TKShHealing* · 23 fixtures · observed: loads×10, empty×10, crash×3 · **13/23 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 23 fixtures · observed: loads×10, empty×10, crash×3 · **20/23 carry a written spec** · corpus coverage: COVERED
 
 An edge's 3D curve and its pcurve disagree as parameterizations: at the same parameter the 3D point and the surface-evaluated pcurve point diverge beyond tolerance (SameParameter violation), the declared parameter ranges differ while SameRange is asserted, the pcurve's range is invalid for its surface domain, or the two representations drift apart mid-edge while agreeing at the ends.
 
@@ -148,13 +150,11 @@ An edge's vertex 3D points do not lie on the ends of the edge's 3D curve and/or 
 
 ### `tkshh-wire-multivertex-loop`
 
-*TKShHealing* · 14 fixtures · observed: empty×8, loads×5, crash×1 · **11/14 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 14 fixtures · observed: empty×8, loads×5, crash×1 · **14/14 carry a written spec** · corpus coverage: COVERED
 
 A wire visits the same vertex more than twice (a vertex has more than two incident wire edges, after discounting seams, degenerated and small edges): a pinched / figure-eight / branching wire that is really several loops glued at a point, and must be split into separate wires.
 
-**Test against:** `Twi010`, `Twi087`, `Twi256`, `Twi258`, `Twi259`, `Twi260`, `Twi261`, `Twi274`, `Twi276`, `Twi076`, `Tfa151`, `Tfa091` † …and 2 more
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Twi010`, `Twi087`, `Twi256`, `Twi258`, `Twi259`, `Twi260`, `Twi261`, `Twi274`, `Twi276`, `Twi076`, `Tfa151`, `Tfa091` …and 2 more
 
 ### `tkshh-wire-small-edge`
 
@@ -291,13 +291,11 @@ Edges shorter than tolerance inside wires — micro-edges that fragment contours
 
 ### `tkshh-curve-tolerance-closure-detection`
 
-*TKShHealing* · 8 fixtures · observed: empty×5, loads×3 · **none carry a written spec — read the files** · corpus coverage: COVERED
+*TKShHealing* · 8 fixtures · observed: empty×5, loads×3 · **8/8 carry a written spec** · corpus coverage: COVERED
 
 A curve's own type/flag does not report IsClosed()==true (e.g. it is not flagged periodic, or is a trimmed/reparametrized curve), yet its two 3D endpoints coincide within the supplied tolerance (or Precision::Confusion() as a floor). The curve must still be recognized as topologically closed via an explicit endpoint-distance check, while curves with an infinite parameter bound are safely…
 
-**Test against:** `Gn039` †, `Gn049` †, `Gn064` †, `Gn071` †, `Gn077` †, `Gn088` †, `Gn094` †, `Gn101` †
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Gn039`, `Gn049`, `Gn064`, `Gn071`, `Gn077`, `Gn088`, `Gn094`, `Gn101`
 
 ### `tkshh-wire-3d-curve-gap`
 
@@ -309,11 +307,11 @@ The 3D curves of two consecutive edges do not meet: the end point of edge n's 3D
 
 ### `tkshh-wire-adjacent-vertex-gap`
 
-*TKShHealing* · 8 fixtures · observed: empty×5, loads×3 · **4/8 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 8 fixtures · observed: empty×5, loads×3 · **7/8 carry a written spec** · corpus coverage: COVERED
 
 Consecutive edges of a wire are listed in correct order but do not share a vertex: the end vertex of edge n and the start vertex of edge n+1 are distinct VERTEX instances separated by a small 3D distance. The wire is topologically broken at the junction; the vertices must be merged (identical points) or combined into an averaged vertex.
 
-**Test against:** `Twi003`, `Twi043`, `Twi056`, `Twi116` †, `Twi136` †, `Twi238`, `Twi243` †, `Twi264` †
+**Test against:** `Twi003`, `Twi043`, `Twi056`, `Twi116`, `Twi136`, `Twi238`, `Twi243` †, `Twi264`
 
 <sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
 
@@ -327,13 +325,11 @@ A tail (hair): at the junction of two consecutive edges the boundary shoots out 
 
 ### `tkshh-same-curve-fragmented-edges`
 
-*TKShHealing* · 6 fixtures · observed: empty×4, loads×2 · **4/6 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 6 fixtures · observed: empty×4, loads×2 · **6/6 carry a written spec** · corpus coverage: COVERED
 
 A chain of edges joined at degree-2 vertices lies on the same geometric curve — collinear line segments, arcs of one circle (possibly closing into a full circle), or a spliceable B-spline/Bezier sequence — so the interior vertices are topologically unnecessary fragmentation. ShapeUpgrade_UnifySameDomain (UnifyEdges -> MergeEdges/generateSubSeq -> MergeSeq/MergeSubSeq) validates co-curve…
 
-**Test against:** `Twi089`, `Tsh046`, `N154` †, `N144` †, `Twi294`, `Twi295`
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Twi089`, `Tsh046`, `N154`, `N144`, `Twi294`, `Twi295`
 
 ### `stp-tolerance-ceiling-clamp`
 
@@ -358,41 +354,37 @@ Two non-adjacent edges of the same wire cross in parameter space (global self-in
 
 ### `tkshh-tolerance-out-of-range`
 
-*TKShHealing* · 13 fixtures · observed: loads×7, empty×6 · **4/13 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 13 fixtures · observed: loads×7, empty×6 · **10/13 carry a written spec** · corpus coverage: COVERED
 
 A vertex, edge, or face carries a tolerance value that falls outside an application-specified acceptable range [tmin, tmax] -- either unrealistically tight (masking nothing, but inconsistent with the rest of the model) or excessively loose (hiding real geometric gaps/deviations downstream). OCCT repairs this by clamping the offending tolerance to the nearer bound of the range, recursing…
 
-**Test against:** `N040`, `N055`, `N065` †, `N070` †, `N080` †, `N089` †, `N097` †, `N119` †, `N128`, `N132`, `N134` †, `N167` † …and 1 more
+**Test against:** `N040`, `N055`, `N065` †, `N070`, `N080` †, `N089`, `N097`, `N119`, `N128`, `N132`, `N134` †, `N167` …and 1 more
 
 <sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
 
 ### `tkshh-surface-curve-continuity-below-required`
 
-*TKShHealing* · 11 fixtures · observed: loads×11 · **6/11 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 11 fixtures · observed: loads×11 · **11/11 carry a written spec** · corpus coverage: COVERED
 
 A face's boundary curves, pcurves, or its underlying surface have geometric continuity below a required order (by default C1) at internal parametric locations — e.g. a composite/multi-knot curve or surface with only C0 (positionally-continuous-but-kinked) joins between segments — which downstream consumers that assume at least C1 continuity (for tangent/normal computation, offsetting, meshing)…
 
-**Test against:** `Gn012`, `Gs049`, `Gs070` †, `Gs085` †, `Gs132` †, `Gs182` †, `Hea010`, `Gn172`, `Gs162` †, `Gs197`, `Gs198`
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Gn012`, `Gs049`, `Gs070`, `Gs085`, `Gs132`, `Gs182`, `Hea010`, `Gn172`, `Gs162`, `Gs197`, `Gs198`
 
 ### `tkshh-edge-pcurve-reversed`
 
-*TKShHealing* · 10 fixtures · observed: loads×6, empty×4 · **4/10 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 10 fixtures · observed: loads×6, empty×4 · **10/10 carry a written spec** · corpus coverage: COVERED
 
 An edge's pcurve traces the boundary in the opposite parametric direction from its 3D curve / edge orientation — sampling the 3D curve and the pcurve at the same parameter lands on opposite ends of the edge. The healer detects this via a 3D/2D consistency check and reverses the pcurve's parametrization (swapping and re-deriving first/last parameters), flagging the edge as no longer…
 
-**Test against:** `Gp054`, `Gp068` †, `Gp080` †, `Gp089` †, `Gp109` †, `Gp124` †, `Gs018`, `Twi062`, `Twi065`, `Gp043` †
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Gp054`, `Gp068`, `Gp080`, `Gp089`, `Gp109`, `Gp124`, `Gs018`, `Twi062`, `Twi065`, `Gp043`
 
 ### `tkshh-wire-edges-disordered`
 
-*TKShHealing* · 10 fixtures · observed: loads×7, empty×3 · **5/10 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 10 fixtures · observed: loads×7, empty×3 · **9/10 carry a written spec** · corpus coverage: COVERED
 
 The edges of a wire are stored out of traversal order: consecutive entries in the edge list do not chain head-to-tail, although a valid ordering (possibly with some edges reversed, or with the closed wire's start rotated) exists. Includes the sub-case where an individual edge's stored orientation is opposite to its traversal direction.
 
-**Test against:** `Twi007`, `Twi078`, `Twi028`, `Twi038`, `Twi159` †, `Twi008`, `Twi107` †, `Twi200` †, `Twi242` †, `Twi193` †
+**Test against:** `Twi007`, `Twi078`, `Twi028`, `Twi038`, `Twi159`, `Twi008`, `Twi107`, `Twi200`, `Twi242`, `Twi193` †
 
 <sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
 
@@ -414,23 +406,19 @@ An EDGE_CURVE's 3D-curve trim parameters (as recomputed by projecting the edge's
 
 ### `stp-seam-pcurve-selection`
 
-*exchange/step-reader* · 8 fixtures · observed: loads×8 · **7/8 carry a written spec** · corpus coverage: COVERED
+*exchange/step-reader* · 8 fixtures · observed: loads×8 · **8/8 carry a written spec** · corpus coverage: COVERED
 
 An edge lies on a closed surface and is associated with two pcurves (via a SEAM_CURVE, via being referenced twice within one wire, or via a CATIA-style pattern where two different faces are built on the same underlying surface without either surface or curve being formally flagged closed/seam). OCCT must determine which of the two pcurves is the 'forward' one for this particular edge/wire/face…
 
-**Test against:** `Gs193`, `Gp013`, `Gp011`, `Gs028`, `Twi022`, `Gp119` †, `Gp190`, `Gp194`
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Gs193`, `Gp013`, `Gp011`, `Gs028`, `Twi022`, `Gp119`, `Gp190`, `Gp194`
 
 ### `tkshh-surface-closure-vs-declared-periodicity-mismatch`
 
-*TKShHealing* · 7 fixtures · observed: loads×7 · **1/7 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 7 fixtures · observed: loads×7 · **7/7 carry a written spec** · corpus coverage: COVERED
 
 A surface is geometrically closed in U and/or V (its poles/boundary curve coincide within tolerance at the two parametric extremes) even though it is not flagged periodic by its Geom type or STEP declaration — or vice versa, a surface that merely comes close but is not truly closed must not be misreported as closed. Type-specific heuristics locate the true closure distance (pole comparison for…
 
-**Test against:** `Gs081` †, `Gs091` †, `Gs103` †, `Gs139` †, `Tfa197`, `Gs064` †, `Gs140` †
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Gs081`, `Gs091`, `Gs103`, `Gs139`, `Tfa197`, `Gs064`, `Gs140`
 
 ### `seq-surface-to-bspline`
 
@@ -482,43 +470,35 @@ A face bound is expressed as a VERTEX_LOOP (a single point, normally meant for d
 
 ### `tkshh-edge-missing-3d-curve`
 
-*TKShHealing* · 6 fixtures · observed: loads×4, empty×2 · **4/6 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 6 fixtures · observed: loads×4, empty×2 · **6/6 carry a written spec** · corpus coverage: COVERED
 
 An edge has no 3D curve (only a pcurve on a surface, or no geometry at all). The 3D curve must be rebuilt from the pcurve lifted to the surface; an edge with neither representation is unusable and is removed from the wire.
 
-**Test against:** `Twi047`, `Twi088`, `Os012`, `Gp057` †, `Gp082` †, `Twi289`
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Twi047`, `Twi088`, `Os012`, `Gp057`, `Gp082`, `Twi289`
 
 ### `tkshh-face-missing-seam-edge`
 
-*TKShHealing* · 6 fixtures · observed: loads×5, empty×1 · **3/6 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 6 fixtures · observed: loads×5, empty×1 · **6/6 carry a written spec** · corpus coverage: COVERED
 
 A face lies on a closed (periodic) surface -- cylinder, torus, sphere, periodic B-spline -- and its boundary wraps around the periodic direction, but the file contains no seam edge. The wire closes in 3D yet is open in UV parameter space (e.g. two half-circles at top and bottom of a cylinder with nothing joining them along the U=0 isoline). OCCT detects the 2D-open wires, chooses a seam…
 
-**Test against:** `Twi020`, `Tfa199` †, `Tfa215` †, `Gp137`, `Gs141` †, `Xp015`
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Twi020`, `Tfa199`, `Tfa215`, `Gp137`, `Gs141`, `Xp015`
 
 ### `tkshh-pcurve-collapse-onto-surface-singularity`
 
-*TKShHealing* · 6 fixtures · observed: loads×6 · **2/6 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 6 fixtures · observed: loads×6 · **6/6 carry a written spec** · corpus coverage: COVERED
 
 When an edge's 3D curve runs through (or partially through) one of a surface's known singularities (see tkshh-surface-analytic-singularity-detection), the corresponding pcurve's 2D samples must be recognized as degenerate and repaired rather than left as noisy/undefined UV values: if the whole pcurve collapses onto the singularity, its non-degenerate parametric axis is evenly redistributed…
 
-**Test against:** `Gp157` †, `Gp158` †, `Gp159` †, `Gp160` †, `Gs148`, `Tfa200`
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Gp157`, `Gp158`, `Gp159`, `Gp160`, `Gs148`, `Tfa200`
 
 ### `tkshh-wire-pcurve-period-shifted`
 
-*TKShHealing* · 6 fixtures · observed: loads×5, empty×1 · **4/6 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 6 fixtures · observed: loads×5, empty×1 · **6/6 carry a written spec** · corpus coverage: COVERED
 
 On a closed/periodic surface, one or more edges' pcurves are displaced by (a multiple of) the surface period relative to their neighbors - typically because the pcurve was recomputed from 3D near the seam. The 2D contour is discontinuous or lies outside the surface's nominal parametric range even though the 3D wire is fine.
 
-**Test against:** `Twi109` †, `Twi134` †, `Twi240`, `Twi035`, `Twi032`, `Gp023`
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Twi109`, `Twi134`, `Twi240`, `Twi035`, `Twi032`, `Gp023`
 
 ### `bc-invalid-degenerated-flag`
 
@@ -570,13 +550,11 @@ An edge's 3D curve cannot be validly trimmed between its two vertex parameters (
 
 ### `tkshh-edge-crossing-surface-singularity`
 
-*TKShHealing* · 5 fixtures · observed: loads×5 · **4/5 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 5 fixtures · observed: loads×5 · **5/5 carry a written spec** · corpus coverage: COVERED
 
 An edge's curve passes over a surface singularity (cone apex, sphere pole) in its interior, so a single pcurve cannot represent it faithfully: after pcurve (re)computation the edge must be split at the singularity parameter(s); a related form is a contour that goes around a degenerated pole and the seam, whose pcurve must be recomputed with over-degenerate adjustment disabled.
 
-**Test against:** `Xp013`, `Gp048`, `Gp084` †, `Gp177`, `Gp178`
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Xp013`, `Gp048`, `Gp084`, `Gp177`, `Gp178`
 
 ### `tkshh-strip-face`
 
@@ -588,13 +566,11 @@ A face has degenerated into a zero-width sliver/ribbon: either (a) it is bounded
 
 ### `tkshh-wire-notched-edges`
 
-*TKShHealing* · 5 fixtures · observed: loads×3, empty×2 · **4/5 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 5 fixtures · observed: loads×3, empty×2 · **5/5 carry a written spec** · corpus coverage: COVERED
 
 Two adjacent edges form a notch: from the shared vertex they run back along (nearly) the same track - collinear/tangent within ~0.1 rad and within tolerance of each other - so one edge (the short one) retraces part of the other, creating a zero-area slit in the boundary. Fix removes the short edge and splits the long one at the projection of the short edge's far end.
 
-**Test against:** `Twi054`, `Twi074`, `Twi117` †, `Twi241`, `Hea005`
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Twi054`, `Twi074`, `Twi117`, `Twi241`, `Hea005`
 
 ### `bc-bad-orientation-of-subshape`
 
@@ -622,13 +598,11 @@ B-spline curves/surfaces (or geometry convertible to them) whose degree, segment
 
 ### `seq-split-continuity`
 
-*exchange/heal-sequence* · 4 fixtures · observed: loads×4 · **2/4 carry a written spec** · corpus coverage: COVERED
+*exchange/heal-sequence* · 4 fixtures · observed: loads×4 · **4/4 carry a written spec** · corpus coverage: COVERED
 
 Curves, pcurves, or surfaces whose internal smoothness is below the required continuity class (e.g. C0 kinks inside a single B-spline where downstream needs C1): the entity must be divided at the discontinuity points into separately-valid pieces.
 
-**Test against:** `Gp120` †, `Gs049`, `Gs070` †, `Gp184`
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Gp120`, `Gs049`, `Gs070`, `Gp184`
 
 ### `sew-pcurve-parameter-desync-repair`
 
@@ -682,23 +656,19 @@ Translating a piece of STEP geometry (a root shape entity dispatched by type, a 
 
 ### `tkshh-face-period-wrapped-uv-placement`
 
-*TKShHealing* · 4 fixtures · observed: loads×3, empty×1 · **1/4 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 4 fixtures · observed: loads×3, empty×1 · **4/4 carry a written spec** · corpus coverage: COVERED
 
 On a periodic surface, a face's wires are written with UV coordinates outside or straddling the canonical period window: one wire near u=0, another a full period away (u~2pi+x), or a wire wrapping across the seam so its 2D bounding box splits to opposite ends of the domain. Geometry is valid modulo the period, but naive containment/nesting tests see disjoint boxes and misclassify. OCCT…
 
-**Test against:** `Tfa207` †, `Tfa242` †, `Tfa243` †, `Gp137`
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Tfa207`, `Tfa242`, `Tfa243`, `Gp137`
 
 ### `tkshh-face-wire-of-two-coincident-edges`
 
-*TKShHealing* · 4 fixtures · observed: loads×4 · **1/4 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 4 fixtures · observed: loads×4 · **4/4 carry a written spec** · corpus coverage: COVERED
 
 A face (with at least two wires) contains a wire that consists of exactly two edges which are the same edge entity traversed twice -- a zero-area 'slit' loop that goes out along an edge and immediately back along the identical curve. The wire bounds no area and must be dropped. OCCT's FixWiresTwoCoincEdges rebuilds the face keeping every wire except those whose two edges are identical when…
 
-**Test against:** `Tfa074` †, `Tfa232` †, `Tfa209` †, `Tfa256`
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Tfa074`, `Tfa232`, `Tfa209`, `Tfa256`
 
 ### `tkshh-nonperiodic-bspline-seamlike-edge`
 
@@ -718,11 +688,11 @@ A face's entire boundary has collapsed within tolerance to a single point: every
 
 ### `tkshh-wire-only-degenerated-edges`
 
-*TKShHealing* · 4 fixtures · observed: loads×3, empty×1 · **none carry a written spec — read the files** · corpus coverage: COVERED
+*TKShHealing* · 4 fixtures · observed: loads×3, empty×1 · **3/4 carry a written spec** · corpus coverage: COVERED
 
 A wire consists solely of degenerated / zero-extent edges (all edges collapse to a single point, e.g. leftover pole caps or authoring debris): it bounds nothing and poisons seam construction and orientation analysis. OCCT removes such wires: FixMissingSeam drops completely-degenerated extra open wires before pairing seam wires; ComposeShell::DispatchWires prunes empty or…
 
-**Test against:** `Tfa224` †, `Tfa096` †, `Tfa168` †, `Tfa206` †
+**Test against:** `Tfa224` †, `Tfa096`, `Tfa168`, `Tfa206`
 
 <sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
 
@@ -744,13 +714,11 @@ A seam edge on a closed/periodic surface has forward and reverse pcurves that do
 
 ### `bc-invalid-curve-on-surface`
 
-*exchange/brepcheck* · 3 fixtures · observed: loads×3 · **2/3 carry a written spec** · corpus coverage: COVERED
+*exchange/brepcheck* · 3 fixtures · observed: loads×3 · **3/3 carry a written spec** · corpus coverage: COVERED
 
 An edge's pcurve on a face does not track the edge's 3D curve within tolerance (the 2D and 3D representations disagree).
 
-**Test against:** `Gp041` †, `Gp002`, `Gp021`
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Gp041`, `Gp002`, `Gp021`
 
 ### `bc-invalid-multi-connexity`
 
@@ -826,13 +794,11 @@ After sewing completes, every edge in the result is classified by how many face-
 
 ### `sew-floating-wireframe-edge-mode`
 
-*exchange/sewing* · 3 fixtures · observed: loads×2, empty×1 · **2/3 carry a written spec** · corpus coverage: COVERED
+*exchange/sewing* · 3 fixtures · observed: loads×2, empty×1 · **3/3 carry a written spec** · corpus coverage: COVERED
 
 Edges that belong to no face at all (pure wireframe/curve topology, zero incident faces) are, by default, ignored by sewing since there is no face-boundary context to reconcile. When explicitly enabled (floating-edges mode), Sewing extends its gap-closing and vertex-merging behavior to these standalone edges too, letting a defective wireframe/curve-network model (e.g. imported skeleton curves…
 
-**Test against:** `Tfa022`, `N147` †, `N149`
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Tfa022`, `N147`, `N149`
 
 ### `sew-pcurve-domain-reconciliation`
 
@@ -984,13 +950,11 @@ Consecutive edges within a wire (or faces within a shell) are not topologically 
 
 ### `bc-redundant-edge`
 
-*exchange/brepcheck* · 2 fixtures · observed: loads×2 · **none carry a written spec — read the files** · corpus coverage: COVERED
+*exchange/brepcheck* · 2 fixtures · observed: loads×2 · **2/2 carry a written spec** · corpus coverage: COVERED
 
 The same edge (same TShape) appears more than once within a single wire.
 
-**Test against:** `Tfa074` †, `Tfa209` †
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Tfa074`, `Tfa209`
 
 ### `bc-subshape-not-in-shape`
 
@@ -1050,13 +1014,11 @@ Two wires of a face sharing a single common vertex (a pinch point). This is lega
 
 ### `seq-to-bezier`
 
-*exchange/heal-sequence* · 2 fixtures · observed: loads×2 · **none carry a written spec — read the files** · corpus coverage: COVERED
+*exchange/heal-sequence* · 2 fixtures · observed: loads×2 · **2/2 carry a written spec** · corpus coverage: COVERED
 
 Geometry (3D curves, pcurves, surfaces — including lines, circles, conics, planes, revolutions, extrusions, B-splines) that a consumer requires in Bezier form; the input pattern is any non-Bezier parametric geometry destined for a Bezier-only target.
 
-**Test against:** `Gn042` †, `Gn044` †
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Gn042`, `Gn044`
 
 ### `sew-candidate-tiebreak-reciprocity`
 
@@ -1084,13 +1046,11 @@ When the same face object is reachable more than once while exploring the input 
 
 ### `sew-longest-edge-reference-selection`
 
-*exchange/sewing* · 2 fixtures · observed: loads×2 · **1/2 carry a written spec** · corpus coverage: COVERED
+*exchange/sewing* · 2 fixtures · observed: loads×2 · **2/2 carry a written spec** · corpus coverage: COVERED
 
 When two candidate edges are merged into one, they may not be exactly the same length (e.g. one was trimmed short by an earlier defect). Sewing designates the longer of the two edges' 3D curve and parametrization as the authoritative reference for the merged result, and re-derives/reprojects the shorter edge's contribution (its 2D pcurves) onto that reference, rather than arbitrarily picking…
 
-**Test against:** `N148` †, `Tsh246`
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `N148`, `Tsh246`
 
 ### `sew-nonmanifold-candidate-disambiguation`
 
@@ -1192,13 +1152,11 @@ A single face's surface area exceeds a caller-configured maximum (or exceeds wha
 
 ### `tkshh-near-zero-knot-span-thin-patch-filter`
 
-*TKShHealing* · 2 fixtures · observed: loads×2 · **1/2 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 2 fixtures · observed: loads×2 · **2/2 carry a written spec** · corpus coverage: COVERED
 
 A curve or surface's knot vector contains near-duplicate/clustered knots (e.g. from an interior knot inserted to full multiplicity, or STEP data with two knots separated by less than working precision) that would otherwise produce a near-zero-length Bezier arc (2D curve conversion) or a near-zero-extent Bezier patch (surface conversion) after decomposition. These degenerate spans are detected…
 
-**Test against:** `Gn042` †, `Gp180`
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Gn042`, `Gp180`
 
 ### `tkshh-shell-free-boundary-gap`
 
@@ -1346,23 +1304,19 @@ After two faces' edges are merged, downstream consumers (e.g. shading, meshing, 
 
 ### `sew-tiny-edge-face-culling`
 
-*exchange/sewing* · 1 fixtures · observed: loads×1 · **none carry a written spec — read the files** · corpus coverage: COVERED
+*exchange/sewing* · 1 fixtures · observed: loads×1 · **1/1 carry a written spec** · corpus coverage: COVERED
 
 During pre-sewing face analysis, edges whose length is below tolerance (effectively zero-length, but not degenerate in the formal topological sense) are identified as 'small' and their endpoint vertices are glued together, collapsing the edge; if the accumulation of this leaves a face with every one of its edges marked small (i.e. the whole face has shrunk to a negligible sliver or point), the…
 
-**Test against:** `Tsh091` †
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Tsh091`
 
 ### `sew-vertex-endpoint-pairing-orientation`
 
-*exchange/sewing* · 1 fixtures · observed: loads×1 · **none carry a written spec — read the files** · corpus coverage: COVERED
+*exchange/sewing* · 1 fixtures · observed: loads×1 · **1/1 carry a written spec** · corpus coverage: COVERED
 
 When merging two edges, their two endpoints must be paired up correctly according to the edges' relative orientation: if the edges run in the same direction the first-to-first, second-to-second pairing is correct, but if one is effectively reversed relative to the other, the pairing must cross (first-to-second, second-to-first) or the merged edge would be twisted. Sewing computes this…
 
-**Test against:** `Tsh176` †
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Tsh176`
 
 ### `stp-compcurve-cyclic-ref`
 
