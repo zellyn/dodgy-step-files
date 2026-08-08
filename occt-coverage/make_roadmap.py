@@ -94,7 +94,11 @@ def silent_total_loss(tok: dict[str, str]) -> list[str]:
             continue
         if not re.search(r"=\s*SHAPE_DEFINITION_REPRESENTATION\s*\(", txt, re.I):
             continue
-        if not re.search(r"=\s*(?:MANIFOLD_SOLID_BREP|SHELL_BASED_SURFACE_MODEL)\s*\(", txt, re.I):
+        # All four wrapper spellings the corpus actually uses. Counted, not guessed:
+        # SHELL_BASED_SURFACE_MODEL 1467, MANIFOLD_SOLID_BREP 286, BREP_WITH_VOIDS 9,
+        # FACETED_BREP 4. Omitting the last two silently under-reports the cohort.
+        if not re.search(r"=\s*(?:MANIFOLD_SOLID_BREP|SHELL_BASED_SURFACE_MODEL"
+                         r"|BREP_WITH_VOIDS|FACETED_BREP)\s*\(", txt, re.I):
             continue
         out.append(fid)
     return sorted(out)

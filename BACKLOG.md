@@ -2871,11 +2871,19 @@ data without a diagnostic.
 The 51 above additionally require the entry's PROSE to allow `heal` (i.e. they are
 `outside-allowed` rows). `IMPLEMENTERS_ROADMAP.md` asks the simpler, implementer-facing
 question -- *complete connected B-rep in, empty out* -- regardless of what our prose
-happens to claim, and finds **104**. The roadmap number is the better one to cite at a
+happens to claim, and finds **106**. The roadmap number is the better one to cite at a
 kernel author, because it does not depend on the accuracy of our own wording. Spot-check
 of three members outside the 51 (Gn001, Gn010, Gn018): all
 `{"status":"accept_silent","n_roots":0,"shape_null":true}`. Concentration across all 104
-is even more lopsided toward curves: Gp 58, Gn 43, Gs 1, Pf 1, Tfa 1.
+is even more lopsided toward curves: Gp 58, Gn 43, and one each of Gs/M/Pf/Tfa/Tsh.
+
+(First cut of the generator said 104. It recognised only `MANIFOLD_SOLID_BREP` and
+`SHELL_BASED_SURFACE_MODEL` as solid wrappers and silently dropped fixtures wrapped in
+`FACETED_BREP` or `BREP_WITH_VOIDS` -- including M054, whose title is *about*
+`FACETED_BREP`. Corpus-wide counts: SHELL_BASED_SURFACE_MODEL 1467, MANIFOLD_SOLID_BREP
+286, BREP_WITH_VOIDS 9, FACETED_BREP 4. Enumerate the spellings the corpus ACTUALLY uses
+before writing a structural filter; the two rare ones are exactly where the interesting
+fixtures live.)
 
 Not yet done: whether `heal` is the RIGHT expectation for each of the 51 individually
 (for a one-face B-rep with a defective pcurve it plainly is), and whether the 209

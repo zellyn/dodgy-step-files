@@ -19,13 +19,13 @@ The tiering below is derived from **observed reference-engine behaviour**, not f
 
 ## Start here: silent total geometry loss
 
-**104 fixtures hand the reader a complete, connected B-rep and get an empty shape back.** Not a partial result, not a repaired face — nothing, and no error. This is the worst outcome in the corpus, because the import reports success and the user's geometry is simply gone.
+**106 fixtures hand the reader a complete, connected B-rep and get an empty shape back.** Not a partial result, not a repaired face — nothing, and no error. This is the worst outcome in the corpus, because the import reports success and the user's geometry is simply gone.
 
 These are separated from the general `empty` population on purpose. `empty` alone is ambiguous — a garbage file *should* yield nothing. Each fixture here was checked to have an `ADVANCED_FACE` **actually referenced by a shell** (not merely present in the file), a `SHAPE_DEFINITION_REPRESENTATION` root, and a solid or surface-model wrapper. There was something to build.
 
-**What the concentration tells you:** {'Gp': 58, 'Gn': 43, 'Gs': 1, 'Pf': 1, 'Tfa': 1} — by ID prefix. These are overwhelmingly *curve*-level defects (pcurves and NURBS curves), not shell- or solid-level ones. So the lesson is that in this reference engine **a single bad curve on a face escalates all the way to total loss of the model**, rather than degrading to a dropped edge or a repaired approximation. If your kernel takes the same path, decide deliberately whether that is the behaviour you want — and if it is, at least emit a diagnostic.
+**What the concentration tells you:** {'Gp': 58, 'Gn': 43, 'Gs': 1, 'M': 1, 'Pf': 1, 'Tfa': 1, 'Tsh': 1} — by ID prefix. These are overwhelmingly *curve*-level defects (pcurves and NURBS curves), not shell- or solid-level ones. So the lesson is that in this reference engine **a single bad curve on a face escalates all the way to total loss of the model**, rather than degrading to a dropped edge or a repaired approximation. If your kernel takes the same path, decide deliberately whether that is the behaviour you want — and if it is, at least emit a diagnostic.
 
-**Test against:** `Gn001`, `Gn009`, `Gn010`, `Gn013`, `Gn014`, `Gn017`, `Gn018`, `Gn019`, `Gn025`, `Gn026`, `Gn031`, `Gn032`, `Gn033`, `Gn034`, `Gn035`, `Gn037`, `Gn038`, `Gn039`, `Gn046`, `Gn047` …and 84 more
+**Test against:** `Gn001`, `Gn009`, `Gn010`, `Gn013`, `Gn014`, `Gn017`, `Gn018`, `Gn019`, `Gn025`, `Gn026`, `Gn031`, `Gn032`, `Gn033`, `Gn034`, `Gn035`, `Gn037`, `Gn038`, `Gn039`, `Gn046`, `Gn047` …and 86 more
 
 ## What this page does *not* cover
 
