@@ -2998,6 +2998,37 @@ aid: start with the 14, and confirm per entry against the bytes before changing 
 A 4-stage narrowing, each stage measured. The first number would have been a bad bug
 report; the last is a morning's work.
 
+### CONFIRMED per entry from the bytes (2026-08-08): 13 candidates, and the fix is PROSE
+
+Each of the 14 was opened and its structure read:
+
+    11  face(s) in a GEOMETRIC_CURVE_SET, **no shell anywhere in the file**, and the
+        top-level representation lists exactly that curve set:
+        Fi002 Hea009 Os002 Os003 Os007 Tfa003 Tfa018 Tfa061 Tfa068 Tfa073 Tfa075
+     2  face referenced by nothing at all:  Ad046 Ad047
+     1  Hea001 -- **NOT a candidate, I was wrong again.** Its root is
+        `#143=GEOMETRIC_SET('compound_three_defects',(#59,#120,#142))` holding a face, a
+        shell and a third item, and its title is "shape-healing pipeline must converge
+        over multi-defect GEOMETRIC_SET". The structure IS the claim. My "already
+        declared" regex searched for GEOMETRIC_CURVE_SET / "curve set" and missed the
+        plain `GEOMETRIC_SET` spelling -- the same shape of gap as the FACETED_BREP miss.
+
+So **13 confirmed**. In all 13 the only thing handed to the reader is a container that
+cannot yield a face, so `occt=empty` is decided by the scaffolding and the titled
+face-borne defect is never evaluated.
+
+### The remedy is a PROSE fix, not a regeneration -- and there is a precedent
+These 13 have the SAME mechanism as the 17 already-declared entries. Tfa156 shows the
+established wording: title states the face "is wrapped in a GEOMETRIC_CURVE_SET; the
+reader never builds a live face", and `Expected kernel behavior` becomes "Reject with a
+diagnostic naming the GEOMETRIC_CURVE_SET wrapper". Applying that pattern to the 13
+makes them honest without touching a single fixture byte, and keeps them as valid
+reproducers of the container-rejection behaviour they actually demonstrate.
+
+Whether to instead REBUILD them so they exercise their original titles is the maintainer
+call, and it is a real choice: 11 of the 13 are §12.3c/§12.8 face and offset defects
+whose intended claims are not otherwise covered.
+
 ### NOT quarantined here, on purpose
 Reachability is verified; **mutation testing is not done**, and per
 [[feedback_orphaned_defect_carrier]] both are wanted before quarantine. Quarantining or
