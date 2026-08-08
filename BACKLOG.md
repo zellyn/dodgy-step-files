@@ -2602,6 +2602,24 @@ correct Part-21. A sweep matching `LINE('',#a,#b)` finds 63 crash-cohort files, 
 DIRECTION, 4 a CARTESIAN_POINT. The genuinely malformed cohort is **29, not 63**. Any
 sweep must resolve what arg3 POINTS AT, never merely that it is a reference.
 
+#### Per-fixture confirmation: 26 of 29
+Every genuinely-malformed fixture was tested individually (wrap each `LINE.dir` in a real
+top-level `VECTOR`; where the target is a `CARTESIAN_POINT`, synthesise a normalised
+`DIRECTION` first, since `VECTOR.orientation` is declared `DIRECTION`):
+
+    CONFIRMED LINE-caused (26) -- crash disappears when the LINE is repaired:
+      Gp046 Gp047 Gp049 Gp096 Gp098 Gp099 Gp131 Tsh139
+      Twi137 Twi138 Twi139 Twi140 Twi141 Twi142 Twi143 Twi145 Twi146 Twi147 Twi148
+      Twi151 Twi223 Twi224 Twi226 Twi228 Twi229 Twi231
+    NOT confirmed (3) -- still crash with every LINE repaired, so they have another or
+    an additional cause:  Gs138, Twi144, Twi227
+
+Note the four `CARTESIAN_POINT` cases (Gp096/098/099/Gs138) first appeared to refute the
+mechanism. They did not: the naive patch `VECTOR('fix',#cartesian_point,1.0)` is itself
+ill-typed, so it tested nothing. With a synthesised DIRECTION, three of the four load.
+Same failure shape as the inline-entity mistake above -- **an invalid instrument returns
+a negative that looks like a finding.**
+
 #### Open
 Tsh079/Tsh080/Tsh081 carry 10-12 DIRECTION-referencing LINEs each and still LOAD. The
 2D-pcurve-vs-3D-curve split does not explain them (used as a 2D pcurve: 4/4 crash; only
