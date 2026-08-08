@@ -2867,6 +2867,16 @@ data without a diagnostic.
     Gp033 Gp067 Gp071 Gp074 Gp076 Gp087 Gp126 Gp128 Gp129 Gp130 Gp132 Gp133 Gp134
     Gp135 Gp136 Gp137 Gp139 Gp142 Gp143 Gp144 Gp145 Gp146 Gp147 Gp150 Gs025
 
+**51 here vs 104 in the roadmap -- these are different populations, not a discrepancy.**
+The 51 above additionally require the entry's PROSE to allow `heal` (i.e. they are
+`outside-allowed` rows). `IMPLEMENTERS_ROADMAP.md` asks the simpler, implementer-facing
+question -- *complete connected B-rep in, empty out* -- regardless of what our prose
+happens to claim, and finds **104**. The roadmap number is the better one to cite at a
+kernel author, because it does not depend on the accuracy of our own wording. Spot-check
+of three members outside the 51 (Gn001, Gn010, Gn018): all
+`{"status":"accept_silent","n_roots":0,"shape_null":true}`. Concentration across all 104
+is even more lopsided toward curves: Gp 58, Gn 43, Gs 1, Pf 1, Tfa 1.
+
 Not yet done: whether `heal` is the RIGHT expectation for each of the 51 individually
 (for a one-face B-rep with a defective pcurve it plainly is), and whether the 209
 no-face entries deserve prose that distinguishes "recover and continue" from "produce

@@ -59,6 +59,47 @@ def load_catalog_tokens() -> tuple[dict[str, str], dict[str, str], set[str]]:
     return tok, title, specced
 
 
+def silent_total_loss(tok: dict[str, str]) -> list[str]:
+    """Fixtures where a COMPLETE, REACHABLE B-rep goes in and NOTHING comes out.
+
+    `empty` on its own is ambiguous and the caveat below says so: a garbage file
+    *should* yield nothing. This narrows it to the unambiguous case -- the file
+    hands the reader a face that is genuinely wired into a shell, under a
+    representation root, wrapped in a solid or surface model. There was
+    something to build and the kernel returned an empty shape without saying so.
+
+    Reachability is the point, not entity counts. A file can contain an
+    ADVANCED_FACE and a CLOSED_SHELL that are never connected to each other, in
+    which case returning nothing is correct and counting entities would call it
+    a loss. So the face must appear IN a shell's list.
+    """
+    out = []
+    for fid, t in tok.items():
+        if t != "empty":
+            continue
+        hits = glob.glob(os.path.join(ROOT, "step-examples", "*", f"{fid}.stp"))
+        if not hits:
+            continue
+        try:
+            txt = open(hits[0], errors="replace").read()
+        except OSError:
+            continue
+        in_shell: set[str] = set()
+        for _, lst in re.findall(
+                r"#(\d+)\s*=\s*(?:CLOSED_SHELL|OPEN_SHELL)\s*\(\s*'[^']*'\s*,\s*\(([^)]*)\)",
+                txt, re.I):
+            in_shell |= {x.strip().lstrip("#") for x in lst.split(",") if x.strip()}
+        faces = {m.group(1) for m in re.finditer(r"#(\d+)\s*=\s*ADVANCED_FACE\s*\(", txt, re.I)}
+        if not (faces & in_shell):
+            continue
+        if not re.search(r"=\s*SHAPE_DEFINITION_REPRESENTATION\s*\(", txt, re.I):
+            continue
+        if not re.search(r"=\s*(?:MANIFOLD_SOLID_BREP|SHELL_BASED_SURFACE_MODEL)\s*\(", txt, re.I):
+            continue
+        out.append(fid)
+    return sorted(out)
+
+
 def load_classes() -> list[dict]:
     out = []
     for path in sorted(glob.glob(os.path.join(ROOT, "occt-coverage", "*", "problems.json"))):
@@ -177,6 +218,36 @@ def main() -> None:
       "these apart from the token alone; the per-fixture `Expected kernel behavior` field can. "
       "Treat T1 as *\"look here first\"*, not as *\"these are all bugs\"*.")
     A("")
+
+    stl = silent_total_loss(tok)
+    if stl:
+        by_sec = collections.Counter(
+            (re.match(r"^[A-Za-z]+", f) or [""])[0] for f in stl)
+        A("## Start here: silent total geometry loss")
+        A("")
+        A(f"**{len(stl)} fixtures hand the reader a complete, connected B-rep and get an "
+          "empty shape back.** Not a partial result, not a repaired face — nothing, and "
+          "no error. This is the worst outcome in the corpus, because the import reports "
+          "success and the user's geometry is simply gone.")
+        A("")
+        A("These are separated from the general `empty` population on purpose. `empty` "
+          "alone is ambiguous — a garbage file *should* yield nothing. Each fixture here "
+          "was checked to have an `ADVANCED_FACE` **actually referenced by a shell** "
+          "(not merely present in the file), a `SHAPE_DEFINITION_REPRESENTATION` root, "
+          "and a solid or surface-model wrapper. There was something to build.")
+        A("")
+        A(f"**What the concentration tells you:** {dict(by_sec.most_common())} — by ID "
+          "prefix. These are overwhelmingly *curve*-level defects (pcurves and NURBS "
+          "curves), not shell- or solid-level ones. So the lesson is that in this "
+          "reference engine **a single bad curve on a face escalates all the way to "
+          "total loss of the model**, rather than degrading to a dropped edge or a "
+          "repaired approximation. If your kernel takes the same path, decide "
+          "deliberately whether that is the behaviour you want — and if it is, at least "
+          "emit a diagnostic.")
+        A("")
+        A("**Test against:** " + ", ".join(f"`{f}`" for f in stl[:20])
+          + ("" if len(stl) <= 20 else f" …and {len(stl) - 20} more"))
+        A("")
 
     A("## What this page does *not* cover")
     A("")
