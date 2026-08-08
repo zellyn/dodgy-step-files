@@ -2937,6 +2937,37 @@ but each still needs its title read, exactly as A037 showed.
 Bounding the class at 38 candidates (not 63, and not "all faces sections") is the useful
 result here: it is a day of careful work, not a corpus-wide crisis.
 
+### CORRECTION to the list above (same day): 9 candidates, not 11 — and 17 are already labelled
+
+Reading every empty+loose entry's TEXT (not just its bytes) splits the 38 cleanly:
+
+    17  the entry ALREADY DECLARES the curve-set hosting   -> intentional, correctly
+        labelled, NOT candidates:
+        Fi004 Fi006 Tfa121 Tfa122 Tfa123 Tfa124 Tfa125 Tfa156 Tfa157 Tfa158 Tfa159
+        Tfa160 Tfa166 Tfa167 Tfa168 Tfa169 Tfa170
+    21  the entry says nothing about it                    -> real candidates:
+        Ad005 Ad046 Ad047 Ad051 Ad098 Fi002 Hea001 Hea009 N044 Os002 Os003 Os007 Os012
+        Os023 Tfa003 Tfa018 Tfa061 Tfa063 Tfa068 Tfa073 Tfa075
+
+**Two of my 11 above were WRONG: Fi004 and Tfa156 are already honestly labelled.**
+Tfa156's title reads "...is wrapped in a GEOMETRIC_CURVE_SET; the reader never builds a
+live face" and its `Expected kernel behavior` is "Reject with a diagnostic naming the
+GEOMETRIC_CURVE_SET wrapper" -- corrected in the 2026-07-17 truth-in-labeling audit.
+Fi004 carries "honest reclassification (2026-07-18, empty-claim re-audit) -- empty
+regardless of the declaration". So the real candidate set from my list is **9**:
+Hea009 Tfa003 Tfa018 Tfa061 Tfa068 Tfa073 Os007 Os012 Ad047, plus **12 newly surfaced**:
+Ad005 Ad046 Ad051 Ad098 Fi002 Hea001 N044 Os002 Os003 Os023 Tfa063 Tfa075.
+
+**The headline is that prior audits already did most of this work.** 17 of 38 -- nearly
+half -- name the curve-set wrapper explicitly, several via dated truth-in-labeling
+passes. This class is not neglected; it is partially converted, and the remaining 21 are
+the tail. Do not re-audit the 17.
+
+Method note: the discriminator that mattered was the ENTRY TEXT, not the bytes. Bytes
+alone cannot distinguish "face in a curve set because the fixture is about that" from
+"face in a curve set by accident" -- only the prose says which. A bytes-only sweep would
+have flagged all 38.
+
 ### NOT quarantined here, on purpose
 Reachability is verified; **mutation testing is not done**, and per
 [[feedback_orphaned_defect_carrier]] both are wanted before quarantine. Quarantining or
