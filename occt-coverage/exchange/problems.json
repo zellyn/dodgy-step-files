@@ -1398,7 +1398,8 @@
     ],
     "subvariants": [],
     "fixture_ids": [
-      "Tfa252"
+      "Tfa252",
+      "Tfa001"
     ],
     "coverage_verdict": "COVERED",
     "notes": "DOWNGRADED COVERED->GAP (COVERED_FULL_REVERIFY.md): Xp008's null-geometry face #138 is never referenced by CLOSED_SHELL #139 (dead trailing entity); Tfa003's topological items sit inside a GEOMETRIC_CURVE_SET whose builder dispatch only accepts GeometricRepresentationItems (type-skipped, never reaches TranslateEdge::Init); Ad005/Bo002/Ad123 demonstrate dangling-refs-to-undeclared-IDs (a different mechanism) and are structurally disconnected. No fixture reaches any of the 4 cited OCCT functions on live topology. Surviving/cited fixtures: (none -- no fixture in the corpus reaches this mechanism live). || Prior COVERED notes (fixture_ids were ['Xp008', 'Tfa003', 'Ad005', 'Bo002', 'Ad123']): VERIFICATION: Xp008 (verified) has an ADVANCED_FACE with face_geometry=$ inside a translated solid - null FaceGeometry, clean per-face fail. Tfa003 (read) has four EDGE_CURVEs with edge_geometry=$ (null EdgeGeometry), though rooted in a GEOMETRIC_CURVE_SET. Ad005/Bo002/Ad123 cover dangling references at face/shell/pcurve-surface level. No VERTEX_POINT-with-null-point fixture exists, but the class has no formal subvariants and two of three cited entity kinds are genuinely presented. | Wave-2 (2026-07-12, adversarial verifier) (C1): Tfa252 confirmed live -- EDGE_CURVE('null_geom_edge',#V2,#V3,$,.T.) reachable via a genuine ADVANCED_FACE->OPEN_SHELL->SHELL_BASED_SURFACE_MODEL->PRODUCT chain (not GEOMETRIC_CURVE_SET, not dead-trailing). tier3_geometric: load=ok, n_faces_total=1, face[0].surface_type=plane, face[0].edge_count=0, area=~8e100 (unbounded-surface sentinel) -- exact match to every catalog assertion. GAP -> COVERED.",
@@ -1684,7 +1685,8 @@
     ],
     "subvariants": [],
     "fixture_ids": [
-      "M196"
+      "M196",
+      "M064"
     ],
     "coverage_verdict": "COVERED",
     "notes": "DOWNGRADED COVERED->GAP (COVERED_FULL_REVERIFY.md): Sole fixture M051 records occt=signal(11)/signal(11) -- a crash directly contradicts the claim that the fallback transfer succeeds and 'a shape is still produced'. Surviving/cited fixtures: (none -- no fixture in the corpus reaches this mechanism live). || Prior COVERED notes (fixture_ids were ['M051']): Distinct from pure type-dispatch rejection: a fallback translation is actually attempted and its shape used. | VERIFICATION: Read M051 bytes: a bare GEOMETRIC_SET whose items mix a LINE (supported), an AXIS2_PLACEMENT_3D (a GeometricRepresentationItem that is none of curve/point/surface - exactly the element routed through the general-actor fallback), and a DESCRIPTIVE_REPRESENTATION_ITEM (not a GRI at all, exercising the skip). The set is the model's primary geometry container, so the elements genuinely reach Builder::Init(GeometricSet). | Wave-3 (2026-07-12, adversarial verifier): M196 substitutes a bounded/periodic CIRCLE for M051's unbounded LINE while keeping the exact mixed-item-dispatch GEOMETRIC_CURVE_SET(CIRCLE, AXIS2_PLACEMENT_3D) pattern. Live: 0 faces, 1 edge (curve_type=circle), 2 vertices, BRepCheck valid=True, exit 0 -- the unsupported-type element is silently skipped and the supported curve translated through the general-actor fallback, no crash. M051 independently re-run for contrast: still crashes (signal 11), isolating the crash to the unbounded LINE, not the fallback-dispatch mechanism. GAP -> COVERED.",

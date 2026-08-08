@@ -2,7 +2,7 @@
 
 **Audience: you are writing a CAD kernel and need to survive real-world STEP files.** This document is the corpus re-cut along the axis you actually work on.
 
-The catalog ([`STEP_PROBLEM_CATALOG.md`](STEP_PROBLEM_CATALOG.md)) is organised one entry per broken file, which is right for auditing and wrong for building — 3335 entries do not tell you where to start. This page inverts it into the **169 distinct repair mechanisms** those files exercise, ordered so the failures that hurt users most come first, each pointing at the fixtures that prove you got it right (615 fixtures cited).
+The catalog ([`STEP_PROBLEM_CATALOG.md`](STEP_PROBLEM_CATALOG.md)) is organised one entry per broken file, which is right for auditing and wrong for building — 3335 entries do not tell you where to start. This page inverts it into the **169 distinct repair mechanisms** those files exercise, ordered so the failures that hurt users most come first, each pointing at the fixtures that prove you got it right (616 fixtures cited).
 
 > **Generated file — do not edit.** `python3 occt-coverage/make_roadmap.py`.
 > Everything below is joined from `occt-coverage/*/problems.json` and the catalog's CI-verified `Expected validation` lines. No hand-entered claims.
@@ -21,9 +21,9 @@ The tiering below is derived from **observed reference-engine behaviour**, not f
 
 **2448 of the 2530 STEP fixtures (97%) carry a written `Expected kernel behavior`.** The other 82 are real fixtures with real, CI-verified assertions — they are good *tests* — but they do not state what a correct kernel should do, so they teach an implementer nothing on their own. They are marked † below. Most of that remainder is deliberate: an entry whose bytes were found to contradict its own title is left unspecced ON PURPOSE, because a specification written on a disproved claim would propagate the error rather than fix it.
 
-It cites **615 of the 2530 STEP fixtures (24%)**. The other 1915 are real, CI-verified fixtures that simply have not been linked to a named repair mechanism yet — they are reachable through the catalog and [`browse/`](browse/), just not from here. So this is a *starting* map, not an exhaustive one: finishing a tier does not mean you have handled everything the corpus knows about. Growing the linkage is tracked in `occt-coverage/`.
+It cites **616 of the 2530 STEP fixtures (24%)**. The other 1914 are real, CI-verified fixtures that simply have not been linked to a named repair mechanism yet — they are reachable through the catalog and [`browse/`](browse/), just not from here. So this is a *starting* map, not an exhaustive one: finishing a tier does not mean you have handled everything the corpus knows about. Growing the linkage is tracked in `occt-coverage/`.
 
-> Of the two, **linkage is currently the larger gap** (1915 fixtures vs 82).
+> Of the two, **linkage is currently the larger gap** (1914 fixtures vs 82).
 
 ## Tier summary
 
@@ -1118,6 +1118,14 @@ A COMPOSITE_CURVE's list of segments is not given in connected geometric/topolog
 
 **Test against:** `Gp176`, `Gp195`
 
+### `stp-geomset-gri-fallback`
+
+*exchange/step-reader* · 2 fixtures · observed: loads×2 · **2/2 carry a written spec** · corpus coverage: COVERED
+
+A GEOMETRIC_SET element is none of the directly supported kinds (curve, cartesian point, surface) but is still some geometric representation item. Instead of rejecting it, the element is routed through the general transfer actor as a last-resort fallback so a shape can still be produced for otherwise-unhandled representation item types.
+
+**Test against:** `M196`, `M064`
+
 ### `stp-mapped-item-no-transform`
 
 *exchange/step-reader* · 2 fixtures · observed: loads×2 · **2/2 carry a written spec** · corpus coverage: COVERED
@@ -1125,6 +1133,14 @@ A COMPOSITE_CURVE's list of segments is not given in connected geometric/topolog
 A MAPPED_ITEM (placing one assembly-component shape representation into a using context) provides neither a resolvable CartesianTransformationOperator3d nor a resolvable Origin/Target AXIS2_PLACEMENT_3D pair to compute its placement transform from. Rather than failing the whole component instance, OCCT leaves it at the identity transform (effectively un-positioned) and logs a warning instead…
 
 **Test against:** `Tfa248`, `A119`
+
+### `stp-missing-geometry-definition`
+
+*exchange/step-reader* · 2 fixtures · observed: loads×2 · **2/2 carry a written spec** · corpus coverage: COVERED
+
+A topological entity references its underlying geometric definition (a VERTEX_POINT's point, an EDGE_CURVE's curve, or a FACE_SURFACE's / CURVE_BOUNDED_SURFACE's basis surface), but that referenced definition is null or could not itself be resolved/translated. OCCT detects this missing-geometry condition per entity and fails cleanly just for that one entity (logged, not crashed), leaving the…
+
+**Test against:** `Tfa252`, `Tfa001`
 
 ### `stp-missing-unit-context-default`
 
@@ -1342,14 +1358,6 @@ A degenerate edge (e.g. at a cone apex or sphere pole) is referenced by several 
 
 **Test against:** `Tsh241`
 
-### `stp-geomset-gri-fallback`
-
-*exchange/step-reader* · 1 fixtures · observed: loads×1 · **1/1 carry a written spec** · corpus coverage: COVERED
-
-A GEOMETRIC_SET element is none of the directly supported kinds (curve, cartesian point, surface) but is still some geometric representation item. Instead of rejecting it, the element is routed through the general transfer actor as a last-resort fallback so a shape can still be produced for otherwise-unhandled representation item types.
-
-**Test against:** `M196`
-
 ### `stp-loop-degenerate-edge-drop`
 
 *exchange/step-reader* · 1 fixtures · observed: loads×1 · **1/1 carry a written spec** · corpus coverage: COVERED
@@ -1357,14 +1365,6 @@ A GEOMETRIC_SET element is none of the directly supported kinds (curve, cartesia
 Within an EDGE_LOOP, one oriented edge references an EDGE_CURVE whose declared start and end vertex are literally the same STEP vertex entity (a self-loop / degenerate edge), and that edge's translation otherwise failed. Instead of failing the whole wire because of this one bad edge, OCCT recognizes the same-vertex signature and silently drops the edge from the wire, letting the rest of the…
 
 **Test against:** `Twi018`
-
-### `stp-missing-geometry-definition`
-
-*exchange/step-reader* · 1 fixtures · observed: loads×1 · **1/1 carry a written spec** · corpus coverage: COVERED
-
-A topological entity references its underlying geometric definition (a VERTEX_POINT's point, an EDGE_CURVE's curve, or a FACE_SURFACE's / CURVE_BOUNDED_SURFACE's basis surface), but that referenced definition is null or could not itself be resolved/translated. OCCT detects this missing-geometry condition per entity and fails cleanly just for that one entity (logged, not crashed), leaving the…
-
-**Test against:** `Tfa252`
 
 ### `stp-polyloop-dup-point`
 
