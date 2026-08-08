@@ -40,8 +40,8 @@ at the bottom) to recompute._
 | Structural-mutation detection on silent-empty subset | **9.9 %** detection rate on silent-empty (88 % structurally inert under #N reference swap); mitigated by PRODUCT-wrap; **362 Q5 stale-assertion fixes** tightened oracle-active detection rate |
 | Format-invariance test (whitespace/CRLF/comment-strip robust) | **98.0 %** invariant |
 | Cross-fixture similarity audit (BM25, threshold 0.6) | 45 high-similarity pairs all linked bidirectionally; **0 unlinked** |
-| Catalog claim formalization (auto-extracted outcome tags) | **604** entries tagged with allowed/disallowed outcomes |
-| Outcome conformance (live oracle vs catalog `allowed` set) | **248 conform · 931 outside-allowed · 100 violate-disallowed · 3 no-tags** |
+| Catalog claim formalization (auto-extracted outcome tags) | **2899** entries tagged with allowed/disallowed outcomes (was 604 before the spec-coverage pass); **383** carry a `disallowed` tag |
+| Outcome conformance (live oracle vs catalog `allowed` set) | **889 conform · 1100 outside-allowed · 115 violate-disallowed · 436 no-tags · 795 no-oracle** — measured 2026-08-08 from run 31247311065 (full sweep, 2697 ok). The violate-disallowed **rate** is 115/401 = **28.7 %** of entries that both carry a `disallowed` tag and have oracle output; that rate is what CI ratchets on, since the raw count scales with spec coverage |
 | OCCT-API token-hits in scored fields | **0** |
 | Distinct §12.x sections | **19** (added §12.14 mesh) |
 | Bug-report search regression queries | **340** (last computed; rerun pending) |

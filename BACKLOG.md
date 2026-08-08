@@ -2652,3 +2652,46 @@ the class notes rather than silently dropped.
 **Unexploited signal:** 142 fixtures raise `UnorientableShape` and 116 raise `EmptyShell`, against
 2 and 0 cited respectively. That is a large, evidence-backed linkage opportunity for a later pass --
 each candidate still needs a topical check, since raising a status is not the same as being ABOUT it.
+
+## (P) The nightly ratchet counted an absolute that spec coverage was designed to grow (fixed 2026-08-08)
+
+`validate-full` went red on 2026-08-08 at `test_violate_disallowed_below_ceiling`
+(`assert 115 <= 105`) and stayed red. **It was not a flake and not a kernel change.**
+
+I initially read it as intermittent, because the same SHA `9a4576d2` shows one `success`
+and one `failure`. That reading was wrong: the "success" run (31243099954) ran only
+`Set up job -> Decide -> Complete job`. The `Decide` gate skips the sweep on pushes
+without a `[full-ci]` marker, by design. Same for the two later "green" nightlies
+(`ca2c8421`, `95fc21aa`) -- **both skipped the validation job entirely.** Only run
+31247311065 (the 07:13 UTC cron) did real work. Lesson: on this repo a green
+`validate-full` badge means nothing until you confirm the `full` job was not skipped.
+
+Root cause, measured from the catalog text alone with no oracle involved: an entry can
+only be counted by that ratchet if its `Expected kernel behavior` prose yields a
+`disallowed` tag. Entries with no prose emit no tags and are invisible. The
+spec-coverage pass (70.6 % -> 97.2 %) grew the pool from **284 -> 383** entries carrying
+a disallowed tag. The count rose 105 -> 115 because the corpus documents more. An
+absolute ceiling penalised exactly the work it should have been blind to.
+
+Fixed by making it a **rate** (`violate-disallowed / entries that have both a disallowed
+tag and oracle output`) plus a **pool floor**. Measured on run 31247311065: pool 401,
+violations 115, **rate 28.7 %** -- down from ~35 % before the spec pass, while the raw
+count rose. Ceiling set at 35 %. The floor closes a second hole: with an empty
+`/tmp/cad-v2-out` every row becomes `no-oracle`, the violation count is 0, and the old
+assert passed on no data. (`test_conform_count_floor` did still catch that case, so the
+module was never fully blind.) Both failure modes verified by running the module against
+an empty output dir.
+
+**Consequence worth noting:** because this one assert failed, `DRIFT detection` and
+`Tier-3 assertions` were `skipped` in every real nightly since the spec pass landed.
+Those two have not actually run against the current corpus yet.
+
+### Follow-ups this surfaced, not yet done
+- **795 entries classify `no-oracle`.** Expected to be mostly `Me*` mesh (mesh-tier
+  oracle, not validate2) and `Ip*` import-format, which are legitimately excluded --
+  but that has not been verified. If any STEP fixture is silently missing oracle output,
+  it is invisible to this entire check.
+- **1100 entries are `outside-allowed`** -- the kernel does not do what the catalog says
+  a correct kernel should. That is a third of the corpus. Some fraction is real,
+  citable OCCT divergence (valuable); some is likely extractor coarseness. Nobody has
+  sampled it. Worth a stratified read before it is either trusted or dismissed.
