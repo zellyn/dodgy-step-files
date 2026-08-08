@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Detect the full-length coincident overlap between edges 0 and 3, and the separate order break: edge 0&#x27;s LINE (`coincident_fwd`) runs (0,0,0)→(1,0,0), and edge 3 (`coincident_rev`) runs the exact reverse, (1,0,0)→(0,0,0) — the same segment traced in both directions, a real duplicate overlap, not two edges that merely touch. Independently, the EDGE_LOOP&#x27;s stored order doesn&#x27;t chain at that junction either: edge 2 ends at (0,0,0), but edge 3, next in the list, starts at (1,0,0), not (0,0,0). A kernel must flag the coincident A-B segment as an overlap regardless of orientation, and separately verify or reorder the loop so each edge actually starts where the previous one ended.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

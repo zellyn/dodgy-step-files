@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Recognize the duplicate curve, and the resulting open loop: edges `coinc_e0` and `coinc_e1` are two separate EDGE_CURVE entities that reference the exact same underlying LINE (#15) and the exact same vertex pair (#7,#9) with the same sense — the identical edge, defined twice. A kernel must detect this via curve/vertex comparison, not `Handle` identity, and treat it as one edge, not two independent sides of a boundary. Beyond that, the EDGE_LOOP&#x27;s stored order also doesn&#x27;t close: `coinc_e1` (the duplicate) is placed last, ending at vertex #9, but the loop&#x27;s first edge started at vertex #7 — so even setting the duplicate issue aside, this loop does not return to its own starting point.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

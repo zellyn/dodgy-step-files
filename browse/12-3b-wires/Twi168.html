@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Merge same-coordinate vertices, and detect the resulting notch: edge 3 ends at a vertex labeled `vertex_identity_ambiguity` at (10.0,0.0,0.0) — the same coordinates as vertex #9, which edge 1 already used, but a separate VERTEX_POINT entity. A kernel must first recognize these as one topological point. Once merged, edges 2 and 3 retrace the identical segment between (10,0,0) and (5,8,0) in opposite directions — a full out-and-back notch rather than a genuine third side — and edges 1 and 4 likewise retrace the (0,0,0)-(10,0,0) segment in opposite directions; report the whole boundary as degenerating to a there-and-back line with a notch, not a genuine 4-sided closed shape.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

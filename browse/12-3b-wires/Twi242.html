@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Detect the single wrong orientation flag: edge `rev_e`&#x27;s EDGE_CURVE is defined (8,6,0)→(0,6,0), which correctly continues from the previous edge&#x27;s end at (8,6,0) if used forward — but its ORIENTED_EDGE is flagged `.F.`, reversing it to (0,6,0)→(8,6,0), which no longer starts where that edge ended. The same reversal then leaves the following edge unable to continue either, since it starts at (0,6,0) but the reversed `rev_e` now ends at (8,6,0). A kernel must trace actual endpoint coordinates through the whole loop and, on finding exactly one such mismatch, flag `rev_e`&#x27;s orientation as the correctable defect (flipping it to `.T.` closes the loop correctly) rather than reject the entire wire.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

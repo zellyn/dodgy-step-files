@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Recompute or reject a pcurve that disagrees with its own 3D curve by a half-period: edge 2&#x27;s 3D circle arc correctly runs from (-2.5,4.330127,0) at θ=120° to (-2.5,-4.330127,0) at θ=240° — the true middle third connecting edge 1&#x27;s end to edge 3&#x27;s start — but its pcurve is parametrized over u∈[5π/3,7π/3] (300° to 60°, wrapping the seam), exactly π off from the u∈[2π/3,4π/3] range its 3D geometry actually occupies. A kernel must detect that the pcurve&#x27;s evaluated 3D points don&#x27;t match the edge&#x27;s real 3D curve — not just check that the shift is a multiple of the full 2π period — and renormalize or reject the edge accordingly.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

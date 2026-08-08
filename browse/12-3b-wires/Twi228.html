@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Twi228 — ShapeAnalysis_Wire.CheckGap3d with-very-large-coordinates</title>
+  <title>Twi228 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before large-coordinate gap analysis is reached</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi228</span>
 </nav>
 <header class="title-bar">
-<h1>Twi228 <span class="sep">—</span> <span class="entry-title">ShapeAnalysis_Wire.CheckGap3d with-very-large-coordinates</span></h1>
+<h1>Twi228 <span class="sep">—</span> <span class="entry-title">Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before large-coordinate gap analysis is reached</span></h1>
 <p class="category">§12.3b</p>
 <p class="tag-pills">
 <a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
@@ -27,11 +27,11 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>ShapeAnalysis_Wire.CheckGap3d with-very-large-coordinates</p></section>
+<p>Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before large-coordinate gap analysis is reached</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming each unbuildable curve: all six of the wire&#x27;s LINE entities put a DIRECTION where Part 21 requires a `#N` reference to a VECTOR, so no edge curve can be built. Once curves can be built, vertex #111 at (1000005.0,1000000.0,0.0) and vertex #112 at (1000005.0000001,1000000.0000001,0.0) still leave a genuine ~1e-7 gap between edges #131 and #133 at 1e6-scale coordinates — small in absolute terms but the file&#x27;s declared 1.0E-7 accuracy is exactly that order, so a kernel must compare the actual endpoint distance rather than a scale-relative tolerance that would drown a real gap at this magnitude.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

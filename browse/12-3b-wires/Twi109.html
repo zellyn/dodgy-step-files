@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Recognize u=6.28318530718 (2π) and u=0.0 as the same location on this periodic cylindrical surface: edge E3&#x27;s 3D LINE correctly runs from (1,0,4) to (1,0,0), but its pcurve is parametrized entirely in the u=2π branch while the neighboring edge E2&#x27;s pcurve ends exactly at u=0.0 at that same physical seam point — a raw numeric jump of one full period even though the boundary is geometrically continuous. A kernel must reduce pcurve parameters modulo the surface&#x27;s period before comparing them for continuity, rather than reporting a spurious break at the seam.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

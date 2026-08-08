@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Recognize that vertex #2 at (0,0,0) is an endpoint of all four edges, not a simple 2-edge chain junction: edge 1 runs (0,0,0)→(5,0,0), edge 2 (oriented reversed) runs (0,5,0)→(0,0,0), edge 3 runs (5,5,0)→(0,0,0), and edge 4 (oriented reversed) runs (0,0,0)→(-5,0,0) — four spokes that all touch the same hub point but, taken in the EDGE_LOOP&#x27;s listed order, never share an endpoint between consecutive edges. A kernel must recognize a vertex referenced by more than two edge-ends as a branch point and either split the star into independent chains anchored there or reject the EDGE_LOOP as not a simple cycle, rather than attempt to chain the edges as if each connects to the next in sequence.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

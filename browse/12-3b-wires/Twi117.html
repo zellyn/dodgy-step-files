@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Detect the degenerate tangent from repeated poles, not from a computed derivative: edge 2&#x27;s B-spline (#17) repeats its first pole twice — poles (5,0,0),(5,0,0),(8,3,0),(10,0,0) — which collapses the curve&#x27;s derivative to zero at its own start (5,0,0), immediately after edge 1 arrives there with tangent (1,0,0). A kernel must flag this junction by checking for repeated consecutive poles (a purely algebraic test) rather than relying on a numerically evaluated tangent that is itself undefined at exactly the point being tested.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

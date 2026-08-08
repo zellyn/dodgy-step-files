@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Recognize the full-length coincident overlap, and the resulting disconnection: `fwd_edge` and `rev_edge` both reference the exact same SURFACE_CURVE entity (#22) — one with same_sense `.T.`, tracing (0,0,0)→(5,0,0), the other `.F.`, tracing (5,0,0)→(0,0,0) — a single segment counted twice with opposite orientation, not a tangent touch at a midpoint. Once collapsed, the wire also doesn&#x27;t connect: after the there-and-back pair returns to (0,0,0), the next edge (`right_e`) starts at (5,0,0), not (0,0,0). A kernel must flag the coincident pair by comparing the edges&#x27; `edge_geometry` reference (same curve, opposite sense), and separately verify the remaining edges actually chain from wherever the wire is left after collapsing the duplicate.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

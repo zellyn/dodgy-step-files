@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Recognize the duplicate edge and the resulting order break: edges built from #13 and #18 are two separate LINE entities with byte-identical geometry — both from (0,0,0) heading (1,0,0) for length 10 — and both of their EDGE_CURVEs connect the same two vertices (#7,#9) in the same direction, so they are the same edge defined twice. The EDGE_LOOP&#x27;s stored order also doesn&#x27;t chain: the first edge ends at (10,0,0), but the second (the duplicate) starts back at (0,0,0), not (10,0,0), before the third edge closes from (10,0,0) back to (0,0,0). A kernel must detect the duplicate via curve/vertex comparison, collapse it to a single edge, and separately verify the two remaining edges actually chain head-to-tail before treating this as a valid 3-sided boundary.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

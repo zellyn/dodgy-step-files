@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Measure 3D length directly rather than approximating from parameter span: within the curve&#x27;s last quarter of parameter range (t≈0.75 to 1.0), the poles (1,1,0), (0.0001,0.0001,0), (0,0,0) place almost all of that parameter span within about 1.4e-4 units of the curve&#x27;s actual 3D endpoint (0,0,0) — a 0.25 parameter interval corresponding to a 3D distance roughly four orders of magnitude smaller than the rest of the curve&#x27;s ~7.07-unit length. The curve does not reverse direction here (these poles run monotonically toward the endpoint along one line), so this is not a tail or notch, but a kernel relying on parameter-interval size as a proxy for 3D extent would badly misjudge how much boundary this final stretch represents; always convert to real 3D distance before applying a length-based threshold.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Detect the out-and-back protrusion at (8,0,0) regardless of its smoothness: after edge `e0` arrives there with tangent (1,0,0), the B-spline `bspl_tail` immediately departs toward (8,-3,0) with tangent (0,-2,0) — a sharp ~90° corner, not a smooth continuation — then the same curve is walked back (entity #80 referenced twice, forward as one ORIENTED_EDGE then reversed as another) before the rectangle&#x27;s edges continue. A kernel must recognize this as a tail from the shared-curve-reversed-pair pattern itself, not from tangent continuity, since a real tail can depart at any angle, sharp or smooth.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

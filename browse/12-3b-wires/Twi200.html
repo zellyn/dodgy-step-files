@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Recognize vertex H=(1,0,0) as a branch point touched by three edges, not a chain link: edge `main_e0` ends at H, then both `branch_e1` (to (2,1,0)) and `branch_e2` (to (2,-1,0)) start there — a true Y-junction, not a sequence where each edge hands off to exactly one next edge. A kernel must compute vertex degree and reject or split at any vertex touched by three or more edges rather than force these three edges into a single closed loop; no such loop exists here, since the two branch endpoints have no edge connecting them.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

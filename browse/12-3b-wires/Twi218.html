@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming entity #34: its LINE&#x27;s third argument is written as an inline aggregate `(DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0)),1.0)` rather than a `#N` reference to a VECTOR — Part 21 requires an object reference there, so the curve cannot be built and the reader must abort naming that entity rather than silently coercing or dereferencing a null curve. Independently, the wire&#x27;s second edge (#80) is built on a zero-radius CIRCLE (#61) between vertices #41 and #70, both at (5.0,0.0,0.0) — a genuinely degenerate, zero-length edge that a kernel must also detect and reject once the file can be parsed at all.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

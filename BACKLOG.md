@@ -2525,10 +2525,24 @@ The other 5 hits are already honest and need NO action; they are useful controls
   §12-2c spec wave; Gs134/136/137 are flagged there, Gs138's title is honest about a
   different malformation in the same file.
 
-**Do NOT widen this to the two large idiom classes without a separate decision.** The same scan
-also found 268 inline `LINE('',#pt,VECTOR('',(x,y,z),1.0))` constructions and 217 cases of
-arg3 referencing a `DIRECTION` rather than a `VECTOR`, spread over ~90 fixtures that pass CI
-with verified Expected tokens. Those are corpus-wide AUTHORING IDIOMS, not per-fixture
-defects, and `_schema_oracle --strict` reports 0 unexpected violations against them. Whether
-they are Part-21 conformance problems worth fixing is a separate maintainer question — treating
-them as 93 "broken fixtures" would be wrong.
+**CORRECTION 2026-08-07 — an earlier revision of this entry got this wrong, and the error is
+recorded here rather than quietly deleted.** That revision lumped two DIFFERENT `LINE` arg3
+patterns together as "authoring idioms" and stated that treating them as broken "would be
+wrong". Measurement says otherwise. The two must be separated:
+
+- **inline form** — `LINE('',#pt,VECTOR('',(x,y,z),1.0))`, 268 occurrences. This IS an
+  authoring idiom. These fixtures load and pass CI. No action.
+- **reference-to-DIRECTION form** — `#110=LINE('',#100,#12)` where `#12` is a `DIRECTION`
+  rather than a `VECTOR`. **56 fixtures carry this, and 53 of them (95%) are
+  `occt=signal(11)`.** It is a genuine, crashing malformation, NOT an idiom. (The other 3 —
+  Tsh079/080/081 — were a parse miss in the checking script, not demonstrated loaders.)
+
+So the malformed-LINE crash family is far larger than the 8 "structurally broken" cases the
+first scan reported: that scan only counted self-reference and point-as-vector, and silently
+put the DIRECTION-reference form in the idiom bucket. The §12-3b wire wave independently
+rediscovered it and was right.
+
+Root cause of MY error: one regex, two patterns, one label. The lesson is the same one as
+[[feedback_measure_the_claim]] — the check must distinguish the cases the CLAIM distinguishes.
+`_schema_oracle --strict` reporting 0 unexpected violations was also misread as evidence of
+wellformedness; it simply does not check this constraint.

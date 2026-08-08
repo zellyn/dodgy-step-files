@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Recognize a single-edge, unclosed &quot;loop&quot; as not a closed wire at all: EDGE_LOOP has exactly one edge, `loop_e1`, running (0,0,0)→(1,0,0), whose two ends are different vertices. A kernel must check edge count and endpoint closure before running any loop-classification logic that assumes multiple edges meeting at shared vertices, and reject a single open edge as an incomplete boundary rather than pass it through further checks.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

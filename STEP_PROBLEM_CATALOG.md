@@ -27231,6 +27231,7 @@ Integrated face-healing pipeline; mode-dependent cascade via base-slant-apex dec
 **Defect**: Wire with edges in wrong order (E0→E2→E1→E3→E4). FixReorder fails (ReorderOK=false), cascading suppression to FixSmall, FixConnected, FixSelfIntersection per SF_Perform lines 320, 331, 355.
 **Pattern**: 5-edge closed loop on plane; deliberate edge order reversal triggers reorder impossibility.
 **Coverage**: SF_Perform_002 (mode_override_cascade), SF_Perform_003 (conditional_skip_wrong), SF_Perform_004 (dependency_coupling).
+- **Expected kernel behavior**: Reorder the loop's 5 edges into head-to-tail sequence before treating it as a bound: as stored, the EDGE_LOOP's 1st edge ends at P1=(10,0,0), but the 2nd edge in the list runs from P2=(10,8,0) to P3=(5,12,0) — a break, since P1≠P2. A valid head-to-tail permutation of these same five edges exists — P0=(0,0,0)→P1=(10,0,0)→P2=(10,8,0)→P3=(5,12,0)→P4=(0,8,0)→P0 — reconstructing a simple, non-self-intersecting pentagon. A kernel must search for and apply that permutation rather than reject the wire merely because its stored order is non-monotonic.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a`
 ### Twi108 — FixGaps3d 3D-Gap Repair
@@ -27244,6 +27245,7 @@ Integrated face-healing pipeline; mode-dependent cascade via base-slant-apex dec
 **Defect**: Cylindrical wire (periodic in U) where edge E3 pcurve is shifted by +2π in parameter space, breaking U continuity. 3D curve correct; pcurve jumps discontinuously.
 **Pattern**: 4-edge closed loop on CYLINDRICAL_SURFACE; E3 pcurve uses u∈[8.06, 8.06] (shifted) instead of u∈[0.78, 0.78] (true).
 **Coverage**: ShapeFix_Wire.FixShifted periodic surface parameter normalization.
+- **Expected kernel behavior**: Recognize u=6.28318530718 (2π) and u=0.0 as the same location on this periodic cylindrical surface: edge E3's 3D LINE correctly runs from (1,0,4) to (1,0,0), but its pcurve is parametrized entirely in the u=2π branch while the neighboring edge E2's pcurve ends exactly at u=0.0 at that same physical seam point — a raw numeric jump of one full period even though the boundary is geometrically continuous. A kernel must reduce pcurve parameters modulo the surface's period before comparing them for continuity, rather than reporting a spurious break at the seam.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
@@ -27256,6 +27258,7 @@ Integrated face-healing pipeline; mode-dependent cascade via base-slant-apex dec
 **Defect**: Cylindrical wire where edge E3 3D curve (LINE P2→P3) is geometrically correct but pcurve maps to surface parameters (u, v) that evaluate to misaligned 3D point, failing curve/pcurve coherence.
 **Pattern**: 4-edge cylindrical loop; E3 pcurve v-extent artificially expanded to -5.0 to break sampling alignment.
 **Coverage**: ShapeAnalysis_Wire.CheckEdgeCurves 3D curve vs pcurve-on-surface point sampling mismatch.
+- **Expected kernel behavior**: Compare the edge's pcurve against its actual 3D curve rather than trusting both independently: the 3D LINE for E3 runs from (1,0,4) to (1,0,0), but its pcurve on the CYLINDRICAL_SURFACE starts at (u,v)=(0.0,-5.0), which evaluates to 3D point (1,0,-5.0) — 9 units from the true 3D start. A kernel must detect this curve/pcurve incoherence and either recompute the pcurve from the real 3D geometry or reject the edge naming the mismatch, rather than silently accepting an internally inconsistent parametrization.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
@@ -27285,6 +27288,7 @@ Wire on cylindrical surface with consecutive edges' parametric curves (pcurves) 
 ### Twi113 — ShapeAnalysis_Wire.CheckOuterBound outer-bound mis-identification
 
 Face with multiple wires where the loop with largest enclosed area (20×20 outer rectangle) is not tagged as FACE_OUTER_BOUND; smaller hole loop (4×4) is present. CheckOuterBound should detect the outer rectangle as the true boundary and flag misidentification.
+- **Expected kernel behavior**: Determine containment from geometry, not from labels: the two closed loops in this curve set are a 20x20 square (entity #33, labeled `outer_rect_20x20`) and a 4x4 square (entity #66, labeled `inner_hole_4x4`) that lies fully inside it, but nothing here encodes which is the outer boundary — there is no face, no FACE_OUTER_BOUND, no FACE_BOUND at all, just two independent EDGE_LOOPs. A kernel that wants to use these as a face's boundaries must compute enclosed area or containment itself to decide which loop is outer and which is a hole; entity labels are free text and carry no topological meaning.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi114 — ShapeFix_Wire.FixTails tail-elimination
@@ -27296,16 +27300,19 @@ Wire ending in a small "tail" edge (length 0.05 units) much shorter than its nei
 ### Twi115 — ShapeAnalysis_Wire.CheckGap3d threshold-comparison edge
 
 Adjacent edges where the gap between endpoint of first edge (10.0, 0.0, 0.0) and start of second edge (10.0001, 5.0, 0.0) equals exactly 0.0001 units, matching default vertex tolerance. Threshold check uses >= instead of >, causing boundary-case gaps to be silently accepted.
+- **Expected kernel behavior**: Measure real 3D endpoint distances rather than assuming a hairline boundary-tolerance gap: this "loop" has only two edges — one from (0,0,0) to (10.0,0.0,0.0) and another from (10.0001,5.0,0.0) to (0.0,5.0,0.0) — and the end of the first edge sits roughly 5.0 units from the start of the second (dominated by the 5.0-unit difference in Y), not just the 0.0001 x-offset the label implies, since the two segments run along y=0 and y=5 with no edges connecting them. A kernel must reject this as a wide-open 2-edge chain; a genuine tolerance-boundary gap test would need the two segments to actually meet apart from a sub-threshold offset.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi116 — ShapeFix_Wire.FixConnected vertex-sharing mismatch
 
 Wire with edges that should connect via a shared vertex but use different VERTEX_POINT entities at identical coordinates (10.0, 0.0, 0.0): v2a in edge1→edge2 transition, v2b in edge3 start. FixConnected should unify these duplicate vertices into a single reference.
+- **Expected kernel behavior**: Trace real vertex coordinates around the loop's actual edge order, not just per-edge topology: edge 2 ends at vertex #6 (10.0,10.0,0.0), but edge 3 (the closing edge, #25) starts at vertex #8 (10.0,0.0,0.0) — a different point 10 units away in Y, not the vertex edge 2 actually ended on. The wire's last edge does not pick up where the second edge left off, so the loop does not close, regardless of the separate, harmless coincidence that vertex #8 happens to share coordinates with vertex #4 (the vertex correctly shared by edges 1 and 2). A kernel must trace actual endpoint coordinates around the loop and reject or repair the real break between edges 2 and 3, not a break at the edge1/edge2 junction, which is already consistent.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi117 — ShapeFix_Wire.FixNotchedEdges singular-derivative
 
 Wire with edges whose 3D-curve derivatives are parallel at shared vertex. Notch detector samples tangent angle but tangent is undefined at singular derivative endpoint. Edge sequence: straight line (tangent: 1,0,0) followed by cubic Bézier with zero derivative at start. FixNotchedEdges silently fails because tangent vector is degenerate.
+- **Expected kernel behavior**: Detect the degenerate tangent from repeated poles, not from a computed derivative: edge 2's B-spline (#17) repeats its first pole twice — poles (5,0,0),(5,0,0),(8,3,0),(10,0,0) — which collapses the curve's derivative to zero at its own start (5,0,0), immediately after edge 1 arrives there with tangent (1,0,0). A kernel must flag this junction by checking for repeated consecutive poles (a purely algebraic test) rather than relying on a numerically evaluated tangent that is itself undefined at exactly the point being tested.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi118 — ShapeAnalysis_Wire.CheckLacking lacking-edge tangency
@@ -27323,6 +27330,7 @@ Wire with "small" edge exactly at user-configured small-edge threshold (1e-5). F
 ### Twi120 — ShapeAnalysis_Wire.CheckShapeConnect 4-way orientation encoding
 
 Wire boundary where edges should be merged at hub vertex; CheckShapeConnect's DONE2/3/4 status codes encode 4 specific orientation merge templates. Radial edges meeting at center with mixed pattern (--,++,-+) hits no branch condition, silent merge-decision miss. Status propagation undefined.
+- **Expected kernel behavior**: Recognize that vertex #2 at (0,0,0) is an endpoint of all four edges, not a simple 2-edge chain junction: edge 1 runs (0,0,0)→(5,0,0), edge 2 (oriented reversed) runs (0,5,0)→(0,0,0), edge 3 runs (5,5,0)→(0,0,0), and edge 4 (oriented reversed) runs (0,0,0)→(-5,0,0) — four spokes that all touch the same hub point but, taken in the EDGE_LOOP's listed order, never share an endpoint between consecutive edges. A kernel must recognize a vertex referenced by more than two edge-ends as a branch point and either split the star into independent chains anchored there or reject the EDGE_LOOP as not a simple cycle, rather than attempt to chain the edges as if each connects to the next in sequence.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi121 — ShapeFix_Wire.FixSeam closed-surface seam reset
@@ -27340,16 +27348,19 @@ Wire with first edge 0.0001mm (very short) and final edge normal-length (1.0mm).
 ### Twi123 — ShapeAnalysis_Wire.CheckGap2d tolerance-equality misclassification
 
 Adjacent parametric curves with gap exactly equal to vertex tolerance threshold (1.0E-7mm). Non-strict comparison (≤ vs <) in FP arithmetic causes inconsistent flagging based on rounding. CheckGap2d must use strict inequality or epsilon-band guards.
+- **Expected kernel behavior**: Decide consistently at the tolerance boundary: edge 1's pcurve on this radius-1 cylinder ends at (u,v)=(1.0,0.0) while edge 2's pcurve starts at (1.0000001,0.0) — a parametric gap of exactly 1.0E-7, matching the file's declared accuracy to the last digit, and the corresponding 3D points already agree to that same 1e-7. A kernel must pick one closed convention (gap ≤ tolerance closes, gap > tolerance does not) and apply it identically on every evaluation, since re-deriving an exactly-equal floating-point comparison is unreliable; treat this as closing (merge the two points) rather than let repeated evaluation flip the verdict.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi124 — ShapeFix_Wire.FixIntersectingEdges 2.0000001 magic-constant
 
 Wire edges with intersection detection tolerance multiplied by literal constant 2.0000001. When input tolerance is just above 2.0mm, scaled margin collapses, causing false-negative intersection detection. Tolerance scaling should use adaptive or documented multiplier.
+- **Expected kernel behavior**: Detect the interior crossing directly from curve geometry, not via a tolerance-scaled proxy: edge 1 runs along y=0 from x=0 to x=4, and edge 2 runs along x=2 from y=2 to y=-2 — the two 3D LINEs cross at (2.0,0.0,0.0), a point interior to both segments (neither edge's declared endpoints are (0,0,0)/(4,0,0) or (2,2,0)/(2,-2,0) themselves). A kernel must compute this crossing from the actual curve equations rather than a margin that scales with the input edge tolerance, since a tolerance-relative test can be defeated by choosing a tolerance near whatever multiplier the test uses; report the wire as self-intersecting and name the crossing point and the two edges involved.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi125 — ShapeAnalysis_Wire.CheckSelfIntersection bounding-box pruning
 
 Wire with very narrow bounding box (1.0 unit square) where two edges intersect exactly at bbox corner (1.0, 0.0). Spatial pruning excludes edge-pairs at bbox boundaries, missing the intersection. CheckSelfIntersection needs to include boundary cases in AABBox tests.
+- **Expected kernel behavior**: Recognize the coincident retrace before reporting a "corner crossing": edges 2 and 3 are not two lines meeting at a point — they run the exact same segment between (1.0,0.0,0.0) and (0.0,1.0,0.0) in opposite directions (edge 2 direction (-0.7071,0.7071,0), edge 3 the exact negation), so they overlap along their whole ~1.414-unit length rather than crossing once. And the loop as a whole never returns to its starting vertex (0,0,0): edge 3 ends back at (1.0,0.0,0.0), the same point edge 1 already reached, not at edge 1's start. A kernel must flag the full-length coincident overlap between edges 2 and 3 directly, and separately reject the loop as unclosed since it never revisits (0,0,0).
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi126 — ShapeFix_Wire.FixClosed linear submethod cascade
@@ -27364,7 +27375,7 @@ FixClosed chains FixConnected → FixDegenerated → FixLacking sequentially. Af
 
 **Fixture**: TOROIDAL_SURFACE with a 4-edge wire that crosses the u=0 seam. Edges wrap around via seam pcurves. FixReorder must detect that primary region spans both u∈[0,π] and u∈[π,2π] and order edges to maintain seam crossing, not collapse to single region.
 
-**Status**: VALID — triggers FixReorder branch that handles periodic seam crossing.
+**Status**: FLAGGED 2026-08-07 — measured the four pcurves and they do not show any disjoint-region or seam-reorder problem. Edge pcurves run u∈[0,π/2]→[π/2,π]→[π,3π/2]→[3π/2,2π] in strict, monotonically increasing sequence, each edge's 3D CIRCLE arc (radius 2.5) matching its own pcurve exactly (e.g. edge 1's 3D vertices sit at angle 0° and 90°, matching its pcurve's u=0 and u=π/2). The wire is a perfectly ordinary, non-self-intersecting closed quarter-arc loop with no seam crossing, no shift, and no disjoint UV span — it does not demonstrate the claimed defect. The prior "Status: VALID" self-certification does not hold up under independent verification. Needs a new fixture or an honest retitle; not specced pending that decision.
 
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -27376,6 +27387,7 @@ FixClosed chains FixConnected → FixDegenerated → FixLacking sequentially. Af
 
 **Status**: VALID — isolates orientation polarity assumption in tail detection.
 
+- **Expected kernel behavior**: Recognize the fifth edge as an out-and-back tail regardless of its orientation flag: the rectangle already closes after four edges, back at (0,0,0); edge 5's own EDGE_CURVE runs from (0.0001,0.0,0.0) to (0,0,0), and with its ORIENTED_EDGE marked reversed it is walked (0,0,0)→(0.0001,0,0) — a 0.0001-unit spur off the already-closed corner that goes nowhere and returns to nothing. A kernel must detect this tail from its geometry (a short edge whose far end connects to nothing else) independent of whether its ORIENTED_EDGE sense is forward or reversed, and drop it or reject the wire naming it, rather than let the orientation flag suppress detection.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi129 — Cubic B-spline whose control polygon is strictly x-monotonic, so the curve cannot cross itself: splitting it is a false positive
@@ -27427,14 +27439,17 @@ Wire with adjacent B-spline edges. CheckCurveGap evaluates curve endpoints using
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi134 — ShapeFix_Wire.FixShifted non-2π shift
 Wire on SURFACE_OF_REVOLUTION (periodic in θ) with pcurves shifted by π (half period). FixShifted assumes all periodic shifts are multiples of 2π and skips correction for odd multiples.
+- **Expected kernel behavior**: Recompute or reject a pcurve that disagrees with its own 3D curve by a half-period: edge 2's 3D circle arc correctly runs from (-2.5,4.330127,0) at θ=120° to (-2.5,-4.330127,0) at θ=240° — the true middle third connecting edge 1's end to edge 3's start — but its pcurve is parametrized over u∈[5π/3,7π/3] (300° to 60°, wrapping the seam), exactly π off from the u∈[2π/3,4π/3] range its 3D geometry actually occupies. A kernel must detect that the pcurve's evaluated 3D points don't match the edge's real 3D curve — not just check that the shift is a multiple of the full 2π period — and renormalize or reject the edge accordingly.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi135 — ShapeAnalysis_Wire.CheckGap2d trimmed-pcurve gap
 Adjacent edges with pcurves defined as TRIMMED_CURVEs of different basis line curves. CheckGap2d compares 2d endpoints in the trimmed parameter spaces instead of evaluating the actual basis curve positions, reporting false gaps.
+- **Status**: FLAGGED 2026-08-07 — measured all three edges end-to-end and the wire is fully continuous with no actual gap. Edge 1's TRIMMED_CURVE evaluates at its own end parameter (t=5, direction (1,0.6) unnormalized as (0.857493,0.514496)×1.16619) to (5.0,3.0), exactly matching edge 2's start (5.0,3.0); edge 2 evaluates at t=5 to (8.0,7.0), matching edge 3's start; edge 3 evaluates back to (0.0,0.0), matching edge 1's start. Both the 2D pcurve chain and the 3D chain close exactly. The claimed defect (raw trim-parameter comparison across differently-scaled curves producing a false report) is a hypothesis about an internal comparison method, not something this input's geometry demonstrates — the geometry itself is a valid, closed triangle. Not specced pending a fixture that actually contains a positional gap.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi136 — ShapeFix_Wire.FixConnected vertex-replacement chain
 Three edges forming chain with vertex duplicates: v1→v2(dup)→v3(dup)→v4. FixConnected replaces v2 with v3, then v3 with another vertex, leaving intermediate vertices orphaned in the replacement map.
+- **Expected kernel behavior**: Merge coincident-but-distinct vertices before chaining edges: edge 1 ends at vertex `v2_dup` (5.0,0.0,0.0), and edge 2 starts at a different vertex `v2_dup_alt` (5.0001,0.0,0.0) — 0.0001 apart — and the same pattern repeats between edge 2's end `v3_dup` (10.0,0.0,0.0) and edge 3's start `v3_dup_alt` (10.0001,0.0,0.0). A kernel must recognize both pairs as the same topological vertex within tolerance and unify them, updating both edges' vertex references rather than relinking one gap and orphaning the other, then still report that even after merging, the resulting chain runs open from (0,0,0) to (15,0,0) and never returns to its start.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi137 — ShapeFix_Wire.FixIntersectingEdges 2D-only intersection
@@ -27447,13 +27462,17 @@ Wire on a 3D surface (plane) where two edges intersect in 2D parameter space but
 Wire with a tiny edge below the threshold where CheckSmall comparison uses parameter-difference (not arc-length) for some curve types. B-spline with degenerate knot multiplicity creates large 3D arc from small parameter range; checker falsely classifies as small. Tests parameter vs. arc-length measurement.
 - **Expected kernel behavior**: The edge's curve is declared degree 3 with knots (0.0, 1.0) at multiplicities (4,4) — eight knots — but carries only three control points, where a clamped cubic needs four; the identity knot-count = control-point-count + degree + 1 fails. Validate that identity before evaluating any B-spline and reject the curve with a diagnostic naming the entity, rather than reading past the end of the control-point array. Only once a curve is valid may an edge-smallness test run, and that test must measure 3D arc length, or endpoint-and-midpoint coincidence, never the width of the parameter range — a narrow parameter range can carry an arbitrarily long arc.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-### Twi139 — ShapeFix_Wire.FixReorder seed-edge choice
+### Twi139 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before reorder-seed repair is reached
+- **Status**: retitled 2026-08-07: bytes show 5/5 LINEs (#110, #116, #122, #127, #131) with a DIRECTION entity (#12, #115, #121, #126, #130) in the vector slot instead of a `#N` reference to a VECTOR; the reader aborts in transfer, so the seed-choice defect the old title named is never reached. Same crash class as the Twi218/222/224/225/227/231 cohort. Retitle-not-repair per the Q14 precedent. See BACKLOG (I).
 
 Wire with 5 edges where the reorder algorithm picks edge[2] as seed; reorder propagates from seed but seed had wrong orientation, causing adjacent edges to fail head-to-tail test. Tests seed selection and propagation in wire-order repair.
+- **Expected kernel behavior**: Reject with a diagnostic naming each unbuildable curve: every one of the wire's five LINE entities (#110, #116, #122, #127, #131) has a DIRECTION where Part 21 requires a `#N` reference to a VECTOR, so no edge curve can be constructed at all. A kernel must report the first construction failure per entity rather than dereferencing a null curve; whatever wire-ordering question the pentagon-with-a-reflex-vertex-at-(0.5,0.5) shape was meant to pose is unreachable until every LINE in the file is fixed.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-### Twi140 — ShapeAnalysis_Wire.CheckTail B-spline tail
+### Twi140 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before tail-detection repair is reached
+- **Status**: retitled 2026-08-07: bytes show 2/2 LINEs (#110, #131) with a DIRECTION entity (#12, #130) in the vector slot instead of a `#N` reference to a VECTOR; the reader aborts in transfer, so the tail defect the old title named is never reached. Same crash class as the Twi218/222/224/225/227/231 cohort. Retitle-not-repair per the Q14 precedent. See BACKLOG (I).
 
 Wire with last edge a B-spline whose tangent at endpoint is undefined (degenerate knot with multiplicity = degree+1). CheckTail's tangent calculation fails silently, leaving defective tail undetected. Tests tangent-vector robustness on singular curves.
+- **Expected kernel behavior**: Reject with a diagnostic naming entities #110 and #131: both LINEs put a DIRECTION where Part 21 requires a `#N` reference to a VECTOR, so neither of the wire's two straight edges can be built. Separately, the middle edge's B_SPLINE_CURVE_WITH_KNOTS (#122) repeats its first pole and its last pole back-to-back (poles #102,#102,#120,#120), which collapses the derivative to zero at both ends of that degree-3 curve — a genuinely degenerate tail tangent that a kernel must also flag once the file parses at all, rather than silently accepting an undefined direction.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi141 — ShapeFix_Wire.FixSelfIntersectingEdge close-loop iteration
 
@@ -27467,11 +27486,13 @@ Wire with degenerate edge (zero-length) at position 0; FixDegenerated's index lo
 **Root cause**: Off-by-one or missing boundary check when index equals 0.
 - **Expected kernel behavior**: The loop's first entry is a zero-length edge: its two distinct vertex instances both sit at (0,0,0). Handle removal at index 0 exactly as at any other index — drop the edge, merge the two coincident vertices into one, and re-close the ring so the last edge's end becomes the new first edge's start, remembering that index 0's predecessor is the last edge and not index -1 — leaving a four-edge closed square. An implementation that special-cases only interior positions leaves a dangling vertex or reads out of range; the fourth edge must also be rejected, since its `LINE` along (0,-1,0) from (10,10,0) never reaches its declared end vertex (0,10,0).
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-### Twi143 — ShapeAnalysis_Wire.CheckIntersectingEdges parallel edges
+### Twi143 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before intersecting-edge analysis is reached
+- **Status**: retitled 2026-08-07: bytes show 5/5 LINEs (#110, #120, #133, #143, #151) with a DIRECTION entity (#12, #132, #142, #150) in the vector slot instead of a `#N` reference to a VECTOR (two of the LINEs, #110 and #120, both point at the same #12); the reader aborts in transfer, so the overlap defect the old title named is never reached. Same crash class as the Twi218/222/224/225/227/231 cohort. Retitle-not-repair per the Q14 precedent. See BACKLOG (I).
 
 Two parallel edges coincident along their entire length but in opposite directions; CheckIntersectingEdges considers them non-intersecting but should flag problematic overlapping geometry.
 
 **Root cause**: Direction check doesn't recognize antiparallel coincident edges as intersecting.
+- **Expected kernel behavior**: Reject with a diagnostic naming each unbuildable curve: all five of the wire's LINE entities put a DIRECTION where Part 21 requires a `#N` reference to a VECTOR, so no edge curve can be constructed. Once curves can be built, the file still separately describes edge #111 running (0,0)->(10,0) and edge #121 running (10,0)->(0,0) back along the identical LINE #110/#120 pair — full-length antiparallel overlap on the same underlying geometry — which a kernel must flag as a degenerate/coincident boundary rather than accept as two independent, non-intersecting edges.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi144 — ShapeFix_Wire.FixSeam non-cylindrical periodic surface
 
@@ -27481,11 +27502,13 @@ Wire on periodic SURFACE_OF_REVOLUTION (conical profile) crossing seam; FixSeam 
 - **Expected kernel behavior**: The face's surface is a revolution of the line through (5,0,0) with direction (1,0,1) about the Z axis — a cone — but the wire carries no pcurves, three of its four edges have end vertices that do not lie on their own `LINE`s (one runs along (1,0,0) from (5,0,0) yet ends at (6,2,3)), and the chain is broken because the first edge ends at (7.071,0,2.071) while the second starts at a second vertex instance back at (5,0,0). Validate every edge against its own curve and against the face's surface before any seam reasoning, and reject or repair the off-curve vertices first. Where an edge genuinely crosses the periodic boundary, take the period shift from the surface's own u-period — a revolution with a slanted profile has the same 2pi period as a cylinder — rather than from a cylinder-only special case.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 - **Notes**:
-### Twi145 — ShapeAnalysis_Wire.CheckGap3d 3D-only with valid 2D
+### Twi145 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before 3D-gap analysis is reached
+- **Status**: retitled 2026-08-07: bytes show 4/4 LINEs (#110, #125, #135, #143) with a DIRECTION entity (#12, #124, #134, #142) in the vector slot instead of a `#N` reference to a VECTOR; the reader aborts in transfer, so the gap defect the old title named is never reached. Same crash class as the Twi218/222/224/225/227/231 cohort. Retitle-not-repair per the Q14 precedent. See BACKLOG (I).
 
 Wire on surface where 3D edges have a real gap but parametric 2D curves connect seamlessly; CheckGap3d misses this because it validates 2D first and skips 3D when 2D passes.
 
 **Root cause**: Logic assumes 2D closure guarantees 3D closure; missing independent 3D gap check.
+- **Expected kernel behavior**: Reject with a diagnostic naming each unbuildable curve: all four of the wire's LINE entities put a DIRECTION where Part 21 requires a `#N` reference to a VECTOR, so no edge curve can be built. Once that is fixed, the file still separately places edge #111's end vertex at (10.0,0.0,0.0) while edge #126's start vertex #121 sits at (10.1,0.0,0.0) — a real 0.1-unit 3D gap between consecutive edges — which a kernel must detect by comparing actual endpoint coordinates rather than trusting the EDGE_LOOP's listed order.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi146 — ShapeFix_Wire.FixLacking wrap-around on closed surface
 
@@ -27538,6 +27561,7 @@ B-spline edge has a self-intersection (loops back on itself). CheckIntersectingE
 **Source**: OCCT_HEAL_COVERAGE_V3.md ShapeAnalysis_Wire.CheckIntersectingEdges_at1563 (branches SE-IXIE-*)  
 **Root cause**: Pairwise edge comparison at line 1563 does not test edge against itself; no injection assumption validation
 
+- **Status**: FLAGGED 2026-08-07 — numerically sampled the single closed B_SPLINE_CURVE_WITH_KNOTS (poles (0,0),(15,5),(5,15),(-5,10),(-2,2),(0,0), degree 3, knots (0,0,0,0,0.25,0.75,1,1,1,1)) at 4000 points and found zero crossings between non-adjacent chords; closest non-adjacent self-approach measured ~0.385 units, and the curve's closest approach to the claimed crossing point (3,3,0) is ~1.8 units away (actual nearby curve point ≈(3.67,1.33,0)). The control polygon does cross itself, but the smooth curve does not — exactly the class of false claim this section's guidance warns against. Separately, the file's own EDGE_LOOP has only one edge (the self-closing B-spline, `EDGE_CURVE('',#7,#7,#16,.T.)`); the "E1 LINE closing segment" the comment describes does not exist as a wired entity — points #8/#9 are defined but never referenced by any edge or loop. Not specced; needs a fixture whose curve actually self-intersects, or an honest retitle.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### Twi154 — ShapeFix_Wire.FixSeam edge-direction reversed
@@ -27558,15 +27582,18 @@ Wire contains zero-length edge (start vertex == end vertex). CheckGap3d's adjace
 **Source**: OCCT_HEAL_COVERAGE_V3.md ShapeAnalysis_Wire.CheckGap3d_at1125 (branches SE-GAP-*)  
 **Root cause**: Gap check at line 1125 does not guard against start==end vertex; direction undefined, floating-point evaluation order non-deterministic
 
+- **Expected kernel behavior**: Detect the zero-length edge directly from its own endpoints, not from a neighbor-distance computation: edge 2's EDGE_CURVE (#22) has the same vertex, #9 at (10.0,0.0,0.0), as both its start and end, and its LINE (#21) carries a VECTOR of magnitude 0.0 — a curve with no direction at all. A kernel must flag this edge as degenerate on its own terms (start vertex equals end vertex) before attempting any adjacent-edge gap arithmetic that would need a direction from it, and drop or reject the edge rather than let an undefined direction propagate into the rest of the check.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
-### Twi156 — ShapeFix_Wire.FixReorder duplicate-edge
+### Twi156 — The closing edge's LINE puts a direction entity in the slot that requires a vector, so the reader aborts before duplicate-edge reorder repair is reached
+- **Status**: retitled 2026-08-07: bytes show the 4th LINE (#72, the closing edge's curve) uses DIRECTION #70 in the vector slot instead of a `#N` reference to a VECTOR; the other three LINEs (#42, #52, #62) correctly reference VECTOR entities. The reader still aborts in transfer on this one malformed entity, so the duplicate-edge defect the old title named is never reached. Same crash class as the Twi218/222/224/225/227/231 cohort, but only 1/4 LINEs affected rather than all. Retitle-not-repair per the Q14 precedent. See BACKLOG (I).
 
 Wire contains same edge twice with forward and reverse orientations. FixReorder treats each ORIENTED_EDGE independently as distinct entity, even though they reference same EDGE_CURVE. Duplicate edges remain out of sequence.
 
 **Defect class**: `input-shape`, duplicate edge reference  
 **Source**: OCCT_HEAL_COVERAGE_V3.md ShapeFix_Wire.FixReorder_at1352, _at488  
 **Root cause**: EDGE_LOOP reorder logic does not detect duplicate edge references with opposite orientations; treats them as independent entities
+- **Expected kernel behavior**: Reject with a diagnostic naming entity #72: its LINE puts a DIRECTION (#70) where Part 21 requires a `#N` reference to a VECTOR, so the closing edge's curve cannot be built. Once that is fixed, the EDGE_LOOP still lists edge-curve #100 twice — once as ORIENTED_EDGE #110 (`.T.`) and again as #114 (`.F.`) — alongside edges #101-#103; a kernel must recognize that the same EDGE_CURVE reference appearing twice in one loop, even with opposite orientation flags, does not by itself make a 5-sided boundary and should be rejected or collapsed rather than treated as five independent sides.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi157 — ShapeAnalysis_Wire.CheckSelfIntersection figure-8 wire
 Wire whose path forms a figure-8 (crosses itself at one point). CheckSelfIntersection must detect the crossing at the self-intersection point where the two lobes meet.
@@ -27579,6 +27606,7 @@ Wire on cylindrical surface where 2D pcurves leave a gap exactly at u=0 (the sea
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi159 — ShapeAnalysis_Wire.CheckOrder wire-completely-reversed
 4-edge closed wire where all edges are .F. orientation. CheckOrder should detect reverse-traversal and flag it as a fixable mode rather than failing silently.
+- **Expected kernel behavior**: Accept the wire by walking each edge in its ORIENTED_EDGE sense, not its EDGE_CURVE's stored sense: all four EDGE_CURVEs are defined P0→P1, P1→P2, P2→P3, P3→P0, but every ORIENTED_EDGE in the loop is flagged `.F.`, so the actual traversal is P1→P0, P2→P1, P3→P2, P0→P3 — a consistent, closed, simply-reversed (clockwise instead of counter-clockwise) square. A kernel must apply the orientation flag uniformly and recognize this as a valid, merely reverse-wound boundary, not fail because the underlying curves' own directions disagree with the loop's traversal.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Twi160 — ShapeFix_Wire.FixLacking degenerate-vertex-gap
@@ -27588,6 +27616,7 @@ Wire missing an edge between v1 and v2 where dist(v1,v2) < Confusion (effectivel
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### Twi161 — ShapeAnalysis_Wire.CheckGap2d on B-spline pcurve
 Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoints but start/end pole positions may differ, leaving a gap in connectivity.
+- **Status**: FLAGGED 2026-08-07 — this fixture has zero PCURVE entities (confirmed by grep), so there is no 2D parameter space in which a pcurve gap could exist; the claimed mechanism cannot apply. The two B-spline edges are wired with plain 3D geometry only, and their poles match exactly at both junctions: edge 1's last pole (10.0,0.0,0.0) equals edge 2's first pole (10.0,0.0,0.0), and edge 2's last pole (0.0,0.0,0.0) equals edge 1's first pole — a fully closed, gap-free lens shape in 3D. Not specced; needs either an actual pcurve-bearing fixture or an honest retitle describing a valid closed wire.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 ### Twi162 — ShapeFix_Wire.FixIntersectingEdges 3-edge-mutual-intersection
@@ -27605,6 +27634,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Claim**: Without range-overlap detection on shared-base-curve edges, CheckIntersectingEdges reports false-clean on edges [0.0–0.6] and [0.4–0.9] of same curve.  
 **Reproducer**: Degree-3 B-spline base curve; two EDGE_CURVEs both reference it with parameter ranges [0.0, 0.6] and [0.4, 0.9]. CheckIntersectingEdges must detect overlap.  
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi163.stp`
+- **Expected kernel behavior**: Compare curve geometry, not entity identity: edge #21's B-spline (#20) and edge #30's B-spline (#29) are two separate entities with byte-for-byte identical poles and knots — (0,0),(2,8),(5,6),(6,8),(8,6),(10,0) with knots (0,0.5,1) and multiplicities (4,2,4) — so they trace the exact same curve shape. Edge #21 runs from (0,0,0) to (5.056,7.088,0) along that curve, while edge #30 runs from (3.84,7.04,0) to (6.964,6.872,0) — an interior span that begins before edge #21 ends, so the two edges cover overlapping portions of the identical underlying curve. A kernel must detect the overlap by comparing curve geometry (poles/knots or point-on-curve tests), not `Handle`-level identity, even though the two EDGE_CURVE entities point at nominally distinct curve objects.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Twi164 — ShapeFix_Wire.FixReorder algorithm-cycle
@@ -27613,6 +27643,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Claim**: Without cycle detection in FixReorder's dependency graph, a diamond-shaped wire with overlapping edge endpoints causes infinite loop or hanging reorder pass.  
 **Reproducer**: Four-edge diamond (v0→v1→v2→v3→v0) with near-tangent junctions creating bi-directional ordering constraints. FixReorder should detect cycle and exit gracefully.  
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi164.stp`
+- **Expected kernel behavior**: Reject this as not a simple cycle in any order — the vertex-degree structure rules it out, not just the listed order: vertex (0,5,0) appears in exactly one of the four edges (the segment to (5,10,0)), while vertex (5,10,0) appears in three of them (to (0,5,0), to (10,5,0), and to (5,0,0)) — a degree-1 dead end paired with a degree-3 branch point. The other three edges do form a closed triangle (5,0,0)→(10,5,0)→(5,10,0)→(5,0,0); the fourth edge is a pendant spur off that triangle's (5,10,0) corner, not a fourth side of a diamond. A kernel must compute edge-degree per vertex and reject the loop once it finds a vertex touched by more than two edges, since no permutation of these four edges produces a valid closed quadrilateral.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Twi165 — ShapeAnalysis_Wire.CheckTail B-spline subdivided
@@ -27621,6 +27652,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Claim**: Without knot-continuity awareness, CheckTail flags C1 discontinuities at every sub-curve join as tail failures, over-reporting defects.  
 **Reproducer**: Straight edge followed by three B-spline sub-curves (representing subdivided single curve), each with C1 discontinuity at junction. CheckTail should not fire on subdivisions of single logical edge.  
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi165.stp`
+- **Expected kernel behavior**: Treat both interior junctions as genuine sharp corners, not representation artifacts of subdivision: at (14,3,0), the incoming Bezier segment's tangent (from poles (13,2.5,0)→(14,3,0)) points toward (1,0.5,0) while the next segment's tangent (from poles (14,3,0)→(14,5,0)) points toward (0,1,0) — roughly a 63° change in direction, not a smooth continuation. The same holds at (12,7,0), where the incoming tangent (-1,0.5,0) and outgoing tangent (roughly (-2,-3,0)) point in substantially different directions. A kernel must evaluate and compare actual tangent vectors at each junction rather than assume adjacent B-spline segments with matching endpoints are automatically one smooth curve; these two corners are real C1 discontinuities that a boundary-tracing pass should report, not suppress.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Twi166 — ShapeFix_Wire.FixSelfIntersectingEdge near-grazing
@@ -27651,6 +27683,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Minimal reproducer**: Three-edge wire with vertex-identity ambiguity; call CheckShapeConnect; expect mismatch flag, observe no error  
 **Search anchors**: `CheckShapeConnect`, `different-vertex-counts`, `edge-connectivity`
 
+- **Expected kernel behavior**: Merge same-coordinate vertices, and detect the resulting notch: edge 3 ends at a vertex labeled `vertex_identity_ambiguity` at (10.0,0.0,0.0) — the same coordinates as vertex #9, which edge 1 already used, but a separate VERTEX_POINT entity. A kernel must first recognize these as one topological point. Once merged, edges 2 and 3 retrace the identical segment between (10,0,0) and (5,8,0) in opposite directions — a full out-and-back notch rather than a genuine third side — and edges 1 and 4 likewise retrace the (0,0,0)-(10,0,0) segment in opposite directions; report the whole boundary as degenerating to a there-and-back line with a notch, not a genuine 4-sided closed shape.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi169 — ShapeFix_Wire.FixDegenerated insert-between-degenerate
@@ -27672,6 +27705,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Minimal reproducer**: Rectangular wire with 3D topology near-matched but pcurve parametrization off; call CheckGap3d; expect dual-gap report  
 **Search anchors**: `CheckGap3d`, `3D-vs-pcurve-disagreement`, `gap reporting`
 
+- **Expected kernel behavior**: Check pcurve continuity as a separate test from 3D vertex sharing: edges 1 and 2 both reference vertex #9 at (10.0,0.0,0.0), so their 3D endpoints coincide exactly, but edge 1's pcurve (labeled `pcurve_gap_disagreement`) is 10.05 units long and ends at (10.05,0.0) in surface parameter space, while edge 2's pcurve starts at (10.0,0.0) — a genuine 0.05 mismatch in the U parameter that the shared 3D vertex masks. A kernel must evaluate pcurve endpoints in parameter space independently of 3D vertex identity, and either re-trim edge 1's pcurve to end at u=10.0 or reject the face citing the parametric discontinuity.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi171 — ShapeFix_Wire.FixReorder reverse-then-forward
@@ -27681,6 +27715,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Failure mode**: Single-direction sweep misses mixed-mode case; incomplete reordering  
 **Minimal reproducer**: Five-edge wire [forward, forward, forward, forward, reverse]; call FixReorder; expect correct ordering, observe partial result  
 **Search anchors**: `FixReorder`, `reverse-then-forward`, `mixed orientation`
+- **Status**: FLAGGED 2026-08-07 — traced the pentagon and it closes correctly. Edges 1-4 (`.T.`) run A(0,0,0)→B(8,0,0)→C(10,6,0)→D(5,10,0)→E(-2,6,0); edge 5's EDGE_CURVE (labeled `reverse_orientation_edge`) is itself defined A→E, but its ORIENTED_EDGE is flagged `.F.`, so it is walked E→A — exactly compensating for the curve's stored direction and closing the loop correctly: A→B→C→D→E→A. This is the ordinary, correct use of the orientation flag, not a case a reorder pass fails on; the wire does not demonstrate the claimed defect. Not specced; needs a fixture with a genuine unresolvable mixed-orientation break, or an honest retitle.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi172 — Cubic B-spline with two coincident interior control points: the tangent never vanishes, so the flat spot is a horizontal tangent and not a cusp
@@ -27718,6 +27753,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 
 **Fixture:** Pentagon wire with final short edge using B-spline parametrization with negative parameter range. CheckTail's binary search fails due to [0, length] bounds assumption.
 
+- **Status**: FLAGGED 2026-08-07 — this pentagon closes correctly and is not a tail. The closing edge (labeled `tail_negative_param_range`) is a degree-1 B_SPLINE_CURVE_WITH_KNOTS whose two poles are exactly E=(-2,6,0) and A=(0,0,0) — the same endpoints its EDGE_CURVE declares — so it is a normal closing side of the pentagon (A→B→C→D→E→A), just represented with a knot vector of (-0.5,-0.5,0.0,0.0) instead of (0,0,1,1). Negative knot values are valid Part 21; they don't change what 3D segment the curve represents. There is no actual tail or gap here, only an unusual (but schema-legal) parameter domain on one edge. Not specced; needs a fixture with a genuine tail protrusion, or an honest retitle.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi176 — ShapeFix_Wire.FixIntersectingEdges concurrent-modification
@@ -27737,11 +27773,13 @@ Wire is the outer bound of an inner face within a larger face. `CheckOuterBound`
 ### Twi178 — ShapeFix_Wire.FixSelfIntersection convergence-oscillation
 
 Wire whose self-intersection fix produces output that re-introduces a different self-intersection pattern. `FixSelfIntersection` oscillates between two competing fix strategies without converging to a stable solution.
+- **Expected kernel behavior**: Detect both real self-intersections directly, not just the two edges the labels suggest: computing actual segment crossings shows edge P0→P1 (labeled `osc_cross_A`, (0,4,0)→(8,0,0)) crosses edge P4→P5 ((0,8,0)→(4,0,0)) at (2.667,2.667,0), and edge P1→P2 ((8,0,0)→(4,8,0)) crosses edge P3→P4 ((8,4,0)→(0,8,0)) at (5.333,5.333,0) — two genuine interior crossings forming a figure-eight, at different locations than the labels imply, and not involving the edge labeled `osc_cross_B` at all (it crosses nothing). A kernel must compute actual segment intersections rather than trust which edges are pre-labeled as a crossing pair, and reject or split the wire at both real crossing points; whether one particular repair strategy oscillates is a property of that algorithm, not of this input.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi179 — ShapeAnalysis_Wire.CheckGap2d on-trimmed-pcurve
 
 Adjacent edges with `TRIMMED_CURVE` pcurves. `CheckGap2d` compares trim bounds against untrimmed parameters and incorrectly reports gap values when both edges are trimmed.
+- **Status**: FLAGGED 2026-08-07 — evaluated both TRIMMED_CURVE pcurves at their actual endpoints and they connect exactly. Edge A's pcurve is trimmed to parameter range [0.0,0.5] on its own underlying LINE (magnitude 2.0/unit param) and evaluates from (0,0) to (1,0); edge B's pcurve is trimmed to [0.0,0.5] on a *different* underlying LINE and evaluates from (1,0) to (1,1) — the two trimmed curves meet exactly at (1.0,0.0), with no positional gap in 2D or 3D. The two edges' trim parameters both happen to be [0.0,0.5], but they're on different base curves, so comparing raw trim numbers across them is meaningless — evaluating positions (which is what a kernel must do) shows full continuity. Not specced; needs a fixture with an actual positional pcurve gap, or an honest retitle.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi180 — ShapeFix_Wire.FixGaps3d 4-edge-gap-chain
@@ -27753,6 +27791,7 @@ Wire with 4 consecutive edges all having tiny gaps between them. `FixGaps3d` bri
 ### Twi181 — ShapeAnalysis_Wire.CheckGap3d B-spline-vs-LINE
 
 Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGap3d`'s endpoint extraction applies different parametric interpretation for the two curve types, causing false gap detection.
+- **Status**: FLAGGED 2026-08-07 — the file's own comment admits "zero actual 3-D gap" here, and that checks out: the degree-1 B-spline's poles are exactly (0,0,0) and (1,0,0), matching its EDGE_CURVE's declared vertices, and the following LINE starts exactly at (1,0,0) where the B-spline ends. There is no positional discrepancy between the two curve types to detect — the claimed defect is purely a hypothesis about two internal code paths disagreeing, not something this input's geometry demonstrates. Not specced; needs a fixture with an actual B-spline/LINE endpoint mismatch, or an honest retitle.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi182 — ShapeFix_Wire.FixTails very-small-tail
@@ -27806,6 +27845,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Fixture path**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi185.stp`  
 **Fixture kind**: `STEP_STANDALONE`  
 **Schema**: `AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }`
+- **Expected kernel behavior**: Detect the full-length coincident overlap between edges 0 and 3, and the separate order break: edge 0's LINE (`coincident_fwd`) runs (0,0,0)→(1,0,0), and edge 3 (`coincident_rev`) runs the exact reverse, (1,0,0)→(0,0,0) — the same segment traced in both directions, a real duplicate overlap, not two edges that merely touch. Independently, the EDGE_LOOP's stored order doesn't chain at that junction either: edge 2 ends at (0,0,0), but edge 3, next in the list, starts at (1,0,0), not (0,0,0). A kernel must flag the coincident A-B segment as an overlap regardless of orientation, and separately verify or reorder the loop so each edge actually starts where the previous one ended.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi186 — ShapeFix_Wire.FixIntersectingEdges parametric-overlap
@@ -27817,6 +27857,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Fixture path**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi186.stp`  
 **Fixture kind**: `STEP_STANDALONE`  
 **Schema**: `AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }`
+- **Expected kernel behavior**: Distinguish parametric (UV) proximity from actual 3D proximity: edge 0's pcurve spans u∈[0.3,1.8] at constant v=0.1, and edge 2's pcurve spans the same u∈[0.3,1.8] range (reversed) at constant v=1.0 — identical U extent, but v=0.1 and v=1.0 are different tube latitudes on this major-radius-5, minor-radius-2 torus, giving genuinely different heights (edge 0's vertices sit at z≈0.1997, edge 2's at z≈1.683). A kernel must test for intersection using full 3D (or full UV, both coordinates together) geometry, not U-range overlap alone, since these two edges do not actually meet or cross anywhere.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "torus"
 - **Tier-3 assertion**: face[0].quadric.major_radius == 5.0
@@ -27865,6 +27906,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Minimal reproducer**: Vertex (#33) shared by edges 1→3, 2→3, 3→4 (three edges); invoke CheckShapeConnect(). Without fan support: reports false DONE or incorrect closing verdict. With fix: handles n-way vertex junctions.
 
 **Falsifiable claim**: CheckShapeConnect must validate connectivity for fan topologies (>2 edges per vertex).
+- **Expected kernel behavior**: Recognize vertex H=(2,1,0) as a 4-way branch point, not a chain junction: all three "spoke" edges (from A=(0,0,0), B=(4,0,0), and C=(2,3,0)) end at H, and a fourth edge starts at H and returns to A — so H is touched by all four edges in this loop, while B and C are each touched by only one edge (dead ends). A kernel must compute vertex degree and recognize that a vertex referenced by more than two edge-ends cannot be a simple polygon corner; the three spokes plus hub-return form a star with two dangling blades, not a valid 4-sided closed wire, regardless of the order the edges are listed in.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi191 — ShapeFix_Wire.FixIntersectingEdges parameter-monotonicity
@@ -27874,6 +27916,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 **Minimal reproducer**: Wire with parameter sequence [0.0-0.2, 0.5-0.8, 0.1-0.4, 0.7-1.0, 0.3-0.6]; invoke FixIntersectingEdges(). Without ordering preservation: sort reorders edges to [0.0-0.2, 0.1-0.4, 0.3-0.6, 0.5-0.8, 0.7-1.0], breaking topology. With fix: preserve wire order during intersection resolution.
 
 **Falsifiable claim**: FixIntersectingEdges must not reorder edges; intersection resolution must maintain original wire sequence.
+- **Expected kernel behavior**: Verify each edge's pcurve actually spans its own edge's 3D extent, not whether five unrelated local parameter ranges happen to sort monotonically: edge 0's 3D LINE has length 2.0 (from (0,0,0) to (2,0,0)) but its pcurve LINE has length only 0.2 — a 10x scale mismatch — and the same under-scaled pattern repeats for edges 1-4 (3D lengths ~2.24-2.83, pcurve lengths only 0.3 each). Since these are five independent PLANE-local pcurve LINEs, not points on one shared periodic axis, comparing their arbitrary u-ranges to each other carries no topological meaning; a kernel must instead check that each edge's own pcurve, evaluated over its own range, reaches 3D positions matching that edge's real geometry, and rebuild any pcurve whose scale doesn't match.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi192 — FixGaps2d 2D-only-bridge
@@ -27895,6 +27938,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 
 **Test hook**: Wire on cylinder crossing seam; CheckOrder(theMode3D=true) should detect reordering needed but doesn't.
 
+- **Status**: FLAGGED 2026-08-07 — checked every edge's pcurve against its own declared 3D vertices and all four are self-consistent (mapping (u,v) through the cylinder's (cos u, sin u, v) evaluates to the correct endpoint for every edge, including the two "long way around" arcs at u∈[1.0,2π]). The wire traces a valid, single, non-self-intersecting closed boundary covering ~303° of the cylinder (angle 0 to 1.0 rad is outside this face, presumably belonging to an adjacent face in a fuller model) — there is no 3D-vs-pcurve order clash. This matches the measured `occt=shape(1)/shape(1)` result: OCCT builds one clean face from this file, which is what a valid input should do. Not specced; needs a fixture with a genuine seam-order mismatch, or an honest retitle describing a valid partial-cylinder wire.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
@@ -27958,6 +28002,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 
 **Search anchors**: `CheckSelfIntersection`, `handle equality`, `geometric coincidence`, `parameter range overlap`
 
+- **Expected kernel behavior**: Recognize the duplicate curve, and the resulting open loop: edges `coinc_e0` and `coinc_e1` are two separate EDGE_CURVE entities that reference the exact same underlying LINE (#15) and the exact same vertex pair (#7,#9) with the same sense — the identical edge, defined twice. A kernel must detect this via curve/vertex comparison, not `Handle` identity, and treat it as one edge, not two independent sides of a boundary. Beyond that, the EDGE_LOOP's stored order also doesn't close: `coinc_e1` (the duplicate) is placed last, ending at vertex #9, but the loop's first edge started at vertex #7 — so even setting the duplicate issue aside, this loop does not return to its own starting point.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi199 — ShapeFix_Wire.FixGaps3d gap-larger-than-Confusion-but-less-than-vertex-tolerance
@@ -27983,6 +28028,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 
 **Search anchors**: `CheckOrder`, `vertex degree`, `branching detection`, `wire topology validation`
 
+- **Expected kernel behavior**: Recognize vertex H=(1,0,0) as a branch point touched by three edges, not a chain link: edge `main_e0` ends at H, then both `branch_e1` (to (2,1,0)) and `branch_e2` (to (2,-1,0)) start there — a true Y-junction, not a sequence where each edge hands off to exactly one next edge. A kernel must compute vertex degree and reject or split at any vertex touched by three or more edges rather than force these three edges into a single closed loop; no such loop exists here, since the two branch endpoints have no edge connecting them.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi201 — ShapeFix_Wire.FixSeam mismatched-pcurve-direction
@@ -28003,6 +28049,7 @@ Wire with two edges sharing both endpoints (parallel paths). FixReorder attempts
 
 **Fixture:** `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi202.stp`
 
+- **Expected kernel behavior**: Recognize the duplicate edge and the resulting order break: edges built from #13 and #18 are two separate LINE entities with byte-identical geometry — both from (0,0,0) heading (1,0,0) for length 10 — and both of their EDGE_CURVEs connect the same two vertices (#7,#9) in the same direction, so they are the same edge defined twice. The EDGE_LOOP's stored order also doesn't chain: the first edge ends at (10,0,0), but the second (the duplicate) starts back at (0,0,0), not (10,0,0), before the third edge closes from (10,0,0) back to (0,0,0). A kernel must detect the duplicate via curve/vertex comparison, collapse it to a single edge, and separately verify the two remaining edges actually chain head-to-tail before treating this as a valid 3-sided boundary.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Twi203 — ShapeAnalysis_Wire.CheckTail B-spline tail-detection
@@ -28011,6 +28058,7 @@ Wire's last edge is a B-spline with smoothly decreasing magnitude approaching ze
 
 **Fixture:** `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi203.stp`
 
+- **Expected kernel behavior**: Measure 3D length directly rather than approximating from parameter span: within the curve's last quarter of parameter range (t≈0.75 to 1.0), the poles (1,1,0), (0.0001,0.0001,0), (0,0,0) place almost all of that parameter span within about 1.4e-4 units of the curve's actual 3D endpoint (0,0,0) — a 0.25 parameter interval corresponding to a 3D distance roughly four orders of magnitude smaller than the rest of the curve's ~7.07-unit length. The curve does not reverse direction here (these poles run monotonically toward the endpoint along one line), so this is not a tail or notch, but a kernel relying on parameter-interval size as a proxy for 3D extent would badly misjudge how much boundary this final stretch represents; always convert to real 3D distance before applying a length-based threshold.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Twi204 — ShapeFix_Wire.FixIntersectingEdges 3-edges-at-vertex
@@ -28028,6 +28076,7 @@ Two B-spline edges touching tangentially (single point, no crossing). CheckInter
 
 **Fixture:** `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3b-wires/Twi205.stp`
 
+- **Expected kernel behavior**: Recognize a tangential touch, not a transverse crossing, at (5,8,0): edge 1's incoming tangent there (from poles (8,8,0)→(5,8,0)) is (-3,0,0), and edge 2's outgoing tangent (from poles (5,8,0)→(2,8,0)) is also (-3,0,0) — the same direction, not a crossing where the curve passes from one side to the other. A kernel must distinguish tangency (single contact point, direction preserved, curve stays on one side) from an actual intersection before flagging self-intersection, and accept this junction as a smooth-tangent (if only C1-continuous) vertex rather than reject it as a crossing.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Twi206 — ShapeFix_Wire.FixSelfIntersectingEdge cusp-at-vertex
@@ -28057,6 +28106,7 @@ Single edge with cusp at start vertex. FixSelfIntersectingEdge tries to split at
 
 **Search anchors**: `CheckSelfIntersection`, `overlapping edges`, `tangent`, `geometric coincidence`, `ambiguous verdict`.
 
+- **Expected kernel behavior**: Recognize the full-length coincident overlap, and the resulting disconnection: `fwd_edge` and `rev_edge` both reference the exact same SURFACE_CURVE entity (#22) — one with same_sense `.T.`, tracing (0,0,0)→(5,0,0), the other `.F.`, tracing (5,0,0)→(0,0,0) — a single segment counted twice with opposite orientation, not a tangent touch at a midpoint. Once collapsed, the wire also doesn't connect: after the there-and-back pair returns to (0,0,0), the next edge (`right_e`) starts at (5,0,0), not (0,0,0). A kernel must flag the coincident pair by comparing the edges' `edge_geometry` reference (same curve, opposite sense), and separately verify the remaining edges actually chain from wherever the wire is left after collapsing the duplicate.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi209 — ShapeFix_Wire.FixReorder mixed-curve-types-vertex-merge
@@ -28067,6 +28117,7 @@ Single edge with cusp at start vertex. FixSelfIntersectingEdge tries to split at
 
 **Search anchors**: `FixReorder`, `mixed curve types`, `LINE CIRCLE BSPLINE`, `vertex merge`, `heterogeneous edges`.
 
+- **Status**: FLAGGED 2026-08-07 — this Defect/Fixture text above doesn't match the bytes (it says the arc runs "(5,0) to (7.071,7.071)", but the actual CIRCLE is centered at the origin with the arc's real second vertex at (3.53553390593,3.53553390593,0) — 45° at radius 5 from the origin, not (7.071,7.071)). Correcting for that: the LINE (0,0,0)→(5,0,0)), the CIRCLE arc ((5,0,0)→(3.536,3.536,0), both points verified at radius 5 from the origin), and the degree-2 B-spline ((3.536,3.536,0)→(0,0,0), poles matching those exact endpoints) connect correctly at every junction — a valid, closed, type-heterogeneous triangle with no actual vertex-merge failure. Not specced; needs a fixture with a genuine cross-type vertex mismatch, or an honest retitle.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi210 — ShapeAnalysis_Wire.CheckClosed near-closed-with-perpendicular-distance
@@ -28105,6 +28156,7 @@ Single edge with cusp at start vertex. FixSelfIntersectingEdge tries to split at
 
 **Fixture:** Two edges in sequence with 3D endpoints matching (5,0) at junction, but pcurve of second edge starts at u=7 instead of u=5, creating parametric gap. Expected: CheckGap3d detects pcurve discontinuity. Defect: 3D-only check misses it.
 
+- **Expected kernel behavior**: Check pcurve continuity independently of 3D vertex sharing: edges `pcurve_gap_e0` and `pcurve_gap_e1` both meet at 3D vertex (5.0,0.0,0.0) exactly, but edge 0's pcurve ends at u=5.0 while edge 1's pcurve starts at u=7.0 — a genuine 2-unit gap in surface parameter space that the shared 3D vertex hides. A kernel must evaluate and compare pcurve endpoints in parameter space as a check separate from 3D vertex identity, and either re-trim edge 1's pcurve to start at u=5.0 or reject the face citing the parametric discontinuity.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi214 — ShapeFix_Wire.FixSelfIntersection figure-eight-pattern
@@ -28147,6 +28199,7 @@ Seam edge where parametric curve direction (u-orientation) differs from 3D curve
 ### Twi218 — A LINE inlines an anonymous aggregate where a reference to a vector is required, so the reader aborts before connectivity analysis is reached
 - **Status**: retitled 2026-08-02: bytes show LINEs of the form `#32=LINE('',#30,(DIRECTION('',(1.0,0.0,0.0)),1.0))` — an inline anonymous aggregate in the slot that requires a `#N` reference to a VECTOR. Part 21 has no such inline construction, and the reader aborts in transfer before the defect the old title named is reached. Sibling malformation to Twi222/224/225/227/231 (which instead reference a DIRECTION entity where a VECTOR is required); this variant occurs in exactly these three files corpus-wide. Retitle-not-repair per the Q14 precedent. See BACKLOG (I).
 Wire's start vertex is degenerate (zero-radius circle = point). CheckShapeConnect uses vertex coordinates from BRep_Tool::Pnt(), not topology, causing false results on degenerate endpoints.
+- **Expected kernel behavior**: Reject with a diagnostic naming entity #34: its LINE's third argument is written as an inline aggregate `(DIRECTION('',(1.0,0.0,0.0)),1.0)` rather than a `#N` reference to a VECTOR — Part 21 requires an object reference there, so the curve cannot be built and the reader must abort naming that entity rather than silently coercing or dereferencing a null curve. Independently, the wire's second edge (#80) is built on a zero-radius CIRCLE (#61) between vertices #41 and #70, both at (5.0,0.0,0.0) — a genuinely degenerate, zero-length edge that a kernel must also detect and reject once the file can be parsed at all.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi219 — A LINE inlines an anonymous aggregate where a reference to a vector is required, so the reader aborts before intersecting-edge repair is reached
 - **Status**: retitled 2026-08-02: bytes show LINEs of the form `#32=LINE('',#30,(DIRECTION('',(1.0,0.0,0.0)),1.0))` — an inline anonymous aggregate in the slot that requires a `#N` reference to a VECTOR. Part 21 has no such inline construction, and the reader aborts in transfer before the defect the old title named is reached. Sibling malformation to Twi222/224/225/227/231 (which instead reference a DIRECTION entity where a VECTOR is required); this variant occurs in exactly these three files corpus-wide. Retitle-not-repair per the Q14 precedent. See BACKLOG (I).
@@ -28180,7 +28233,8 @@ Surface with seam at u=π/4 (not standard 0 or 2π). FixDummySeam's heuristic as
 
 - **Expected kernel behavior**: Beyond the main edge's end at (10,0,0) the boundary continues through several 0.2-unit collinear stubs to (11,0,0.1) and the closing edge then runs straight back to the origin, so the protrusion is a single hair spread across four edges — and the chain is separately broken between the stub ending at (10.2,0,0) and the one starting at (10.4,0,0). Trim the whole out-and-back excursion back to the branch point at (10,0,0) rather than deleting one edge, re-deriving what remains of the protrusion after each removal instead of walking a list captured earlier, and close or report the 0.2 break. Guard curve construction while doing so: every line in this file names a direction in its vector slot, and each unbuildable curve must be reported per entity.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-### Twi223 — ShapeAnalysis_Wire.CheckOrder mode-3D-vs-2D-disagree
+### Twi223 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before order-mode-disagreement analysis is reached
+- **Status**: retitled 2026-08-07: bytes show 3/3 LINEs (#131, #134, #137) all referencing the same DIRECTION entity (#101) in the vector slot instead of a `#N` reference to a VECTOR; the reader aborts in transfer, so the seam-order defect the old title named is never reached. Same crash class as the Twi218/222/224/225/227/231 cohort. Retitle-not-repair per the Q14 precedent. See BACKLOG (I).
 
 **Defect**: Wire whose 3D edge order differs from the parametric curve (PCurve) order on the host surface. This occurs when the surface has a seam jump or periodicity discontinuity. CheckOrder picks either 3D or 2D mode but cannot detect that the two orderings contradict each other.
 
@@ -28188,6 +28242,7 @@ Surface with seam at u=π/4 (not standard 0 or 2π). FixDummySeam's heuristic as
 
 **Minimal reproducer**: Wire on cylindrical surface with seam at u=0/2π. Edges ordered sequentially in 3D but wrap around seam in parametric space, causing order reversal in 2D. CheckOrder returns ordering correction but chooses mode that loses seam constraint.
 
+- **Expected kernel behavior**: Reject with a diagnostic naming each unbuildable curve: all three of the wire's LINE entities point at #101, a DIRECTION, where Part 21 requires a `#N` reference to a VECTOR, so no edge curve on this cylindrical wire can be built. The seam-crossing scenario the old title described — PCURVEs parametrized at u=0, u=π/2, and u=π wrapping around a periodic surface — is unreachable until every LINE in the file is fixed.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi224 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before any 3D gap repair is reached
 - **Status**: retitled 2026-08-02: bytes show 3/3 LINEs with a DIRECTION in the vector slot. Causally confirmed — inserting a real VECTOR and repointing the lines makes the file load (1 root, non-null). The gap defect the old title named is never reached. See BACKLOG (I).
@@ -28211,30 +28266,39 @@ Surface with seam at u=π/4 (not standard 0 or 2π). FixDummySeam's heuristic as
 
 - **Expected kernel behavior**: The vertex at (5,0,0) is the end of one edge and the start of three more, so this bound is a branching graph rather than a simple closed contour. Count the edge-ends incident on each vertex and, where the count exceeds two, treat the wire as several loops or chains glued at a point — separate them or reject the bound naming the vertex — rather than reporting the shared point as a curve crossing to be split, which would only recreate the same junction. The lines here are equally unbuildable, a direction standing where a vector must, and that has to surface as a diagnostic rather than an abort partway through translation.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-### Twi226 — ShapeFix_Wire.FixIntersectingEdges with-edge-on-surface-boundary
+### Twi226 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before boundary-intersection repair is reached
+- **Status**: retitled 2026-08-07: bytes show 4/4 LINEs (#130, #133, #136, #139) with a DIRECTION entity (#102, #132, #135, #138) in the vector slot instead of a `#N` reference to a VECTOR; the reader aborts in transfer, so the boundary-touch defect the old title named is never reached. Same crash class as the Twi218/222/224/225/227/231 cohort. Retitle-not-repair per the Q14 precedent. See BACKLOG (I).
 
 **Defect**: Edge that ends exactly on the surface trim boundary. FixIntersectingEdges' algorithm treats boundary-touching edges as intersections, producing inconsistent topology: spurious vertex insertions or missing edges.
 
 **Falsifiable claim**: Without distinguishing boundary intersections from interior crossings, FixIntersectingEdges applies cutting/vertex-tolerance fixes to edges that merely touch the trim, causing topology corruption.
 
 **Minimal reproducer**: Wire on trimmed plane where Edge2 terminates exactly at boundary u=10, and Edge3 starts there. FixIntersectingEdges detects boundary touch as intersection and inserts spurious vertex, breaking edge sequence.
+- **Expected kernel behavior**: Reject with a diagnostic naming each unbuildable curve: all four of the wire's LINE entities put a DIRECTION where Part 21 requires a `#N` reference to a VECTOR, so no edge curve can be built. Whatever boundary-touch question the (10.0,5.0,0.0)-to-(9.9,5.1,0.0) corner was meant to pose is unreachable until every LINE in the file is fixed.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi227 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before pcurve gap repair is reached
 - **Status**: retitled 2026-08-02: bytes show 5/5 LINEs with a DIRECTION in the vector slot, plus a B-spline surface with a mismatched control-point arity. See BACKLOG (I).
 
 Wire on B-spline surface with non-uniform pcurve. FixGaps2d's bridge logic assumes uniform knot spacing; non-uniform knot distributions cause misaligned 2D geometry when gaps are bridged.
+- **Expected kernel behavior**: Reject the file, naming each unbuildable curve: LINE entities #400, #405, #408, #410, and #412 all put a DIRECTION (#102) where Part 21 requires a `#N` reference to a VECTOR, so five of the wire's six edge curves cannot be constructed. Two further PCURVE definitions (#403, #406) compound the malformation one level deeper, writing `#B_SPLINE_CURVE_WITH_KNOTS(...)` and `#LINE(...)` inline instead of as `#N` references. A kernel must surface a per-entity diagnostic for the first construction failure it hits rather than dereferencing a null curve; the pcurve-gap defect the old title named is unreachable because none of the wire's LINE-based edges can be built at all.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-### Twi228 — ShapeAnalysis_Wire.CheckGap3d with-very-large-coordinates
+### Twi228 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before large-coordinate gap analysis is reached
+- **Status**: retitled 2026-08-07: bytes show 6/6 LINEs (#130, #132, #135, #138, #141, #144) with a DIRECTION entity (#102, #134, #137, #140, #143) in the vector slot instead of a `#N` reference to a VECTOR; the reader aborts in transfer, so the large-coordinate gap defect the old title named is never reached. Same crash class as the Twi218/222/224/225/227/231 cohort. Retitle-not-repair per the Q14 precedent. See BACKLOG (I).
 
 Adjacent vertices at coordinates 1e6 with gap at 1e-6 scale. CheckGap3d's relative tolerance fails because absolute coordinate magnitude dominates comparison, missing the geometrically significant gap.
+- **Expected kernel behavior**: Reject with a diagnostic naming each unbuildable curve: all six of the wire's LINE entities put a DIRECTION where Part 21 requires a `#N` reference to a VECTOR, so no edge curve can be built. Once curves can be built, vertex #111 at (1000005.0,1000000.0,0.0) and vertex #112 at (1000005.0000001,1000000.0000001,0.0) still leave a genuine ~1e-7 gap between edges #131 and #133 at 1e6-scale coordinates — small in absolute terms but the file's declared 1.0E-7 accuracy is exactly that order, so a kernel must compare the actual endpoint distance rather than a scale-relative tolerance that would drown a real gap at this magnitude.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-### Twi229 — ShapeFix_Wire.FixReorder all-edges-degenerate
+### Twi229 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before degenerate-edge reorder repair is reached
+- **Status**: retitled 2026-08-07: bytes show 5/5 LINEs (#130, #132, #134, #136, #138), all referencing the same DIRECTION entity #102, in the vector slot instead of a `#N` reference to a VECTOR; the reader aborts in transfer, so the all-degenerate defect the old title named is never reached. Same crash class as the Twi218/222/224/225/227/231 cohort. Retitle-not-repair per the Q14 precedent. See BACKLOG (I).
 
 Wire with all edges degenerate (zero-length). FixReorder has no direction to use for ordering and produces unspecified result.
+- **Expected kernel behavior**: Reject with a diagnostic naming each unbuildable curve: all five of the wire's LINE entities put the same DIRECTION (#102) where Part 21 requires a `#N` reference to a VECTOR, so no edge curve can be built. Independently, every one of this wire's five vertices (#110-#114) sits at the identical point (5.0,5.0,0.0), so even a correctly-built wire would have five zero-length edges; a kernel must reject a wire whose vertices are all coincident rather than attempt to order them.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
-### Twi230 — ShapeAnalysis_Wire.CheckIntersectingEdges B-spline-edge-with-many-knots
+### Twi230 — Two LINEs write an unparseable `#TYPE(...)` token in the vector slot, so the reader aborts before high-knot-count intersection analysis is reached
+- **Status**: retitled 2026-08-07: bytes show LINE #401's third argument written as `#DIRECTION('',(0.0,1.0,0.0))` and LINE #405's as `#DIRECTION('',(0.0,-1.0,0.0))` — a `#` immediately followed by a type name, which is neither a valid `#N` entity reference (references are `#` + digits only) nor a valid inline aggregate. This is a third malformation variant distinct from the inline-aggregate (Twi218-class, no `#` prefix) and wrong-typed-reference (Twi222-class, valid `#N` pointing at the wrong entity type) patterns already catalogued. A later B_SPLINE_CURVE_WITH_KNOTS (#403) repeats the same stray-`#TYPE(...)` error in its pole list (`#CARTESIAN_POINT(...)`), but the reader aborts at #401 first, so the many-knots defect the old title named is never reached. See BACKLOG (I).
 
 Wire with high-knot-count B-spline edges. CheckIntersectingEdges's sub-segment comparison produces quadratic explosion or overflows internal buffer.
+- **Expected kernel behavior**: Reject with a diagnostic naming entity #401: its LINE's vector argument is the unparseable token `#DIRECTION('',(0.0,1.0,0.0))` rather than a `#N` reference, so Part 21 parsing itself must fail on this entity — a kernel should report the malformed token and its position rather than crash. LINE #405 repeats the same error and the B_SPLINE_CURVE_WITH_KNOTS at #403 nests it again in a pole list; all three must be reported once parsing is made robust enough to continue past the first one. The high-knot-count intersection question the old title posed about the 11-pole B-spline at #220, whose knot values run from 0.0 to 10.0 in steps of 0.5, is unreachable until then.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi231 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before degenerate-edge insertion is reached
 - **Status**: retitled 2026-08-02: bytes show 5/5 LINEs with a DIRECTION in the vector slot. See BACKLOG (I).
@@ -28263,11 +28327,13 @@ Wire containing a vertex at exactly the origin (0,0,0). FixDegenerated's vertex-
 ### Twi235 — ShapeAnalysis_Wire.CheckTail B-spline-tangent-mismatch
 
 Wire's tail edge has tangent at start that doesn't match the previous edge's tangent at end, forming a sharp corner. CheckTail's smooth-only assumption misses this case when B-splines are involved.
+- **Expected kernel behavior**: Detect the out-and-back protrusion at (8,0,0) regardless of its smoothness: after edge `e0` arrives there with tangent (1,0,0), the B-spline `bspl_tail` immediately departs toward (8,-3,0) with tangent (0,-2,0) — a sharp ~90° corner, not a smooth continuation — then the same curve is walked back (entity #80 referenced twice, forward as one ORIENTED_EDGE then reversed as another) before the rectangle's edges continue. A kernel must recognize this as a tail from the shared-curve-reversed-pair pattern itself, not from tangent continuity, since a real tail can depart at any angle, sharp or smooth.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi236 — ShapeFix_Wire.FixGaps3d bridge-creates-degeneracy
 
 Wire has a 3D gap at a junction (endpoints separated by ~1e-8, within tolerance). FixGaps3d attempts to bridge by creating a new edge, but the bridge itself becomes degenerate with coincident or near-coincident endpoints.
+- **Expected kernel behavior**: Recognize the bridge edge itself as a candidate for removal, not a load-bearing edge: `e_bridge_degenerate` runs from (9.99999999,0,0) to (10.0,0,0), a length of 1.0E-8 — an order of magnitude below the file's declared 1.0E-7 accuracy. A kernel that already closed this gap by inserting a bridging edge must then treat that bridge itself as a degenerate, near-zero-length edge and drop it, merging its two near-coincident vertices into one, rather than leave a sub-tolerance edge sitting in the model, which just relocates the degeneracy instead of resolving it.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ### Twi237 — ShapeFix_Wire.FixSmall edge-coalescing tolerance
@@ -28344,6 +28410,7 @@ Geometric defects in wire topology and edge coherence.
 - **Test axiom**: CheckOrder detects non-linear topology in wire where one edge opposes expected direction
 - **Repair entry**: ShapeFix_Wire.FixReorder should reorient edges to restore consistency
 - **Fixture kind**: Standard STEP
+- **Expected kernel behavior**: Detect the single wrong orientation flag: edge `rev_e`'s EDGE_CURVE is defined (8,6,0)→(0,6,0), which correctly continues from the previous edge's end at (8,6,0) if used forward — but its ORIENTED_EDGE is flagged `.F.`, reversing it to (0,6,0)→(8,6,0), which no longer starts where that edge ended. The same reversal then leaves the following edge unable to continue either, since it starts at (0,6,0) but the reversed `rev_e` now ends at (8,6,0). A kernel must trace actual endpoint coordinates through the whole loop and, on finding exactly one such mismatch, flag `rev_e`'s orientation as the correctable defect (flipping it to `.T.` closes the loop correctly) rather than reject the entire wire.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi243 — ShapeAnalysis_Wire.CheckConnected
@@ -28352,6 +28419,7 @@ Geometric defects in wire topology and edge coherence.
 - **Test axiom**: CheckConnected flags discontinuous tangent; FixConnected may blend or split at sharp angle
 - **Repair entry**: ShapeFix_Wire.FixConnected detects and addresses tangent discontinuity
 - **Fixture kind**: Standard STEP
+- **Status**: FLAGGED 2026-08-07 — this is a plain, valid square. Every corner of a rectangular wire has a 90° tangent change by definition; that is a normal polygon vertex, not a defect. All four vertices genuinely share 3D coordinates between consecutive edges (each edge's declared endpoint matches the next edge's start exactly), so the wire is simply a correct, closed boundary that happens to be G1-discontinuous at its corners — true of essentially every polygonal wire in this corpus. Not specced; this fixture doesn't demonstrate any input defect. Needs either a genuinely pathological corner (a cusp, or a reflex self-touch) or an honest retitle acknowledging it's a valid square.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi244 — ShapeAnalysis_Wire.CheckSmall
@@ -28447,21 +28515,25 @@ Geometric defects in wire topology and edge coherence.
 ### Twi252 — ShapeAnalysis_Wire.CheckConnected.WIRE_NOT_LOADED
 
 Wire with zero edges; validates that CheckConnected detects unloaded state. Without IsLoaded guard, null-dereference on edge sequence access.
+- **Expected kernel behavior**: Reject or short-circuit on an empty boundary: EDGE_LOOP `zero_edge_loop` has zero edges in its list. A kernel must check the edge count before attempting to walk the loop's sequence (compute a first/last vertex, check closure, etc.), and treat a wire with no edges as invalid input rather than let downstream code iterate over an empty sequence and dereference something that was never set.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi253 — ShapeAnalysis_Wire.CheckConnected.NULL_EDGE_VERTICES
 
 EDGE_CURVE with null V2 endpoint; validates null-vertex detection. Without null check, segfault on IsSame() dereference.
+- **Expected kernel behavior**: Reject the edge on its own malformed definition before any connectivity test: `null_v2_e` has its second vertex reference explicitly null (`$`). A kernel must check both of an EDGE_CURVE's vertex references for null before comparing them (e.g. for a same-vertex/closure test), and report which entity and which vertex slot is missing rather than dereference a null handle.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi254 — ShapeAnalysis_Wire.CheckConnected.SAME_VERTEX_BOTH_ENDS
 
 Single edge where FirstVertex == LastVertex (self-loop); validates loop detection. Without V1.IsSame(V2) guard, connectivity masked.
+- **Expected kernel behavior**: Recognize a genuine degenerate self-loop: `self_loop_e` has the same VERTEX_POINT entity as both its start and end vertex. Since an EDGE_CURVE's real extent is bounded by projecting its vertices onto the curve, and both vertices project to the identical point (0,0,0), this edge is zero-length regardless of the underlying LINE's own declared direction and magnitude. A kernel must test vertex identity explicitly (same entity or coincident within tolerance) rather than assume any edge referencing a curve implies nonzero length, and reject or drop a self-loop edge like this one.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi255 — ShapeAnalysis_Wire.CheckLoop.null-vertices
 
 Multi-edge wire with one edge having null V1 endpoint; validates FAIL2 encoding. Without null check, segfault on BRep_Tool::Tolerance().
+- **Expected kernel behavior**: Reject the edge on its own malformed definition before any tolerance lookup: `null_v1_e` has its first vertex reference explicitly null (`$`). A kernel must check for a null vertex before calling any per-vertex accessor (tolerance, coordinates, identity), and report which entity and which vertex slot is missing rather than dereference a null handle.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi256 — ShapeAnalysis_Wire.CheckLoop.degenerated-edge-filter
@@ -28473,6 +28545,7 @@ Wire with degenerate self-loop (1e-12 magnitude) plus normal edge; validates deg
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi257 — unloaded-or-trivial-wire
 Single edge (NbEdges<2); CheckLoop returns false immediately. Without IsLoaded/NbEdges guard, iteration causes false classification.
+- **Expected kernel behavior**: Recognize a single-edge, unclosed "loop" as not a closed wire at all: EDGE_LOOP has exactly one edge, `trivial_e`, running (0,0,0)→(1,0,0), whose two ends are different vertices. A kernel must check edge count and endpoint closure before running any loop-classification logic that assumes at least two edges meeting at shared vertices, and reject a single open edge as an incomplete boundary rather than pass it through further checks.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi258 — self-loop-small-edge
@@ -28498,14 +28571,17 @@ Three edges with V2 having three incident edges (Extent=3). Both V1 and V2 lists
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi262 — CheckOrder nullface
 ShapeAnalysis_Wire.CheckOrder silently skips validation when 2D mode requested but face context is null.
+- **Expected kernel behavior**: Recognize this as a valid, correctly-connected but open chain: `order_e1` ends at (1,0,0) where `order_e2` begins, and `order_e2` ends at (1,1,0) where `order_e3` begins — every consecutive pair connects correctly — but the chain runs from (0,0,0) to (2,1,0) and never returns, so it is not a closed boundary regardless of any face context. A kernel should reject it as open because it doesn't return to its start, not because of a missing face wrapper, since the edges themselves are already in valid sequential order.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi263 — CheckSelfIntersection acyclic-crossing
 Wire with self-crossing edges in acyclic configuration; detection depends on segment traversal order.
+- **Status**: FLAGGED 2026-08-07 — the fixture's own header comment admits this: "cross_e1 and cross_e3 are parallel non-crossing segments — wire is valid rectangle." Verified: (0,0,0)→(2,0,0)→(2,1,0)→(0,1,0)→(0,0,0) is a plain, closed, non-self-intersecting rectangle; nothing in it crosses. Not specced; this fixture doesn't demonstrate any self-intersection. Needs a fixture with an actual crossing, or an honest retitle acknowledging it's a valid rectangle.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi264 — FixConnected gap-skip
 Wire with vertex mismatch at edge junction; FixConnected skips repair when vertices within tolerance but unequal.
+- **Expected kernel behavior**: Merge distinct vertex entities placed at identical coordinates: `conn_e1` ends at a VERTEX_POINT at (1.0,0.0,0.0), and `conn_e2` starts at a *different* VERTEX_POINT entity, also at (1.0,0.0,0.0) — the same location, two entities. A kernel must compare actual coordinates rather than entity identity when deciding whether consecutive edges connect, and merge these into one topological vertex rather than treat the wire as broken at that junction.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi265 — FixClosed endpoint-mismatch
@@ -28521,6 +28597,7 @@ Wire with 3D curve reversing at edge junction; FixGap3d fails to detect reversal
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi267 — ShapeAnalysis_Wire.CheckOuterBound
 Wire outer-bound detection; IsOuterBound flag not propagated correctly after outer boundary classification.
+- **Status**: FLAGGED 2026-08-07 — the wire itself is a plain, valid, closed 2x1 rectangle with no defect. The absence of a FACE_OUTER_BOUND wrapper is not unique to this fixture; it's the same bare-EDGE_LOOP-in-GEOMETRIC_CURVE_SET convention used throughout this batch of minimal wire fixtures (compare Twi115, Twi116, etc.), not a condition specific to an "outer bound" claim. Not specced; needs an actual multi-loop face where outer-bound identification is contestable, or an honest retitle.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi268 — ShapeAnalysis_Wire.CheckSeam
@@ -28541,19 +28618,23 @@ Individual edge self-crossing; curve loop detection fails on parametric reversal
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi270 — ShapeAnalysis_Wire.CheckShapeConnect
 Multi-edge shape connectivity validation; disconnected edge chains not flagged when vertices lie within tolerance.
+- **Expected kernel behavior**: Merge distinct vertices whose coordinates differ by less than declared tolerance: edge 1 ends at vertex (1.0,0.0,0.0), while edge 2 starts at a separate VERTEX_POINT entity only 5.0E-8 away, at (1.00000005,0.0,0.0) — half the file's declared 1.0E-7 accuracy. A kernel must compare actual coordinates (or use its own confusion tolerance) rather than vertex-entity identity when deciding whether consecutive edges connect, and merge these two vertices into one rather than treat the wire as broken at that junction.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Twi271 — ShapeAnalysis_Wire.CheckTail
 Wire terminus validation; tail edge proximity check fails when endpoint gaps exceed local curve curvature radius.
 
+- **Expected kernel behavior**: Measure the real gap between the wire's start and its last edge's end: the loop begins at (0,0,0) but the third edge ends at vertex (0.5,0.5,0), 0.707 units away — a substantial gap, nowhere near the file's declared 1.0E-7 accuracy. A kernel must compare the first vertex against the true final endpoint directly, not rely on any curvature- or radius-based proximity heuristic, and reject the wire as open rather than closed.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi272 — CheckLoop Unloaded/Trivial
 Single-edge wire V1→V2. Tests guard against multi-vertex loop detection on degenerate wire (<2 edges). Must skip analysis. **Path**: `step-examples/12-3b-wires/Twi272.stp`
+- **Expected kernel behavior**: Recognize a single-edge, unclosed "loop" as not a closed wire at all: EDGE_LOOP has exactly one edge, `loop_e1`, running (0,0,0)→(1,0,0), whose two ends are different vertices. A kernel must check edge count and endpoint closure before running any loop-classification logic that assumes multiple edges meeting at shared vertices, and reject a single open edge as an incomplete boundary rather than pass it through further checks.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi273 — CheckLoop Null Vertices
 Edge with null V1 vertex. Tests null-check guard that encodes FAIL2 status before dereference. Prevents segfault. **Path**: `step-examples/12-3b-wires/Twi273.stp`
+- **Expected kernel behavior**: Reject the edge on its own malformed definition before any downstream traversal: `null_e1` has its first vertex reference explicitly null (`$`), while its second vertex and `null_e2` (the following edge) are both well-formed. A kernel must check for a null vertex before dereferencing it for any purpose (identity, coordinates, tolerance), and report which entity and which vertex slot is missing rather than crash partway through building the loop.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi274 — CheckLoop Seam Classification

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept the wire by walking each edge in its ORIENTED_EDGE sense, not its EDGE_CURVE&#x27;s stored sense: all four EDGE_CURVEs are defined P0→P1, P1→P2, P2→P3, P3→P0, but every ORIENTED_EDGE in the loop is flagged `.F.`, so the actual traversal is P1→P0, P2→P1, P3→P2, P0→P3 — a consistent, closed, simply-reversed (clockwise instead of counter-clockwise) square. A kernel must apply the orientation flag uniformly and recognize this as a valid, merely reverse-wound boundary, not fail because the underlying curves&#x27; own directions disagree with the loop&#x27;s traversal.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

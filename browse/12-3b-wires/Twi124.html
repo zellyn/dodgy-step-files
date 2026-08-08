@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Detect the interior crossing directly from curve geometry, not via a tolerance-scaled proxy: edge 1 runs along y=0 from x=0 to x=4, and edge 2 runs along x=2 from y=2 to y=-2 — the two 3D LINEs cross at (2.0,0.0,0.0), a point interior to both segments (neither edge&#x27;s declared endpoints are (0,0,0)/(4,0,0) or (2,2,0)/(2,-2,0) themselves). A kernel must compute this crossing from the actual curve equations rather than a margin that scales with the input edge tolerance, since a tolerance-relative test can be defeated by choosing a tolerance near whatever multiplier the test uses; report the wire as self-intersecting and name the crossing point and the two edges involved.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

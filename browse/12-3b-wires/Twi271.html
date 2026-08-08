@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Measure the real gap between the wire&#x27;s start and its last edge&#x27;s end: the loop begins at (0,0,0) but the third edge ends at vertex (0.5,0.5,0), 0.707 units away — a substantial gap, nowhere near the file&#x27;s declared 1.0E-7 accuracy. A kernel must compare the first vertex against the true final endpoint directly, not rely on any curvature- or radius-based proximity heuristic, and reject the wire as open rather than closed.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Treat both interior junctions as genuine sharp corners, not representation artifacts of subdivision: at (14,3,0), the incoming Bezier segment&#x27;s tangent (from poles (13,2.5,0)→(14,3,0)) points toward (1,0.5,0) while the next segment&#x27;s tangent (from poles (14,3,0)→(14,5,0)) points toward (0,1,0) — roughly a 63° change in direction, not a smooth continuation. The same holds at (12,7,0), where the incoming tangent (-1,0.5,0) and outgoing tangent (roughly (-2,-3,0)) point in substantially different directions. A kernel must evaluate and compare actual tangent vectors at each junction rather than assume adjacent B-spline segments with matching endpoints are automatically one smooth curve; these two corners are real C1 discontinuities that a boundary-tracing pass should report, not suppress.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

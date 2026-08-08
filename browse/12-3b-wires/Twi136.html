@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Merge coincident-but-distinct vertices before chaining edges: edge 1 ends at vertex `v2_dup` (5.0,0.0,0.0), and edge 2 starts at a different vertex `v2_dup_alt` (5.0001,0.0,0.0) — 0.0001 apart — and the same pattern repeats between edge 2&#x27;s end `v3_dup` (10.0,0.0,0.0) and edge 3&#x27;s start `v3_dup_alt` (10.0001,0.0,0.0). A kernel must recognize both pairs as the same topological vertex within tolerance and unify them, updating both edges&#x27; vertex references rather than relinking one gap and orphaning the other, then still report that even after merging, the resulting chain runs open from (0,0,0) to (15,0,0) and never returns to its start.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

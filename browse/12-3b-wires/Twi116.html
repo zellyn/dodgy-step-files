@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Trace real vertex coordinates around the loop&#x27;s actual edge order, not just per-edge topology: edge 2 ends at vertex #6 (10.0,10.0,0.0), but edge 3 (the closing edge, #25) starts at vertex #8 (10.0,0.0,0.0) — a different point 10 units away in Y, not the vertex edge 2 actually ended on. The wire&#x27;s last edge does not pick up where the second edge left off, so the loop does not close, regardless of the separate, harmless coincidence that vertex #8 happens to share coordinates with vertex #4 (the vertex correctly shared by edges 1 and 2). A kernel must trace actual endpoint coordinates around the loop and reject or repair the real break between edges 2 and 3, not a break at the edge1/edge2 junction, which is already consistent.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

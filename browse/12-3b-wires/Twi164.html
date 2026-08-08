@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject this as not a simple cycle in any order — the vertex-degree structure rules it out, not just the listed order: vertex (0,5,0) appears in exactly one of the four edges (the segment to (5,10,0)), while vertex (5,10,0) appears in three of them (to (0,5,0), to (10,5,0), and to (5,0,0)) — a degree-1 dead end paired with a degree-3 branch point. The other three edges do form a closed triangle (5,0,0)→(10,5,0)→(5,10,0)→(5,0,0); the fourth edge is a pendant spur off that triangle&#x27;s (5,10,0) corner, not a fourth side of a diamond. A kernel must compute edge-degree per vertex and reject the loop once it finds a vertex touched by more than two edges, since no permutation of these four edges produces a valid closed quadrilateral.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

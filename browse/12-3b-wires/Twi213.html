@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Check pcurve continuity independently of 3D vertex sharing: edges `pcurve_gap_e0` and `pcurve_gap_e1` both meet at 3D vertex (5.0,0.0,0.0) exactly, but edge 0&#x27;s pcurve ends at u=5.0 while edge 1&#x27;s pcurve starts at u=7.0 — a genuine 2-unit gap in surface parameter space that the shared 3D vertex hides. A kernel must evaluate and compare pcurve endpoints in parameter space as a check separate from 3D vertex identity, and either re-trim edge 1&#x27;s pcurve to start at u=5.0 or reject the face citing the parametric discontinuity.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

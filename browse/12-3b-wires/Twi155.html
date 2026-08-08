@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Detect the zero-length edge directly from its own endpoints, not from a neighbor-distance computation: edge 2&#x27;s EDGE_CURVE (#22) has the same vertex, #9 at (10.0,0.0,0.0), as both its start and end, and its LINE (#21) carries a VECTOR of magnitude 0.0 — a curve with no direction at all. A kernel must flag this edge as degenerate on its own terms (start vertex equals end vertex) before attempting any adjacent-edge gap arithmetic that would need a direction from it, and drop or reject the edge rather than let an undefined direction propagate into the rest of the check.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

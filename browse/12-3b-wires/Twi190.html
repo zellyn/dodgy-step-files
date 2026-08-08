@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Recognize vertex H=(2,1,0) as a 4-way branch point, not a chain junction: all three &quot;spoke&quot; edges (from A=(0,0,0), B=(4,0,0), and C=(2,3,0)) end at H, and a fourth edge starts at H and returns to A — so H is touched by all four edges in this loop, while B and C are each touched by only one edge (dead ends). A kernel must compute vertex degree and recognize that a vertex referenced by more than two edge-ends cannot be a simple polygon corner; the three spokes plus hub-return form a star with two dangling blades, not a valid 4-sided closed wire, regardless of the order the edges are listed in.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

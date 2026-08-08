@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Determine containment from geometry, not from labels: the two closed loops in this curve set are a 20x20 square (entity #33, labeled `outer_rect_20x20`) and a 4x4 square (entity #66, labeled `inner_hole_4x4`) that lies fully inside it, but nothing here encodes which is the outer boundary — there is no face, no FACE_OUTER_BOUND, no FACE_BOUND at all, just two independent EDGE_LOOPs. A kernel that wants to use these as a face&#x27;s boundaries must compute enclosed area or containment itself to decide which loop is outer and which is a hole; entity labels are free text and carry no topological meaning.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

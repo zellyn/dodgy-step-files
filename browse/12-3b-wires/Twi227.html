@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject the file, naming each unbuildable curve: LINE entities #400, #405, #408, #410, and #412 all put a DIRECTION (#102) where Part 21 requires a `#N` reference to a VECTOR, so five of the wire&#x27;s six edge curves cannot be constructed. Two further PCURVE definitions (#403, #406) compound the malformation one level deeper, writing `#B_SPLINE_CURVE_WITH_KNOTS(...)` and `#LINE(...)` inline instead of as `#N` references. A kernel must surface a per-entity diagnostic for the first construction failure it hits rather than dereferencing a null curve; the pcurve-gap defect the old title named is unreachable because none of the wire&#x27;s LINE-based edges can be built at all.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

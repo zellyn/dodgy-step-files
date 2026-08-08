@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Twi156 — ShapeFix_Wire.FixReorder duplicate-edge</title>
+  <title>Twi156 — The closing edge&#x27;s LINE puts a direction entity in the slot that requires a vector, so the reader aborts before duplicate-edge reorder repair is reached</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi156</span>
 </nav>
 <header class="title-bar">
-<h1>Twi156 <span class="sep">—</span> <span class="entry-title">ShapeFix_Wire.FixReorder duplicate-edge</span></h1>
+<h1>Twi156 <span class="sep">—</span> <span class="entry-title">The closing edge&#x27;s LINE puts a direction entity in the slot that requires a vector, so the reader aborts before duplicate-edge reorder repair is reached</span></h1>
 <p class="category">§12.3b</p>
 <p class="tag-pills">
 <a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
@@ -27,11 +27,11 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>ShapeFix_Wire.FixReorder duplicate-edge</p></section>
+<p>The closing edge&#x27;s LINE puts a direction entity in the slot that requires a vector, so the reader aborts before duplicate-edge reorder repair is reached</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming entity #72: its LINE puts a DIRECTION (#70) where Part 21 requires a `#N` reference to a VECTOR, so the closing edge&#x27;s curve cannot be built. Once that is fixed, the EDGE_LOOP still lists edge-curve #100 twice — once as ORIENTED_EDGE #110 (`.T.`) and again as #114 (`.F.`) — alongside edges #101-#103; a kernel must recognize that the same EDGE_CURVE reference appearing twice in one loop, even with opposite orientation flags, does not by itself make a 5-sided boundary and should be rejected or collapsed rather than treated as five independent sides.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

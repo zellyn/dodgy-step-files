@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject the edge on its own malformed definition before any connectivity test: `null_v2_e` has its second vertex reference explicitly null (`$`). A kernel must check both of an EDGE_CURVE&#x27;s vertex references for null before comparing them (e.g. for a same-vertex/closure test), and report which entity and which vertex slot is missing rather than dereference a null handle.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Detect both real self-intersections directly, not just the two edges the labels suggest: computing actual segment crossings shows edge P0→P1 (labeled `osc_cross_A`, (0,4,0)→(8,0,0)) crosses edge P4→P5 ((0,8,0)→(4,0,0)) at (2.667,2.667,0), and edge P1→P2 ((8,0,0)→(4,8,0)) crosses edge P3→P4 ((8,4,0)→(0,8,0)) at (5.333,5.333,0) — two genuine interior crossings forming a figure-eight, at different locations than the labels imply, and not involving the edge labeled `osc_cross_B` at all (it crosses nothing). A kernel must compute actual segment intersections rather than trust which edges are pre-labeled as a crossing pair, and reject or split the wire at both real crossing points; whether one particular repair strategy oscillates is a property of that algorithm, not of this input.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

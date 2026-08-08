@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject the edge on its own malformed definition before any downstream traversal: `null_e1` has its first vertex reference explicitly null (`$`), while its second vertex and `null_e2` (the following edge) are both well-formed. A kernel must check for a null vertex before dereferencing it for any purpose (identity, coordinates, tolerance), and report which entity and which vertex slot is missing rather than crash partway through building the loop.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

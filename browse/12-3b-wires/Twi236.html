@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Recognize the bridge edge itself as a candidate for removal, not a load-bearing edge: `e_bridge_degenerate` runs from (9.99999999,0,0) to (10.0,0,0), a length of 1.0E-8 — an order of magnitude below the file&#x27;s declared 1.0E-7 accuracy. A kernel that already closed this gap by inserting a bridging edge must then treat that bridge itself as a degenerate, near-zero-length edge and drop it, merging its two near-coincident vertices into one, rather than leave a sub-tolerance edge sitting in the model, which just relocates the degeneracy instead of resolving it.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

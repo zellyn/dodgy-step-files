@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Recognize this as a valid, correctly-connected but open chain: `order_e1` ends at (1,0,0) where `order_e2` begins, and `order_e2` ends at (1,1,0) where `order_e3` begins — every consecutive pair connects correctly — but the chain runs from (0,0,0) to (2,1,0) and never returns, so it is not a closed boundary regardless of any face context. A kernel should reject it as open because it doesn&#x27;t return to its start, not because of a missing face wrapper, since the edges themselves are already in valid sequential order.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

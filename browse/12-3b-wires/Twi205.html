@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Recognize a tangential touch, not a transverse crossing, at (5,8,0): edge 1&#x27;s incoming tangent there (from poles (8,8,0)→(5,8,0)) is (-3,0,0), and edge 2&#x27;s outgoing tangent (from poles (5,8,0)→(2,8,0)) is also (-3,0,0) — the same direction, not a crossing where the curve passes from one side to the other. A kernel must distinguish tangency (single contact point, direction preserved, curve stays on one side) from an actual intersection before flagging self-intersection, and accept this junction as a smooth-tangent (if only C1-continuous) vertex rather than reject it as a crossing.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

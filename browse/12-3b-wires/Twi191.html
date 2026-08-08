@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Verify each edge&#x27;s pcurve actually spans its own edge&#x27;s 3D extent, not whether five unrelated local parameter ranges happen to sort monotonically: edge 0&#x27;s 3D LINE has length 2.0 (from (0,0,0) to (2,0,0)) but its pcurve LINE has length only 0.2 — a 10x scale mismatch — and the same under-scaled pattern repeats for edges 1-4 (3D lengths ~2.24-2.83, pcurve lengths only 0.3 each). Since these are five independent PLANE-local pcurve LINEs, not points on one shared periodic axis, comparing their arbitrary u-ranges to each other carries no topological meaning; a kernel must instead check that each edge&#x27;s own pcurve, evaluated over its own range, reaches 3D positions matching that edge&#x27;s real geometry, and rebuild any pcurve whose scale doesn&#x27;t match.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Recognize the fifth edge as an out-and-back tail regardless of its orientation flag: the rectangle already closes after four edges, back at (0,0,0); edge 5&#x27;s own EDGE_CURVE runs from (0.0001,0.0,0.0) to (0,0,0), and with its ORIENTED_EDGE marked reversed it is walked (0,0,0)→(0.0001,0,0) — a 0.0001-unit spur off the already-closed corner that goes nowhere and returns to nothing. A kernel must detect this tail from its geometry (a short edge whose far end connects to nothing else) independent of whether its ORIENTED_EDGE sense is forward or reversed, and drop it or reject the wire naming it, rather than let the orientation flag suppress detection.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

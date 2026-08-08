@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Measure real 3D endpoint distances rather than assuming a hairline boundary-tolerance gap: this &quot;loop&quot; has only two edges — one from (0,0,0) to (10.0,0.0,0.0) and another from (10.0001,5.0,0.0) to (0.0,5.0,0.0) — and the end of the first edge sits roughly 5.0 units from the start of the second (dominated by the 5.0-unit difference in Y), not just the 0.0001 x-offset the label implies, since the two segments run along y=0 and y=5 with no edges connecting them. A kernel must reject this as a wide-open 2-edge chain; a genuine tolerance-boundary gap test would need the two segments to actually meet apart from a sub-threshold offset.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

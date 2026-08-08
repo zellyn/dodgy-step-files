@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Twi229 — ShapeFix_Wire.FixReorder all-edges-degenerate</title>
+  <title>Twi229 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before degenerate-edge reorder repair is reached</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi229</span>
 </nav>
 <header class="title-bar">
-<h1>Twi229 <span class="sep">—</span> <span class="entry-title">ShapeFix_Wire.FixReorder all-edges-degenerate</span></h1>
+<h1>Twi229 <span class="sep">—</span> <span class="entry-title">Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before degenerate-edge reorder repair is reached</span></h1>
 <p class="category">§12.3b</p>
 <p class="tag-pills">
 <a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
@@ -27,11 +27,11 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>ShapeFix_Wire.FixReorder all-edges-degenerate</p></section>
+<p>Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before degenerate-edge reorder repair is reached</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming each unbuildable curve: all five of the wire&#x27;s LINE entities put the same DIRECTION (#102) where Part 21 requires a `#N` reference to a VECTOR, so no edge curve can be built. Independently, every one of this wire&#x27;s five vertices (#110-#114) sits at the identical point (5.0,5.0,0.0), so even a correctly-built wire would have five zero-length edges; a kernel must reject a wire whose vertices are all coincident rather than attempt to order them.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

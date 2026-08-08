@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reorder the loop&#x27;s 5 edges into head-to-tail sequence before treating it as a bound: as stored, the EDGE_LOOP&#x27;s 1st edge ends at P1=(10,0,0), but the 2nd edge in the list runs from P2=(10,8,0) to P3=(5,12,0) — a break, since P1≠P2. A valid head-to-tail permutation of these same five edges exists — P0=(0,0,0)→P1=(10,0,0)→P2=(10,8,0)→P3=(5,12,0)→P4=(0,8,0)→P0 — reconstructing a simple, non-self-intersecting pentagon. A kernel must search for and apply that permutation rather than reject the wire merely because its stored order is non-monotonic.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

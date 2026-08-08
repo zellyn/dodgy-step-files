@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Decide consistently at the tolerance boundary: edge 1&#x27;s pcurve on this radius-1 cylinder ends at (u,v)=(1.0,0.0) while edge 2&#x27;s pcurve starts at (1.0000001,0.0) — a parametric gap of exactly 1.0E-7, matching the file&#x27;s declared accuracy to the last digit, and the corresponding 3D points already agree to that same 1e-7. A kernel must pick one closed convention (gap ≤ tolerance closes, gap &gt; tolerance does not) and apply it identically on every evaluation, since re-deriving an exactly-equal floating-point comparison is unreliable; treat this as closing (merge the two points) rather than let repeated evaluation flip the verdict.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

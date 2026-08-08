@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Merge distinct vertex entities placed at identical coordinates: `conn_e1` ends at a VERTEX_POINT at (1.0,0.0,0.0), and `conn_e2` starts at a *different* VERTEX_POINT entity, also at (1.0,0.0,0.0) — the same location, two entities. A kernel must compare actual coordinates rather than entity identity when deciding whether consecutive edges connect, and merge these into one topological vertex rather than treat the wire as broken at that junction.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

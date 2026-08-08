@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Merge distinct vertices whose coordinates differ by less than declared tolerance: edge 1 ends at vertex (1.0,0.0,0.0), while edge 2 starts at a separate VERTEX_POINT entity only 5.0E-8 away, at (1.00000005,0.0,0.0) — half the file&#x27;s declared 1.0E-7 accuracy. A kernel must compare actual coordinates (or use its own confusion tolerance) rather than vertex-entity identity when deciding whether consecutive edges connect, and merge these two vertices into one rather than treat the wire as broken at that junction.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

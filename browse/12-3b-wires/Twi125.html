@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Recognize the coincident retrace before reporting a &quot;corner crossing&quot;: edges 2 and 3 are not two lines meeting at a point — they run the exact same segment between (1.0,0.0,0.0) and (0.0,1.0,0.0) in opposite directions (edge 2 direction (-0.7071,0.7071,0), edge 3 the exact negation), so they overlap along their whole ~1.414-unit length rather than crossing once. And the loop as a whole never returns to its starting vertex (0,0,0): edge 3 ends back at (1.0,0.0,0.0), the same point edge 1 already reached, not at edge 1&#x27;s start. A kernel must flag the full-length coincident overlap between edges 2 and 3 directly, and separately reject the loop as unclosed since it never revisits (0,0,0).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Recognize a genuine degenerate self-loop: `self_loop_e` has the same VERTEX_POINT entity as both its start and end vertex. Since an EDGE_CURVE&#x27;s real extent is bounded by projecting its vertices onto the curve, and both vertices project to the identical point (0,0,0), this edge is zero-length regardless of the underlying LINE&#x27;s own declared direction and magnitude. A kernel must test vertex identity explicitly (same entity or coincident within tolerance) rather than assume any edge referencing a curve implies nonzero length, and reject or drop a self-loop edge like this one.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

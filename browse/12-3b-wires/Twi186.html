@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Distinguish parametric (UV) proximity from actual 3D proximity: edge 0&#x27;s pcurve spans u∈[0.3,1.8] at constant v=0.1, and edge 2&#x27;s pcurve spans the same u∈[0.3,1.8] range (reversed) at constant v=1.0 — identical U extent, but v=0.1 and v=1.0 are different tube latitudes on this major-radius-5, minor-radius-2 torus, giving genuinely different heights (edge 0&#x27;s vertices sit at z≈0.1997, edge 2&#x27;s at z≈1.683). A kernel must test for intersection using full 3D (or full UV, both coordinates together) geometry, not U-range overlap alone, since these two edges do not actually meet or cross anywhere.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
