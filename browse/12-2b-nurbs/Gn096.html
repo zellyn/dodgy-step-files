@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic: one control point&#x27;s Z coordinate is 1.0e308, at the edge of double-precision representable range and a practical proxy for a corrupted/overflow value. A bounding-box computation must validate coordinate magnitudes (or check finiteness) before folding them into an extent calculation, since a single such value produces a bounding box that is technically &#x27;correct&#x27; but useless for any downstream containment, clash, or display purpose.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the wired curve is an offset (distance 0.5, direction +Z) of a flat, Z=0 B-spline base, so the offset curve itself lies in the Z=0.5 plane even though its base curve&#x27;s control points are all at Z=0. A planarity check on an offset curve must evaluate the offset curve&#x27;s own geometry, not substitute the base curve&#x27;s control-point plane, or it will report the wrong plane (or &#x27;not planar&#x27;) for an offset that is in fact planar at a different Z.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

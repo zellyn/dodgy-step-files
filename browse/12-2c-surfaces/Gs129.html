@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Accept: a CYLINDRICAL_SURFACE with radius 0.0001mm -- a very small but strictly positive, well-defined radius. A kernel testing whether such a surface closes in U must use a tolerance appropriate to the surface&#x27;s own scale (relative to its radius), not a fixed absolute tolerance that could exceed the entire circumference at this size; the tiny radius itself is legitimate geometry, not grounds for rejecting the surface.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

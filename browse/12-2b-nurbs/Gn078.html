@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>heal: a degree-2, 6-pole curve with two interior knots (0.33, 0.67, each multiplicity 2) needs its degree raised for a Bezier-basis conversion pipeline that elevates in a single step. Degree elevation from 2 must pass through every intermediate degree (or use a direct multi-step elevation algorithm) so that knot multiplicities at each interior knot are raised correctly at every step; skipping an intermediate degree under-multiplies the seam knots and produces an inconsistent 2D parameterization.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

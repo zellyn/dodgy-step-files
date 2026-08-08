@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a PLANE whose AXIS2_PLACEMENT_3D has its Z-axis direction reversed (pointing into -Z rather than +Z), restricted by a RECTANGULAR_TRIMMED_SURFACE to u,v in [-1,1]. A reversed placement axis is ordinary valid input -- it simply flips which side of the plane is &#x27;outward&#x27;. A kernel lifting a 2D trim-space curve to a 3D curve on this surface must apply the surface&#x27;s actual placement (including its reversed axis) consistently, rather than assume a canonical +Z-up orientation.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

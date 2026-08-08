@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept, but diagnose scale mismatch: a full circle of radius 0.001mm sampled at a fixed 360-point cap produces a chord error (~1.5e-7) that exceeds a 1e-7 geometric tolerance -- the fixed sample count is too coarse at this micro-scale even though it would be more than adequate for a circle sized in meters. A kernel&#x27;s sampling density must be derived relative to the curve&#x27;s own radius/scale (chord-error-bounded), not a fixed point count, so micro-scale analytic curves are not silently under-resolved.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

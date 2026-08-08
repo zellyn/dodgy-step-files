@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: a degree-4, 6-pole curve whose poles are nominally at Z~0 but whose interior knot structure introduces a genuine 0.15-unit out-of-plane bulge is a legitimately non-planar curve. A planarity check must evaluate the curve&#x27;s actual (possibly interior, possibly off-pole) geometry across its parameter range, not just its nominal/rounded control-point values, since a real bulge this small can be easy to under-detect with coarse sampling.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

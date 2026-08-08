@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Accept: the face includes a vertex at the sphere&#x27;s south pole, antipodal to the face&#x27;s other extent. A kernel projecting an arbitrary 3D point onto a sphere should use the direct closed-form relationship between a point&#x27;s direction (relative to the sphere&#x27;s axis) and its (u,v) -- there is no &#x27;wrong side&#x27; to converge to incorrectly if the projection is computed directly rather than iteratively refined from an unrelated seed.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

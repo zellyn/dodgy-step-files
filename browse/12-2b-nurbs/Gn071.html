@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic or heal: a BEZIER_CURVE whose first and last control points coincide ((0,0,0) at both ends) is geometrically closed by pole equality even though Bezier curves carry no periodic flag (that is a B-spline-only concept). A closure check must test actual endpoint coincidence for curve types like BEZIER_CURVE that have no periodicity flag to consult, rather than defaulting to &#x27;not closed&#x27; whenever a periodic flag is absent.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

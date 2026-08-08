@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: two independently valid, properly-closed 4-edge wires on a cylindrical face may each cross the U-seam at different heights (z=0 and z=2) without being duplicates of each other, so a read must load all 8 edges of the CLOSED_SHELL face intact with no coincidence check or merge attempted between the two wires.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed coincident-edge wire merging &quot;misses the duplicate coincidence&quot;; that method is never invoked on an ordinary read, and both wires load intact with all 8 edges present (live-oracle per-face check). Part of a larger family of ~127 face-repair/small-face-check-titled Tfa entries sharing this same &quot;named method never actually invoked on ordinary read&quot; pattern — see `BACKLOG.md` Q14 for the full list and recommended remediation approach (mirrors this correction and the 18-fixture Part 1 correction this entry is part of, both closing `tkshh-splitting-vertex-face`-adjacent misnomers). Synonyms: &quot;two seam-crossing wires load without coincidence check&quot;, &quot;cylindrical face two wires cross same seam&quot;.</p></section>
 <section><h2>Expected validation</h2>

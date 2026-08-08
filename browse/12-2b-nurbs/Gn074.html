@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>heal: an 8x8-control-point, degree-7x7 surface is high but individually valid degree in both directions (knot sums both check out: 8+8=16). Bezier-basis conversion must support the full legal degree range (or explicitly perform degree reduction with a documented, reported loss) rather than silently truncating to an internal maximum-degree limit and emitting incorrect sub-patches with no diagnostic.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

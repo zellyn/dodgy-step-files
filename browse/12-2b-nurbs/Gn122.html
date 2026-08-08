@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic naming the collapsed rows: the surface&#x27;s control net has six of its eight control points collapsed to the single point (1,1,1), with only two poles at a distinct location (2,2,2) -- a degenerate net that cannot support a well-formed degree-2x2 surface patch. A kernel must check for degenerate (collapsed) regions in the control net before attempting to split or otherwise process the surface; running general surface logic against a mostly-collapsed net produces meaningless or empty geometry with no diagnostic pointing at the actual cause.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

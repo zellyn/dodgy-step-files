@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: an OFFSET_SURFACE (0.5 offset from a PLANE) wired into a four-edge rectangular face boundary. A kernel checking an offset surface&#x27;s edges for tangency anomalies against the base surface should sample all four boundary edges (or their midpoints), not just a subset -- a plane&#x27;s offset is itself a plane with no genuine tangency anomalies, so for this particular file the correct report is simply that no anomaly exists, provided the check actually examines the full boundary rather than a partial sample.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

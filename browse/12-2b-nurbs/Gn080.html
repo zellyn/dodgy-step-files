@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject with a diagnostic naming the duplicate: the surface&#x27;s U split-value request is [0.3, 0.3, 0.7], a duplicate at 0.3. A kernel&#x27;s deduplication of split-parameter lists must be careful about which occurrence it removes relative to any coincident interior knot at that same parameter; removing the wrong copy shifts the resulting patch grid and produces incorrect topology instead of the intended split.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

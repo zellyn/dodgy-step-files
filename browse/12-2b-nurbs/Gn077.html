@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept, with a self-intersection diagnostic: the curve&#x27;s control polygon reverses direction at its third pole (P2=(1,-1,0) after P1=(2,2,0), before P3=(-1,2,0)), and its first and last poles coincide -- the curve is closed, but the reversal indicates the curve likely self-intersects near that parameter. A closure check reporting &#x27;closed&#x27; is correct on its own terms; self-intersection is a separate property and must be checked independently rather than assumed absent just because the curve closes.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

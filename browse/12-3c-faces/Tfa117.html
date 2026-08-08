@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the zero-length EDGE_CURVE in face[0]&#x27;s wire: a LINE-based edge with a 0.0-magnitude VECTOR between two distinct vertices is degenerate and must be detected before building the face, and a correct kernel must either drop just that one edge and stitch the remaining 5 legitimate edges into a valid wire, or reject the whole bound with a diagnostic — silently discarding the entire wire down to 0 edges (leaving an unbounded-surface face) is not acceptable, since it removes 5 perfectly good edges along with the one bad one; the untouched companion face[1] must keep all 4 of its edges regardless.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed splitting-vertices checking &quot;cannot classify&quot; a T-vertex at the degenerate edge; that checker is never reached because the reader drops the whole face boundary before any splitting-vertex analysis could occur. Per-face oracle probe confirms `face[0].n_edges == 0`. **See also**: Tfa098, Tfa252 (same unbounded-surface fallback pattern). Synonyms: &quot;zero-length edge drops entire face boundary&quot;, &quot;degenerate edge causes whole-wire failure not partial skip&quot;.</p></section>
 <section><h2>Expected validation</h2>

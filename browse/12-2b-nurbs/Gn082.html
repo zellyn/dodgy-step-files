@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject with a diagnostic naming the seam tolerance: decomposing a degree-2x2, 7x7-net surface (both directions carrying interior multiplicity-2 knots) into a 3x3 grid of Bezier patches leaves an inter-patch seam drift of about 1e-6 -- small, but larger than the file&#x27;s declared geometric tolerance. A kernel must compare seam drift after Bezier decomposition against the file&#x27;s own declared uncertainty, and either tighten the split or report the residual, rather than treating any decomposition that completes without error as automatically within tolerance.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

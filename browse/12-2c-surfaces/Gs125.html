@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Accept: a degree-1 B_SPLINE_SURFACE_WITH_KNOTS whose U domain spans [0, 1000] with knots at 0, 250, 500, 750, 1000 -- a genuinely wide but well-formed domain, four honest spans, not an unbounded or malformed one. A kernel converting this surface to a piecewise representation should subdivide once per actual knot span (four spans here, not one per unit of parameter length) -- excessive subdivision would come from mis-deriving the span count from the domain&#x27;s numeric width rather than from its knot vector.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

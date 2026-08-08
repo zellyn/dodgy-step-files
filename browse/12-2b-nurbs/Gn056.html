@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the curve&#x27;s interior knot at t=0.5 has multiplicity 1 (fully smooth), and its two spans form a parabolic arc peaking at that same parameter. A bounding-box computation that snaps its sample set to knot-boundary parameters only (an &#x27;exact mode&#x27; that trusts knots as the extremal set) will miss an interior extremum that falls between knots; it must instead search for extrema across each span, not assume knot values bracket the true extent.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

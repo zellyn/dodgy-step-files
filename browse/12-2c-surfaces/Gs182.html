@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the invalid surface_form and knot vector: the periodic B_SPLINE_SURFACE_WITH_KNOTS sets surface_form to the literal `.B_SPLINE_SURFACE.`, which is not a member of the b_spline_surface_form enumeration, and its U multiplicities (2,2,2,1) sum to 7 against the 5 required for 2 U-direction control points at degree 2. A kernel must reject both the bogus form token and the malformed knot vector rather than attempt to reason about seam continuity on top of an already-invalid surface definition.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: a 3-pole rational degree-2 curve with weight 0.7071 (~1/sqrt(2)) at the middle control point is the standard exact-NURBS form of a circular arc -- a conic, not a higher-degree free-form curve. Sampling density for a conic arc should be derived from its own (degree-2, 3-pole) structure, not from an assumption sized for cubic (degree-3) curves; over-assuming degree can waste samples or, worse, use a heuristic tuned for the wrong pole count and under-resolve the arc&#x27;s curvature peak.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

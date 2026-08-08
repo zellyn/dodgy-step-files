@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Fi004 — Fillet contour is geometrically inconsistent (disjoint or self-crossing)</title>
+  <title>Fi004 — B-spline edge&#x27;s control polygon self-crosses (figure-eight) but the evaluated curve does not; contour is a closed, connected loop</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">Fi004</span>
 </nav>
 <header class="title-bar">
-<h1>Fi004 <span class="sep">—</span> <span class="entry-title">Fillet contour is geometrically inconsistent (disjoint or self-crossing)</span></h1>
+<h1>Fi004 <span class="sep">—</span> <span class="entry-title">B-spline edge&#x27;s control polygon self-crosses (figure-eight) but the evaluated curve does not; contour is a closed, connected loop</span></h1>
 <p class="category">§12.7 feature defects (sub-class: faulty contour)</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
@@ -28,13 +28,13 @@
 <section><h2>Sender</h2>
 <p>deduced — OCCT uncovered-class sweep</p></section>
 <section><h2>Description</h2>
-<p>The user-provided fillet contour (list of spine edges) is not a connected, non-self-crossing curve. Bug-reporter language: &quot;fillet contour invalid&quot;, &quot;fillet edges don&#x27;t connect&quot;, &quot;broken fillet input&quot;.</p></section>
+<p>Originally claimed: the user-provided fillet contour (list of spine edges) is not a connected, non-self-crossing curve. Verified 2026-08-07: neither half of that disjunction holds. The 4-edge loop is closed and connected (each edge shares a real vertex with its neighbor, no disjoint segment). The one B-spline edge&#x27;s 6 control points do form a self-crossing (figure-eight) polygon, but the actual evaluated curve stays smooth throughout its domain — the `self_intersect=.T.` flag on the `B_SPLINE_CURVE_WITH_KNOTS` entity is not supported by the curve&#x27;s own geometry. What the file actually demonstrates is a curve whose control polygon looks self-crossing while the true curve is not, with a mismatched `self_intersect` metadata flag — not a self-crossing or disjoint fillet contour.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>User selects three edges for a single fillet contour, but two of them are not adjacent and one self-crosses.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Validate contour at request time; reject; or split into multiple contours.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;broken contour&quot;, &quot;fillet input not chainable&quot;, &quot;fillet contour invalid&quot;, &quot;fillet edges don&#x27;t connect&quot;, &quot;fillet contour self-crosses&quot;. **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (geometrically inconsistent fillet contour): the model root is a GEOMETRIC_CURVE_SET that wraps an ADVANCED_FACE, and OCC&#x27;s geometric_set transfer does not build a face from a face embedded in a GEOMETRIC_CURVE_SET. Base, a CLEAN copy (edge loop repaired to a simple contour) and a HUGE copy are all empty, whereas the identical face placed in an OPEN_SHELL loads f=1. Container-level schema-abuse, not a defect-driven silent data-loss, so this is not a proven kernel bug.</p></section>
+<p>Synonyms: &quot;broken contour&quot;, &quot;fillet input not chainable&quot;, &quot;fillet contour invalid&quot;, &quot;fillet edges don&#x27;t connect&quot;, &quot;control polygon self-crosses but curve is smooth&quot;, &quot;self_intersect flag mismatched with actual curve geometry&quot;. **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit) shows the empty is not caused by the declared defect (geometrically inconsistent fillet contour): the model root is a GEOMETRIC_CURVE_SET that wraps an ADVANCED_FACE, and OCC&#x27;s geometric_set transfer does not build a face from a face embedded in a GEOMETRIC_CURVE_SET. Base, a CLEAN copy (edge loop repaired to a simple contour) and a HUGE copy are all empty, whereas the identical face placed in an OPEN_SHELL loads f=1. Container-level schema-abuse, not a defect-driven silent data-loss, so this is not a proven kernel bug. Corrected 2026-08-07 (title-vs-bytes audit): retitled/redescribed — original claimed the fillet contour itself is disjoint or self-crossing; the loop is provably closed/connected and the B-spline edge&#x27;s evaluated curve provably does not self-cross (only its control polygon does), so neither disjunct of the original title is true of the bytes.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

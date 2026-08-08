@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept, but diagnose the near-2pi gap: a circle trimmed to [0.001, 6.2822] leaves an extremely small (~0.001 radian) untrimmed gap near the 2pi wraparound. A fixed 360-sample (1-degree) grid can step entirely over a gap this narrow and never land a sample inside it. A kernel&#x27;s sampling near a near-full-circle trim boundary should be adaptive (or explicitly test the boundary parameters), not rely on a fixed angular grid that can miss a gap far smaller than its own resolution.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

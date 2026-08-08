@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a degree-3 B-spline surface whose profile approximates a cone (including a genuinely degenerate apex row of control points) must load both faces and their circle-typed edges exactly as encoded, matching the v_degree, edge-orientation, and radius-5.0 assertions below, without attempting any analytic revolution-surface apex construction — that construction only applies to true SURFACE_OF_REVOLUTION entities and must never be attempted on B-spline geometry.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed periodic-degenerate seam repair&#x27;s analytic-revolution assumption fails on this B-spline apex profile; that method is never invoked on an ordinary read, so no apex-construction attempt (successful or failed) is ever made. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;B-spline revolution apex profile loads intact&quot;, &quot;apex construction never invoked on B-spline surface&quot;.</p></section>
 <section><h2>Expected validation</h2>

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the invalid knot vector: the degree-2x2 B_SPLINE_SURFACE_WITH_KNOTS gives U and V multiplicities of (2,1,2), summing to 5 in each direction against the 6 required for 3 control points at degree 2. A kernel must compute a surface&#x27;s effective degree and validity from its actual knot multiplicities and pole count together, and reject a knot vector whose multiplicity sum does not satisfy n_poles+degree+1, rather than infer a degree that makes the mismatch appear consistent.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

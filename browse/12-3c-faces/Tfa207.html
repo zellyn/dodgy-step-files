@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: an outer wire that is a complete periodic equatorial circle on a torus (major radius 3.0, minor radius 1.0), plus two independent inner rectangular wires — one well inside the u-period and one straddling the u=0/2pi seam — is ordinary, valid multi-wire topology on a periodic surface; the seam-straddling inner wire is still geometrically contained within the outer wire once the surface&#x27;s own periodicity is accounted for, so all four wires must load into the one face exactly as declared (1 face / 13 edges / 4 wires) with no periodic-shift-based containment rejection.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed periodic bounding-box-shift handling &quot;applies AdjustByPeriod() shifts to prevent false non-containment when wires wrap across the u/v closure boundary&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;seam-crossing inner wire on torus loads without periodic bounding-box adjustment&quot;.</p></section>
 <section><h2>Expected validation</h2>

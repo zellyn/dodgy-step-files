@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: a 12-pole, degree-3 curve encodes roughly two turns of a helix (radius 1.0, pitch 0.2) over parameter range [0,1], so a fixed segment of parameter maps to a fixed segment of arc length only if the curve&#x27;s speed is constant -- it generally is not for a B-spline helix approximation. Curve sampling should be driven by an estimate of the curve&#x27;s actual geometric deviation between samples (chord/curvature based), not purely by the parameter range, or the true 3D pitch can be under-resolved even though the parameterization looks uniform.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

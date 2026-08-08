@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a TOROIDAL_SURFACE (major_radius=3.0, minor_radius=1.5) with major_radius &gt; minor_radius -- an ordinary (non-self-intersecting) ring torus, ordinary and valid. A kernel enumerating a torus&#x27;s singular/degenerate loci should report what is geometrically present: a standard ring torus with major_radius &gt; minor_radius has no self-intersection pinch at all (unlike major_radius &lt;= minor_radius cases), so the correct behavior is to report zero pinch singularities for this surface, not one or two.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic: the edge&#x27;s trimmed curve requests split/trim parameters U1=1.2, U2=2.0 while the host surface&#x27;s own U domain is [0,1] -- the values lie entirely outside the surface&#x27;s declared parametric range. A kernel must validate split/trim parameters against the surface&#x27;s domain before use and reject with a diagnostic naming the out-of-range value, rather than silently producing empty patches.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

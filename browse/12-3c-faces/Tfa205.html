@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a wire that includes a cone&#x27;s apex vertex (at z=1.414, half-angle 45°) without an explicit seam edge is an ordinary, valid boundary on a conical surface — the apex is a genuine feature of the surface geometry, not missing topology requiring synthesis — so the face must load exactly as declared (1 face / 4 edges) with no natural-boundary insertion triggered by the apex.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed natural-bound insertion &quot;inserts a natural boundary at the degenerate apex geometry, adjusting face topology&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;cone-apex boundary loop loads without natural-bound insertion&quot;.</p></section>
 <section><h2>Expected validation</h2>

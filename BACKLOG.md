@@ -2100,8 +2100,88 @@ Tfa241 Tfa242 Tfa243 Tfa244 Tfa245
 
 ## (G) ORACLE BUG — reader settings never applied; `occt_heal_off` is not a second signal
 
-**Found 2026-08-01. Verified, NOT fixed — the fix needs a full-corpus rebaseline, so it is a
-maintainer decision, not a drive-by. Code was deliberately left unchanged.**
+**STATUS 2026-08-07: the plumbing bug below is FIXED and landed** — `STEPControl_Controller.Init_s()`
+now precedes every `Interface_Static.Set*` in both `_oracle_workers.oracle_occt` and
+`validate.parse_occt`, and the change was token-neutral across all 2547 fixtures (measured; see
+"BLAST RADIUS" below). The nightly is green with it in place.
+
+**What remains open is the more important half: `occt_heal_off` still carries no independent
+signal.** Repairing the plumbing did not fix that, because `read.surfacecurve.mode` 0-vs-3 is
+invisible at token granularity — the token reports `n_roots`, which the knob does not move.
+The corpus still prints `occt=X/Y` where X and Y are provably equal for all 2529 fixtures. This is
+now disclosed to readers in README.md rather than shipped silently.
+
+**Measured 2026-08-07 — a real `ShapeFix` pass WOULD add signal.** Probe on a seeded stratified
+random sample (3 per section, 54 files, 45 usable — random, not `head -N`, because `head -N`
+under-sampling is what made the earlier blast-radius sweeps miss Gp177):
+
+```
+loads (token shape(n))                       23
+  ShapeFix_Shape changed topology             1   Gs175: vertex 8->6, edge 4->3
+  ShapeFix_Shape raised a status flag        17   (all ShapeExtend_DONE4)
+tokens: shape(1) x23, empty x19, timeout/err x3
+```
+
+So a ShapeFix-based second column splits 17-vs-6 where the current one splits 0-vs-2529. That is
+a genuine signal, but the aggregate `ShapeFix_Shape` flag is coarse — all 17 raise the same
+DONE4. A useful version should record the per-sub-fixer status (`ShapeFix_Wire`,
+`ShapeFix_Face`, `ShapeFix_Shell`), which is exactly the "what did the healer actually repair"
+information a kernel author wants. Probe script is committed so the numbers above can be re-run:
+`validation/probes/shapefix_probe.py` (`cd validation && uv run python probes/shapefix_probe.py <file.stp>`).
+
+**Still a maintainer decision, not a drive-by:** adding it means a new oracle, a full-corpus
+baseline, and a catalog schema field. Not started.
+
+### Two follow-on approaches TRIED AND RULED OUT (2026-08-07) — do not re-attempt blind
+
+**(1) `read.step.sequence` is NOT the missing second signal.** The reader's healing is the
+`FromSTEP` ShapeProcess sequence, and it CAN be disabled: `Interface_Static.SetCVal_s(
+"read.step.sequence", "")` returns True, round-trips, and survives both a later
+`STEPControl_Controller.Init_s()` and a transfer (all verified). But raw-vs-`FromSTEP`
+produced **byte-identical topology counts on every fixture tried** (Gs175, Tfa245, Tsh028,
+Gp177, Twi044). Whatever that sequence does, it is much lighter than a full
+`ShapeFix_Shape.Perform()` — Gs175 goes 8->6 vertices under an explicit ShapeFix but is
+unmoved by the sequence toggle. So this does not resurrect the dead second column.
+
+**(2) Per-repair `ShapeFix_Wire` status is the right IDEA but the wrong MEASUREMENT POINT.**
+`ShapeFix_Wire` names 13 repairs (Reorder, Small, Connected, EdgeCurves, Degenerated,
+Closed, SelfIntersection, Lacking, Gaps3d, Gaps2d, Notches, FixTails, RemovedSegment) and
+across ShapeFix as a whole there are **45 named repairs + 35 mode toggles** — OCCT's own
+itemised taxonomy of what goes wrong in real STEP and how it is fixed. That is a much
+better coverage denominator than shape_counts.
+
+BUT running it on the POST-TRANSFER shape does not work. Validation: 7 fixtures were chosen
+whose titles claim a specific wire defect (self-intersection / degenerate / small /
+unclosed) and checked for the matching repair firing. **0 of 7 fired anything**
+(Tfa150, Tsh259, Xp015, Gp167, N037, Gn031, Gp160). The reason is that the catalog's defect
+lives in the FILE, not in the resulting `TopoDS` wire: the transfer either drops it
+entirely (token `empty` -> zero wires to measure) or builds a topologically clean wire from
+it. Gs175 (fires Degenerated + SelfIntersection) is the exception, not the rule.
+
+A correct version must apply the repair where the defect still exists — building the
+wire/face from the file's own entities — rather than fixing OCCT's already-normalised
+transfer output.
+
+Corpus-wide run (2304 of 2547 fixtures completed; the rest timed out or crashed the probe)
+quantifies how weak the measurement is at this point:
+
+```
+load with wires to repair          1530
+  fired ANY of the 13 repairs        42   (2.7%)
+repairs firing anywhere               7 of 13
+  EdgeCurves 35 · Degenerated 5 · Lacking 3 · SelfIntersection 3
+  Notches 3 · Connected 2 · Reorder 1
+never fired                           6 of 13
+  Small, Closed, Gaps3d, Gaps2d, FixTails, RemovedSegment
+```
+
+**Do NOT read that last line as six coverage gaps.** With 0-of-7 claimed defects firing their
+matching repair, the dominant explanation is that the measurement point cannot see these
+classes, not that the corpus lacks them. The number characterises the probe's blind spot.
+Re-derive it only after moving the measurement to where the defect still exists. Probe kept for reuse at `validation/probes/heal_coverage_probe.py`, with
+this limitation documented in its docstring. **Do not build a coverage scoreboard on it as-is.**
+(API trap if reused: `StatusRemovedSegment()` takes NO status argument, unlike the other
+twelve; querying it uniformly mis-scores it as never firing.)
 
 **The bug.** `_oracle_workers.oracle_occt` and `validate.parse_occt` both configure the reader
 with `Interface_Static.SetIVal_s(...)` — `read.surfacecurve.mode` 0 vs 3 is what separates
@@ -2178,8 +2258,8 @@ to drive real healing (ShapeFix/ShapeProcess) instead of a reader preference.
 counts DO shift for some fixtures. Tier-3 assertions are safe (`tier3_geometric.py` never touches
 `Interface_Static`). Everything else is measured.
 
-**Recommended sequence if actioned:** (1) add `STEPControl_Controller.Init_s()` before the first
-`Interface_Static.Set*` in BOTH `_oracle_workers.oracle_occt` and `validate.parse_occt`;
+**Recommended sequence if actioned:** (1) ~~add `STEPControl_Controller.Init_s()` before the first
+`Interface_Static.Set*` in BOTH `_oracle_workers.oracle_occt` and `validate.parse_occt`~~ **DONE 2026-08-07**;
 (2) full `_run_corpus` on CI with the patched oracle; (3) diff every fixture's summary against
 the current baseline — expect real DRIFT, triage rather than bulk-accept; (4) decide separately
 whether `read.surfacecurve.mode` is even the right knob to call "healing off" (it controls
@@ -2370,3 +2450,37 @@ the sub-agent and I could not reproduce it — my shoelace pass found no
 the Tsh106/Tsh124 argument does not transfer. Left with an in-entry Status
 saying exactly that. Re-check with a parser that handles its actual loop
 encoding before assuming it belongs to the group.
+
+---
+
+## (M) Crash-cohort extension: 3 more `signal(11)` fixtures crash on a malformed `LINE`, not their titled defect (found 2026-08-07)
+
+Same class as (I) (the 8-fixture Twi crash cohort). A corpus-wide structural scan of every
+`LINE(name, pnt, dir)` — arg3 must be a `VECTOR` — found **8 fixtures with a structurally
+broken LINE**, of which 3 are newly-suspected mislabels:
+
+```
+Gp096   #22, #42  arg3 -> CARTESIAN_POINT     occt=signal(11)  title: "...direction-reversed-but-coincident"
+Gp098   #22, #42  arg3 -> CARTESIAN_POINT     occt=signal(11)  title: "...arc-tangent-to-line"
+Gp099   #22, #42  arg3 -> CARTESIAN_POINT     occt=signal(11)  title: "...very-long-edge"
+```
+
+All three segfault, and all three titles name a pcurve/edge-comparison SCENARIO that cannot
+execute on a file the reader crashes on. Apply the (I)/(L) precedent: verify whether the
+titled defect is ALSO encoded before retitling — retitle-not-regenerate either way.
+
+The other 5 hits are already honest and need NO action; they are useful controls:
+- `Ad030` — title literally says "Type-confusion via mis-typed reference (CARTESIAN_POINT used
+  as DIRECTION)". Exactly correct. Proof the corpus labels this class correctly when it knows.
+- `Gs134` (`#70=LINE('',#60,#70)`, self-referential), `Gs136`/`Gs137`/`Gs138`
+  (`arg3==arg2`, a CARTESIAN_POINT used as the direction) — surfaced independently by the
+  §12-2c spec wave; Gs134/136/137 are flagged there, Gs138's title is honest about a
+  different malformation in the same file.
+
+**Do NOT widen this to the two large idiom classes without a separate decision.** The same scan
+also found 268 inline `LINE('',#pt,VECTOR('',(x,y,z),1.0))` constructions and 217 cases of
+arg3 referencing a `DIRECTION` rather than a `VECTOR`, spread over ~90 fixtures that pass CI
+with verified Expected tokens. Those are corpus-wide AUTHORING IDIOMS, not per-fixture
+defects, and `_schema_oracle --strict` reports 0 unexpected violations against them. Whether
+they are Part-21 conformance problems worth fixing is a separate maintainer question — treating
+them as 93 "broken fixtures" would be wrong.

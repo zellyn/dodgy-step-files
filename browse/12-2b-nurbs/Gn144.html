@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic naming the mismatch: the surface&#x27;s U direction is flagged periodic (closed) but its U-knot vector is clamped, non-periodic (mults (3,3), summing to only 6 knots where 4 poles + degree 2 needs 7) -- the periodic flag and the knot structure disagree. A kernel must validate that the periodic flag is consistent with the knot vector&#x27;s own multiplicities (a genuinely periodic direction has a specific, non-clamped knot pattern) and reject or reconcile the conflict with a diagnostic, rather than trusting the flag over the knots or vice versa silently.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

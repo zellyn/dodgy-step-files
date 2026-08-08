@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a 10x1.5mm rectangular face is an ordinary, unambiguous quadrilateral regardless of its aspect ratio, so a read must load it as a single, valid 4-edge face (n_faces_total == 1) without any pin-morphology classification.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed pin-face checking reports a false negative on an oversized pin; that method is never invoked on an ordinary read, so no classification (correct or incorrect) is observable. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;thin rectangular face loads without pin classification&quot;.</p></section>
 <section><h2>Expected validation</h2>

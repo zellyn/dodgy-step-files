@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: an OFFSET_SURFACE (+0.5 distance) wrapping a bilinear B_SPLINE_SURFACE_WITH_KNOTS base, wired into the face. A kernel collecting offset surfaces for any downstream operation must verify the offset actually covers the region of interest relative to the base surface&#x27;s own bounds before relying on it, rather than assume full coverage whenever an offset-mode flag is set.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Accept and normalize: the face&#x27;s boundary places an edge exactly at the sphere&#x27;s pole (v=pi/2), where the u-parameter is mathematically meaningless (every u maps to the same 3D point). A kernel evaluating an iso-curve request at the pole must recognize u is undefined there and return the pole&#x27;s single 3D point regardless of the nominal u value in the request, rather than propagating an arbitrary u through the evaluation as if it selected a distinct location.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

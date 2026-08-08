@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Reject with a diagnostic naming the invalid knot vector: the degree-3 B_SPLINE_SURFACE_WITH_KNOTS gives U multiplicities (4,4) summing to 8 against the 6 required for 2 U-direction control points at degree 3. A kernel must validate the knot-vector cardinality before attempting any point-inversion or curvature analysis on this surface, rather than reach a numerically unstable region of an already-malformed definition.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

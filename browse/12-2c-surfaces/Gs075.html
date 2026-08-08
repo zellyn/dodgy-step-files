@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a bare CYLINDRICAL_SURFACE (radius 5.0) in a GEOMETRIC_CURVE_SET, not wired into any face, so there is no trim spanning the u=pi seam to split. A kernel should load and represent the cylinder&#x27;s parameters faithfully; seam handling only becomes relevant once a face or trim referencing this surface actually exists.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic naming the endpoint mismatch: the curve is flagged periodic (closed) but its first pole (0,0,0) and last pole (1,0,0) do not coincide, and its knot multiplicities are all 1 (no clamping) -- the curve is geometrically open despite the periodic flag. A kernel must verify pole/geometric coincidence at the seam before trusting a periodic flag, since a mismatched flag otherwise misleads any code that assumes a periodic curve&#x27;s start and end are the same point.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

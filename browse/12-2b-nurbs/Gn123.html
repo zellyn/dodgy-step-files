@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept, but diagnose the direction conflict: a two-segment composite curve reuses the same LINE in both segments, once forward and once reversed, so its endpoints coincide (closed) but its stated traversal direction reverses mid-curve rather than continuing consistently around the loop. A closure check based on endpoint coincidence is correct as far as it goes; a kernel should separately verify that segment senses are consistent around a closed composite curve, since coincident endpoints alone do not guarantee a consistent traversal direction.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

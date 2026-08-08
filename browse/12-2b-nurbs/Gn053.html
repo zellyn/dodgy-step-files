@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: a rational degree-2 curve with poles within 0.02mm of the XY plane but one interior weight of 8 (versus 1 elsewhere) pulls the curve&#x27;s actual (weighted) midspan position roughly 1.2mm off that plane -- the rational curve is genuinely non-planar even though its unweighted control points are nearly planar. A planarity check on a rational curve must evaluate the weighted (homogeneous) curve position, not just the raw control-point coordinates, or a large weight ratio like this will be missed entirely.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

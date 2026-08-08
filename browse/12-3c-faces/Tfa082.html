@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a 3x3 B-spline control-point grid whose entire v=0 row collapses to a single point encodes a genuine pin/apex singularity along the V axis, which OCCT&#x27;s B-spline representation supports directly, so a read must load the single bspline face as-is (uniform weights, non-rational) without any pin-axis classification or repositioning.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed pin-face checking misclassifies this V-axis pin singularity because it assumes U-axis alignment; that checker is never invoked on an ordinary read, so no pin classification (correct or incorrect) is ever produced. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;collapsed v=0 control row loads as ordinary bspline face&quot;, &quot;pin classifier never invoked on ordinary read&quot;.</p></section>
 <section><h2>Expected validation</h2>

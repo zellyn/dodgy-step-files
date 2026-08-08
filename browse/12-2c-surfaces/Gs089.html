@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the invalid knot vector: the 5x5-pole, degree-2x2 B_SPLINE_SURFACE_WITH_KNOTS gives U and V multiplicities of (3,3,3), summing to 9 in each direction against the 8 required for 5 control points at degree 2 -- one knot too many in both directions, not merely a full-multiplicity interior join. A kernel must reject this malformed knot vector rather than reason about which side of the interior knot an iso-curve request should resolve to.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

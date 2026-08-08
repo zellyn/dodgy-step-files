@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept and report: the RECTANGULAR_TRIMMED_SURFACE&#x27;s window is [1e-10, 1e-9] in both u and v -- a genuinely sub-nanometer parametric span on otherwise ordinary, non-degenerate surface geometry. A kernel should not silently clamp this to zero or to a default range; it should build the (vanishingly small but well-defined) face and report its true, extremely small extent, since the file&#x27;s numeric window is exact and intentional.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

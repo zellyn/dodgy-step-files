@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: an inner wire whose enclosed area sits exactly at a nominal small-area threshold (here 0.0000025 mm^2) must load intact along with the outer wire, matching load == ok and the oracle&#x27;s per-face wire count — a correct kernel must not silently remove wires during an ordinary read regardless of proximity to any threshold; any threshold comparison belongs only to an explicitly requested healing pass, and even then must be a deterministic, well-defined comparison rather than one sensitive to floating-point rounding at the boundary.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed small-area-wire repair&#x27;s threshold comparison is FP-non-deterministic at exactly this area; that method is never invoked on an ordinary read, so no comparison (deterministic or not) is ever made. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;threshold-area inner wire loads intact&quot;, &quot;small-area comparison never invoked at FP boundary&quot;.</p></section>
 <section><h2>Expected validation</h2>

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the two overlapping inner FACE_BOUND wires (pin_A and pin_B, whose declared x-ranges overlap in [0.6,0.7] and both run flush against the outer boundary): two inner wires that geometrically overlap each other must never be silently split into a topologically invalid multi-face result with edge counts inflated beyond the file&#x27;s own 12 declared EDGE_CURVE entities — a correct kernel must detect the overlap before attempting any face-splitting construction and reject the ambiguous declaration outright.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed pin-face checking&#x27;s pole-grid iteration reports only the first of two pins and halts; that method is never invoked on an ordinary read. What the live oracle actually shows is more serious and different: the overlapping-wire declaration causes silent face-splitting into an INVALID (BRepCheck-failing) 2-face result with edge counts that don&#x27;t match the file&#x27;s own declared topology. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;overlapping inner wires split into invalid faces&quot;, &quot;self-overlapping pin wires edge inflation&quot;.</p></section>
 <section><h2>Expected validation</h2>

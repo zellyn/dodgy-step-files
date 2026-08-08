@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Gs120 — FaceDivide splitter curve tangent to boundary (zero-area sub-face)</title>
+  <title>Gs120 — Face-division scaffold, concept only: the file holds a single ordinary 0.5 mm² triangular face with 3 boundary edges — no splitter curve and no tangency construct are present</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2c Surface / curve degeneracies</a> <span class="sep">/</span> <span class="current">Gs120</span>
 </nav>
 <header class="title-bar">
-<h1>Gs120 <span class="sep">—</span> <span class="entry-title">FaceDivide splitter curve tangent to boundary (zero-area sub-face)</span></h1>
+<h1>Gs120 <span class="sep">—</span> <span class="entry-title">Face-division scaffold, concept only: the file holds a single ordinary 0.5 mm² triangular face with 3 boundary edges — no splitter curve and no tangency construct are present</span></h1>
 <p class="category">§12.2c surfaces (sub-class: curve)</p>
 <p class="tag-pills">
 <a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
@@ -26,11 +26,11 @@
 <li>OCCT/ShapeAnalysis (see fixture)</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>ShapeUpgrade_FaceDivide.SplitCurves produces zero-area sub-face when splitter curve is tangent to face boundary at a single point. The division logic doesn&#x27;t guard against tangency leading to degenerate splits.</p></section>
+<p>Scaffold entry only. The file contains one `ADVANCED_FACE` of area 0.5 mm² bounded by 3 `EDGE_CURVE`s (6 `LINE`s, 3 `PCURVE`s); there is no second/splitter curve, no tangency construct, and no zero-area sub-face anywhere in the bytes. Retained as a fixture, retitled to match what it actually encodes rather than the concept it was named for. when splitter curve is tangent to face boundary at a single point. The division logic doesn&#x27;t guard against tangency leading to degenerate splits.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Accept: as the title and description already record, the file holds one ordinary 0.5mm^2 triangular ADVANCED_FACE bounded by 3 EDGE_CURVEs (6 LINEs, 3 PCURVEs) on a PLANE -- there is no splitter curve, no tangency construct, and no zero-area sub-face anywhere in the bytes. A kernel should simply load and build this small but perfectly ordinary triangular face; no face-division or tangency-guard logic is exercised by this fixture at all.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

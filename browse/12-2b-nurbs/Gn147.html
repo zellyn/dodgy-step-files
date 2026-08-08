@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept and heal: the surface&#x27;s entire middle U-row of control points collapses to a single point (x=1.0, z=0.5 for every V value in that row) -- a valid but degenerate &#x27;stripe&#x27; in the control net that will produce a pinched/singular iso-line at that U parameter. A kernel detecting a collapsed row (all poles at one position) should treat it as a genuine singularity to be recorded or resolved (e.g. as a degenerate/collapsed edge in the resulting face), not as an ordinary control point to be skipped or averaged away silently.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

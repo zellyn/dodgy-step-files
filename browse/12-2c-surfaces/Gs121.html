@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Accept and report: the degree-3 B-spline&#x27;s control net oscillates through several humps, so the closest-point distance function to an arbitrary target can have more than one local minimum. A kernel doing point-inversion on this surface should use a global search (sampling several seed parameters before refining) rather than trust a single local iteration -- but the oscillating control net itself is valid, well-formed geometry that should load and build a face.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

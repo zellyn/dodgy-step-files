@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a single wire on a spherical face that runs from the south pole through the equator to the north pole and back is a legitimate boundary on a sphere — both poles are genuine parametric singularities of the surface, not malformed geometry — so the face must load exactly as declared (1 face / 8 edges / 2 wires) with no normal-comparison rejection triggered by crossing them.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed twisted-face checking &quot;compares normals at boundary points; on a sphere including both poles, normal singularities cause the comparison to fail with an undefined direction&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;dual-pole spherical boundary loop loads without normal-comparison failure&quot;.</p></section>
 <section><h2>Expected validation</h2>

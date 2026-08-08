@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept, but diagnose the asymmetry: the curve&#x27;s first and last poles coincide (a closed loop) but its end-knot multiplicities are asymmetric (2 at the start, 4 at the end) rather than matching. A closure check based on pole coincidence is valid on its own terms; downstream code that further assumes symmetric end multiplicities on any &#x27;closed&#x27; curve should verify that assumption explicitly rather than inferring it from closure alone, since this file shows the two can validly diverge.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

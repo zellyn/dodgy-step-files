@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Accept: an ordinary, fully analytic TOROIDAL_SURFACE (major_radius=1.0, minor_radius=0.3) wired into the face, matching its declared quadric parameters exactly. A kernel deriving an alternate piecewise-polynomial representation of an analytic surface for some downstream operation must keep that derived representation numerically consistent with the exact torus (matching position and normal to tolerance); it must not let the conversion silently change the surface&#x27;s true (infinitely smooth) continuity class.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

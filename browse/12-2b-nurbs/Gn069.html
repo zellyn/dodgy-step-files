@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the curve&#x27;s knots include a tight interior cluster (0.5, 0.51, 0.52) spanning only 0.02 in parameter -- the file remains structurally valid (knot count sums correctly). Sampling near a tight knot cluster should scale with the actual span width there, not apply a fixed per-span sample count; over-densifying a narrow region wastes work without adding geometric fidelity, since a near-full-multiplicity region already approaches a near-C0 corner that dense uniform sampling does not resolve any better.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

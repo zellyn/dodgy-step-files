@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a rational B_SPLINE_SURFACE_WITH_KNOTS with a triple knot at u=1.0 (multiplicity 3 = degree+1 for this degree-2 surface), the surface&#x27;s own U domain boundary -- a legitimate clamped end-knot multiplicity, not an interior discontinuity. A kernel sampling this surface for any grid-based analysis must place sample points respecting the true knot structure (so it does not straddle a genuine interior discontinuity, were one present) but should not treat an ordinary clamped boundary knot as an anomaly requiring special guarding.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

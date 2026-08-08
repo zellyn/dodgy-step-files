@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a 1000x0.0001 rectangular face (aspect ratio 1e7) is still a well-defined, non-degenerate quadrilateral, so a read must load it as one of the block&#x27;s 6 faces (n_faces_total == 6) exactly as encoded, without any area- or aspect-ratio-based reclassification.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed CheckSmallArea&#x27;s aspect-ratio computation overflows on this 1e7:1 rectangle; that checker is never invoked on an ordinary read, so no overflow is ever computed. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;extreme-aspect-ratio face loads as ordinary face&quot;, &quot;small-area classifier never invoked, no overflow computed&quot;.</p></section>
 <section><h2>Expected validation</h2>

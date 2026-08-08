@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a single EDGE_LOOP that references one EDGE_CURVE twice — once forward, once reversed — legally encodes a self-touching (bowtie) wire that pinches through a shared vertex referenced by three EDGE_CURVEs, so a read must load the ADVANCED_FACE as one wire traversing the shared vertex twice, not as three separate sub-faces, keeping n_faces_total == 2.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed a non-manifold vertex defeats splitting-vertices checking&#x27;s 2-edge incidence assumption via 3 separate triangular faces; the actual bytes encode a single self-touching wire (one edge referenced twice within one `EDGE_LOOP`), a different and unrelated topological pattern. Synonyms: &quot;pinched face boundary&quot;, &quot;self-touching wire re-traverses an edge&quot;, &quot;bowtie face single wire&quot;, &quot;vertex shared by three edge curves in one loop&quot;.</p></section>
 <section><h2>Expected validation</h2>

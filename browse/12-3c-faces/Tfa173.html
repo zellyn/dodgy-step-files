@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a &quot;splitter&quot; edge whose two endpoints reuse the same VERTEX_POINT entities already used by the outer wire at its pre-split points, combined with that splitter being declared as its own non-closed single-edge FACE_BOUND, must still load the face intact with all 7 edges present, matching n_faces_total == 1 — a plain read must never invent a face split from shared-endpoint reuse alone, and a single non-closed edge cannot bound anything regardless, so no split of any kind should ever be attempted here.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed face-splitting repair fails to detect a tangency condition and produces a degenerate zero-area sub-face; live-oracle confirms `n_faces_total == 1` (matches this entry&#x27;s own pre-existing assertion) with no degenerate sub-face created. The genuine, verified pattern is a combination of shared-endpoint reuse and a non-closed single-edge bound, neither of which is a tangency-detection scenario. **See also**: Tfa010, Tfa079, Tfa094 (shared-endpoint family); Tfa085, Tfa118, Tfa136, Tfa145 (single-edge-bound family). Synonyms: &quot;splitter reuses pre-split outer vertices&quot;, &quot;tangent-line bound shares outer wire endpoints&quot;.</p></section>
 <section><h2>Expected validation</h2>

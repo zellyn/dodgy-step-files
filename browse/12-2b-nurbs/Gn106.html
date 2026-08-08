@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: a surface whose knot vectors carry no interior knots at all (multiplicities equal to degree+1 at both ends, in both directions) is already a single Bezier patch. Bezier-basis conversion of such a surface should detect the trivial single-patch case up front and return the input essentially unchanged; running the full general decomposition machinery on an already-Bezier surface should not multiply its representation size or introduce extra (even if mathematically equivalent) patches.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

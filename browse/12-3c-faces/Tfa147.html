@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a small planar face must load exactly as encoded (load == ok) with no twist classification applied at all — twist is a curvature-based concept that is undefined on a flat PLANE, so a correct kernel must recognize the surface type and skip twist analysis for planar faces rather than emitting any verdict, spurious or otherwise.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed twisted-face checking produces a spurious TWISTED verdict on this planar face; that checker is never invoked on an ordinary read, so no verdict (spurious or otherwise) is ever produced. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;small planar face loads as ordinary face&quot;, &quot;twist classifier never invoked on flat surface&quot;.</p></section>
 <section><h2>Expected validation</h2>

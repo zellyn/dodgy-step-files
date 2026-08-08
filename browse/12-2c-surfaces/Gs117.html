@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Reject with a diagnostic naming the pole/knot mismatch: the B_SPLINE_SURFACE_WITH_KNOTS gives 3 control points per row in U at degree 1, but its U knot multiplicities (2,2,2) sum to 6, which is only consistent with 4 U-direction control points (n=6-1-1=4) -- one pole short of what its own knot vector requires. A kernel must reject a knot vector whose implied pole count does not match the control-point list actually supplied, rather than silently truncate or reinterpret the grid.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Gs114, Gs115, Gs116, Gs118. synthesized from earlier wave; backfilled from fixture comment- **Model impact**: Surface and trimming geometry</p></section>
 <section><h2>Expected validation</h2>

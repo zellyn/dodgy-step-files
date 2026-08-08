@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the outer wire on this B-spline surface: a 4-edge boundary wire hosted on a B-spline surface whose control grid contains a sharply raised sub-region (z jumping from ~0.1 to ~0.5+ between adjacent control-point rows) must be rejected with a diagnostic if its construction cannot be completed safely, rather than crashing the process during shape translation.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed as an honest crash-robustness fixture — original claimed natural-bound insertion produces a specific silent misclassification/undefined-behavior outcome; in reality the process crashes before that method (or any face-repair/small-face-check method) is ever reached. The crash itself is genuine and is retained as the fixture&#x27;s real, verified defect (Expected validation unchanged: `signal(11)/signal(11)`). Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;raised-control-region B-spline crash&quot;.</p></section>
 <section><h2>Expected validation</h2>

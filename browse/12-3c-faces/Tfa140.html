@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the self-intersecting inner wire: a rectangular face whose outer wire alone loads cleanly but which crashes as soon as the figure-8 self-intersecting inner wire is added must have that wire rejected before shape translation (self-intersection is detectable before ever attempting to build topology from it) rather than crashing the process or silently producing non-manifold output.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed loop-wire repair produces non-manifold output instead of rejecting/healing the self-intersecting inner path; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;multi-bound face crashes reader, outer-alone loads clean&quot;, &quot;self-intersecting inner wire crashes reader, outer-alone loads clean&quot;.</p></section>
 <section><h2>Expected validation</h2>

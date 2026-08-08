@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic or heal: the curve&#x27;s first two control points are coincident ((0,0,0) twice) and the third is offset -- only one independent direction is present among the three poles, which is a degenerate input for any plane-fitting computation (a plane needs two independent directions). A planarity check must detect this degenerate case explicitly (and either reject with a diagnostic or defer to the curve&#x27;s host surface, if any) rather than let a plane-fit routine compute a result from insufficient independent data.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: two inner FACE_BOUND loops on a planar face are independent boundary declarations even when their footprints overlap in the plane (hole1 20-40mm, hole2 50-70mm, overlapping near the midline), so a read must keep both 4-edge inner wires distinct and unmerged rather than fusing them into one self-touching loop.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixLoopWire merges the intersecting loops and introduces a tangent self-touch; that method is never invoked on an ordinary read, and both inner loops load intact and unmerged. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;overlapping inner loops load unmerged&quot;, &quot;loop merge never invoked on ordinary read&quot;.</p></section>
 <section><h2>Expected validation</h2>

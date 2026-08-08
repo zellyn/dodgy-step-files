@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept and flag: the B_SPLINE_SURFACE_WITH_KNOTS declares surface_form=.QUASI_UNIFORM_KNOTS. but its actual U knot vector (0.0, 0.3, 1.0) is not uniformly spaced, and its U multiplicities (3,2,2) sum to 7 against the 5 required for 2 U-direction control points at degree 2 -- both the form tag and the raw knot data disagree with the pole count. A kernel must derive surface behavior from the real, validated knot values, never from a form tag, and should reject a knot vector whose multiplicity sum does not match its own pole count.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

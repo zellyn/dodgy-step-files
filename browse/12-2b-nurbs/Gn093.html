@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic or heal: a surface with U-degree 3 and V-degree 5 is a legal asymmetric-degree surface. Bezier-basis conversion must compute each direction&#x27;s patch count independently from that direction&#x27;s own degree and knot vector; assuming both directions share one degree (a symmetric-degree shortcut) produces the wrong number of Bezier patches in whichever direction has the higher degree.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

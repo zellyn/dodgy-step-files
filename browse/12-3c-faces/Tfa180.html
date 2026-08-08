@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the shared B_SPLINE_CURVE_WITH_KNOTS edge referenced by both the outer wire and the FACE_INNER_BOUND: detect that a curved edge is aliased across two distinct wires of the same face before translation and refuse to build the face from it — since the crash persists even with the inner bound entirely removed, the malformed construct evidently lies elsewhere in the file as well, so a correct reader must validate the whole shape&#x27;s edge/wire graph up front and reject any face it cannot safely construct, never letting translation abort the process.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed as an honest crash-robustness fixture — original claimed coincident-edge wire merging produces a specific silent misclassification/undefined-behavior outcome; in reality the process crashes before that method (or any face-repair/small-face-check method) is ever reached. The crash itself is genuine and is retained as the fixture&#x27;s real, verified defect (Expected validation unchanged: `signal(11)/signal(11)`). Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;shared B-spline edge crash persists without inner wire&quot;.</p></section>
 <section><h2>Expected validation</h2>

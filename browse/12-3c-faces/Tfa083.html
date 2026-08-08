@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: two consecutive boundary edges meeting at a near-tangent 179.8-degree angle form a legal, if extreme, notch in a face&#x27;s outer wire, so a read must keep all 7 edges of the affected outer wires exactly as encoded, preserving n_faces_total == 9, without collapsing or smoothing the notch.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed notched-edge repair&#x27;s tangent-angle comparison fails at the near-tangent (179.8°) threshold; that method is never invoked on an ordinary read, so the notch is never even evaluated, let alone misjudged. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;near-tangent notch loads intact with 7-edge wire&quot;, &quot;notch detection never invoked on ordinary read&quot;.</p></section>
 <section><h2>Expected validation</h2>

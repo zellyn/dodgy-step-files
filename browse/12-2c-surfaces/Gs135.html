@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Reject with a diagnostic, or accept only with an explicit self-intersection warning, matching the measured mesh-tool rejection of this same file: the B_SPLINE_SURFACE_WITH_KNOTS&#x27;s control net is intentionally twisted so the resulting surface self-intersects. A kernel deriving an alternate basis representation from this surface must detect the self-intersection (e.g. via a normal-sign check across the twisted region) and either refuse the derivation or flag the overlapping zone explicitly -- it must not silently produce non-overlapping-looking patches with reversed normals in the intersection area.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

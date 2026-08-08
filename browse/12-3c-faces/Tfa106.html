@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming each FACE_INNER_BOUND whose EDGE_LOOP wraps exactly one non-closed edge (entities #73 and #93): a bound wire must close back to its own start vertex, and a single-edge EDGE_LOOP that does not do so must be detected and rejected with a diagnostic before the face is built, rather than crash the reader — dropping the malformed bounds and building the face from the outer wire alone is an acceptable fallback provided the diagnostic still names each bad bound.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed `FixLoopWire`&#x27;s nested-loop merge logic loses containment information; that method is never reached (crash occurs first). **See also**: Tfa085, Tfa118 (same single-edge-bound crash family). Synonyms: &quot;single-edge inner bound crash concentric wires&quot;, &quot;non-closed nested bound segfault&quot;.</p></section>
 <section><h2>Expected validation</h2>

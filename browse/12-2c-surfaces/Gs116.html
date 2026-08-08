@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Reject with a diagnostic naming the invalid knot vector: the B_SPLINE_SURFACE_WITH_KNOTS&#x27;s U knot sequence is (0.0, 0.8, 0.3, 1.0) -- not monotonically non-decreasing, which every B-spline knot vector must be by definition. A kernel must validate knot monotonicity before evaluating the surface at all; a non-monotone knot vector has no well-defined meaning to fall back on.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Gs114, Gs115, Gs117, Gs118. synthesized from earlier wave; backfilled from fixture comment- **Model impact**: Surface and trimming geometry</p></section>
 <section><h2>Expected validation</h2>

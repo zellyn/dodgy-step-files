@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: the B_SPLINE_SURFACE_WITH_KNOTS has a full-multiplicity (C0) interior knot at u=0.5, inside a RECTANGULAR_TRIMMED_SURFACE spanning u in [0.1,0.9] -- the C0 knot falls inside the trimmed domain, not at its boundary. A kernel must preserve that tangent-discontinuity when building or subdividing the face; treating the trimmed domain as uniformly smooth and skipping subdivision at the knot would silently discard a real kink the file encodes.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

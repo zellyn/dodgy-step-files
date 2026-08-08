@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic: a degree-0 (piecewise-constant), 3-pole curve is a degenerate input for degree-elevation logic, which generally assumes it is raising a curve that has at least linear (degree&gt;=1) variation to work with. A kernel should detect degree-0 explicitly before attempting degree elevation and either reject with a diagnostic naming the degree or route it through degree-0-specific handling, rather than letting a general elevation routine underflow on a curve with no slope to elevate.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

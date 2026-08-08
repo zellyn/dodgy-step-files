@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a face whose boundary wire trims a small parametric patch [0.0,0.2]x[0.0,0.3] on a torus of major radius 5.0 and minor radius 1.0 is an ordinary valid face regardless of how small its area is relative to the whole torus — load it exactly as encoded with its one face and torus quadric parameters intact, without applying any curvature-aware or curvature-naive small-area reclassification.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed CheckSmallArea&#x27;s curvature-unaware parametric-area projection misclassifies this torus patch; that checker is never invoked on an ordinary read, so no area classification is ever produced. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;small torus patch loads as ordinary face&quot;, &quot;small-area classifier never invoked on curved surface&quot;.</p></section>
 <section><h2>Expected validation</h2>

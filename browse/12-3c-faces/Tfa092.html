@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a degree-2x2 B-spline with mixed convex/concave curvature zones is ordinary saddle geometry whose normal direction legitimately varies across the surface, so a read must load the face with its encoded edge orientations intact (forward/reversed counts as declared) among the block&#x27;s 6 faces, without any twist classification or edge-orientation correction.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Tfa080, Tfa112. Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed twisted-face checking confuses this saddle surface&#x27;s mixed-curvature topology; that checker is never invoked on an ordinary read, so no twist classification (correct or confused) is ever produced. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;mixed-curvature saddle B-spline loads as ordinary face&quot;, &quot;twist classifier never invoked on saddle topology&quot;.- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`</p></section>
 <section><h2>Expected validation</h2>

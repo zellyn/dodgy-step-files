@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: three small rectangular inner wires, each touching the 1x1 outer boundary at a single distinct vertex of its own, are three independent, individually valid inner loops — there is no shared edge or ownership between them for a reader to corrupt — so the face must load all four wires (outer plus three inner) exactly as declared, and it does (1 face / 22 edges / 4 wires) with valid topology.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed loop-wire repair &quot;processes loops sequentially with ownership cascading, corrupting the 2nd and 3rd inner wires via improper edge-ownership tracking&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;3 vertex-touching inner wires load without ownership-cascade corruption&quot;.</p></section>
 <section><h2>Expected validation</h2>

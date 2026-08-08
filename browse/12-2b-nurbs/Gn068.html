@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: a trimmed ellipse (major 3.0, minor 0.3 -- a 10:1 eccentricity) trimmed to [0, pi] has its true Y-extremum away from the trim midpoint, because high-eccentricity ellipses do not extremize at the parametric midpoint the way a circle does. A bounding-box computation over an elliptical arc must solve for the true extremum analytically (or sample densely enough to bracket it), not assume the parametric midpoint approximates the geometric extremum.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

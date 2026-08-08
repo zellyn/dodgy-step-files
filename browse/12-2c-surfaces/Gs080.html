@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the invalid knot vector: the B_SPLINE_SURFACE_WITH_KNOTS declares its U multiplicities as (3,3,3) summing to 9 against 2 U-direction control points at degree 2, which requires a sum of 5 -- the U knot data does not satisfy the standard n_poles+degree+1 cardinality rule regardless of where the extra knot sits relative to the face boundary. A kernel must refuse to build a face from this malformed knot vector rather than debate boundary-coincident subdivision on top of it.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

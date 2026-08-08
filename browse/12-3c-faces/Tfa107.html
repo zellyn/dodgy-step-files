@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the offending edge: edge4_v_rev&#x27;s LINE references a DIRECTION entity directly as its direction attribute instead of wrapping it in a VECTOR (its sibling edges all correctly use a VECTOR built from their DIRECTION) -- a type mismatch against the schema&#x27;s requirement that a Line&#x27;s direction be a Vector. Detect the wrong-typed reference during entity resolution and reject the malformed edge with a diagnostic naming it; never dereference a wrongly-typed entity and let the process crash.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

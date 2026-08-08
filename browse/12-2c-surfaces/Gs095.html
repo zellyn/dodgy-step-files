@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Accept: the ADVANCED_FACE&#x27;s boundary reaches the north pole (v=pi/2) of a unit SPHERICAL_SURFACE. This is the ordinary pole-degenerate case every polar spherical patch must handle. A kernel converting this face to an alternate piecewise-polynomial representation must represent the pole as a genuinely collapsed edge in the target representation too -- coincident control points at the pole are the correct outcome there, not a bug, since a non-degenerate patch cannot represent a sphere&#x27;s true polar geometry.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

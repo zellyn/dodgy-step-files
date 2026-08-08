@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic naming the interior knot: the 2D pcurve is degree-3 with an interior knot multiplicity of 3, equal to the degree -- a legal C0 (tangent-break) construction, not an invalid one. Bezier-basis conversion of a 2D curve must handle an interior-multiplicity-equals-degree knot the same way it would for a 3D curve (split there, or record the discontinuity) rather than treating it as an error condition specific to the 2D code path.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

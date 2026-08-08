@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a torus face&#x27;s outer wire may legally begin and end at the U-seam without any explicit natural-bound construct, so a read must keep the wire&#x27;s 4 circular edges (radii 2.0 and 7.0) exactly as encoded and build the face from them directly — no boundary needs to be synthesized because the wire already fully bounds the face.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixAddNaturalBound&#x27;s periodicity-conditional interval detection is bypassed by the seam edge; that method is never invoked on an ordinary read, and the seam-crossing wire loads intact with all 4 edges present. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;torus seam-crossing wire loads intact&quot;, &quot;natural boundary insertion never invoked on periodic surface&quot;.</p></section>
 <section><h2>Expected validation</h2>

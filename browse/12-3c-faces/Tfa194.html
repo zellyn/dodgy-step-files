@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a 100x100 inner rectangle sitting well inside a 200x200 outer boundary is an ordinary annular-ring face — the outer wire&#x27;s own bounding box being much larger than the ring&#x27;s net area is a property of every face with a large boundary and a modest hole, not evidence the inner geometry should be reclassified as a spot feature — so the face must load exactly as declared with no bounding-box-based rejection.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed spot-face checking &quot;3D bbox-based heuristic misclassifies tight inner geometry as spot-like because the bbox greatly exceeds the actual face extent&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;bbox-mismatched inner rectangle loads without spot misclassification&quot;.</p></section>
 <section><h2>Expected validation</h2>

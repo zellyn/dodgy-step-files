@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>heal: a surface with a genuine interior knot at U=V=0.5 is asked to split at that same value three times over ([0.5, 0.5, 0.5]) in a single request. Deduplication of a split-parameter list must collapse exact-duplicate values to one entry before applying them; failing to dedupe can produce more split boundaries than the request&#x27;s distinct values actually call for.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

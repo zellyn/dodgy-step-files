@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a TOROIDAL_SURFACE (major_radius=4.0, minor_radius=1.5) restricted by a RECTANGULAR_TRIMMED_SURFACE to u,v in [0,pi]. A kernel copying or re-deriving a trimmed analytic surface for any downstream step must carry the trim bounds along with the base surface&#x27;s own quadric parameters -- losing the [0,pi]x[0,pi] window during a copy and falling back to the torus&#x27;s full untrimmed domain silently changes which part of the torus the face actually represents.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

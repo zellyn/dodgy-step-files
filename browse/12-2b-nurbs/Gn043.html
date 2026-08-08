@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>heal: a rational curve with alternating weights (1.0, 2.0) is a valid input, but naive sample-count logic that scales with the rational denominator can over-sample by a large factor relative to a non-rational curve of the same pole count. A kernel&#x27;s sampling density should be bounded by curvature/parametric criteria, not driven unboundedly by the weight magnitude, so the same curve does not silently cost 4x the expected work.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

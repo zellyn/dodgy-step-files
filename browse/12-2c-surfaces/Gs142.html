@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal</p></section>
+<p>Accept: a RATIONAL_B_SPLINE_SURFACE with one very small (1e-6, not zero) weight near a split boundary, alongside otherwise unit weights. A kernel splitting a rational surface at a parameter close to a small-weight pole must carry that weight through unchanged to both resulting sub-patches -- a near-zero (but nonzero) weight is legitimate, if numerically sensitive, rational-surface data, and splitting must not silently clamp or renormalize it.</p></section>
 <section><h2>Notes</h2>
 <p>rational-weight-edge-case, split-boundary-singularity</p></section>
 <section><h2>Expected validation</h2>

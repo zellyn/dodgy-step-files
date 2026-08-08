@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the GEOMETRIC_CURVE_SET wrapper: a face-typed entity (ADVANCED_FACE) hosted inside a container reserved for curve/point geometry is a type mismatch that a correct kernel must flag explicitly rather than silently skip, since silently skipping it here means the file&#x27;s only representation item is dropped and the whole shape comes back empty with no indication that a face — one whose inner wire, notably, is tangent-smooth at every vertex — was ever discarded.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed small-area-wire repair underestimates the tangent inner wire&#x27;s enclosed area via polygon approximation, missing tangency repair; that checker/fixer is never invoked because the face never survives translation (the `GEOMETRIC_CURVE_SET` wrapper is a type the builder dispatch skips). The `shape_null == True` / `occt=empty/empty` Expected-validation line below was already correct; only the mechanism attribution was wrong. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. **See also**: Tfa121, Tfa160, Tfa169 (same `GEOMETRIC_CURVE_SET`-orphaning pattern). Synonyms: &quot;GEOMETRIC_CURVE_SET wrapped face never translates&quot;, &quot;tangent-edge inner wire face orphaned in curve set&quot;.</p></section>
 <section><h2>Expected validation</h2>

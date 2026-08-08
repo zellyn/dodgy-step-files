@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>heal: the surface is rational (declared weights alternate 1.0/0.5 row by row), which a shortcut that infers rationality purely from control-point layout (rather than reading the declared weight array) can miss, since the pole positions alone do not encode weight information. A kernel checking whether a surface is rational must read the actual weight array, not infer it from the grid layout or sampling pattern, or it can wrongly treat a genuinely rational surface as non-rational and skip weight-aware evaluation and closure logic that the surface actually needs.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

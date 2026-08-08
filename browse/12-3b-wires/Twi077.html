@@ -29,7 +29,7 @@
 <section><h2>Description</h2>
 <p>Two consecutive edges of a wire fold back on themselves at near-180° over a width below tolerance. The &quot;tail&quot; is a degenerate geometric feature (a stick poking into the face). The check identifies the four sub-edges produced when the tail&#x27;s two long sides are split at their crossing point.</p></section>
 <section><h2>Reproducer recipe</h2>
-<p>A wire with two long edges meeting at a sharp angle, the second edge nearly retracing the first within 1e-6.</p></section>
+<p>A wire with two long (10–20 mm) edges meeting at a sharp angle, the second edge nearly retracing the first over a 1e-5 mm offset (byte: `CARTESIAN_POINT(&#x27;&#x27;,(-10.0,1.0E-05,0.0))`). Small relative to the wire&#x27;s span, but ~100× ABOVE the file&#x27;s own 1e-7 mm tolerance — not sub-tolerance.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>detect the tail, report the four sub-edges, and either remove the tail (collapse to a single corner) or reject.</p></section>
 <section><h2>Notes</h2>

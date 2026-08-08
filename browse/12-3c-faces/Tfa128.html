@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a 5x5 square face with correct CCW winding and correct normal is already valid, unremarkable geometry, so a read must load it as a single ordinary face (n_faces_total == 1) with no orientation adjustment, since there is nothing incorrect in the encoded winding or normal to correct.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed orientation repair marks an internal `myStatus` flag as &quot;fixed&quot; despite no actual change; that method is never invoked on an ordinary read, and even if it were, `myStatus` is a private API-internal member never observable from parsed geometry or STEP bytes — this claim could never have been verified by any fixture. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;already-correct square face loads as ordinary face&quot;, &quot;internal API status flag unobservable from STEP output&quot;.</p></section>
 <section><h2>Expected validation</h2>

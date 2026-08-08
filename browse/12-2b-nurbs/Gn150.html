@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept and heal: a degree-3, 5-pole periodic curve with an end knot value of 6.283 (~2*pi, not an exact multiple of the earlier integer-spaced knots 0,1,2,3) is a legitimate periodic parameterization using a physically meaningful period length. Any repair that reconciles a curve&#x27;s parameterization with its topological trim bounds (e.g. same-parameter reconciliation between a 3D curve and its pcurve) must preserve the curve&#x27;s actual period rather than clamping trim bounds to a rounded or assumed period value, or the curve&#x27;s closure is lost in the repaired result.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a bare OFFSET_SURFACE with distance -2.5 wrapping a PLANE, standalone in a GEOMETRIC_CURVE_SET with no face built on it. A negative offset distance is not an error -- it means the offset surface lies on the opposite side of the base surface&#x27;s normal from a positive offset. A kernel should preserve the sign and place the resulting plane 2.5mm on that opposite side, not clamp, discard, or silently flip it.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

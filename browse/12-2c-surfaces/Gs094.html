@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Accept and report: the face&#x27;s boundary confines usable U to a subnormal range [1e-20, 1e-19] on an otherwise ordinary bilinear B-spline. A kernel must carry that range through double-precision arithmetic without underflowing it to zero; if the resulting parameter window becomes indistinguishable from a point at the precision the kernel actually uses, it should report the face as a degenerate near-zero-width sliver rather than return uninitialized or default parameter values.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a unit-radius CYLINDRICAL_SURFACE whose face boundary includes a short edge (about 5e-4mm) that is nonetheless within the file&#x27;s own declared uncertainty/tolerance value. A kernel must compare edge length against the tolerance value the file itself declares (or a consistent model-scale-relative tolerance), not an independent hard-coded threshold -- an edge that is short but within the file&#x27;s own stated tolerance is legitimate small-but-real geometry, not a degenerate edge to collapse.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

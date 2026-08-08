@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>heal: the surface&#x27;s middle U-row of control points are all nearly identical (clustered around (1.5,*,0.01)) -- a near-degenerate row that will produce a very small, close-to-zero-area strip of surface near that U parameter. A kernel splitting or otherwise sub-patching this surface should detect a near-degenerate row before producing sub-patches, and either merge/skip the resulting near-zero-area patch or flag it, rather than emitting it as an ordinary patch that downstream meshing or display code then has to cope with.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the curve&#x27;s three interior knots (0.5, 0.501, 0.502) are extremely tightly clustered -- a 1:500 spacing ratio relative to the rest of the [0,1] domain -- but the knot count is structurally correct (sums to n+p+1=11) and the geometry is valid. A kernel should recognize that such a tight cluster makes the local basis matrix ill-conditioned for numerical operations (evaluation, offsetting) near that region, and may reparameterize for stability, but should still accept and load the curve as-is since nothing about it is structurally invalid.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

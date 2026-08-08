@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the malformed bound: the FACE_INNER_BOUND&#x27;s EDGE_LOOP has only 3 edges, and its last edge (ending at vertex v_h3) never returns to the loop&#x27;s starting vertex (v_h0) -- an open, non-closed wire, not a valid bound. Verify that every bound wire closes (its last edge&#x27;s end vertex coincides with its first edge&#x27;s start vertex) before building the face; reject an unclosed bound with a diagnostic naming it rather than walking it as if it were closed, and never let an unclosed bound crash the process. The face&#x27;s separately-encoded reversed outer-bound sense (.F.) is ordinary valid STEP and must still be honored once the malformed inner bound is handled.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a unit SPHERICAL_SURFACE whose face boundary includes both the north pole (v=+pi/2) and the south pole (v=-pi/2) as degenerate loops. A kernel enumerating a surface&#x27;s singular points must check both poles independently every time -- finding and recording the first pole must not short-circuit or suppress detection of the second, since a sphere genuinely has two distinct poles and both must be reported.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(15) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

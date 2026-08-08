@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: an inner wire whose own declared area (~20, from a 4.5x4.5 quad) numerically exceeds the outer wire&#x27;s area (4, from a 2x2 quad) is unusual but not itself invalid STEP topology — the reader must load both wires into the one face exactly as declared, since the shape it actually produces passes ordinary topology checking; area-ordering between a face&#x27;s wires is not a load-time validity requirement to enforce.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Tfa193. Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed small-area-wire repair &quot;removes small-area wires but does not validate that inner-wire area ≤ outer-wire area, creating impossible topology&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;inner wire larger than outer wire loads without area-ordering check&quot;.- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(17) ifc=schema_n/a`</p></section>
 <section><h2>Expected validation</h2>

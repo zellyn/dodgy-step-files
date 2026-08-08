@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the surface&#x27;s interior U-knot at u=0.5 has multiplicity 2, below the degree-3 full multiplicity, so the surface is smooth there; no discontinuity exists in the source data. When decomposing to Bezier patches, raising that knot to full multiplicity as an intermediate step can produce a zero-parametric-width sub-patch; that degenerate patch is purely an artifact of the intermediate knot-insertion and must be dropped from the emitted patch set rather than surfaced as a geometry defect.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

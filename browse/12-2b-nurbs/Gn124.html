@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic naming the zero-length segment: a two-segment composite curve pairs a normal 2.0-unit LINE with a second, zero-length LINE (both endpoints at (2,0,0)). A bounding-box computation must not assume every segment contributes a non-zero range on every axis; a degenerate zero-length segment contributes nothing to the extent and should be detected and flagged (or skipped) explicitly rather than silently collapsing an axis of the resulting box.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

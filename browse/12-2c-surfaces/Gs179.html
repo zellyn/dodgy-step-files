@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>FLAG -- title/description contradict the bytes: the RATIONAL B_SPLINE_SURFACE_WITH_KNOTS&#x27;s U and V knot multiplicities are (2,2,2) against 3 control points at degree 2 in each direction, which sums to exactly 6 = n_poles+degree+1 -- a mathematically VALID knot vector, not the claimed &#x27;knot-sum violation&#x27;. The genuine defect actually present in the bytes is different: the entity&#x27;s surface_form field is set to the literal `.RATIONAL_B_SPLINE_SURFACE.`, which is not a member of the b_spline_surface_form enumeration (valid values are things like .PLANE_SURF., .UNSPECIFIED., etc.) -- rationality is expressed structurally via the RATIONAL_B_SPLINE_SURFACE complex-entity wrapper and its weights, not via this field. Actual kernel behavior: accept the (validly-shaped) knot vector, and reject or ignore the bogus surface_form token rather than trying to interpret it as a real enumeration value.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

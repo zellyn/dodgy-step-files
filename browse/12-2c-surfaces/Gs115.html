@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Reject with a diagnostic naming the invalid knot vector: the B_SPLINE_SURFACE_WITH_KNOTS gives an interior U knot multiplicity of 3 at degree 1, exceeding the degree+1=2 ceiling that even a fully-discontinuous (split) knot allows, and the resulting U multiplicity sum (7) does not match the 6 required for 4 U-direction control points. A kernel must validate multiplicities against the degree before accepting a knot vector, not silently evaluate through an over-multiplied knot.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Gs114, Gs116, Gs117, Gs118. synthesized from earlier wave; backfilled from fixture comment- **Model impact**: Surface and trimming geometry</p></section>
 <section><h2>Expected validation</h2>

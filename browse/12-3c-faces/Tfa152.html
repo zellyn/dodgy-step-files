@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a face whose four inner-wire corners all collapse to a single point (an exact-zero-area loop) must still load with the face present exactly as encoded, matching load == ok — a plain read must never apply any small-area or degeneracy classification to decide whether to keep or drop geometry; that judgment, if ever made, belongs only to an explicitly requested healing pass that can weigh the zero area against the model&#x27;s manufacturing tolerance rather than treating exact zero as automatically disqualifying.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed spot-face checking&#x27;s threshold check can&#x27;t distinguish tolerance from true zero-area degeneracy; that checker is never invoked on an ordinary read, so no classification (correct or mistaken) is ever produced. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;zero-area face loads without classification&quot;, &quot;spot-face check never invoked at exact-zero area&quot;.</p></section>
 <section><h2>Expected validation</h2>

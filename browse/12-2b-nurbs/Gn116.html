@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: a degree-3, 5-pole curve whose poles are nearly (but not exactly) collinear (Y offsets around 1e-5) is a legitimate, very-low-curvature curve rather than a degenerate straight line. Sampling density should not collapse to a minimal count purely because poles are numerically close to collinear; a small but real deviation like this can still carry curvature information a kernel needs for downstream tangency or curvature queries.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

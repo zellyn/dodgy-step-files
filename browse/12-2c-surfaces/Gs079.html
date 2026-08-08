@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: the B_SPLINE_SURFACE_WITH_KNOTS is declared U-periodic with u_upper=2*pi. A kernel evaluating an iso-curve or projecting a point at u=2*pi on a U-periodic surface must recognize that value as the same location as u=0 (the seam) and return it consistently as the canonical parameter -- a periodic wraparound must never be treated as an uninitialized or lost parameter.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

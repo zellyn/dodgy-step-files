@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the control_points_list aggregate: a B_SPLINE_SURFACE_WITH_KNOTS whose control_points_list is nested one level deeper than the required 2D row/column shape (here `(((#1,#3,#5,#7)),((#2,#4,#6,#8)))` instead of `((#1,#3,#5,#7),(#2,#4,#6,#8))`) must be rejected as malformed during entity parsing rather than allowed to crash the process, and a bare untyped aggregate entity like `#9=(0.0,13.333,26.667,40.0);` with no STEP type keyword must likewise be rejected as an unparseable record, not silently ignored and left dangling.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed pin-face checkingFace&#x27;s parametric-vs-3D aspect-ratio test misses a real 3D pin condition due to surface stretch; that checker is never reached (crash occurs first). Root cause of the crash itself is NOT fully isolated in this pass — a malformed control_points_list nesting and a bare untyped entity are both present but isolation testing did not confirm either as sole cause. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;malformed B-spline control-point aggregate crashes reader&quot;, &quot;bare untyped entity coexists with B-spline surface crash&quot;.</p></section>
 <section><h2>Expected validation</h2>

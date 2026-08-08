@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject with a diagnostic naming the lost multiplicity: the surface&#x27;s U-knots include an interior multiplicity-2 knot at u=0.5 (mults 4,2,2,4), giving a genuine C1 (not C0) join there. A splitting operation must preserve the interior knot&#x27;s declared multiplicity across the split -- reproducing it as multiplicity 1 (over-smoothing to full continuity) on the resulting sub-patches silently changes the surface&#x27;s stated continuity class.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

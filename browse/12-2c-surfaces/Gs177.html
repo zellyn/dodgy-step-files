@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a CONICAL_SURFACE (semi-angle pi/4, reference radius 1.0) trimmed by a RECTANGULAR_TRIMMED_SURFACE spanning v in [0,1] with a full 2*pi U sweep, wired into the face via a genuine vertex/loop at the apex (v=0, where every u maps to the single 3D apex point). A kernel enumerating a cone&#x27;s singular points must report the apex whenever the trim&#x27;s v-range includes v=0, using the surface&#x27;s own analytic apex location (the AXIS2_PLACEMENT_3D origin), not a numerically-estimated collapse point.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

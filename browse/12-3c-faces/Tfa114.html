@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the FACE_OUTER_BOUND whose four edges all connect to the single point (5,5,0): a wire collapsed entirely to a spot has no usable boundary, so a correct kernel must detect the all-coincident wire before building the face and either drop the bound with a diagnostic (producing the observed 0-edge face while the companion face&#x27;s 4 edges stay intact) or reject the face outright — never fabricate geometry to fill the gap.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed spot-face checking &quot;returns definitely a spot&quot; but mishandles the zero-radius classification; that method is never invoked. The genuine, verified behavior is that the reader drops the collapsed wire&#x27;s bound entirely (0 edges), matching the unbounded-surface fallback pattern already documented for Tfa098/Tfa117/Tfa252. **See also**: Tfa098, Tfa117, Tfa252. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;all-vertices-coincident wire dropped on load&quot;, &quot;spot wire unbounded surface fallback&quot;.</p></section>
 <section><h2>Expected validation</h2>

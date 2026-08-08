@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Accept: a CONICAL_SURFACE (semi-angle 30deg) trimmed to a partial angular sweep whose bounds do not fall on any convenient patch-subdivision boundary. A kernel converting this trimmed cone to a piecewise-polynomial representation must clip the resulting patches exactly to the declared trim bounds (u in [0.785398, 5.497787]) regardless of where patch boundaries would naturally fall for an untrimmed full cone -- trim bounds take precedence over any internal subdivision grid.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Reject the closure flag, accept the surface: the B_SPLINE_SURFACE_WITH_KNOTS declares u_closed=.T., but its own first and last U-direction poles do not coincide -- they sit about 0.1mm apart. A kernel must derive closure from actual pole positions (within tolerance), not from the declared flag; here it should treat the surface as open in U, keep the gap, and report the flag/geometry mismatch rather than silently wrapping a seam that is not really there.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

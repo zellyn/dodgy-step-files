@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the outer wire&#x27;s edges: a 4-edge outer boundary made of straight LINE edges whose vertices sit in the interior of a degree-(2,2) B-spline surface&#x27;s parameter domain rather than on the surface itself (no PCURVE/SURFACE_CURVE given, so the wire must be projected onto the curved surface to determine whether it actually bounds it) must be rejected with a diagnostic before the projection is attempted, rather than crashing the process during shape translation.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed as an honest crash-robustness fixture — original claimed small-area checking produces a specific silent misclassification/undefined-behavior outcome; in reality the process crashes before that method (or any face-repair/small-face-check method) is ever reached. The crash itself is genuine and is retained as the fixture&#x27;s real, verified defect (Expected validation unchanged: `signal(11)/signal(11)`). Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;non-conformant wire on curved B-spline surface crash&quot;.</p></section>
 <section><h2>Expected validation</h2>

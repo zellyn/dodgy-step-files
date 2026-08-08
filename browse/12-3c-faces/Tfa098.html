@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the EDGE_CURVE whose edge_geometry slot references undefined entity #99: a dangling reference to a never-defined entity must be detected and reported per-edge rather than silently tolerated or crashed on; dropping just the malformed 4-edge outer bound (this fixture&#x27;s observed behavior, leaving the face with 0 edges) is acceptable only if the diagnostic still names the unresolved reference, since fabricating or guessing the missing curve is never acceptable.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed away from face-splitting repair (never invoked; no split geometry exists) to the genuine, verified behavior — a dangling entity reference causes clean per-edge failure and bound-dropping. **See also**: Tfa252 (same fallback pattern, explicit-null trigger instead of dangling reference). Synonyms: &quot;undefined entity reference in edge geometry&quot;, &quot;dangling reference clean fail&quot;, &quot;unresolved reference bound dropped&quot;.</p></section>
 <section><h2>Expected validation</h2>

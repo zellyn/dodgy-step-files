@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a zero-area FACE_BOUND that geometrically coincides with the outer boundary&#x27;s edge must load as inert extra topology on the same single face, matching n_faces_total == 1 — a plain read must never invent a second, duplicate face out of a degenerate coincident-edge bound; if a healing pass is explicitly requested to clean up such degenerate slivers, it should merge or drop the sliver bound rather than leave the face count unchanged but silently carrying dead topology.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed face-splitting repair &quot;produces duplicate faces instead of merging&quot;; live-oracle confirms `n_faces_total == 1` (matches this entry&#x27;s own pre-existing Tier-3 assertion, which already contradicted the prose). The genuine, verified behavior is that a zero-area, edge-coincident inner bound loads silently as inert extra topology on one face. Synonyms: &quot;zero-area bound coincident with outer edge&quot;, &quot;degenerate sliver loop on boundary loads silently&quot;, &quot;no duplicate face from coincident splitter&quot;.</p></section>
 <section><h2>Expected validation</h2>

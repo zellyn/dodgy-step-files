@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: the file declares a bare TOROIDAL_SURFACE (major_radius=10.0, minor_radius=10.0) inside a GEOMETRIC_CURVE_SET, not wired into any ADVANCED_FACE -- there is no face topology to build or validate. With major_radius equal to minor_radius this is a horn torus (the tube&#x27;s inner radius is exactly zero, so the surface is tangent to its own axis along a single circle), not the self-intersecting spindle torus the fixture comment implies (a spindle torus needs major_radius strictly less than minor_radius). A kernel should load the surface and report its parameters faithfully; only if a face is later built on it does the inner-equator tangency become relevant, and then it should be reported as a horn-torus degeneracy rather than treated as self-intersection.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

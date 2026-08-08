@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a 4-edge boundary wire on a flat B-spline patch, even one whose edges were authored intending near-degenerate (~0.001mm) lengths, loads here as an ordinary, unremarkable 4-edge/8-vertex quad with no dropped geometry — so the face must load exactly as it is actually encoded (1 face / 4 edges) with no degenerate-wire consolidation pass invoked.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed missing-seam recovery &quot;detects degenerate edge lengths and consolidates the wire to a minimal representation before seam synthesis&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;quad-bounded B-spline face loads without a degenerate-wire consolidation pass&quot;.</p></section>
 <section><h2>Expected validation</h2>

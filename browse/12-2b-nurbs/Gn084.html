@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the curve&#x27;s control points sit at Z = +-1.0e-12 around the XY plane -- floating-point-scale noise, not a real geometric deviation, on an otherwise flat curve. A planarity check compared against a literal zero tolerance will classify this as &#x27;not planar&#x27; purely from representable floating-point error; a kernel should apply a small, documented default tolerance (or the file&#x27;s own declared uncertainty) rather than a hard zero, so numerically-flat curves like this are correctly accepted as planar.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

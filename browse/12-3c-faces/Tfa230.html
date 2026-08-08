@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: an ordinary 3-edge closed wire on a spherical face (radius 2.0) is exactly the well-formed case a reader should build directly — the face must load exactly as declared (1 face / 6 edges) with no dispatch between a closed-wire reordering path and an open-wire append path needed, since the wire is unambiguously closed.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed loop-wire repair &quot;dispatches between a closed-wire reordering path (FixReorder) and an open-wire append path based on topology&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;spherical closed wire loads without reordering dispatch&quot;.</p></section>
 <section><h2>Expected validation</h2>

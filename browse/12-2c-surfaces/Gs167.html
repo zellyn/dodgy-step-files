@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>FLAG -- title/description contradict the bytes: the RECTANGULAR_TRIMMED_SURFACE&#x27;s basis_surface is `#5=PLANE(...)`, a genuine non-null surface; there is no null-basis anywhere in this file. The two `$` fields the fixture points to (`ORIENTED_EDGE(&#x27;&#x27;,$,$,#27,.T.)`) are the standard, always-optional derived edge_start/edge_end attributes every ORIENTED_EDGE may omit -- ordinary STEP practice, not a defect. Actual kernel behavior for what the file really contains: accept the ordinary trimmed-plane face; a kernel resolving a RECTANGULAR_TRIMMED_SURFACE&#x27;s basis must still null-check the reference as defensive practice (a genuinely null basis does occur elsewhere in this section, e.g. Gs159), but this file does not exercise that path.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

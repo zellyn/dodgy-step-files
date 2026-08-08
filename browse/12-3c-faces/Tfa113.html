@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: `same_sense=.F.` on one face of an otherwise-ordinary 6-face cube is valid STEP for a face whose surface normal opposes its own orientation as encoded, so a read must load all 6 faces with 4 edges each and preserve the reversed face&#x27;s orientation flag exactly as given, never auto-correcting it to match its siblings.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed an &quot;8-face polyhedron&quot; and an orientation-fixer loop-termination bug (with an admittedly unverified &quot;~line TBD&quot; source citation); geometry is actually a real 6-face cube, and the named orientation fixer is never invoked on an ordinary read. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;reversed cube face loads as-is&quot;, &quot;one face orientation flag preserved not auto-corrected&quot;.</p></section>
 <section><h2>Expected validation</h2>

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Reject with a diagnostic naming the degenerate profile: the SURFACE_OF_REVOLUTION&#x27;s generating curve lies on the rotation axis itself, so every point of the profile stays fixed under rotation and the swept &#x27;surface&#x27; has zero area everywhere. A kernel should detect that the profile&#x27;s tangent is parallel to the axis direction along its whole length (not just at isolated points) and reject the surface as degenerate rather than silently building a face with no real extent.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

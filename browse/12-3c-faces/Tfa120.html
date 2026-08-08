@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a conical face trimmed to u in [0,pi], v in [1,3] is fully bounded by its own encoded wire, so a read must load the trimmed boundary exactly as given (n_faces_total == 1) without reconstructing any natural boundary from the cone&#x27;s untrimmed full parameter domain.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixAddNaturalBound ignores trim bounds on this conical surface; that method is never invoked on an ordinary read, so trim bounds are never even consulted, let alone ignored. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;trimmed cone face loads intact&quot;, &quot;natural boundary construction never invoked on trimmed surface&quot;.</p></section>
 <section><h2>Expected validation</h2>

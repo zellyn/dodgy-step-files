@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: the B_SPLINE_SURFACE_WITH_KNOTS sits alone in a GEOMETRIC_CURVE_SET with no ADVANCED_FACE, so there is no face-construction step to fail. Its U-direction control rows share the same X-coordinate, giving a near-vanishing metric determinant along part of the domain -- unusual but well-defined parameterization, not corruption. A kernel should load and represent the surface as declared; a near-degenerate metric only matters once a face or point-inversion query against this surface exists, and then it should trigger a fallback projection strategy rather than a hard failure.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject with a diagnostic naming the split values: the surface&#x27;s split request supplies V-parameters out of order ([1.0, 0.5, 0.2] rather than ascending). A kernel must validate that split parameters are supplied in monotonic order (or sort them itself) before applying them, since an inverted split order otherwise produces sub-patches with inverted parametric ranges and no diagnostic pointing at the malformed request.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

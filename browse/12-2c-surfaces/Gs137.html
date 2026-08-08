@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>FLAG -- title/description contradict the bytes, and the file crashes OCCT (measured occt=signal(11)): the closure edge&#x27;s LINE entity, `#70=LINE(&#x27;&#x27;,#60,#60);`, passes a CARTESIAN_POINT (#60) as its second parameter where a VECTOR is required -- the same type-mismatch pattern as Gs136, not &#x27;irrational split parameter clamping&#x27;. The B_SPLINE_SURFACE_WITH_KNOTS entity here is also malformed: only 9 of the required 13 arguments are given (surface_form and knot_spec are missing). Actual kernel behavior: reject at parse time for both reasons -- a kernel must type-check every entity reference against the EXPRESS schema before use, and must validate an entity&#x27;s argument count against its definition; it must never reach geometric evaluation on data this malformed.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

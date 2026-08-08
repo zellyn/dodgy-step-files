@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a SURFACE_OF_LINEAR_EXTRUSION built from an open (non-closed) parabolic base curve. Reporting the surface as open along the extrusion&#x27;s U-direction is correct -- an open base curve extruded along a straight direction never closes in U, so there is no closure metadata to lose. A kernel should record the surface as U-open and not attach seam/closure bookkeeping that does not apply to this profile.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

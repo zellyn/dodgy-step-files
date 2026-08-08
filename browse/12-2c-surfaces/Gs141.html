@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal</p></section>
+<p>Reject with a diagnostic naming the invalid knot vector, and separately note the parametric-range mismatch: the underlying B_SPLINE_SURFACE_WITH_KNOTS is defined over knot range [0,3]x[0,3] (degree 2x2, 3x3 poles) but its multiplicities (1,1,1) in each direction only sum to 3 against the 6 a degree-2, 3-pole surface requires, and separately its declared multiplicity/knot-count lengths do not match (3 multiplicities against 4 knot values per direction). The wrapping RECTANGULAR_TRIMMED_SURFACE further restricts this already-malformed base to u,v in [0,1], a small sub-window of the base&#x27;s stated [0,3] range. A kernel must validate and reject the base surface&#x27;s own knot vector before reasoning about how its trim bounds relate to it.</p></section>
 <section><h2>Notes</h2>
 <p>RTS-parameterization-mismatch, knot-range-dependency</p></section>
 <section><h2>Expected validation</h2>

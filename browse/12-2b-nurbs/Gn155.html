@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept and keep the geometry: the surface&#x27;s interior U-knot has multiplicity equal to its U-degree, producing a genuine C1 (tangent) discontinuity along that iso-line -- a legal, if kinked, construction. A kernel should keep the surface and either split it along that iso-line or record the tangent discontinuity, rather than treating an otherwise well-formed surface as invalid because one interior knot reaches full non-positional multiplicity.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

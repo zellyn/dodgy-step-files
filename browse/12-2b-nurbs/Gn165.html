@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>heal: the surface&#x27;s U-knots carry an extreme spacing ratio (about 44:1 between the widest and narrowest interior spans: 0.956 versus 0.022). A kernel performing same-parameter reconciliation (aligning a 3D curve&#x27;s parameterization with its 2D pcurve) on a surface with knot spacing this uneven should switch to an arc-length-based reparameterization rather than a purely knot-proportional one, since a purely proportional approach amplifies the spacing imbalance into the reconciled result.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

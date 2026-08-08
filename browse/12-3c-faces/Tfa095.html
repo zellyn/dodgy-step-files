@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the ADVANCED_FACE on this SURFACE_OF_REVOLUTION: isolation shows the crash persists even after stripping all four apex/meridian inner-loop wires down to the outer 4-edge boundary alone, so a correct kernel must detect that this face cannot be safely translated on this surface and refuse to build it with a diagnostic naming the face and surface, rather than crashing the process — the specific structural trigger beyond the outer boundary is not established, so the check must be conservative rather than target a specific meridian construct.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed periodic-degenerate seam repair mishandles the revolution-axis degenerate apex edge; that method is never reached (crash occurs first), and isolation testing shows the crash persists even with all apex/meridian wires removed — the title&#x27;s specific &quot;degenerate apex&quot; mechanism is not what triggers this crash. Root cause of the crash itself is NOT fully isolated in this pass (unlike Tfa106/Tfa126, no single invalid-bound-topology cause was found). Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;revolution-surface outer-boundary-alone crashes reader&quot;, &quot;degenerate-apex construction not the actual crash cause&quot;.</p></section>
 <section><h2>Expected validation</h2>

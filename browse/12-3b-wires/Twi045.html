@@ -29,7 +29,7 @@
 <section><h2>Description</h2>
 <p>When a hole-wire-removal pass runs on a face that has been reversed (its normal points the other way), the rebuilt face emerges with mis-oriented wires; the algorithm rebuilt the face from scratch and lost the original wire-orientation context. A related case: when the face carries a non-identity placement transform, the helper face used to project pcurves is built without preserving the placement and pcurves are dropped.</p></section>
 <section><h2>Reproducer recipe</h2>
-<p>Reversed face containing small (sub-tolerance) hole wire; or located face with sub-tolerance hole wire.</p></section>
+<p>Reversed face containing a small hole wire (enclosed area 5e-7 mm² vs a 100 mm² face); or the located-face variant. &quot;Small&quot; here is by AREA relative to the face — the wire&#x27;s ~1.4e-3 mm vertex spacing is well above the file&#x27;s 1e-7 mm tolerance, so it is not sub-tolerance linearly.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Heal and accept: a same-shape healing / repair pass preserves face orientation and placement context across the rebuild; wires emerge with the same orientation relative to the face, and pcurves survive.</p></section>
 <section><h2>Notes</h2>

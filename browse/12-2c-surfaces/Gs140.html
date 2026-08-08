@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal</p></section>
+<p>Accept: a BEZIER_SURFACE-style single-span B_SPLINE_SURFACE (4x4 poles, no interior knots) wired into the face. A kernel testing whether such a surface closes in V must compare the actual 3D positions of the first and last V-direction pole rows (accounting for the fact that a Bezier patch has no separate knot-boundary bookkeeping to shortcut the check) rather than infer closure from the absence of interior knots alone.</p></section>
 <section><h2>Notes</h2>
 <p>Bezier-implicit-knots, pole-endpoint-mismatch</p></section>
 <section><h2>Expected validation</h2>

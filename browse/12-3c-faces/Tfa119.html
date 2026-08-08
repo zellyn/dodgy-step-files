@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the outer wire&#x27;s LINE entities whose point argument is wrapped in a non-conformant aggregate (LINE(&#x27;name&#x27;,(#N),#dir) instead of a plain #N reference): a correct kernel must detect this malformed syntax and either repair the reference (unwrapping the spurious aggregate) so the outer wire&#x27;s edges build normally, or reject the face with a diagnostic naming the malformed LINE entities — never let a face whose outer wire fails to build (0 edges) proceed to translation with a live inner wire, since that combination is what crashes the reader.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed twisted-face checking&#x27;s orientation logic doesn&#x27;t handle an opposite-winding inner wire; that method is never reached. Isolation test shows the outer wire&#x27;s malformed `LINE` syntax causes its edges to fail to build (0 edges) even without the inner wire; the SIGSEGV itself requires the inner wire&#x27;s presence but the precise failure mechanism connecting the two is not fully isolated in this pass (recorded honestly per `SEGFAULT_CHARACTERIZATION.md` convention). **See also**: Tfa118 (same malformed-`LINE`-syntax anomaly, different crash cause). Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14.</p></section>
 <section><h2>Expected validation</h2>

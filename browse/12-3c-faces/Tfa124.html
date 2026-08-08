@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a 50x0.5 strip-like ADVANCED_FACE wrapped inside a GEOMETRIC_CURVE_SET is, per the schema, a geometric-curve-set entity rather than a face-topology entity, so a read correctly yields an empty shape (shape.IsNull() == True, n_faces == 0) — there is no strip/spot classification to perform because the face is never built from the curve-set wrapper.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed spot-face checking classifies based on enclosing-circle diameter, misclassifying this strip-like spot; that checker/fixer is never invoked because the face never survives translation (the `GEOMETRIC_CURVE_SET` wrapper is a type the builder dispatch skips). The `shape_null == True` / `occt=empty/empty` Expected-validation line below was already correct; only the mechanism attribution was wrong. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. **See also**: Tfa121, Tfa160, Tfa169 (same `GEOMETRIC_CURVE_SET`-orphaning pattern). Synonyms: &quot;GEOMETRIC_CURVE_SET wrapped face never translates&quot;, &quot;asymmetric strip-like spot face orphaned in curve set&quot;.</p></section>
 <section><h2>Expected validation</h2>

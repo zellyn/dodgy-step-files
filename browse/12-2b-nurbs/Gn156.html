@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic naming the endpoint gap: the curve is flagged periodic but its first pole (1,0,0) and last pole (0.9,-0.1,0) do not coincide -- about a 0.14-unit gap -- so the periodic flag and the control polygon disagree. A kernel must verify pole coincidence (within tolerance) at the seam of any curve claiming periodicity before trusting the flag; if a repair elsewhere in the pipeline (e.g. an origin re-anchor) runs against this curve, it should either close the gap explicitly or strip the (unsupported) periodic flag rather than propagate a periodicity claim the geometry doesn&#x27;t back up.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

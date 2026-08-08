@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Twi044 — Internal `FACE_BOUND` hole-wire with sub-tolerance enclosed area (degenerate tiny inner wire)</title>
+  <title>Twi044 — Internal `FACE_BOUND` hole-wire enclosing 5e-7 mm² inside a 100 mm² face (ratio 5e-9): negligible by AREA, but its ~1.4e-3 mm vertex spacing is ~14,000× ABOVE the file&#x27;s 1e-7 mm tolerance</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi044</span>
 </nav>
 <header class="title-bar">
-<h1>Twi044 <span class="sep">—</span> <span class="entry-title">Internal `FACE_BOUND` hole-wire with sub-tolerance enclosed area (degenerate tiny inner wire)</span></h1>
+<h1>Twi044 <span class="sep">—</span> <span class="entry-title">Internal `FACE_BOUND` hole-wire enclosing 5e-7 mm² inside a 100 mm² face (ratio 5e-9): negligible by AREA, but its ~1.4e-3 mm vertex spacing is ~14,000× ABOVE the file&#x27;s 1e-7 mm tolerance</span></h1>
 <p class="category">§12.3b wire-loop</p>
 <p class="severity-badge severity-p1">P1 — silent data loss</p>
 <p class="tag-pills">
@@ -34,7 +34,7 @@
 <section><h2>Description</h2>
 <p>A face carries one or more inner `FACE_BOUND` (&quot;hole&quot;) wires whose enclosed area is below a configurable threshold relative to the face&#x27;s overall area — a tiny wire that almost-encloses-nothing, typically left behind by imprecise reverse-engineering or Boolean fallout rather than describing a genuine hole. Common shape: a triangle inner wire with vertices like (5,5,0), (5.001,5,0), (5.0,5.001,0) — enclosed area ~5e-7 mm² well below typical working tolerance — sitting inside a 100 mm² planar face.</p></section>
 <section><h2>Reproducer recipe</h2>
-<p>Planar face with a small inner wire enclosing area &lt; 1e-6 mm² inside a 100 mm² face.</p></section>
+<p>Planar face with an inner wire enclosing 5e-7 mm² inside a 100 mm² face. Note the two readings differ: the AREA is negligible relative to the face (ratio 5e-9), but the wire&#x27;s own vertex spacing (~1.4e-3 mm) is far ABOVE the declared 1e-7 mm tolerance, so it is not sub-tolerance in a linear sense.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>drop the spurious inner wire and fill the would-be hole, keep it but accept the noise, or reject as malformed; choice is kernel-policy-dependent and may be exposed via a healing flag.</p></section>
 <section><h2>Notes</h2>

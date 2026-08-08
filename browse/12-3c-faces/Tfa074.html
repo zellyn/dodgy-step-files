@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a wire that references the same EDGE_CURVE twice, both at forward orientation, is a legal (if degenerate, zero-area) 2-edge loop, so a read must load it exactly as encoded rather than collapsing the repeated edge into a single-edge wire; the companion 10x10 plane must load unchanged, keeping n_faces_total == 2.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed coincident-edge wire merging&#x27;s orientation check fails to detect a same-orientation duplicate-edge pair; that method is never invoked on an ordinary read, and the degenerate wire loads exactly as encoded (both faces present, `n_faces_total == 2`). Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;same edge reused twice in one wire loads intact&quot;, &quot;zero-area doubled-edge wire never merged&quot;.</p></section>
 <section><h2>Expected validation</h2>

@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: an inner loop whose single edge has a true length of 1e-8 — many orders of magnitude below any meaningful tolerance — carries no real boundary information, so a reader may fold it away during ordinary translation exactly as observed here (the loaded face keeps only its 5x5 outer wire, 4 edges total); this is routine handling of degenerate curve data, not evidence of a dedicated tiny-wire classifier, and no diagnostic is required for content this far below tolerance.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed tiny-wire filtering &quot;segregates sub-precision loops into VerySmallWires before orientation analysis, preventing false vertex states from corrupting containment classification&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;degenerate single-edge inner loop silently dropped, not filtered by a named orientation guard&quot;.</p></section>
 <section><h2>Expected validation</h2>

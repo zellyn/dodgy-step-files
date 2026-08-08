@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the second FACE_INNER_BOUND (the tangent-touching inner wire): isolation shows the outer wire alone loads cleanly but restoring either inner wire reproduces a SIGSEGV, so a correct kernel must detect that this multi-bound construction cannot be safely translated and refuse to build the offending bound with a diagnostic rather than crashing; if the bound is dropped, the face must still be built from the outer wire and remaining valid bound, and the diagnostic must report the drop since it removes a hole from the intended geometry.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed loop-wire repair merges intersecting loops and produces a wire with a self-touch vertex; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;multi-bound face crashes reader, outer-alone loads clean&quot;, &quot;tangent-touching inner wire crashes reader, outer-alone loads clean&quot;.</p></section>
 <section><h2>Expected validation</h2>

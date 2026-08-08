@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>heal: the surface&#x27;s U-knot vector begins with -0.0 (negative-zero) rather than 0.0 -- the same real value under IEEE-754 equality, but a distinct bit pattern. Deduplication logic over knot/split-parameter lists must compare values numerically (== on the real value, or within tolerance), not by bit pattern or naive formatting, so -0.0 and 0.0 are correctly treated as one boundary value and not as two, which would otherwise produce a spurious extra split at the surface&#x27;s own boundary.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

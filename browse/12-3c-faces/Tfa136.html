@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: an inner FACE_BOUND wrapping a single non-closed edge that sits entirely outside the face&#x27;s real 10x5 extent should not silently attach as inert extra topology with no diagnostic — a correct reader must recognize that a bound consisting of one open edge can never close a loop and reject that bound (with the well-formed outer boundary still yielding the 6-face box), rather than tolerating it the way plain OCCT does.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed away from face-splitting repair (never invoked on ordinary read) to the genuine, verified behavior — an invalid non-closed single-edge bound, entirely out of range, loads silently under OCCT while gmsh rejects it. The `gmsh=reject` Expected-validation line below was already correct; only the mechanism attribution was wrong. **See also**: Tfa085, Tfa118, Tfa145 (same single-edge-bound family, different crash/no-crash outcomes). Synonyms: &quot;out-of-range inner bound loads silently&quot;, &quot;non-closed bound outside face extent&quot;, &quot;cross-oracle divergence OCCT tolerates gmsh rejects&quot;.</p></section>
 <section><h2>Expected validation</h2>

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a cone&#x27;s apex may legally sit outside the encoded wire&#x27;s V-range (here apex at V=-1, wire wrapping V=1..3), so a read must build the face from the outer 5-edge wire and the two single-edge closed-curve faces exactly as given, all 3 faces intact — there is nothing to reverse, since the wire never touches the apex and so has no seam-direction ambiguity to resolve.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed periodic-degenerate seam repair&#x27;s apex-curve direction and conditional wire reversal produce inconsistent orientation; that method is never invoked on an ordinary read and the file loads with all 3 faces intact, no inconsistency observable. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;cone apex below wire V-range loads intact&quot;, &quot;apex curve reversal never invoked&quot;.</p></section>
 <section><h2>Expected validation</h2>

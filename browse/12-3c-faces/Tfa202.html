@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a cylindrical face (radius 1.0) whose boundary edges use a reversed F/T/T/F orientation pattern still traces a single closed, consistently-wound loop, so the face must load exactly as declared (1 face / 5 edges) with no twist-angle rejection triggered by the particular sequence of edge senses chosen to encode it.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed twisted-face checking &quot;detects a scalar-product-less-than-zero twist angle exceeding 90 degrees on this elementary surface type&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;mixed-orientation cylindrical boundary loads without twist detection&quot;.</p></section>
 <section><h2>Expected validation</h2>

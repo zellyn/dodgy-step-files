@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the FACE_INNER_BOUND whose EDGE_LOOP wraps a single non-closed edge: isolation confirms removing this malformed bound loads the outer semicircle wire cleanly, so a correct kernel must detect that a bound&#x27;s EDGE_LOOP does not close back to its start vertex and reject or drop that bound with a diagnostic before building the face, rather than crash the reader.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed face-splitting repair silently returns `IsDone=true, NewFaces=0`; the file actually segfaults the reader before any healing method could run (the `signal(11)` Expected validation below was already correct; only the prose was wrong). Same crash class as Tfa085 (independently isolated). **See also**: Tfa085.</p></section>
 <section><h2>Expected validation</h2>

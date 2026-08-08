@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>FLAG -- title/description contradict the bytes: the RECTANGULAR_TRIMMED_SURFACE&#x27;s basis_surface is `#10=B_SPLINE_SURFACE_WITH_KNOTS(...)`, a genuine non-null, well-formed surface; there is no null basis anywhere in this file. As in Gs167, the `$,$` fields the description points to are the standard optional ORIENTED_EDGE derived attributes, not a defect. Actual kernel behavior for what the file really contains: accept the trimmed B-spline face; a kernel should still null-check a RECTANGULAR_TRIMMED_SURFACE&#x27;s basis defensively (the genuinely-null case is exercised elsewhere, e.g. Gs159), but this file does not exercise that path.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

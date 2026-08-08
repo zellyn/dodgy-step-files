@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a 0.12x0.12 face with 0.05 per-vertex tolerances is still an ordinary, unambiguous quadrilateral face — the tolerance values constrain vertex coincidence checks, not face-area classification — so a read must load it as one of the block&#x27;s 6 faces (n_faces_total == 6) without reclassifying it as degenerate.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed spot-face checking&#x27;s tolerance-scaled comparison misclassifies this face as a spot; that checker is never invoked on an ordinary read, so no spot classification is ever produced. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;large-tolerance near-spot face loads as ordinary face&quot;, &quot;spot classification never invoked on ordinary read&quot;.</p></section>
 <section><h2>Expected validation</h2>

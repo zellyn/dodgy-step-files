@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: this is a valid, non-planar degree-3 curve -- four control points sit at Z=0 while the two interior points bow to Z=5.0, and all six values are explicit in the control net. A planarity check over a non-rational B-spline can rely on inspecting every control point (not just the endpoints); since the Z=5 poles are present in the data, any check that inspects the full pole set correctly reports this curve as non-planar.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

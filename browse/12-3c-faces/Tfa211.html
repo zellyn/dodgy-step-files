@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the ADVANCED_FACE whose face_geometry is a null ($) handle: detect the null surface reference and fail cleanly for that one face rather than crashing, dropping just the malformed face while the companion well-formed 1x1 PLANE face at x=2 still loads — this fixture&#x27;s own observed behavior (final shape: 1 face / 4 edges, matching the valid face alone) is the acceptable outcome provided a diagnostic is logged; silently fabricating a surface for the null handle is never acceptable.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed this exercises missing-seam recovery&#x27;s null-surface guard (face-repair.cxx:1724`); the true mechanism is the reader&#x27;s ordinary per-entity clean-fail on a null surface handle at face translation time, identical to the independently-documented Tfa252 (null `edge_geometry`, analogous face-level case here). **See also**: Tfa252 (documents the same clean-fail mechanism for null geometry, at the edge level rather than the face level). Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;null surface handle face dropped&quot;, &quot;companion valid face survives null-surface sibling&quot;.</p></section>
 <section><h2>Expected validation</h2>

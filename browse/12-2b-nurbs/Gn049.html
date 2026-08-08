@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic: the curve&#x27;s knot vector sums to 6 knots where a degree-2, 4-control-point curve requires 7, and the upper knot is set to the IEEE-754 max-double sentinel (~1.8e308) rather than a real domain bound. A kernel must validate the knot-count identity and reject non-finite/sentinel parameter values before any evaluation is attempted, since evaluating at an unbounded parameter is undefined regardless of what any closure or bounds check reports.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

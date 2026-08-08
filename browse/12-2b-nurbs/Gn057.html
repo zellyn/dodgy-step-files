@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept, but diagnose an under-resolved case: a full-circle arc of radius 1,000,000mm sampled at a fixed 360-point (1-degree) resolution produces roughly 17,453mm of chord per step -- far coarser than any reasonable geometric tolerance. A kernel&#x27;s curve-sampling density must scale with the curve&#x27;s actual size (e.g. chord-error-bounded, not a fixed point count), or very large analytic curves will be silently under-resolved for tangency/intersection purposes.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

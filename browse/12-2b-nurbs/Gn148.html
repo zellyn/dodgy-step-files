@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept and heal: the surface&#x27;s U-knots cluster tightly near one end (0.0, 0.001, 0.002) then jump to 1.0 -- a knot-spacing ratio on the order of 1000:1. A kernel evaluating or re-parameterizing this surface should detect such an extreme spacing ratio and reparameterize (e.g. to a more even arc-length-based knot spacing) before doing numerically sensitive work near the cluster, since the ill-conditioned basis matrix there can otherwise amplify small input errors into large positional ones.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

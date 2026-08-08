@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic naming the pole/degree mismatch: a degree-3x3 surface needs at least 4 control points in each direction (degree+1), but this surface&#x27;s net is only 1x1. A kernel must validate that each direction&#x27;s control-point count meets the minimum degree+1 requirement before attempting any basis operation on the surface, rather than letting a degree-3 procedure run against an under-determined 1-pole net and silently produce zero patches.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

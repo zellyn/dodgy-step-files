@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: a rational (all-weight-1.0) 2D pcurve used inside a PCURVE/DEFINITIONAL_REPRESENTATION is functionally identical to a non-rational curve since every weight is 1. Bezier-basis conversion should recognize an all-unit-weight rational curve and delegate to the same path as a non-rational curve, rather than taking a rational-specific path that can degenerate the output (e.g. collapsing a span to a line segment) when it isn&#x27;t actually needed.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Reject with a diagnostic naming the zero weight: the RATIONAL_B_SPLINE_SURFACE has one interior weight equal to 0.0 among an otherwise all-positive 3x3 weight grid. A zero weight makes the corresponding homogeneous control point contribute nothing at any parameter value near it, effectively deleting that pole from the surface&#x27;s shape -- a kernel should flag a zero (or negative) rational weight as invalid input rather than silently divide by it or treat it as an ordinary small positive weight.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

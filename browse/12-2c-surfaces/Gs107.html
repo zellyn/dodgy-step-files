@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Accept: the face&#x27;s boundary includes the full-period seam edge (u=0 == u=2*pi) of a unit CYLINDRICAL_SURFACE. A kernel re-deriving this surface into another basis must keep the resulting patches meeting exactly at that seam parameter with no residual gap -- the underlying analytic surface is exactly closed there, so any re-derived representation that leaves a numerical gap at the seam is a regression, not an acceptable approximation.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

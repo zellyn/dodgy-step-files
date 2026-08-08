@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Reject the closure flag, accept the surface: the B_SPLINE_SURFACE_WITH_KNOTS declares u_periodic (u_closed=.T.), but its first and last U-column poles sit about 0.2 units apart in X rather than coinciding. A kernel must derive periodicity from actual pole coincidence (within tolerance), not from the declared flag; here it should treat the surface as open in U and report the flag/geometry disagreement rather than wrap a seam over a real gap.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

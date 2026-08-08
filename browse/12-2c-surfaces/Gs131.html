@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Accept: a TOROIDAL_SURFACE (major_radius=1.0, minor_radius=0.3) wired into the face with edges at the torus&#x27;s own analytic radii (0.3 and 1.3). A kernel doing point-inversion (finding the UV for a 3D point) on an analytic quadric like a torus should use the surface&#x27;s closed-form inverse rather than an iterative Newton scheme that could declare premature convergence near the seam; the torus itself, seam included, is ordinary valid geometry.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

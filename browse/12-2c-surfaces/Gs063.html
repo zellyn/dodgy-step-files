@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a PLANE trimmed to u,v in [0.5,2.5] and then wrapped in an OFFSET_SURFACE of distance 2.0, wired into the face boundary. A kernel must carry both the trim and the offset through any basis-surface conversion or re-derivation -- deriving an alternate representation from the wrapped surface&#x27;s base plane alone, while dropping the trim window or the offset distance, produces a different surface than the file declares and must not be treated as equivalent.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

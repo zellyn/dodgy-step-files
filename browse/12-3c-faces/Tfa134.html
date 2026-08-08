@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the offending bound: the face&#x27;s inner bound (the &quot;pin&quot;, spanning y in [-2,0]) does not lie inside its outer bound (the &quot;strip&quot;, spanning y in [0,0.5]) at all -- the two wires meet only along the shared segment from (0,0) to (2,0), and the inner wire&#x27;s entire footprint sits outside the outer wire&#x27;s region. An inner bound must define a hole strictly within its outer wire&#x27;s footprint; classify each candidate inner wire by containment against the outer wire before accepting it as a hole, and reject (never crash) when containment fails.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

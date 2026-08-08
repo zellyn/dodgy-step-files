@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: two wires on a cylinder that both happen to start at the same seam-anchor vertex (an identical XYZ coordinate shared by both loops) must load as distinct wires exactly as encoded, matching the 4-face/radius-5.0 cylinder assertions below — a shared start vertex between two otherwise independent loops is not, by itself, evidence that either wire&#x27;s winding is ambiguous, so no orientation reclassification should be triggered by vertex-sharing alone.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed orientation repair&#x27;s winding test gets confused by the shared seam vertex; that method is never invoked on an ordinary read, so no winding test (confused or otherwise) is ever run. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;seam-shared-vertex cylinder wires load intact&quot;, &quot;orientation winding test never invoked at shared seam&quot;.</p></section>
 <section><h2>Expected validation</h2>

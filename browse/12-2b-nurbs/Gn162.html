@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept and heal: the curve&#x27;s interior knot at t=0.5 has multiplicity 4, equal to degree+1 for this degree-3 curve -- the maximum the format allows, producing a genuine positional (C-1) break; the curve splits into two independent cubic segments at that parameter rather than being a single continuous curve. A kernel should recognize this as a valid split point (not a malformed knot vector) and either remove the redundant knot repetition to restore continuity where the flanking geometry supports it, or keep the curve split into its two segments and record the discontinuity explicitly.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

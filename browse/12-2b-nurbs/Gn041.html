@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept and keep the geometry: the surface&#x27;s interior U-knot at u=0.5 has multiplicity 3 equal to its U-degree, giving a tangent (C0, not positional) discontinuity there -- a legal, if unusual, construction. Parameter-inversion (UV-from-point) routines evaluating near that knot must treat the derivative as one-sided rather than assuming a smooth derivative exists across it, or the search can converge to the wrong side of the knot.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

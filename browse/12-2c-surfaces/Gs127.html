@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Accept: a bilinear B_SPLINE_SURFACE_WITH_KNOTS wired directly into the face with no split or trim actually present in the file. A kernel that does later split this surface must check whether either resulting sub-patch has zero parametric extent in U or V and, if so, report it explicitly as a degenerate edge rather than pass a zero-width boundary downstream unflagged.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

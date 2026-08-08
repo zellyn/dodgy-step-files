@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Accept: the plane&#x27;s face boundary encodes three collinear interior split positions (u=0.25, 0.5, 0.75). A kernel honoring a request to split a face at a list of parameter values must apply every value in the list -- silently dropping any requested split position because of a fixed-size internal allocation is a bug in the splitting routine, not something the input geometry (which declares all three positions plainly) should be blamed for.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

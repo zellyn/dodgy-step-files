@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a 4-edge wire in which two edges (one forward, one reversed) happen to reference the same underlying curve geometry — used to trace two different, non-overlapping physical sides of the boundary in opposite directions — is ordinary valid STEP, so the face must load exactly as declared (1 face / 4 edges) with no coincidence-based merge triggered by the shared curve reference.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed coincident-edge wire merging &quot;applies a FORWARD/REVERSED orientation filter to prevent false coincident-edge detection on reversed duplicates&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;duplicate-geometry edge pair loads without orientation-filtered coincidence detection&quot;.</p></section>
 <section><h2>Expected validation</h2>

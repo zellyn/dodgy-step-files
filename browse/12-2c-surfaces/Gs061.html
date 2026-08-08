@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept and flag: the 4x4 cubic B-spline&#x27;s v=1 and v=2 pole rows both carry X-only tangent directions, so the surface normal collapses to zero along that interior strip -- a genuine cusp baked into the control net. A kernel should still build the face (the surface is well-defined away from the cusp) but flag the strip as normal-degenerate so operations that need a well-defined normal (offsetting, filleting) special-case or split there instead of silently propagating a zero or garbage normal.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

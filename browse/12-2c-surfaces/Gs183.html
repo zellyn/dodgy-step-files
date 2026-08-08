@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a unit-radius CYLINDRICAL_SURFACE trimmed by a RECTANGULAR_TRIMMED_SURFACE to v in [0.001,1.0] -- a boundary edge close to, but not exactly at, the surface&#x27;s own v=0 axis-singularity location (cylinders have no true singularity at any v, so this is a proximity concern only insofar as some other operation treats v=0 specially). A kernel evaluating this surface must not rely on a cached notion of &#x27;near a singularity&#x27; computed once and never revisited -- if the trim or surface changes, any such classification must be recomputed from the current bounds, not reused from before the change.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the curve&#x27;s interior knot at t=0.5 has multiplicity 2, below the degree-3 full multiplicity of 4 -- a smooth, unremarkable interior knot. Split-parameter validation must not treat every multiplicity-2 interior knot as if it were already a boundary requiring a spurious extra split; only multiplicity equal to (or exceeding) the degree should be treated as an existing structural boundary.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

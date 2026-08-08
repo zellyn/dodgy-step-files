@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the invalid knot vector: the B_SPLINE_SURFACE_WITH_KNOTS gives U multiplicities (2,2,2) summing to 6 against the 5 required for 2 U-direction control points at degree 2, and separately its V knot vector clusters three identical interior values -- both defects independently make the knot data inconsistent with its own pole count. A kernel computing a surface&#x27;s bounding box or parameter domain must first validate that the knot vector is well-formed (correct multiplicity sum, no degenerate zero-length intervals) before attempting any tolerance-aware clamping on top of it.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

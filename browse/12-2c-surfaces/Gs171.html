@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a PLANE restricted by a RECTANGULAR_TRIMMED_SURFACE to u,v in [0.2,0.8]. A kernel that projects a 3D point back onto this surface (point-inversion) must validate the resulting (u,v) against the trim&#x27;s actual [0.2,0.8]x[0.2,0.8] bounds before returning it as a point on the face -- a result outside that window belongs to the untrimmed base plane, not to this face, and must be reported as out-of-domain rather than accepted silently.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Reject with a diagnostic naming the crossing point, or split before accepting: the face&#x27;s boundary wire crosses itself in parameter space at (0.5, 0.5), producing two overlapping sub-regions on the same B-spline surface. A non-simple (self-crossing) boundary wire does not define a single well-formed face; a kernel should detect the crossing and either split the boundary into non-overlapping simple loops or reject the face, rather than silently building one face whose loop overlaps itself.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

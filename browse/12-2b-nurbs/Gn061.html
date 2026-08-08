@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: a LINE trimmed to the sub-range [2.0, 8.0] is a simple, fully-defined curve. Curve sampling that special-cases straight lines by evaluating only the two trim endpoints is valid for this analytic type -- a line has no interior curvature or degeneracy to miss -- so a kernel is not obligated to add midspan sampling here; this fixture demonstrates the endpoint shortcut is safe specifically because the underlying curve is a LINE, not a curved or possibly-degenerate type.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

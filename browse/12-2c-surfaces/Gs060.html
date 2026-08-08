@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: the ADVANCED_FACE&#x27;s boundary reaches exactly the north pole of a radius-5.0 SPHERICAL_SURFACE (v=pi/2). This is the ordinary degenerate-pole case every polar spherical patch touching a pole must handle -- a single 3D point where the u-parameter is undefined, not an invalid surface. A kernel must model it as a degenerate vertex/edge in the wire and continue to build the face; a face bounded at a sphere&#x27;s pole is normal, valid geometry and must not be rejected outright.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

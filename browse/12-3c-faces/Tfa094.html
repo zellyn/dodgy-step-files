@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: an inner FACE_BOUND rectangle&#x27;s corner may legally reuse the outer FACE_OUTER_BOUND wire&#x27;s own VERTEX_POINT entity as its own corner (edge #63 starts at the literal same vertex #12 as the outer hexagon), which is a genuine shared topological endpoint rather than two merely-coincident vertices, so a read must load the box&#x27;s 6-face CLOSED_SHELL with the reused vertex exactly as referenced, without treating it as a T-junction needing a split.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed splitting-vertices checking &quot;misses the boundary case&quot;; live-oracle byte inspection shows the inner wire&#x27;s vertex is literally the same entity as the outer wire&#x27;s vertex (not a distinct boundary-touching vertex), so the checker&#x27;s own skip-guard — not a boundary/interior distinction bug — is why it never fires. See Tfa249 for the genuine trigger (closes `tkshh-splitting-vertex-face`). Synonyms: &quot;shared vertex entity between outer and inner wire&quot;, &quot;reused endpoint T-vertex (non-firing)&quot;.</p></section>
 <section><h2>Expected validation</h2>

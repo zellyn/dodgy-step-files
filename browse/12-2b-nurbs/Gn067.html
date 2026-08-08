@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic: the surface has U-degree 2 and V-degree 4 (an asymmetric-degree surface, both individually valid: U mults (3,3) sum 6, V mults (5,5) sum 10). Surface-splitting logic must use each direction&#x27;s own degree when interpreting that direction&#x27;s knot vector; reusing one direction&#x27;s degree to interpret the other&#x27;s knots misaligns the knot indices and corrupts the resulting split.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: a rational curve with alternating weights (1.0, 10.0) across its poles is legal NURBS input; the 10:1 weight ratio concentrates the curve&#x27;s arc length unevenly across the parameter range. Curve sampling must derive its point spacing from the curve&#x27;s actual (rational) parameterization, not assume uniform-in-parameter spacing, or spans dominated by the low-weight poles will be under-represented and real curve features there will be missed.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the tiny inner wire straddling the cylinder&#x27;s U-seam at z=2: even though both the outer and inner wires are individually properly closed, a correct kernel must detect that this seam-crossing near-coincident-vertex wire on a periodic surface cannot be safely processed and refuse to build the face with a diagnostic, rather than crash during translation — the precise failure mechanism (hypothesized as seam-aware pcurve projection instability) is not fully isolated, so the check must key on the seam-crossing, near-zero-area wire pattern rather than a narrower cause.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed small-area-wire repair&#x27;s area calculation doesn&#x27;t account for seam wrapping; that method is never reached (crash occurs first). Root cause of the crash itself is NOT fully isolated in this pass (unlike Tfa085/Tfa106/Tfa118, both wires are validly closed) — recorded honestly as a hypothesis rather than a verified mechanism, per `SEGFAULT_CHARACTERIZATION.md` convention. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14, which also flags this crash&#x27;s root cause as needing further isolation. Synonyms: &quot;tiny wire crosses cylinder seam crashes reader&quot;, &quot;periodic surface seam-crossing wire segfault&quot;.</p></section>
 <section><h2>Expected validation</h2>

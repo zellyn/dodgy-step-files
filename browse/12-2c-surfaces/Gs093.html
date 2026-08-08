@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: the B_SPLINE_SURFACE_WITH_KNOTS has V knot multiplicities (3,1,3) at degree 2 -- full multiplicity (clamped) at both ends and a single interior knot of multiplicity 1, which is an ordinary, valid clamped knot vector (sum 7 against 4 V-direction control points at degree 2 requiring 7), not an irregular structure needing special handling. A kernel should subdivide by the real knot structure exactly as declared and must not assume uniform multiplicities across knots.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

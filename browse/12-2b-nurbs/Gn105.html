@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic or heal: a rational curve with two coincident control points that carry different weights is an ambiguous/degenerate encoding -- at that shared position, which weight applies to the local curve shape is not well-defined from the pole positions alone. A closure or coincidence check comparing only positions (and ignoring weight) will treat those two poles as equivalent when they are not; a kernel must either reject the ambiguous encoding with a diagnostic, or resolve/average the weights and record that a repair was made.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

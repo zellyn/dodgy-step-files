@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic: one control point&#x27;s Z coordinate is 1.0e100, several orders beyond any physically meaningful CAD coordinate and a practical proxy for a corrupted/non-finite value. A kernel should validate control-point magnitudes against a sane bound (or explicitly check for non-finite values) before using them in any geometric predicate (planarity, bounding box, etc.), since a single extreme coordinate can silently poison an otherwise-reasonable check&#x27;s result rather than triggering an obvious failure.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

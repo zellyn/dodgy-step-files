@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>N042 — Self-intersecting wire from coarse-discretization bbox check (sample-count too small)</title>
+  <title>N042 — Two near-tangent B-spline edges on a planar face touch at exactly one point (tangency) rather than crossing</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.4 Tolerance &amp; numerical precision</a> <span class="sep">/</span> <span class="current">N042</span>
 </nav>
 <header class="title-bar">
-<h1>N042 <span class="sep">—</span> <span class="entry-title">Self-intersecting wire from coarse-discretization bbox check (sample-count too small)</span></h1>
+<h1>N042 <span class="sep">—</span> <span class="entry-title">Two near-tangent B-spline edges on a planar face touch at exactly one point (tangency) rather than crossing</span></h1>
 <p class="category">§12.4 (sub-class: working precision / curve sampling)</p>
 <p class="tag-pills">
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
@@ -27,13 +27,13 @@
 <li>14-brlcad-rhino K007</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>When OCCT computed a curve&#x27;s bounding box for self-intersection detection, it used too few sampling points; near-tangent intersections were missed. step-g hits the inverse: sampling p-curves with &lt;2 points produces degenerate trims.</p></section>
+<p>When OCCT computed a curve&#x27;s bounding box for self-intersection detection, it used too few sampling points; near-tangent intersections were missed. step-g hits the inverse: sampling p-curves with &lt;2 points produces degenerate trims. This fixture&#x27;s two edges are exactly tangent (single point of contact at (5, 5.00025)) rather than crossing, so it demonstrates a wire that touches itself at one point without a topological self-intersection — a different, milder condition than the title&#x27;s &quot;self-intersecting&quot; claim.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>STEP wire on planar face containing two near-tangent edges; bbox-based intersection test with default sample count misses the crossing.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal; use density-of-discretization correlated with curve curvature for bbox; never rely on a fixed sample count; enforce minimum sample count ≥ 2 on degenerate inputs.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Pf006. **OCC behavior**: the validity-checker does not flag the near-tangent edge intersections missed by coarse bbox sampling; tier-3 valid-flag should be ignored for this entry. The reader most likely silently fixes or ignores the missed self-intersection on import. Synonyms: &quot;self-intersection missed by sparse sampling&quot;, &quot;coarse bounding box check misses near-tangent&quot;, &quot;p-curves with too few samples cause degenerate trims&quot;, &quot;near-tangent curves miss intersection due to undersample&quot;.</p></section>
+<p>**See also**: Pf006. **OCC behavior**: the validity-checker does not flag the near-tangent edge intersections missed by coarse bbox sampling; tier-3 valid-flag should be ignored for this entry. The reader most likely silently fixes or ignores the missed self-intersection on import. Corrected 2026-08-07 (title-vs-bytes audit): retitled/redescribed — original claimed the two edges &quot;actually cross&quot; and a coarse bbox sampler misses that crossing; direct evaluation shows the pair is exactly tangent (one touch point, no sign change), not crossing, at any sample density. Synonyms: &quot;self-intersection missed by sparse sampling&quot;, &quot;coarse bounding box check misses near-tangent&quot;, &quot;p-curves with too few samples cause degenerate trims&quot;, &quot;near-tangent curves miss intersection due to undersample&quot;, &quot;exact single-point tangency, not a crossing&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a</code></p></section>
 <section><h2>Closure intent</h2>

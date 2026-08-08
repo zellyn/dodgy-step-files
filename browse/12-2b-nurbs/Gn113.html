@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the curve is flagged periodic with equal endpoint multiplicities (both 2), but its four spans have asymmetric widths (0.20, 0.13, 0.34, 0.33) -- a legal, just unevenly-parameterized, periodic curve. A closure check should trust the periodic flag together with endpoint coincidence, not additionally assume symmetric span widths; asymmetric knot spacing on a periodic curve is a parameterization choice, not evidence the periodicity claim is wrong.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

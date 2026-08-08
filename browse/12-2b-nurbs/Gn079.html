@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the curve&#x27;s third pole (2.5, 2.5, 2.0) bows 2mm out of the Z=0 plane that its other four poles lie in, but that pole is a control point, not a point the degree-3 curve necessarily passes through -- the curve&#x27;s actual interior extremum may lie at a different parameter than any single control point. A planarity check must evaluate the curve&#x27;s own position (via extremum search or dense sampling), not assume evaluating only at knot or control-point parameters brackets the true out-of-plane deviation.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

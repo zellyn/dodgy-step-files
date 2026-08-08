@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic or elevate first: a degree-1 (polyline-form) 2D B-spline curve with 3 control points and knots [0,0,1,2,2] is being fed as the pcurve into a Bezier-basis conversion pipeline built around degree-elevate-then-split logic. A kernel must handle degree-1 input directly (it is already piecewise-linear, hence already Bezier) rather than assume every input needs the degree&gt;=2 elevation step; special-casing the low-degree case avoids the downstream extraction failure.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

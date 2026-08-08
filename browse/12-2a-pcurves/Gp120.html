@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Gp120 — Composite pcurve tangent discontinuity</title>
+  <title>Gp120 — Two-segment COMPOSITE_CURVE_ON_SURFACE join has matching tangent vectors on both sides (no discontinuity despite asymmetric control-point excursions)</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,7 +12,7 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2a Pcurve defects</a> <span class="sep">/</span> <span class="current">Gp120</span>
 </nav>
 <header class="title-bar">
-<h1>Gp120 <span class="sep">—</span> <span class="entry-title">Composite pcurve tangent discontinuity</span></h1>
+<h1>Gp120 <span class="sep">—</span> <span class="entry-title">Two-segment COMPOSITE_CURVE_ON_SURFACE join has matching tangent vectors on both sides (no discontinuity despite asymmetric control-point excursions)</span></h1>
 <p class="category">§12.2a</p>
 <p class="tag-pills">
 <a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
@@ -26,11 +26,13 @@
 <li>synthesized — no external source cited</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>Composite pcurve tangent discontinuity</p></section>
+<p>Two-segment COMPOSITE_CURVE_ON_SURFACE join has matching tangent vectors on both sides (no discontinuity despite asymmetric control-point excursions)</p></section>
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>heal or reject (mechanism-specific; see Description)</p></section>
+<section><h2>Notes</h2>
+<p>Corrected 2026-08-07 (title-vs-bytes audit): retitled/redescribed — original claimed the composite pcurve&#x27;s segment join has a G0-only tangent discontinuity (`ShapeAnalysis_Edge.GetEndTangent2d` &quot;fails&quot; on it); live evaluation of both segments&#x27; boundary derivatives (Geom2d_BSplineCurve::D1) shows the tangent vectors at the join are identical, (1,-1) on both sides, so no discontinuity exists in the bytes for any reader to detect or heal. Synonyms: &quot;composite pcurve join accidentally smooth&quot;, &quot;symmetric control-point excursions cancel intended kink&quot;, &quot;G0-looking join is actually C1&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

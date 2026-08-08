@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a SURFACE_OF_REVOLUTION built from a closed generator swept the full 2*pi, wired into the face. A kernel checking whether a revolved surface&#x27;s boundary is properly closed in V must verify that the corresponding seam edges are geometrically coincident (within tolerance), not merely that their nominal V-parameters both lie at the surface&#x27;s stated period boundary -- a parametrically-adjacent pair of edges that are not actually coincident in 3D is a real seam gap that must be reported, not silently treated as closed.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

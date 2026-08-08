@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic naming the inverted bound: the RECTANGULAR_TRIMMED_SURFACE declares u1=0.75, u2=0.25 -- a lower bound greater than the upper bound. A kernel must validate that trim bounds are ordered (u1 &lt; u2, or explicitly consult the trailing sense flags if the schema allows a reversed sense) before treating them as a domain, and reject or normalize with a diagnostic rather than silently treating an inverted pair as an empty or nonsensical range.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

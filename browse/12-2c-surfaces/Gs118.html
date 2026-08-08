@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Reject with a diagnostic naming the invalid knot vector: the B_SPLINE_SURFACE_WITH_KNOTS repeats the same U knot value (0.5) twice in immediate succession within a 4-entry multiplicity/knot-value pairing, producing a zero-width parametric interval between two supposedly distinct knot spans. A kernel must detect and reject a knot vector with duplicate consecutive knot values presented as separate spans rather than silently evaluate across a zero-length interval.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Gs114, Gs115, Gs116, Gs117. synthesized from earlier wave; backfilled from fixture comment- **Model impact**: Surface and trimming geometry</p></section>
 <section><h2>Expected validation</h2>

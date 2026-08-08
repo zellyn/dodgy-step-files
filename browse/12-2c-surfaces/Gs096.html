@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Reject with a diagnostic, or accept only with an explicit self-intersection warning: the TOROIDAL_SURFACE has major_radius (0.3) less than minor_radius (1.0) -- a genuine spindle torus where the revolved circle overlaps itself, so part of the nominal surface self-intersects in 3D. A kernel building a face on this surface should either refuse to build a single non-self-intersecting face from it, or build it and explicitly flag the self-intersection locus rather than silently reporting no singularities.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the GEOMETRIC_CURVE_SET wrapper: a face-typed entity (ADVANCED_FACE), here a narrow 5-degree angular strip on a cylindrical surface, hosted inside a container reserved for curve/point geometry is a type mismatch that a correct kernel must flag explicitly rather than silently skip, since silently skipping it drops the file&#x27;s sole representation item and the whole shape comes back empty with no indication that a face was ever discarded.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed strip-face checking uses parametric-domain width instead of true 3D arc length, miscomputing the aspect ratio; that checker/fixer is never invoked because the face never survives translation (the `GEOMETRIC_CURVE_SET` wrapper is a type the builder dispatch skips). The `shape_null == True` / `occt=empty/empty` Expected-validation line below was already correct; only the mechanism attribution was wrong. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. **See also**: Tfa121, Tfa160, Tfa169 (same `GEOMETRIC_CURVE_SET`-orphaning pattern). Synonyms: &quot;GEOMETRIC_CURVE_SET wrapped face never translates&quot;, &quot;narrow cylindrical strip face orphaned in curve set&quot;.</p></section>
 <section><h2>Expected validation</h2>

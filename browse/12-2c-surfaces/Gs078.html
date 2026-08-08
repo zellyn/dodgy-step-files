@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: two nested OFFSET_SURFACE entities (each +0.5) wrapping a base PLANE, standalone in a GEOMETRIC_CURVE_SET with no face. A kernel evaluating this surface chain must compose the offsets by simple addition along the shared normal (net +1.0mm from the base plane) and must not lose or flip the sign of either offset while resolving the wrapper chain.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

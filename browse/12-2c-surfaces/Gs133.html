@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Accept: a unit-radius CYLINDRICAL_SURFACE wired into the face; the file&#x27;s own comment describes a boundary edge whose two endpoints collapse to a single point within tolerance -- an ordinary degenerate edge, the ADVANCED_FACE boundary itself uses standard edge/loop entities. A kernel handling a degenerate (zero-length) edge on an analytic surface should project its collapsed point using the surface&#x27;s own closed-form parameterization, choosing the parameter that minimizes distance to the adjacent non-degenerate edges&#x27; tangent directions, rather than an arbitrary projection.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

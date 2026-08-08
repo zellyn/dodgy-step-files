@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a TOROIDAL_SURFACE (major_radius=5.0, minor_radius=2.0) with the face boundary running along the torus&#x27;s periodic seam. A kernel building or healing the wire on a closed analytic surface&#x27;s seam must produce exactly one seam edge per period, not a duplicated pair of coincident edges -- two edges occupying the same 3D and parametric location at the seam is a real topological defect that should be merged into one, reported if found.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

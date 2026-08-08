@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: an inner triangular wire that touches the outer 10x10 wire at exactly one shared vertex, with no shared edges, is ordinary valid containment — vertex-only touching between two distinct wires of the same face is not edge coincidence, so no merge is required or expected; the face must load with both wires intact.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed coincident-edge wire merging &quot;detects edge identity via EDGE_CURVE comparison but treats vertex-only touching as edge coincidence, triggering false-positive merges&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;vertex-touching inner wire loads without false coincidence merge&quot;.</p></section>
 <section><h2>Expected validation</h2>

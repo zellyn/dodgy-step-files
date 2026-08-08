@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept and keep the geometry: the curve&#x27;s interior knot at t=0.5 has multiplicity 4, equal to its degree -- a legal C0 (tangent-break, not positional-break) construction; the curve is continuous in position but has a genuine tangent-direction jump there. A kernel should keep the curve and perform a continuity-upgrade repair (or explicitly record the tangent discontinuity) at that knot, treating it the same way for a 2D or 3D curve, rather than rejecting an otherwise valid, merely-C0 curve.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

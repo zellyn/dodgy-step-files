@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Accept and report: all of the B-spline&#x27;s control points cluster inside a 1e-3mm cube, producing a small but well-defined, high-curvature patch. A kernel should build the face and report its true (tiny) extent; iterative point-inversion on such a tightly clustered control net should scale its step size to the surface&#x27;s actual size rather than use a fixed absolute step that can underflow before convergence -- the surface itself is legitimate geometry, not a defect.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

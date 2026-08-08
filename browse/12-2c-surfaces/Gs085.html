@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the invalid knot vector: the base B-spline under this OFFSET_SURFACE declares V multiplicities (1,1,1) against only 2 V-knot values, an inconsistent multiplicity/knot-count pairing, and its U multiplicities (1,2,1) sum to 4 against the 6 required for 3 U-direction control points at degree 2. A kernel must validate the base surface&#x27;s own knot data before wrapping it in an offset, rather than propagate a malformed base through an otherwise-valid offset relationship.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

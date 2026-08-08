@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept, but diagnose the ambiguity: a 2-control-point (degree-1) curve, i.e. a straight line segment, does not by itself determine a unique plane -- any plane containing the line satisfies a planarity test trivially. A kernel evaluating planarity for a 2-pole curve should recognize the input is under-determined for that question, and either defer to the plane it is otherwise embedded in (its host surface, if any) or flag the check as inapplicable, rather than reporting an arbitrary default plane as if it were meaningful.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(11) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

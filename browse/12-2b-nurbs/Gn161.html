@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>heal: the surface&#x27;s U-knots cluster densely near its boundary (0.9, 0.95, 1.0) while its V direction carries only 2 control points (the minimum for degree-1) -- together an asymmetric-boundary construction, not an inherently invalid one. A kernel should treat the dense U-boundary clustering the same way it would treat any tight knot cluster (reparameterize or flag ill-conditioning near the boundary) without assuming a thin V-direction on its own indicates a defect; the two conditions are independent.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

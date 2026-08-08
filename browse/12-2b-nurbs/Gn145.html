@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept and keep the geometry: the surface&#x27;s interior U-knot at u=0.5 has multiplicity 3, equal to U-degree+1 -- the maximum the format allows, producing a genuine positional (C-1) split (a cusp) in the U direction rather than an invalid knot vector. A kernel should keep the surface and either split it into two independent patches at that knot or explicitly record the C-1 discontinuity, rather than rejecting an otherwise well-formed surface outright.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

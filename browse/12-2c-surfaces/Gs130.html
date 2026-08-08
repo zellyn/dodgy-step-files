@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Accept: a PLANE wired into a single ADVANCED_FACE with one ordinary boundary loop. A kernel that later needs to split this face at a parameter coincident with an existing boundary edge must recognize the coincidence and treat it as a no-op (or an explicit merge) rather than construct a second, zero-area loop duplicating part of the original boundary.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

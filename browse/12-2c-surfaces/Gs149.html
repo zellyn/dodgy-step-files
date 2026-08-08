@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the inverted trim: the RECTANGULAR_TRIMMED_SURFACE gives u1=2.5 and u2=0.5, i.e. u1 &gt; u2, and its base B_SPLINE_SURFACE_WITH_KNOTS also has an invalid knot vector (U multiplicities (1,1,1) summing to 3 against the 6 required for 3 U-direction control points at degree 2). A kernel must detect an inverted trim range explicitly -- either normalizing it to (0.5, 2.5) with a reported correction or rejecting it outright -- rather than silently sweep iso-curves backwards across it, and must separately reject the base surface&#x27;s own malformed knot data.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

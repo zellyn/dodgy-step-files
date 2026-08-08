@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a rectangular face whose top edge is a B_SPLINE_CURVE_WITH_KNOTS (degree 3, asymmetric internal knot at u=0.3) in place of a LINE is an ordinary, valid edge with non-uniform parameterization, so a read must load the single 4-vertex, 4-edge face (n_faces_total == 1) exactly as encoded, since the entity list contains only the rectangle&#x27;s 4 corner vertices and no additional vertex exists to require any T-junction handling.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-16 (truth-in-labeling audit, Part 1 special case): the original title/description asserted a T-junction vertex at the B-spline&#x27;s exact 3D midpoint; verified absent from the bytes (only the 4 rectangle-corner vertices exist). Retitled to describe the genuine content (asymmetric-knot B-spline edge, no defect). Repair-vs-reclaim decision: reclaimed honestly rather than silently repaired, since a byte-level fix needs its own live-oracle-verified assertions; see `BACKLOG.md` entry added 2026-07-16. Synonyms: &quot;B-spline edge no T-junction&quot;, &quot;asymmetric knot vector single curved edge&quot;, &quot;no matching vertex entity&quot;.</p></section>
 <section><h2>Expected validation</h2>

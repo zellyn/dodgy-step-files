@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the cylindrical face&#x27;s boundary intended to include the v=0 axis-collapse edge: since the encoded degenerate edge does not survive translation at all (n_faces_total == 1 with 0 edges), a correct kernel must either construct the degenerate axis-collapse edge correctly from the surface&#x27;s revolution axis, or detect that construction failed and reject the face with a diagnostic naming the malformed boundary — silently falling back to an unbounded cylinder with no wire is not acceptable, since it discards the intended finite face.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed periodic-degenerate seam repair misplaces the apex curve; that method is never invoked, and live-oracle confirms the face&#x27;s entire wire is dropped (0 edges), the same unbounded-surface fallback pattern as Tfa098/Tfa114/Tfa117/Tfa252, not a misplaced-but-present apex curve. **See also**: Tfa098, Tfa114, Tfa117, Tfa252. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;revolution axis edge dropped on load&quot;, &quot;degenerate apex edge unbounded surface fallback&quot;.</p></section>
 <section><h2>Expected validation</h2>

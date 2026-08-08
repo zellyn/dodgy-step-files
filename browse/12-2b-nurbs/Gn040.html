@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: this is a valid degree-3 curve whose endpoints sit at Z=0 while the interior control points pull the curve to a Z=4 peak near its midpoint. A bounding-box computation over such a curve must account for interior extrema, not just its two endpoints -- sampling only the endpoints silently drops the entire Z-extent from any downstream containment or clash check.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a bare B_SPLINE_SURFACE_WITH_KNOTS whose U-direction control points trace a curvature-sign-changing (inflected) profile, standalone in a GEOMETRIC_CURVE_SET with no face. An inflection in a surface&#x27;s curvature is ordinary, well-formed geometry; a kernel should load and represent it faithfully without treating the inflection point itself as an error.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

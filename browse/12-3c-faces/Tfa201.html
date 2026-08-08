@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a 3x3 B-spline control grid with a central control point pulled far out of plane (z=3.5 against a z≈0.2 boundary) produces a purely parametric interior peak with no vertex entity at the peak location — the face&#x27;s actual boundary wire is an ordinary unit square at the surface&#x27;s z≈0.2 perimeter, so the face must load exactly as declared (1 face / 4 edges) with no interior-singularity reclassification of the control-point peak.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed spot-face checking &quot;interior-singularity detection case (case 2, line 246) that would classify this control-point peak as spot-geometry&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;interior control-point peak loads without spot classification&quot;.</p></section>
 <section><h2>Expected validation</h2>

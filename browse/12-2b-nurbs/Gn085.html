@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the surface&#x27;s control net matches a quarter-cylinder profile, but every declared weight is 1.0 instead of the sqrt(2)/2 the middle control point needs to represent an exact circular arc rationally -- with uniform weights the surface is a valid but merely polygonal (non-circular) approximation of the intended profile. A kernel converting or re-basing this surface must propagate the weights exactly as declared; treating a rational surface as effectively non-rational (or silently normalizing its weights) changes the represented shape.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

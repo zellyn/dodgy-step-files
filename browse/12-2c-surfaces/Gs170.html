@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the invalid knot vector, in addition to the trim-across-seam question: the base B_SPLINE_SURFACE_WITH_KNOTS is U-periodic but its U multiplicities (2,2,2,2) sum to 8 against the 5 required for 2 U-direction control points at degree 2. Independent of that, a RECTANGULAR_TRIMMED_SURFACE spanning u in [0.5,2.5] on a periodic base whose stated period is shorter than that window does cross the seam; a kernel handling a trim window wider than or crossing a surface&#x27;s own period must treat the domain as wrapping, not as one continuous non-periodic span -- but here the base knot vector must be rejected first.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

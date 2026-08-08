@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the ADVANCED_FACE&#x27;s concentric inner bounds: even though the outer circle and both inner circular holes (radii 2.0 and 1.0) are each properly closed 2-edge loops, a correct kernel must detect that this three-concentric-wire construction cannot be safely translated and refuse to build the face with a diagnostic, rather than crash during translation — the precise structural trigger among the concentric bounds is not fully isolated, so the check must key on the pattern (multiple concentric closed inner bounds sharing one CIRCLE center) rather than a narrower single-edge defect.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed `FixLoopWire`&#x27;s merge logic collapses concentric circles into one doubled-up wire; that method is never reached (crash occurs first), and unlike Tfa085/Tfa106/Tfa118, all three wires here ARE validly closed — root cause of the crash is not fully isolated in this pass (recorded honestly per `SEGFAULT_CHARACTERIZATION.md` convention rather than guessed). Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14, which flags this crash&#x27;s root cause as needing further isolation.</p></section>
 <section><h2>Expected validation</h2>

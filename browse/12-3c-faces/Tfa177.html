@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the ADVANCED_FACE (not the inner wire specifically, since removing the inner bound entirely still reproduces the crash): the crash&#x27;s true trigger lies elsewhere in this file&#x27;s construction, so a correct kernel must isolate and reject whatever malformed construct is actually responsible with a diagnostic before shape translation, rather than aborting the process — the collapsed-tip triangular inner wire itself is not the cause and must not be blamed by any diagnostic that is emitted.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed as an honest crash-robustness fixture — original claimed pin-face checking produces a specific silent misclassification/undefined-behavior outcome; in reality the process crashes before that method (or any face-repair/small-face-check method) is ever reached. The crash itself is genuine and is retained as the fixture&#x27;s real, verified defect (Expected validation unchanged: `signal(11)/signal(11)`). Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;collapsed-pin-tip crash persists without inner wire&quot;.</p></section>
 <section><h2>Expected validation</h2>

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: a rational degree-2 curve with one extreme weight (150 versus 1 elsewhere) pulls the curve sharply toward that single control point near u=0.5, producing a near-cusp. Curve sampling on a rational curve must derive its density from the weighted (rational) parameterization, not a uniform grid over the nominal parameter range, or the region dominated by the extreme weight will be under-sampled relative to its actual curvature.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

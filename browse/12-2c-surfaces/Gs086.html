@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the trimmed surface: the RECTANGULAR_TRIMMED_SURFACE wraps a CYLINDRICAL_SURFACE with v1=v2=0.0 -- a zero-height V window. The trim encloses no parametric extent in V, so no face with positive area can be built on it. A kernel must say so rather than emit a face with no area.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

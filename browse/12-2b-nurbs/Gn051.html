@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: an offset curve built on a trimmed sub-domain [0.25, 0.75] of a B-spline base, offset 0.5mm along Z, is a well-formed nested construction (offset of trim of B-spline). Sampling code that unwraps nested curve types (offset -&gt; trimmed -&gt; B-spline) must select its sample density from the innermost B-spline&#x27;s actual knot structure after accounting for the trim window, not from a fixed or outer-level default, or interior curvature in the trimmed sub-range can be under-sampled.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a wire entirely interior to an infinite PLANE&#x27;s natural (unbounded) domain must load intact exactly as encoded, matching n_faces_total == 1 — a plain read must use only the wire&#x27;s own declared trim bounds to define the face&#x27;s extent and must never substitute or blend in the surface&#x27;s larger natural domain.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed natural-bound insertion &quot;applies natural-bound logic using the larger surface&#x27;s domain, not the trimmed boundaries, producing inconsistent bounds&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;interior-trimmed wire on infinite plane loads without natural-bound logic&quot;.</p></section>
 <section><h2>Expected validation</h2>

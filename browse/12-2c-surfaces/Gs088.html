@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept, matching OCCT&#x27;s own measured result (a single valid face): the RECTANGULAR_TRIMMED_SURFACE restricts a unit-radius CYLINDRICAL_SURFACE to u,v in [0,1] radians/mm, a window far short of the cylinder&#x27;s 2*pi seam, so there is no periodic-wraparound question for this particular trim. A kernel should build the ordinary partial-cylinder face directly from the declared bounds. Note this file is one where an independent meshing tool reports a rejection on the same input even though the loader accepts it -- a kernel author porting behavior from multiple tools should surface that disagreement as a diagnostic rather than silently trusting only one verdict.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>FLAG -- title/description contradict the bytes, and the file crashes OCCT (measured occt=signal(11)): the closure edge&#x27;s LINE entity, `#40=LINE(&#x27;&#x27;,#30,#30);`, passes a CARTESIAN_POINT (#30) as its second parameter, where the LINE entity&#x27;s EXPRESS definition requires a VECTOR. This type mismatch -- not axis-alignment of the torus&#x27;s singularity detection -- is the file&#x27;s actual defect. Actual kernel behavior: reject at parse time -- a kernel must validate that each entity&#x27;s references resolve to an instance of the required type before using it, and refuse to build (or dereference as a VECTOR) a reference that actually points to a CARTESIAN_POINT, rather than read past the type mismatch into whatever memory layout results.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

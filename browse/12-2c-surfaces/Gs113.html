@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Accept: a B_SPLINE_SURFACE_WITH_KNOTS spans the ordinary unit square [0,1]x[0,1]; the file&#x27;s own comment describes the face boundary&#x27;s parametric traversal as running v from 1.0 down to 0.0 along one edge. A kernel deriving iso-curve sweeps or bounding boxes from a boundary loop must normalize any such traversal to (min, max) before generating sweeps -- treating a boundary that is walked in decreasing-parameter order as though it defined an inverted domain would corrupt orientation-dependent downstream operations (offset direction, mesh normal sense).</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

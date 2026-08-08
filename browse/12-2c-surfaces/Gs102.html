@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Accept: the file declares a genuine BEZIER_SURFACE (degree 2x2, 3x3 poles); representing any Bezier surface internally as a single-span B-spline is a lossless, exact re-encoding (a Bezier patch is definitionally a B-spline with no interior knots). A kernel performing the same conversion must reproduce numerically identical control points and weights from the Bezier data, not a re-fit or re-sampled approximation.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

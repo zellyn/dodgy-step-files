@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: a B_SPLINE_SURFACE_WITH_KNOTS (degree 3x2, 4x3 net) can be trimmed by a 3-edge (triangular) boundary just as validly as by a 4-edge rectangular one -- a face boundary&#x27;s edge count is independent of the underlying surface&#x27;s parametric rectangle. A kernel must not assume a B-spline face always has a 4-edge outer loop; it should derive topology purely from the EDGE_LOOP/FACE_OUTER_BOUND structure, not from the surface&#x27;s own dimensionality.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

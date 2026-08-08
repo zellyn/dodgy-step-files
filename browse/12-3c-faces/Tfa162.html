@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a PLANE face marked with reversed (.F.) orientation whose single quad wire is ordered CCW rather than CW must load intact exactly as encoded, matching n_faces_total == 1 — a plain read must honor the explicit orientation flag as given and must never re-derive or override it from a signed-area or bounding-box computation on the wire&#x27;s vertex ordering.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed spot-face checking &quot;calculates bounding-box area and applies absolute-value masking, hiding the orientation error&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;reversed-orientation CCW quad face loads without spot-area masking&quot;.</p></section>
 <section><h2>Expected validation</h2>

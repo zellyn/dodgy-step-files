@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic: the curve entity&#x27;s parameter list does not match its declared arity (an extra boolean-like token appears where the control-points list is expected in the constructor call), so any strict reader must fail to construct the curve rather than misinterpret a later parameter&#x27;s type. A kernel must validate an entity&#x27;s parameter count and per-position types against its EXPRESS definition before using any of its values, and reject with a diagnostic naming the entity and the mismatched position -- not read past a misaligned argument list, which is what makes this fixture crash outright rather than fail cleanly.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

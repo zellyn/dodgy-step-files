@@ -85,6 +85,7 @@ Everything is in the clone: fixtures, catalog, validator, browse pages. The `bro
 - **Expected kernel behavior**: accept / reject-with-error / heal-to-Y (with diagnostic codes where applicable).
 - **Notes**: cross-references and validation observations (segfault characterizations, weak-vs-strong manifestation, etc.).
 - **Expected validation**: codified validate2 oracle output, e.g. `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`. CI compares live output to this spec and emits `DRIFT` on mismatch, so any future kernel update that changes a fixture's behavior is automatically caught.
+  - **The two `occt=` values are not independent measurements — do not read a matching pair as corroboration.** They are one reader preference, `read.surfacecurve.mode` 0 vs 3 (prefer the file's pcurves vs ignore them and recompute), and they are **identical for all 2529 fixtures**. That knob is invisible at token granularity: the token reports `n_roots`, which the setting does not move. It is not invisible at *count* granularity — `Gp177` goes from 6 faces to 1 — but the token cannot express that. Treat `occt=` as a single measurement printed twice; the honest second signal is a real healing pass (`ShapeFix`), which is not yet wired in. Tracked in `BACKLOG.md` §(G).
 
 ## What's in the corpus
 

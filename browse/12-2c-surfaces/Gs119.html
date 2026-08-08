@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Reject with a diagnostic naming the degenerate cone: the CONICAL_SURFACE has reference radius 0.0. A cone with zero reference radius collapses its entire v=0 circle to the apex point regardless of sign, so a kernel testing for this degeneracy must compare the radius against zero directly (not merely check radius &gt; 0, which a negative-radius encoding could also fail) and reject building a normal conic face from a zero-radius definition.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

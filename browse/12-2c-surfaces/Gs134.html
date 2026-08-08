@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>FLAG -- title/description contradict the bytes, and the file crashes OCCT (measured occt=signal(11)): the closure edge&#x27;s LINE entity is self-referential -- `#70=LINE(&#x27;&#x27;,#60,#70);` names itself (#70) as its own second parameter, where a VECTOR entity is required. Separately, `#50=B_SPLINE_SURFACE_WITH_KNOTS(...)` is given only 9 top-level arguments where the entity requires 13 (surface_form and knot_spec are missing entirely, and the multiplicity/knot lists are merged into the wrong shape). Neither defect has anything to do with &#x27;UVFromIso bisection oscillation&#x27;. Actual kernel behavior: reject at parse time -- a kernel must detect a self-referential entity definition (an entity naming itself, directly or transitively, as one of its own constructor arguments) and refuse to resolve it rather than dereference a still-under-construction record, and must separately reject a B_SPLINE_SURFACE_WITH_KNOTS whose argument count does not match its EXPRESS definition. Both are load-time schema violations that a correct kernel must never let reach geometric evaluation, let alone crash on.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

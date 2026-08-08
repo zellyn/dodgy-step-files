@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept and heal: the curve is periodic with an interior knot at t=0.5 of multiplicity 2, equal to its degree -- a legal C0 join, not a structural defect. A continuity-upgrade repair on a periodic curve must re-anchor the curve&#x27;s parametric origin correctly if the repair shifts where t=0 maps to on the closed curve; failing to re-anchor after such a repair can leave the curve&#x27;s stored origin inconsistent with its actual start point.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

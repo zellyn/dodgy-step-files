@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic or heal: the surface&#x27;s entire first U-row of control points (U=0) coalesces to the single point (0,0,0) -- a valid but singular boundary, distinct from its normal, non-degenerate interior poles. A kernel scanning for degenerate/pinched boundary rows on a B-spline surface must check every boundary row (first and last in each direction), not only interior poles, or a genuine boundary-row singularity like this one will go undetected and the resulting face will carry an unrecorded degenerate edge.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

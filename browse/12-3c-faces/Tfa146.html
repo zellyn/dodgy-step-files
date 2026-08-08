@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a planar rectangular face with correct CCW winding in 3D must load exactly as encoded, tier-3 load == ok, with no orientation flip applied — a face&#x27;s true winding is determined by its 3D geometry, and any parametric (u,v)-domain re-derivation of that winding must never override the 3D-verified orientation.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed orientation repair&#x27;s parametric-winding test might misclassify this correctly-wound face; that method is never invoked on an ordinary read, so no winding test (correct or mistaken) is ever run. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;correctly-wound rectangular face loads as ordinary face&quot;, &quot;orientation test never invoked on ordinary read&quot;.</p></section>
 <section><h2>Expected validation</h2>

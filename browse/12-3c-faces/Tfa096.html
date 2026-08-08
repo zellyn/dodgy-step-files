@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the FACE_OUTER_BOUND whose four EDGE_CURVEs all share the same start and end vertex at (5,5,1): a wire collapsed entirely to one point encodes no usable boundary, so a correct kernel must detect the all-coincident-vertex wire before building the face and either drop just that bound with a diagnostic (producing a wireless face, as this fixture&#x27;s read does, while the other 5 cube faces stay intact) or reject the whole face outright — never leave an orientation on a face whose boundary was silently discarded without reporting it.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed orientation repair silently skips this degenerate outer wire, leaving orientation undefined on an otherwise-intact face; live-oracle shows the reader instead drops the wire&#x27;s bound entirely (0 edges on that face) — the same unbounded-surface-fallback pattern already documented for Tfa098/Tfa114/Tfa115/Tfa117/Tfa252, not an orientation-fixing failure. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. **See also**: Tfa098, Tfa114, Tfa115, Tfa117, Tfa252 (same unbounded-surface-fallback family). Synonyms: &quot;all-zero-length-edge wire dropped entirely, not silently skipped&quot;, &quot;collapsed-to-point outer bound produces 0-edge face&quot;.</p></section>
 <section><h2>Expected validation</h2>

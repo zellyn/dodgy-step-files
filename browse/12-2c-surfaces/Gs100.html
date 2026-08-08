@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Accept: a B_SPLINE_SURFACE_WITH_KNOTS restricted by a RECTANGULAR_TRIMMED_SURFACE to u,v in [0.25,0.75]. A kernel that needs to subdivide or re-derive this surface must apply the split within the trimmed domain and clip the result back to [0.25,0.75]x[0.25,0.75] -- it must not operate on and return patches from the untrimmed base surface&#x27;s full [0,1] domain.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

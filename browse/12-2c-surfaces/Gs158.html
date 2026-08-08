@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the null face geometry: the ADVANCED_FACE&#x27;s face_geometry reference is the STEP null token ($), so the face has no surface at all to build from. A kernel must reject a face whose surface reference is null rather than silently drop it from the shell or propagate a null geometry pointer into later BRep operations.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

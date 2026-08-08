@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a 10x10 face&#x27;s large (2x2, area 4.0) and tiny (0.05x0.05, area 0.0025) inner holes are both legally-declared boundaries regardless of their relative sizes, so a read must load all 3 wires (outer plus both 4-edge inner holes) present and unmodified, without removing the small hole or touching the large hole&#x27;s vertex references.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed small-area-wire repair removes the tiny hole and corrupts the large hole&#x27;s vertex references in the process; that method is never invoked on an ordinary read, so neither removal nor corruption ever occurs — both holes load intact. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;large and tiny inner holes both load unremoved&quot;, &quot;small-area wire removal never invoked, no vertex corruption&quot;.</p></section>
 <section><h2>Expected validation</h2>

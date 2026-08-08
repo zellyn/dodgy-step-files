@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept and heal: a periodic degree-2 curve&#x27;s own period is 1.0, and a projection or parameter-lookup routine can validly return exactly 1.0 (the period value) for a point at the seam, rather than the equivalent 0.0. A kernel must treat a returned parameter equal to the full period as equivalent to 0.0 on a periodic curve (wrap it), especially when building an EDGE_CURVE whose vertices are declared at parameters 0 and 1 across the same seam -- failing to wrap can make the edge&#x27;s two endpoint parameters look distinct when they in fact reference the same physical point.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

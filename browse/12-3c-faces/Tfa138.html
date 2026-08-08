@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the boundary wire on this SURFACE_OF_REVOLUTION: a profile curve running radially (perpendicular to the rotation axis) produces a degenerate disk rather than the surface the entity&#x27;s name implies, and combined with a boundary wire whose vertices sit only ~0.01-0.02mm apart near the disk&#x27;s parametric singularity at its center, the construction must be rejected before shape translation rather than allowed to crash the process.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixAddNaturalBound incorrectly constructs a natural boundary at an assumed seam-closure point on a surface flagged u_closed but not actually closed; that method is never reached (crash occurs first). The real, verified structural anomaly is different from the title&#x27;s claim: the SURFACE_OF_REVOLUTION&#x27;s profile curve is radial (perpendicular to the rotation axis), producing a disk rather than a cylinder. Root cause of the crash itself is NOT fully isolated in this pass. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;radial-profile revolution surface crashes reader&quot;, &quot;disk surface mislabeled as cylinder crashes on tiny boundary&quot;.</p></section>
 <section><h2>Expected validation</h2>

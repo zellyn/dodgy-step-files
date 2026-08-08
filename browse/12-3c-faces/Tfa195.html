@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a face whose 8-edge boundary mixes 4 forward and 4 reversed edge orientations is ordinary, well-formed STEP as long as the sequence of oriented edges traces a single closed loop — which it does here on both the B-spline approximation and its planar equivalent — so the face must load exactly as declared (1 face / 8 edges / 2 wires) with no orientation-repair pass triggered by the mix of senses.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed orientation repair &quot;winding tests yield opposite results for equivalent topology between the planar and B-spline representations due to numerical drift in normal computation&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;mixed-orientation B-spline boundary loads without winding-test drift&quot;.</p></section>
 <section><h2>Expected validation</h2>

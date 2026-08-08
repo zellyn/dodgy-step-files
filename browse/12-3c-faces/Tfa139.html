@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the internal hole loop: a tiny planar face whose outer wire alone loads cleanly but which crashes as soon as the internal pin-shaped hole loop is added must have that loop rejected during shape translation before the crash — build the face from the outer wire only, with a diagnostic identifying the dropped loop, rather than aborting the process.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed spot-face checking classifies the face as a degenerate &#x27;spot&#x27; without accounting for the internal pin-loop feature; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;multi-bound face crashes reader, outer-alone loads clean&quot;, &quot;internal pin-loop hole crashes reader, outer-alone loads clean&quot;.</p></section>
 <section><h2>Expected validation</h2>

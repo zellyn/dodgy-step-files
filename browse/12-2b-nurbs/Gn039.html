@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject with a diagnostic naming the interior knot: the wired defect edge is a degree-2 curve whose interior knot at t=0.5 carries multiplicity 3 (=degree+1), and the two control points flanking that knot are not coincident (a 1.5-unit positional jump) -- an interior knot at full multiplicity is only meaningful as a genuine split point when the flanking geometry still meets in position; here it does not, so the curve is positionally discontinuous (C-1) and cannot be evaluated as a single continuous edge. A kernel must reject and name the offending knot rather than silently building an edge over the gap.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

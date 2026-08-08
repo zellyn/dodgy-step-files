@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the ADVANCED_FACE on the SURFACE_OF_REVOLUTION whose 4-edge EDGE_LOOP reuses the same profile edge twice — once forward, once reversed — to close the periodic seam: before translating, detect that the same edge entity appears twice in one loop with opposite senses and refuse to build the face from it — a load must never crash; since the reused edge is structurally load-bearing for the loop&#x27;s closure, the whole face (and the read, if dropping it breaks the shell) must be rejected with the diagnostic instead of aborting the process.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed as an honest crash-robustness fixture — original claimed periodic-degenerate seam repair produces a specific silent misclassification/undefined-behavior outcome; in reality the process crashes before that method (or any face-repair/small-face-check method) is ever reached. The crash itself is genuine and is retained as the fixture&#x27;s real, verified defect (Expected validation unchanged: `signal(11)/signal(11)`). Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;surface-of-revolution degenerate-seam crash&quot;.</p></section>
 <section><h2>Expected validation</h2>

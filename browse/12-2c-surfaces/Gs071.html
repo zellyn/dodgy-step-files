@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a SURFACE_OF_REVOLUTION whose generator passes through the rotation axis, producing a degenerate apex where every u maps to the same 3D point at v=0 -- the ordinary cone-apex degeneracy of a revolved surface. A kernel should collapse that boundary to a single degenerate vertex and, when redistributing parameter samples along the collapsed edge, weight by arc length along the non-degenerate direction rather than by a plain arithmetic mean of parameter values, so samples stay evenly spaced in 3D rather than only in parameter space.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

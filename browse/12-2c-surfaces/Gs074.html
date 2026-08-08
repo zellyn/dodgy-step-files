@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a bare PLANE entity in a GEOMETRIC_CURVE_SET, wired to no face. Planes have no interior or boundary singularities by construction -- constant normal everywhere. A kernel should treat every planar surface as singularity-free regardless of how large a parametric window is later used to bound it.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept if the trimmed-surface construction can be evaluated: the ADVANCED_FACE&#x27;s geometry is a RECTANGULAR_TRIMMED_SURFACE wrapping a TOROIDAL_SURFACE, bounded by an explicit 4-edge loop whose edges already carry PCURVEs expressed in the trimmed surface&#x27;s own parameter space -- a valid, if unusual, schema-legal construction. Evaluate those pcurves against the trimmed surface directly (not the untrimmed torus) and build the face from them; if the trimmed-surface wrapper cannot be evaluated, reject the face with a diagnostic naming it, but never crash on a face whose geometry is a RECTANGULAR_TRIMMED_SURFACE around a periodic quadric basis.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

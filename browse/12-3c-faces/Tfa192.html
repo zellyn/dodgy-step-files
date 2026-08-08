@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: three differently-sized pin-shaped inner wires ((0.1x0.01), (0.2x0.005), (0.1x0.002)) projecting from the face&#x27;s center are all independently valid inner loops that a reader must load in full — there is no reason for any of them to be dropped in favor of the largest, since each is declared as its own complete, closed wire in the same face.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed pin-face checking &quot;reports only the largest pin, missing the two smaller ones due to early-exit logic that doesn&#x27;t aggregate all singularities&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;three pin-shaped inner wires load without early-exit aggregation failure&quot;.</p></section>
 <section><h2>Expected validation</h2>

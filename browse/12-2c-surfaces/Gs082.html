@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: the 3x3 biquadratic B-spline has a sharp central peak (its middle pole rises to Z=5.0 against near-zero corner poles), producing a small region of high curvature. A kernel doing point-inversion or closest-point search on this surface should use a step size that shrinks smoothly near high curvature rather than one that collapses to zero before convergence -- the peaked surface itself is valid geometry that should load and build a face.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

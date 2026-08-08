@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a CONICAL_SURFACE (half-angle 0.52 rad) whose single boundary wire spans only theta 0 to pi/2 at z=5.0, leaving the apex uncovered, is a valid partial-boundary face as encoded — load the 3-edge wire and cone parameters unaltered and do not attempt to synthesize any additional boundary at or near the uncovered apex region.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixAddNaturalBound&#x27;s natural-bound construction hits an apex pcurve singularity; that method is never invoked on an ordinary read, so no boundary construction (singular or otherwise) is ever attempted. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;cone with apex-in-domain partial boundary loads intact&quot;, &quot;natural bound construction never invoked near apex&quot;.</p></section>
 <section><h2>Expected validation</h2>

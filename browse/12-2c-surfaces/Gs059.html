@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Reject with a diagnostic naming the invalid knot vector: the B_SPLINE_SURFACE_WITH_KNOTS declares 8 U-direction control points at degree 3 but its U multiplicities (4,1,1,1,1) sum to 8, not the 12 required by n_poles+degree+1 for a valid clamped knot vector -- the surface is not even clamped at its own U-max end. A kernel must refuse to build a face from this malformed knot vector (or repair it only if it can infer the one clearly-intended correction) rather than silently accept it and then separately debate whether the surface closes in U.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

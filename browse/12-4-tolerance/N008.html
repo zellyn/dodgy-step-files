@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>N008 — Vertex tolerance inflation by repeated self-intersection healing cascades</title>
+  <title>N008 — Inner-hole wire has two near-parallel B-spline edges sharing only their common endpoint (no crossing); five inert GLOBAL uncertainty entries labelled as a healing cascade</title>
   <link rel="stylesheet" href="../assets/style.css">
 </head>
 
@@ -12,10 +12,10 @@
 <a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.4 Tolerance &amp; numerical precision</a> <span class="sep">/</span> <span class="current">N008</span>
 </nav>
 <header class="title-bar">
-<h1>N008 <span class="sep">—</span> <span class="entry-title">Vertex tolerance inflation by repeated self-intersection healing cascades</span></h1>
+<h1>N008 <span class="sep">—</span> <span class="entry-title">Inner-hole wire has two near-parallel B-spline edges sharing only their common endpoint (no crossing); five inert GLOBAL uncertainty entries labelled as a healing cascade</span></h1>
 <p class="category">§12.4 (sub-class: vertex tolerance bumps / healing cascade)</p>
 <p class="tag-pills">
-<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+<a class="tag tag-units" href="../by-tag/units/index.html">units</a>
 </p>
 </header>
 <main>
@@ -27,13 +27,13 @@
 <li>OCCT shape-healing user guide</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>A self-intersection-resolution pass modifies a pcurve and bumps the affected vertex&#x27;s tolerance to encompass both the original and the new position. Successive rounds of this pass grow the vertex tolerance ball geometrically (e.g. 1e-7 → 1e-3 in a few iterations), eventually masking real gaps in modelled threads or fillets. The user-visible symptom is a &quot;healed&quot; model whose vertex tolerance balls have swallowed adjacent feature geometry.</p></section>
+<p>A closed-shell cube whose top face has an inner-loop hole bounded by two B-spline edges (`curveA`, `curveB`) that both end at a shared vertex and stay within ~2.5e-4mm of each other along their length, but do not cross — a genuine near-tangent, non-intersecting pair. The file separately carries five `UNCERTAINTY_MEASURE_WITH_UNIT` entities (values `1.0E-7` through `1.0E-3`) inside one `GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT`, with labels suggesting successive healing passes; these are static file-level metadata, not evidence of any actual tolerance-inflation process (no self-intersection exists for a healer to act on, and OCCT reads all 54 vertices at the default `1e-7` tolerance, aside from one unrelated `10.0001` outlier).</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>Face with pcurve self-intersecting within the kernel&#x27;s confusion tolerance. Apply self-intersection repair repeatedly. Track vertex tolerance per pass.</p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>cap tolerance inflation, warn when a single healing pass inflates a vertex tolerance beyond a stated multiple of the file-level uncertainty measure, or refuse to heal further once tolerance balls overlap adjacent features. Carrying a &quot;healed&quot; provenance flag on inflated tolerances helps downstream consumers reject silent loss of fidelity.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;vertex tolerance grows with each healing pass&quot;, &quot;tolerance balloons over time&quot;, &quot;tolerance ball swallows neighbor feature after multiple heals&quot;, &quot;self-intersection healing keeps inflating tolerance&quot;, &quot;vertex range increases monotonically across healers&quot;.</p></section>
+<p>Corrected 2026-08-07 (title-vs-bytes audit): retitled/redescribed — original claimed a self-intersection-triggered, multi-pass vertex-tolerance-inflation cascade; direct curve evaluation shows the two inner-loop edges never cross (they share only their common endpoint), and the five `UNCERTAINTY_MEASURE_WITH_UNIT` entries are inert file-level metadata with suggestive labels, not an executed healing sequence — no such per-vertex cascade exists in STEP/AP214, which has no per-vertex tolerance entity. Synonyms: &quot;near-tangent non-crossing B-spline pair sharing an endpoint&quot;, &quot;five global uncertainty entries with pass-labelled names but no functional cascade&quot;, &quot;tolerance-cascade labels are decorative, not computed&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(32) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

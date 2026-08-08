@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: a rational surface with one control point&#x27;s U-weight of 10,000 against 1.0 elsewhere is an extreme but legal weight ratio -- the resulting surface is heavily biased toward that one pole. A kernel evaluating or converting this surface should be aware that such an extreme ratio is numerically ill-conditioned (small input perturbations near that pole produce disproportionately large positional changes) and may warrant re-normalizing the weight range, but the surface itself is not structurally invalid and should not be rejected outright.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

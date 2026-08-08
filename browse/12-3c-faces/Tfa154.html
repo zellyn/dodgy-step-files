@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a face whose declared wire set includes both a closed outer loop and a separate open chain of edges (not bridged into the outer cycle) must load both wire fragments intact, matching the 2-wire-per-face count and load == ok — a plain read must never assume every edge in a face&#x27;s bound forms one single topological cycle; that assumption, and any repair or rejection based on it, belongs only to an explicitly requested wire-connectivity check, not an ordinary read.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed twisted-face checking&#x27;s single-cycle assumption breaks on this disconnected wire region; that checker is never invoked on an ordinary read, so no assumption is ever tested or broken. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;disconnected wire region loads intact&quot;, &quot;twist check never invoked on disconnected chain&quot;.</p></section>
 <section><h2>Expected validation</h2>

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: the curve&#x27;s fourth control point sits only 1.0e-7 off the plane defined by its other three poles -- at or below common geometric tolerance, so this is a legitimately near-planar (and reasonably treated as planar) curve, not a genuinely warped one. A planarity check&#x27;s tolerance comparison should be inclusive at the boundary and documented, so files at exactly the tolerance value get a deterministic, unsurprising answer instead of being at the mercy of a strict-vs-inclusive comparison choice.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

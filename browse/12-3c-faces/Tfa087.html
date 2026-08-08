@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>Accept: a 100x1 rectangular face sits at, not beyond, the aspect-ratio value used to describe strip-like geometry, and STEP places no ceiling on face aspect ratio, so a read must load the thin rectangle as an ordinary face among the block&#x27;s 6 faces (n_faces_total == 6) without flagging or altering it.</p></section>
 <section><h2>Notes</h2>
 <p>Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed CheckStripEdges misclassifies this exact-threshold face due to a non-strict comparison; that checker is never invoked on an ordinary read, so no strip classification is ever produced. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;100:1 aspect ratio face loads as ordinary face&quot;, &quot;strip detection never invoked at threshold boundary&quot;.</p></section>
 <section><h2>Expected validation</h2>

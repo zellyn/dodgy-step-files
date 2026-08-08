@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Accept: the face&#x27;s trim places its southern boundary exactly at the sphere&#x27;s south pole (v=-pi/2), the ordinary degenerate-pole boundary any polar spherical trim produces. A kernel must recognize and model that boundary as a degenerate point -- not a normal edge with a well-defined tangent everywhere -- so downstream sampling or meshing does not silently skip or mis-place the pole.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized from earlier wave; backfilled from fixture comment</p></section>
 <section><h2>Expected validation</h2>

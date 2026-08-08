@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: investigate / reject: geometric degeneracy</p></section>
+<p>Reject with a diagnostic naming the degenerate control net: the B_SPLINE_SURFACE_WITH_KNOTS has all four control points at exactly (0.0, 0.0, 0.0) -- the knot vector and pole count are syntactically valid, but the surface it defines is a single 3D point everywhere, not a two-dimensional patch. A kernel must detect this from the actual control-point spread (not merely the parametric extent, which looks like an ordinary [0,1]x[0,1] domain) and reject building a face with zero real extent in any direction.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: Gs115, Gs116, Gs117, Gs118. synthesized from earlier wave; backfilled from fixture comment- **Model impact**: Surface and trimming geometry</p></section>
 <section><h2>Expected validation</h2>

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>accept: an offset curve (distance 1.5, direction +Z) built on a degree-3, 8-pole base is a legal nested construction. Curve sampling for an offset curve must account for the offset&#x27;s effect on local curvature (offsetting can increase or decrease curvature depending on direction relative to the base&#x27;s concavity), not simply inherit the base curve&#x27;s sample density, or the offset&#x27;s own curvature features can be missed.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

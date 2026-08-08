@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject-with-diagnostic or heal: a surface with U-degree 5 and V-degree 1 is a legal, if extreme, asymmetric-degree combination (U mults (6,1,6) sum to 13, V mults (2,2) sum to 4 -- both internally consistent). Bezier-basis conversion must size each direction&#x27;s patches from that direction&#x27;s own degree; assuming both directions use comparable (or the same) degree produces incompatible patch dimensions when the two degrees are this far apart.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
