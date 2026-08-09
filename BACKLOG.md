@@ -2620,6 +2620,26 @@ ill-typed, so it tested nothing. With a synthesised DIRECTION, three of the four
 Same failure shape as the inline-entity mistake above -- **an invalid instrument returns
 a negative that looks like a finding.**
 
+#### (M.9) Two prose sub-populations closed; both smaller than filed. 2026-08-09
+
+**no-face `heal` cohort -- DONE.** Filed as a ~209-entry wording pass. Measured: of the 225
+no-face entries in the 288-entry `heal -> silent-accept` cohort, **only 16** lacked
+meaningful prose. All 16 were wire/edge fixtures rooted in a `GEOMETRIC_CURVE_SET` with no
+face and no shell; their prose now states that an empty result is CORRECT and not the
+defect, that `heal` means the wire-level condition must be detected and reported, and
+names that condition per fixture. Shipped 164ae0d7.
+
+**"faces but no scaffold" -- NOTHING TO DO.** Filed as ~17 fixtures needing per-entry
+reading. Measured: 47 empty-result fixtures have faces but lack a
+SHAPE_DEFINITION_REPRESENTATION root and/or a solid wrapper -- and **all 47 already carry
+meaningful prose**. No action. Do not re-open.
+
+**The pattern, three for three today.** Crash specs: 118 of 131 already precise, 13 needed
+work. No-face cohort: 209 of 225 already precise, 16 needed work. Faces-without-scaffold:
+47 of 47 already precise, 0 needed work. **Every prose backlog item this session was
+filed larger than it actually was.** Measure the sub-population before planning a mass
+edit -- and treat a filed estimate as a hypothesis, not a work order.
+
 #### (M.8) PROPOSAL for maintainer: structural-oracle v3 `SLOT_TYPE`. 2026-08-09
 
 Not implemented -- deliberately. Adding an oracle code changes `summary["structural"]`
