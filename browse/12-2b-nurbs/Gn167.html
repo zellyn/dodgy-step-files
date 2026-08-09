@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>every control point of this degree-4 curve lies in the XY plane, so a planarity test that inspects only control points answers &quot;planar&quot;, while the curve as evaluated in its context deviates in Z. Coplanar poles are necessary for a planar curve but not sufficient to conclude it in use: confirm planarity by sampling the curve as it is actually evaluated. A test that reads the control net alone gives a confident wrong answer, which is worse than declining to decide.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

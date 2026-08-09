@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: detect and correct the issue; reject: if precondition unrecoverable</p></section>
+<p>a rational B-spline surface declares a U-period while one weight in the wrapped pole row is 0.8 where the row it wraps onto carries 1.0. Treating a surface as periodic requires that the wrapped poles AND their weights be the same data as the row they close onto. A kernel must verify that before honouring the periodic flag, and reconcile or reject the surface when they disagree — a surface periodic in position but not in weight is not periodic, and evaluating it across the seam gives two answers for one point.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer</p></section>
 <section><h2>Expected validation</h2>

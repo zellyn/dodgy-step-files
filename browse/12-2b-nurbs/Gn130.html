@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: detect and correct the issue; reject: if precondition unrecoverable</p></section>
+<p>the last two poles of the U-direction sit at (4,4,0) and (4.01,4.01,0), so the final segment collapses to near-zero extent under non-uniform knots. When splitting a curve into Bezier segments, a segment whose poles collapse must be detected and either merged into its neighbour or reported. Emitting a zero-extent patch defers the failure to whatever consumes it, where the cause is no longer visible.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer</p></section>
 <section><h2>Expected validation</h2>

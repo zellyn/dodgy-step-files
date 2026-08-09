@@ -23502,7 +23502,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Category**: §12.2b NURBS
 - **Sources**: OCCT/see OCCT/v3
 - **Description**: Geom_BSplineSurface periodic-U-closure weight-extraction
-- **Expected kernel behavior**: heal: detect and correct the issue; reject: if precondition unrecoverable
+- **Expected kernel behavior**: a rational B-spline surface declares a U-period while one weight in the wrapped pole row is 0.8 where the row it wraps onto carries 1.0. Treating a surface as periodic requires that the wrapped poles AND their weights be the same data as the row they close onto. A kernel must verify that before honouring the periodic flag, and reconcile or reject the surface when they disagree — a surface periodic in position but not in weight is not periodic, and evaluating it across the seam gives two answers for one point.
 - **Notes**: synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer
 - **Model impact**: Construct B-spline surface with U-periodic knot vector (period 2π), 4x3 poles, rational (weights = [1,1,1,1,1,1,1,1,1,1,1,1]). One weight in wrapped pole row = 0.8. Call IUPeriodic(); ShapeAnalysis_Su
 - **Fixture path**: step-examples/12-2b-nurbs/Gn129.stp
@@ -23513,7 +23513,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Category**: §12.2b NURBS
 - **Sources**: OCCT/see OCCT/v3
 - **Description**: ShapeUpgrade_ConvertCurveToBezier non-uniform-knots tail-degenerate
-- **Expected kernel behavior**: heal: detect and correct the issue; reject: if precondition unrecoverable
+- **Expected kernel behavior**: the last two poles of the U-direction sit at (4,4,0) and (4.01,4.01,0), so the final segment collapses to near-zero extent under non-uniform knots. When splitting a curve into Bezier segments, a segment whose poles collapse must be detected and either merged into its neighbour or reported. Emitting a zero-extent patch defers the failure to whatever consumes it, where the cause is no longer visible.
 - **Notes**: synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer
 - **Model impact**: 2D B-spline curve, degree 3, poles = [(0,0), (1,2), (2,1), (3,3), (4,4), (4.01,4.01)]. Knots = [0,0,0,0, 0.2, 0.25, 0.5, 0.75, 1,1,1,1]. Call ShapeUpgrade_ConvertCurveToBezier::Perform(). Expected: De
 - **Fixture path**: step-examples/12-2b-nurbs/Gn130.stp
@@ -23524,7 +23524,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Category**: §12.2b NURBS
 - **Sources**: OCCT/see OCCT/v3
 - **Description**: ShapeFix_ComposeShell.SplitOnEdges B-spline pcurve tangent-mismatch
-- **Expected kernel behavior**: heal: detect and correct the issue; reject: if precondition unrecoverable
+- **Expected kernel behavior**: an edge's 3D curve is smooth across its whole domain while its pcurve carries a full-multiplicity interior knot at u=0.5, making the 2D representation only positionally continuous there. Continuity must be assessed on the pcurve as well as the 3D curve, and proposing a split at that knot is the correct response. The mismatch itself is worth reporting: a 3D curve that is smooth where its pcurve is kinked usually means the two were authored independently and no longer describe the same edge.
 - **Notes**: synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer
 - **Model impact**: B-spline surface (degree 2 in both U, V). Add closed edge: 3D curve (C1 smooth), 2D pcurve with C0 knot at u=0.5. Call ShapeFix_ComposeShell.SplitOnEdges(). Expected: Detect C0 in pcurve, propose spli
 - **Fixture path**: step-examples/12-2b-nurbs/Gn131.stp
@@ -23538,7 +23538,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Category**: §12.2b NURBS
 - **Sources**: OCCT/see OCCT/v3
 - **Description**: Geom_BSplineCurve.IncreaseDegree weight-redistribution asymmetry
-- **Expected kernel behavior**: heal: detect and correct the issue; reject: if precondition unrecoverable
+- **Expected kernel behavior**: a rational curve of degree 2 carries non-unit weights (1, 2, 1.5, 1) with an interior knot. Raising the degree must leave the rational curve pointwise unchanged — new poles and new weights together have to reproduce the original mapping. A kernel must recompute the weights as part of the elevation and verify the result against the original curve, because redistributing poles while treating weights as if they were uniform silently changes the shape the file described.
 - **Notes**: synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer
 - **Model impact**: Curve degree 2, poles = [(0,0,0), (1,2,0), (2,1,0), (3,0,0)], weights = [1, 2, 1.5, 1]. Knots = [0,0,0, 0.5, 1,1,1]. Call IncreaseDegree(3). Expected: New poles/weights preserve curve shape, C2 contin
 - **Fixture path**: step-examples/12-2b-nurbs/Gn132.stp
@@ -23549,7 +23549,7 @@ Periodic B-spline with knot parameters identical at boundaries but control poles
 - **Category**: §12.2b NURBS
 - **Sources**: OCCT/see OCCT/v3
 - **Description**: ShapeAnalysis_Curve.CheckOffsetCurve knot-ratio-overflow degenerate-segment
-- **Expected kernel behavior**: heal: detect and correct the issue; reject: if precondition unrecoverable
+- **Expected kernel behavior**: knots cluster densely in [0,0.01] and [0.5,0.51] with a sparse span between, so ratios between adjacent knot spans differ by orders of magnitude. Any computation that divides by a knot span must be robust to that: guard the ratio against overflow, and treat a span below a threshold as degenerate rather than dividing by it. Extreme but legal knot spacing is a property of real exported files, not a malformed input to be rejected.
 - **Notes**: synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer
 - **Model impact**: B-spline curve, degree 3, 9 poles with geometry concentrated in [0, 0.01] and [0.5, 0.51], sparse [0.01, 0.5]. Knots = [0,0,0,0, 0.01, 0.5, 0.51, 1, 1, 1, 1, 1]. Call CheckOffsetCurve (offset 0.1). Ex
 - **Fixture path**: step-examples/12-2b-nurbs/Gn133.stp
@@ -23825,6 +23825,7 @@ U-boundary poles coalesce; ShapeAnalysis_CheckSmallFace.CheckPin must iterate bo
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### Gn167 — Non-Planar Degree-4 BSpline
 Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis_Curve.IsPlanar pole-sufficiency false positive.
+- **Expected kernel behavior**: every control point of this degree-4 curve lies in the XY plane, so a planarity test that inspects only control points answers "planar", while the curve as evaluated in its context deviates in Z. Coplanar poles are necessary for a planar curve but not sufficient to conclude it in use: confirm planarity by sampling the curve as it is actually evaluated. A test that reads the control net alone gives a confident wrong answer, which is worse than declining to decide.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Gn168 — Interior C0 Discontinuity (Tangent Jump)

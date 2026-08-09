@@ -2626,7 +2626,7 @@ Corpus-wide measurement: **3283 of 3336 entries (98.4 %) carry a meaningful
 `Expected kernel behavior`.** Weakest sections: Tfa 91.7 % (21 missing), Tsh 95.3 % (12),
 N 96.0 % (7), Gn 96.5 % (6), Gp 97.9 % (4), Twi 99.0 % (3).
 
-**Filled 26 of the 53** (27 remain: Tfa 21, Gn 6) -- Gp126/128/129/130. These are the groundable ones: each is a
+**Filled 32 of the 53** (21 remain, ALL Tfa) -- Gp126/128/129/130. These are the groundable ones: each is a
 complete connected planar face with four pcurve-carrying edges that OCCT loads to `empty`,
 i.e. members of the silent-total-loss cohort, so the roadmap's verified finding applies
 directly and per-entry.
@@ -2637,7 +2637,7 @@ recursion; a boundary that is one zero-length edge; a hole boundary whose contai
 disagrees on orientation; a face-boundary collection that must type-filter a stray vertex).
 **Read the generator, not the title** -- the docstrings carry the claim in full.
 
-**Remaining 27 (Tfa 21, Gn 6).** They differ in kind from every prose batch
+**Remaining 21, all in Tfa.** They differ in kind from every prose batch
 shipped today: all are complete wrapped B-reps that LOAD SUCCESSFULLY (`occt=shape(1)`).
 Their claims are BEHAVIOURAL -- what a repair routine should do -- not structural. Nothing
 in the file itself tells you the right answer; you have to know what the titled condition
@@ -2651,7 +2651,7 @@ routine the file may never reach (cf. the RUNTIME-VERIFIED notes added this morn
 prose derived from the title alone risks being wrong as well as empty.
 
 **How to do it properly:** read the fixture and its generator, establish what condition is
-actually encoded, then write the spec. Roughly 27 entries x per-file reading. Tsh, N and Twi are now complete; only Tfa and Gn remain. Titles like
+actually encoded, then write the spec. 21 entries x per-file reading. Tsh, N, Twi and Gn are complete; only Tfa remains. Titles like
 `Tsh211` "Degenerate edge-only wire removal" and `Tfa219` "vertex_tolerance_mismatch" are
 descriptive enough to start from; `Tfa218` "circle_parameter" is not.
 

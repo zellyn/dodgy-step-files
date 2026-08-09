@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: detect and correct the issue; reject: if precondition unrecoverable</p></section>
+<p>an edge&#x27;s 3D curve is smooth across its whole domain while its pcurve carries a full-multiplicity interior knot at u=0.5, making the 2D representation only positionally continuous there. Continuity must be assessed on the pcurve as well as the 3D curve, and proposing a split at that knot is the correct response. The mismatch itself is worth reporting: a 3D curve that is smooth where its pcurve is kinked usually means the two were authored independently and no longer describe the same edge.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer</p></section>
 <section><h2>Expected validation</h2>

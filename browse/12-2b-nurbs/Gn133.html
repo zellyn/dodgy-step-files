@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: detect and correct the issue; reject: if precondition unrecoverable</p></section>
+<p>knots cluster densely in [0,0.01] and [0.5,0.51] with a sparse span between, so ratios between adjacent knot spans differ by orders of magnitude. Any computation that divides by a knot span must be robust to that: guard the ratio against overflow, and treat a span below a threshold as degenerate rather than dividing by it. Extreme but legal knot spacing is a property of real exported files, not a malformed input to be rejected.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer</p></section>
 <section><h2>Expected validation</h2>
