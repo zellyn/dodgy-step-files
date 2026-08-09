@@ -32,9 +32,9 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Accept: a PLANE face with an ordinary 4-edge outer wire plus a 3-edge inner wire whose edges meet at one shared triple-point vertex must load intact as a 2-wire, 7-edge face, matching n_faces_total == 1 — a plain read must never assume a wire can only merge pairs of edges at a shared vertex; three or more edges meeting at one point is valid topology and must be built and kept as encoded, not rejected or split into degenerate sub-faces.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Tfa181. Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed loop-wire repair &quot;handles double-points but not triples, where three edges meet at a single point, producing degenerate sub-faces&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;two-wire face with 3-edge inner loop loads without merge-logic failure&quot;.- **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`</p></section>
+<p>**See also**: Tfa181. Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed loop-wire repair &quot;handles double-points but not triples, where three edges meet at a single point, producing degenerate sub-faces&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;two-wire face with 3-edge inner loop loads without merge-logic failure&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code></code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>n_faces_total == 1</code></li>
 </ul></section>

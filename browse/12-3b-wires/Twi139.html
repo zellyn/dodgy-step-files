@@ -33,9 +33,9 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Reject with a diagnostic naming each unbuildable curve: every one of the wire&#x27;s five LINE entities (#110, #116, #122, #127, #131) has a DIRECTION where Part 21 requires a `#N` reference to a VECTOR, so no edge curve can be constructed at all. A kernel must report the first construction failure per entity rather than dereferencing a null curve; whatever wire-ordering question the pentagon-with-a-reflex-vertex-at-(0.5,0.5) shape was meant to pose is unreachable until every LINE in the file is fixed.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Twi226, Twi229. RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file&#x27;s straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`</p></section>
+<p>**See also**: Twi226, Twi229. RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file&#x27;s straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).</p></section>
 <section><h2>Expected validation</h2>
-<p><code></code></p></section>
+<p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Cross-references</h2>
 <p><a href="Twi226.html">Twi226</a>, <a href="Twi229.html">Twi229</a></p>
 </section>

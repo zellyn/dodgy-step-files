@@ -32,9 +32,9 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Accept: a 3-edge circular-wire approximation on a cylindrical surface (radius 1.0, an unbounded surface type) is completed by the reader&#x27;s ordinary periodic-closure handling into a 5-edge boundary — the same seam/pole-edge synthesis any periodic surface receives, not a dedicated infinite-bounds fallback — so the face must load intact (1 face / 5 edges) with no diagnostic.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Tfa199. Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed missing-seam recovery &quot;activates an infinite-bounds-fallback path with tolerance-based closure estimation when the surface&#x27;s parameter space is unbounded&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;cylindrical surface bounds handled by ordinary periodic closure, not a dedicated fallback path&quot;.- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`</p></section>
+<p>**See also**: Tfa199. Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed missing-seam recovery &quot;activates an infinite-bounds-fallback path with tolerance-based closure estimation when the surface&#x27;s parameter space is unbounded&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;cylindrical surface bounds handled by ordinary periodic closure, not a dedicated fallback path&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code></code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>load == &quot;ok&quot;</code></li>
 <li><code>face[0].surface_type == &quot;cylinder&quot;</code></li>

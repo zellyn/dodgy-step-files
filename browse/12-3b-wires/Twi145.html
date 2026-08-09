@@ -33,9 +33,9 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Reject with a diagnostic naming each unbuildable curve: all four of the wire&#x27;s LINE entities put a DIRECTION where Part 21 requires a `#N` reference to a VECTOR, so no edge curve can be built. Once that is fixed, the file still separately places edge #111&#x27;s end vertex at (10.0,0.0,0.0) while edge #126&#x27;s start vertex #121 sits at (10.1,0.0,0.0) — a real 0.1-unit 3D gap between consecutive edges — which a kernel must detect by comparing actual endpoint coordinates rather than trusting the EDGE_LOOP&#x27;s listed order.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Twi228. RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file&#x27;s straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`</p></section>
+<p>**See also**: Twi228. RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file&#x27;s straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).</p></section>
 <section><h2>Expected validation</h2>
-<p><code></code></p></section>
+<p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Cross-references</h2>
 <p><a href="Twi228.html">Twi228</a></p>
 </section>

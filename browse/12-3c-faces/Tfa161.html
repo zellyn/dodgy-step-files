@@ -32,9 +32,9 @@
 <section><h2>Expected kernel behavior</h2>
 <p>A face with exactly one closed outer wire and no inner wires is ordinary valid input: build it and stop. Having no other wire to classify the outer wire against is not a failure and not grounds for reversing it — the face must load unchanged, with no repair and no diagnostic.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Tfa236. Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed orientation repair &quot;short-circuits when comparing against non-existent inner wires, failing to validate self-orientation&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;single-wire face loads without inner-wire comparison&quot;.- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`</p></section>
+<p>**See also**: Tfa236. Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed orientation repair &quot;short-circuits when comparing against non-existent inner wires, failing to validate self-orientation&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;single-wire face loads without inner-wire comparison&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code></code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>n_faces_total == 1</code></li>
 </ul></section>

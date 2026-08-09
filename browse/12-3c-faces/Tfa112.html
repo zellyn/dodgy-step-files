@@ -32,9 +32,9 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Accept: a degree-3x3 B-spline saddle surface (negative Gaussian curvature) is ordinary, valid geometry whose normal legitimately flips sign across the saddle center, so a read must load all 6 companion faces with their encoded 4 edges each and orientation counts (forward/reversed) intact, without any twist classification.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Tfa080, Tfa092. Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed twisted-face checking misclassifies saddle geometry; that method is never invoked on an ordinary read (per-face oracle check confirms clean load, all edges present). Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;saddle B-spline face loads without twist check&quot;, &quot;hyperbolic paraboloid face valid load&quot;.- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a`</p></section>
+<p>**See also**: Tfa080, Tfa092. Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed twisted-face checking misclassifies saddle geometry; that method is never invoked on an ordinary read (per-face oracle check confirms clean load, all edges present). Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: &quot;saddle B-spline face loads without twist check&quot;, &quot;hyperbolic paraboloid face valid load&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code></code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(27) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>load == &quot;ok&quot;</code></li>
 <li><code>face[0].surface_type == &quot;bspline&quot;</code></li>

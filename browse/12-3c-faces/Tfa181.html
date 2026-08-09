@@ -32,9 +32,9 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Accept: a 5-edge inner wire whose vertices happen to form a pentagon reaching toward (but not past) the outer wire&#x27;s own extent is still a perfectly well-formed, fully-closed loop — its last edge closes back to its first vertex — so a read must build both wires into the one face exactly as declared, with no closure-repair pass needed or expected.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Tfa171. Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed loop-wire repair &quot;closure check fails to detect the tail, producing an invalid wire&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;two-wire face with 5-edge inner loop loads without closure failure&quot;.- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(19) ifc=schema_n/a`</p></section>
+<p>**See also**: Tfa171. Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed — original claimed loop-wire repair &quot;closure check fails to detect the tail, producing an invalid wire&quot;; that method is never invoked on an ordinary read, and the file loads exactly as its own Expected-validation line already stated. Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: &quot;two-wire face with 5-edge inner loop loads without closure failure&quot;.</p></section>
 <section><h2>Expected validation</h2>
-<p><code></code></p></section>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(19) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
 <li><code>load == &quot;ok&quot;</code></li>
 </ul></section>
