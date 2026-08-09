@@ -2620,6 +2620,34 @@ ill-typed, so it tested nothing. With a synthesised DIRECTION, three of the four
 Same failure shape as the inline-entity mistake above -- **an invalid instrument returns
 a negative that looks like a finding.**
 
+#### (M.16) NIST follow-through: 28/28 load clean; the units design question now has byte-level data. 2026-08-09
+
+**Negative result worth keeping: OCCT 7.8.1 loads all 28 real NIST PMI exports cleanly** —
+`accept`, exactly 1 solid each, full face counts (117-664 faces), zero crashes, zero
+silent-empties. Calibration for the whole corpus: the 177 crashers and 106 silent-losses
+are genuinely about MALFORMED input; well-formed real-world files sail through. Useful
+framing when citing the corpus at kernel authors.
+
+**The 11 remaining UNITS_INCONSISTENT flags, classified in bytes** (this is the data for
+the (M.15) design decision):
+
+  - 10 of 11: the second SI-mm unit is never assigned by any GLOBAL_UNIT_ASSIGNED_CONTEXT.
+    Traced in nist_ctc_01_ap242-e1: one mm entity feeds DERIVED_UNIT_ELEMENT (mm²/mm³ for
+    area and volume) plus the inch conversion basis; the other denominates individual PMI
+    tolerance values (`LENGTH_MEASURE_WITH_UNIT(0.2, mm)`, `(-0.2, mm)`, ...). Every such
+    use is SELF-DENOMINATED — the measure names its own unit — so no scale ambiguity
+    exists anywhere.
+  - 1 of 11 (nist_ftc_07_asme1_rd): genuinely TWO unit-assigning contexts — one assigns
+    INCH, a second '3D' context assigns SI-mm. The only real dual-scale candidate in the
+    set, and even this is arguably legitimate dual-context practice.
+
+**Design recommendation this data supports** (still the maintainer's call): scope
+UNITS_INCONSISTENT to units ASSIGNED by a single GLOBAL_UNIT_ASSIGNED_CONTEXT — that is
+what "ambiguous model scale" means. Units referenced only by MEASURE_WITH_UNITs or
+DERIVED_UNIT_ELEMENTs are unambiguous by construction. Under that scoping: 10 of the 11
+clear; real-file FP rate goes 11/28 -> at most 1/28, and the one survivor is the only
+genuinely dual-context file.
+
 #### (M.15) Real-CAD-export validation: 3 proposed checks 0/28 FP; shipped UNITS check had an every-inch-file bug, fixed. 2026-08-09
 
 Fetched the 28 NIST PMI STEP files (real CATIA/NX/Creo/SolidWorks exports; scratchpad
