@@ -29,11 +29,11 @@ These are separated from the general `empty` population on purpose. `empty` alon
 
 ## Cheapest crash defence: five checks, before any geometry
 
-**158 of the 177 crashing fixtures (89%) are refusable before a single geometric entity is constructed** — by five checks that need nothing but the file and a schema table:
+**159 of the 177 crashing fixtures (90%) are refusable before a single geometric entity is constructed** — by five checks that need nothing but the file and a schema table:
 
 1. **Wrong type in a reference slot** (99 fixtures) — the single biggest one. Every attribute that names another entity has a declared type; these files put something else there. `LINE.dir` is declared `VECTOR` and points at a `DIRECTION`; `ADVANCED_FACE.bounds` is declared `FACE_BOUND` and holds a raw `EDGE_LOOP`; `EDGE_LOOP.edge_list` holds an `EDGE_CURVE` with no `ORIENTED_EDGE` wrapper. Repairing the reference makes the file load — verified individually on 26 of the `LINE.dir` cases, so this is cause, not correlation. Checking **all** reference slots rather than one flags 56% of crashers against **0.9%** of non-crashers.
 2. **Wrong argument count** (22 fixtures), detailed below.
-3. **Empty aggregate where the schema requires one or more** (20 fixtures) — `SHELL_BASED_SURFACE_MODEL('',())`, `TESSELLATED_SHELL('',(),$)`, `SURFACE_CURVE('',#33,(),.PCURVE_S1.)`. These crash in the *reference-graph walk*, before conversion is even attempted, which is why no amount of care in the geometry code would catch them. Present in 1.6% of non-crashing fixtures, so it is a strong signal rather than a certainty.
+3. **Empty aggregate where the schema requires one or more** (21 fixtures) — `SHELL_BASED_SURFACE_MODEL('',())`, `TESSELLATED_SHELL('',(),$)`, `SURFACE_CURVE('',#33,(),.PCURVE_S1.)`. These crash in the *reference-graph walk*, before conversion is even attempted, which is why no amount of care in the geometry code would catch them. Present in 1.6% of non-crashing fixtures, so it is a strong signal rather than a certainty.
 4. **Inline entity instance in an argument** (28 fixtures) — `LINE('',#100,VECTOR('',(1,0,0),1.0))`. Entity instances must be top-level `#N=` statements; a typed value inside an argument is only legal for defined types such as measures, never for entity types. The parser cannot bind the inline construct, so the attribute silently becomes null. Present in 0.2% of non-crashing fixtures — each a deliberate fixture of this very construct.
 5. **Wrong argument count on core geometry entities** (10 fixtures) — `VECTOR(#2,100.)`: the name omitted, two arguments where three are declared, so every later value sits in the wrong slot. Same positional mechanism as the B-spline case in check 2, on the small entities.
 
@@ -60,7 +60,7 @@ The reason is positional. These entities are read by slot, so omitting an attrib
 
 Honest caveat: 1 deviating fixture — `Gn169` — does not crash, so the count is a very strong predictor rather than a law. The correlation was measured across the whole corpus; only some of the crashes were traced to a call site individually.
 
-**Test against** — everything either check refuses. Wrong count: `Gn043`, `Gn105`, `Gn107`, `Gn173`, `Gp056`, `Gp058`, `Gp060`, `Gp101`, `Gp102`, `Gp104`, `Gs134`, `Gs137`, `Gs138`, `Tfa141`, `Tfa144`, `Tfa172`, `Tfa174`, `Tfa175`, `Tfa180`, `Tfa187`, `Twi227`, `Twi230`. Wrong type: `Ad015`, `Ad050`, `Ad134`, `Gb002`, `Gb003`, `Gn055`, `Gn058`, `Gp001`, `Gp019`, `Gp042`, `Gp046`, `Gp047`, `Gp049`, `Gp059`, `Gp096`, `Gp098`, `Gp099`, `Gp112`, `Gp113`, `Gp127` …and 116 more. A kernel that refuses all of these at parse time gives up nothing — every one is a file no correct reader should accept.
+**Test against** — everything either check refuses. Wrong count: `Gn043`, `Gn105`, `Gn107`, `Gn173`, `Gp056`, `Gp058`, `Gp060`, `Gp101`, `Gp102`, `Gp104`, `Gs134`, `Gs137`, `Gs138`, `Tfa141`, `Tfa144`, `Tfa172`, `Tfa174`, `Tfa175`, `Tfa180`, `Tfa187`, `Twi227`, `Twi230`. Wrong type: `Ad015`, `Ad050`, `Ad134`, `Gb002`, `Gb003`, `Gn003`, `Gn055`, `Gn058`, `Gp001`, `Gp019`, `Gp042`, `Gp046`, `Gp047`, `Gp049`, `Gp059`, `Gp096`, `Gp098`, `Gp099`, `Gp112`, `Gp113` …and 117 more. A kernel that refuses all of these at parse time gives up nothing — every one is a file no correct reader should accept.
 
 ## What this page does *not* cover
 

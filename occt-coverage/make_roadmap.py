@@ -305,7 +305,11 @@ def crash_refusable(tok: dict[str, str]) -> dict:
     nonempty = ("SHELL_BASED_SURFACE_MODEL", "TESSELLATED_SHELL", "SURFACE_CURVE",
                 "CLOSED_SHELL", "OPEN_SHELL", "EDGE_LOOP", "FACE_OUTER_BOUND",
                 "ADVANCED_FACE", "MANIFOLD_SOLID_BREP", "GEOMETRIC_CURVE_SET",
-                "POLY_LOOP", "VERTEX_LOOP", "TESSELLATED_SOLID", "TRIANGULATED_FACE")
+                "POLY_LOOP", "VERTEX_LOOP", "TESSELLATED_SOLID", "TRIANGULATED_FACE",
+                # B-spline pole/knot lists are schema-mandated non-empty; Gn003's
+                # `B_SPLINE_CURVE_WITH_KNOTS('empty',3,(),...,(),())` crashes the
+                # RW-layer Check. 0 non-crashers carry the pattern.
+                "B_SPLINE_CURVE_WITH_KNOTS", "B_SPLINE_SURFACE_WITH_KNOTS")
     empty_pat = re.compile(r"=\s*(" + "|".join(nonempty) + r")\s*\([^;]*?\(\s*\)", re.I)
     # A DIRECTION or CARTESIAN_POINT with no coordinates at all is the same defect and
     # is never valid. Zero false positives across the corpus, so it costs nothing.

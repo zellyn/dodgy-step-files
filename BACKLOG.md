@@ -2655,6 +2655,12 @@ inside a stratum. Census before declaring a tail heterogeneous.**
 **Shipped as checks 4 and 5 in `crash_refusable`: 158/177 = 89 % refusable at parse
 time** (was 131/177 = 74 %). Roadmap regenerated; 639 tests pass.
 
+**Micro-follow-up on the RW ::Check 3-bucket:** Gn003 is
+`B_SPLINE_CURVE_WITH_KNOTS('empty',3,(),...,(),())` — the empty-aggregate class, with
+B-splines missing from check 3's type list. Added (0 non-crashers carry the pattern):
+**159/177 = 90 %.** Gn004/Gn016 are complex-instance rationals — a LEGAL encoding whose
+crash lies deeper; correctly not claimed by any parse-time check.
+
 **The 19 still unexplained, from the census map:** Gn003/004/016 (RW B-spline ::Check),
 M019/020/022/025 + Pmi049/164 (stripped symbols), P009 (2-coord DIRECTION via VECTOR,
 known), U008/009 (TransferEntity), Tsh052 (MakeAxis1Placement, no arity/inline hit),
