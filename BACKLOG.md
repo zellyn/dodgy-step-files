@@ -2620,6 +2620,44 @@ ill-typed, so it tested nothing. With a synthesised DIRECTION, three of the four
 Same failure shape as the inline-entity mistake above -- **an invalid instrument returns
 a negative that looks like a finding.**
 
+#### (M.12) 25 STEP fixtures have NO oracle baseline — and 7 of them crash. 2026-08-09
+
+Found while measuring field presence across the catalog. **25 STEP entries carry no
+`Expected validation` line at all** (the mesh Me* and import Ip* entries legitimately do
+not — they are graded by other oracles; a first pass wrongly counted 787 because the
+regex alternation `...|M|...` matched the "M" of `Me001`).
+
+    Tfa080 Tfa092 Tfa093 Tfa112 Tfa135 Tfa160 Tfa161 Tfa166 Tfa167 Tfa168 Tfa170 Tfa171
+    Tfa181 Tfa188 Tfa193 Tfa199 Tfa213 Tfa236 Tsh253 Tsh259 Twi139 Twi145 Twi226 Twi228
+    Twi229
+
+All 25 have a fixture on disk; 19 have a generator. Ran the live oracle on every one.
+
+**Consequence 1 — they are invisible to DRIFT.** No recorded baseline means no regression
+detection: OCCT behaviour on these files could change and nothing would notice.
+
+**Consequence 2 — they were invisible to TODAY'S CRASH ANALYSIS.** Seven of them crash
+(Tfa093 Tfa135 Twi139 Twi145 Twi226 Twi228 Twi229). Every crash number published today
+was derived from catalog tokens, so its denominator was **177 when the true population is
+184**. Corrected:
+
+    all 7 are caught by the slot-type check
+    138/184 = 75 % refusable at parse time  (published as 131/177 = 74 %)
+
+The published figure was CONSERVATIVE, not overstated — the finding strengthens slightly.
+But the lesson stands: **a metric derived from a field silently excludes every entry
+missing that field.** I measured the crash population through the catalog and never asked
+what the catalog was failing to mention.
+
+**Not fixed here, deliberately.** `_refresh_expected` only REPLACES an existing
+`Expected validation` line — its regex requires one to be present — so it cannot fill these
+in. Filling them needs (a) a small extension to that tool to insert when absent, and
+(b) care over gmsh values: per the known macOS-vs-CI divergence, borderline counts must be
+sourced from CI, and at least one of these (Tfa171, gmsh `reject: Could not fix wire in
+surface 1`) is exactly that kind of borderline case. Writing locally-measured values would
+risk baking in a platform-specific baseline. Maintainer call on the tool change; the live
+measurements are in /tmp/cad-gap-out if useful.
+
 #### (M.11) SPEC COVERAGE 100 % — 3336/3336. 2026-08-09
 
 Every catalog entry now carries a meaningful `Expected kernel behavior`. Started the day
