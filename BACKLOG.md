@@ -2674,8 +2674,31 @@ LINEs point at appended `VECTOR` entities) and by confirming all four target DIR
 are well-formed 3D directions. The file contains no other `VECTOR`. Whatever reaches
 `MakeVectorWithMagnitude` there is not its LINE directions.
 
-#### Open
-Tsh079/Tsh080/Tsh081 carry 10-12 DIRECTION-referencing LINEs each and still LOAD. The
+#### RESOLVED 2026-08-08 — the 3 survivors are IFC files, and the rule is 100 %, not 95 %
+
+Tsh079/Tsh080/Tsh081 declare **`FILE_SCHEMA(('IFC2X3'))`**. They are IFC, not AP2xx
+STEP, so OCCT's AP214/AP242 entity mapping never runs and the malformed `LINE` is never
+handed to `StepToGeom::MakeVectorWithMagnitude`. Their 10-12 malformed LINEs are all
+genuinely reachable from EDGE_CURVEs inside shells -- reachability was not the
+explanation; the SCHEMA was.
+
+Conditioning on schema turns the correlation into a rule:
+
+    LINE.dir references a DIRECTION, file declares an AP2xx STEP schema : 52/52 CRASH (100 %)
+    LINE.dir references a DIRECTION, file declares an IFC schema        :  1/4  crash
+
+**So site A is deterministic, not probabilistic.** The long-standing "53 of 56 = 95 %"
+figure was diluted by 4 IFC files that cannot reach the call site. For a kernel author
+the statement is now unqualified: *in a STEP AP2xx file, a `LINE` whose direction slot
+references a `DIRECTION` instead of a `VECTOR` segfaults OCCT 7.8.1, every time.*
+
+Method note: the discriminator was in the HEADER, not the DATA section. Three files
+resisted a curve-level, topology-level and reachability-level explanation because the
+difference was `FILE_SCHEMA` on line 4. **When a structural explanation fails on a small
+minority, check what dialect the file declares itself to be.**
+
+#### Open (remaining)
+The
 2D-pcurve-vs-3D-curve split does not explain them (used as a 2D pcurve: 4/4 crash; only
 as a 3D curve: 49/52 = 94.2% crash). Whatever spares those three is unidentified, and it
 is the remaining hole in an otherwise settled mechanism.
