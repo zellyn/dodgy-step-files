@@ -2620,6 +2620,47 @@ ill-typed, so it tested nothing. With a synthesised DIRECTION, three of the four
 Same failure shape as the inline-entity mistake above -- **an invalid instrument returns
 a negative that looks like a finding.**
 
+#### (M.5) Second stratified sample: one big bucket, one REFUTED rule. 2026-08-09
+
+Repeated the stratified-lldb-sample on the 81 still-unexplained crashers, one per
+section prefix (Ad134 Gn003 M019 P009 Pmi049 Tfa037 Tsh049 Twi079 U008):
+
+    StepToTopoDS_TranslateFace::Init + 1852   Tfa037, Tsh049, Twi079  (+ Gp056 earlier)
+    RWStepGeom_RWDirection::Check             Ad134
+    RWStepGeom_RWBSplineCurveWithKnots::Check Gn003
+    StepToGeom::MakeVectorWithMagnitude + 32  P009
+    STEPControl_ActorRead::TransferEntity     U008
+    <stripped symbol>                         M019, Pmi049
+
+**`TranslateFace::Init + 1852` is a large bucket** -- four fixtures now, at the IDENTICAL
+offset, from four different sections. That is the highest-value thread left.
+
+**P009 shows check 1 is narrower than its call site.** It reaches
+MakeVectorWithMagnitude, yet its `LINE.dir -> VECTOR -> DIRECTION` chain is perfectly
+well typed at every link. The defect is one level down again:
+`DIRECTION('pcurve_dir2d',(1.0,0.0))` has only two ratios. So the published "60 fixtures"
+for check 1 is a LOWER BOUND on the type-error population, not the whole of it.
+
+**REFUTED -- do not re-derive: "2D coordinates in a 3-dimension context".** P009 made this
+look like a clean fourth check. It is not merely weak, it is ANTI-correlated:
+
+    crashers with 2D coords in a 3D context :   3/81   ( 4 %)
+    non-crashers                            : 571/2352 (24 %)
+
+Two-ratio DIRECTIONs are ordinary pcurve practice, present in a quarter of the corpus.
+Publishing this rule would have told kernel authors to reject a quarter of all valid
+files. **The base rate is the only reason it was caught** -- the crasher number alone
+looked plausible.
+
+**KEPT: empty coordinate list.** `DIRECTION('',())` (Ad134) is the same defect as the
+empty-aggregate check, and DIRECTION/CARTESIAN_POINT were simply missing from its type
+list. 1 crasher, **0 non-crashers** -- zero false positives, so it costs nothing. Check 3
+now covers it; total 97/177 (55 %).
+
+##### Next
+80 unexplained. Trace more of the TranslateFace::Init + 1852 bucket and find what those
+four files share -- a single input pattern there would be the biggest remaining win.
+
 #### (M.4) A THIRD input pattern, and a SECOND crash family. 2026-08-09
 
 Ran lldb on a stratified sample of the 99 crashers that neither known pattern explained

@@ -219,6 +219,10 @@ def crash_refusable(tok: dict[str, str]) -> dict:
                 "ADVANCED_FACE", "MANIFOLD_SOLID_BREP", "GEOMETRIC_CURVE_SET",
                 "POLY_LOOP", "VERTEX_LOOP", "TESSELLATED_SOLID", "TRIANGULATED_FACE")
     empty_pat = re.compile(r"=\s*(" + "|".join(nonempty) + r")\s*\([^;]*?\(\s*\)", re.I)
+    # A DIRECTION or CARTESIAN_POINT with no coordinates at all is the same defect and
+    # is never valid. Zero false positives across the corpus, so it costs nothing.
+    empty_coord = re.compile(
+        r"=\s*(?:DIRECTION|CARTESIAN_POINT)\s*\(\s*'[^']*'\s*,\s*\(\s*\)", re.I)
     crash = [f for f, v in tok.items() if v == "signal(11)"]
     by_type, by_count, by_empty = [], [], []
     for fid in crash:
@@ -243,7 +247,7 @@ def crash_refusable(tok: dict[str, str]) -> dict:
                    for m in re.finditer(rf"=\s*{name}\s*\(", txt, re.I)):
                 by_count.append(fid)
                 break
-        if empty_pat.search(txt):
+        if empty_pat.search(txt) or empty_coord.search(txt):
             by_empty.append(fid)
     union = set(by_type) | set(by_count) | set(by_empty)
     return {"total": len(crash), "type": len(by_type), "count": len(by_count),
