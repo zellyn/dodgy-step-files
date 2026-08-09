@@ -2,7 +2,7 @@
 
 **Audience: you are writing a CAD kernel and need to survive real-world STEP files.** This document is the corpus re-cut along the axis you actually work on.
 
-The catalog ([`STEP_PROBLEM_CATALOG.md`](STEP_PROBLEM_CATALOG.md)) is organised one entry per broken file, which is right for auditing and wrong for building — 3335 entries do not tell you where to start. This page inverts it into the **169 distinct repair mechanisms** those files exercise, ordered so the failures that hurt users most come first, each pointing at the fixtures that prove you got it right (619 fixtures cited).
+The catalog ([`STEP_PROBLEM_CATALOG.md`](STEP_PROBLEM_CATALOG.md)) is organised one entry per broken file, which is right for auditing and wrong for building — 3335 entries do not tell you where to start. This page inverts it into the **169 distinct repair mechanisms** those files exercise, ordered so the failures that hurt users most come first, each pointing at the fixtures that prove you got it right (620 fixtures cited).
 
 > **Generated file — do not edit.** `python3 occt-coverage/make_roadmap.py`.
 > Everything below is joined from `occt-coverage/*/problems.json` and the catalog's CI-verified `Expected validation` lines. No hand-entered claims.
@@ -27,15 +27,17 @@ These are separated from the general `empty` population on purpose. `empty` alon
 
 **Test against:** `Gn001`, `Gn009`, `Gn010`, `Gn013`, `Gn014`, `Gn017`, `Gn018`, `Gn019`, `Gn025`, `Gn026`, `Gn031`, `Gn032`, `Gn033`, `Gn034`, `Gn035`, `Gn037`, `Gn038`, `Gn039`, `Gn046`, `Gn047` …and 86 more
 
-## Cheapest crash defence: three checks, before any geometry
+## Cheapest crash defence: five checks, before any geometry
 
-**131 of the 177 crashing fixtures (74%) are refusable before a single geometric entity is constructed** — by three checks that need nothing but the file and a schema table:
+**158 of the 177 crashing fixtures (89%) are refusable before a single geometric entity is constructed** — by five checks that need nothing but the file and a schema table:
 
 1. **Wrong type in a reference slot** (99 fixtures) — the single biggest one. Every attribute that names another entity has a declared type; these files put something else there. `LINE.dir` is declared `VECTOR` and points at a `DIRECTION`; `ADVANCED_FACE.bounds` is declared `FACE_BOUND` and holds a raw `EDGE_LOOP`; `EDGE_LOOP.edge_list` holds an `EDGE_CURVE` with no `ORIENTED_EDGE` wrapper. Repairing the reference makes the file load — verified individually on 26 of the `LINE.dir` cases, so this is cause, not correlation. Checking **all** reference slots rather than one flags 56% of crashers against **0.9%** of non-crashers.
 2. **Wrong argument count** (22 fixtures), detailed below.
 3. **Empty aggregate where the schema requires one or more** (20 fixtures) — `SHELL_BASED_SURFACE_MODEL('',())`, `TESSELLATED_SHELL('',(),$)`, `SURFACE_CURVE('',#33,(),.PCURVE_S1.)`. These crash in the *reference-graph walk*, before conversion is even attempted, which is why no amount of care in the geometry code would catch them. Present in 1.6% of non-crashing fixtures, so it is a strong signal rather than a certainty.
+4. **Inline entity instance in an argument** (28 fixtures) — `LINE('',#100,VECTOR('',(1,0,0),1.0))`. Entity instances must be top-level `#N=` statements; a typed value inside an argument is only legal for defined types such as measures, never for entity types. The parser cannot bind the inline construct, so the attribute silently becomes null. Present in 0.2% of non-crashing fixtures — each a deliberate fixture of this very construct.
+5. **Wrong argument count on core geometry entities** (10 fixtures) — `VECTOR(#2,100.)`: the name omitted, two arguments where three are declared, so every later value sits in the wrong slot. Same positional mechanism as the B-spline case in check 2, on the small entities.
 
-None of the three needs a kernel, and each produces a diagnostic naming the entity and what was wrong with it — a far better outcome than a segfault, and better than the silent empty shape the other sections describe. Note where check 3 fires: in the reference-graph walk, *before* conversion starts. Robustness in the geometry code cannot reach it.
+None of the five needs a kernel, and each produces a diagnostic naming the entity and what was wrong with it — a far better outcome than a segfault, and better than the silent empty shape the other sections describe. Note where check 3 fires: in the reference-graph walk, *before* conversion starts. Robustness in the geometry code cannot reach it.
 
 ### The argument-count check
 
@@ -58,15 +60,15 @@ The reason is positional. These entities are read by slot, so omitting an attrib
 
 Honest caveat: 1 deviating fixture — `Gn169` — does not crash, so the count is a very strong predictor rather than a law. The correlation was measured across the whole corpus; only some of the crashes were traced to a call site individually.
 
-**Test against** — everything either check refuses. Wrong count: `Gn043`, `Gn105`, `Gn107`, `Gn173`, `Gp056`, `Gp058`, `Gp060`, `Gp101`, `Gp102`, `Gp104`, `Gs134`, `Gs137`, `Gs138`, `Tfa141`, `Tfa144`, `Tfa172`, `Tfa174`, `Tfa175`, `Tfa180`, `Tfa187`, `Twi227`, `Twi230`. Wrong type: `Ad015`, `Ad050`, `Ad134`, `Gb002`, `Gb003`, `Gn055`, `Gn058`, `Gp001`, `Gp019`, `Gp042`, `Gp046`, `Gp047`, `Gp049`, `Gp059`, `Gp096`, `Gp098`, `Gp099`, `Gp112`, `Gp113`, `Gp127` …and 89 more. A kernel that refuses all of these at parse time gives up nothing — every one is a file no correct reader should accept.
+**Test against** — everything either check refuses. Wrong count: `Gn043`, `Gn105`, `Gn107`, `Gn173`, `Gp056`, `Gp058`, `Gp060`, `Gp101`, `Gp102`, `Gp104`, `Gs134`, `Gs137`, `Gs138`, `Tfa141`, `Tfa144`, `Tfa172`, `Tfa174`, `Tfa175`, `Tfa180`, `Tfa187`, `Twi227`, `Twi230`. Wrong type: `Ad015`, `Ad050`, `Ad134`, `Gb002`, `Gb003`, `Gn055`, `Gn058`, `Gp001`, `Gp019`, `Gp042`, `Gp046`, `Gp047`, `Gp049`, `Gp059`, `Gp096`, `Gp098`, `Gp099`, `Gp112`, `Gp113`, `Gp127` …and 116 more. A kernel that refuses all of these at parse time gives up nothing — every one is a file no correct reader should accept.
 
 ## What this page does *not* cover
 
-**2448 of the 2530 STEP fixtures (97%) carry a written `Expected kernel behavior`.** The other 82 are real fixtures with real, CI-verified assertions — they are good *tests* — but they do not state what a correct kernel should do, so they teach an implementer nothing on their own. They are marked † below. Most of that remainder is deliberate: an entry whose bytes were found to contradict its own title is left unspecced ON PURPOSE, because a specification written on a disproved claim would propagate the error rather than fix it.
+**2531 of the 2531 STEP fixtures (100%) carry a written `Expected kernel behavior`.** The other 0 are real fixtures with real, CI-verified assertions — they are good *tests* — but they do not state what a correct kernel should do, so they teach an implementer nothing on their own. They are marked † below. Most of that remainder is deliberate: an entry whose bytes were found to contradict its own title is left unspecced ON PURPOSE, because a specification written on a disproved claim would propagate the error rather than fix it.
 
-It cites **619 of the 2530 STEP fixtures (24%)**. The other 1911 are real, CI-verified fixtures that simply have not been linked to a named repair mechanism yet — they are reachable through the catalog and [`browse/`](browse/), just not from here. So this is a *starting* map, not an exhaustive one: finishing a tier does not mean you have handled everything the corpus knows about. Growing the linkage is tracked in `occt-coverage/`.
+It cites **620 of the 2531 STEP fixtures (24%)**. The other 1911 are real, CI-verified fixtures that simply have not been linked to a named repair mechanism yet — they are reachable through the catalog and [`browse/`](browse/), just not from here. So this is a *starting* map, not an exhaustive one: finishing a tier does not mean you have handled everything the corpus knows about. Growing the linkage is tracked in `occt-coverage/`.
 
-> Of the two, **linkage is currently the larger gap** (1911 fixtures vs 82).
+> Of the two, **linkage is currently the larger gap** (1911 fixtures vs 0).
 
 ## Tier summary
 
@@ -97,7 +99,7 @@ A shell's constituent faces have inconsistent orientation relative to each other
 
 ### `tkshh-edge-3d-2d-parameterization-mismatch`
 
-*TKShHealing* · 23 fixtures · observed: loads×10, empty×10, crash×3 · **20/23 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 23 fixtures · observed: loads×10, empty×10, crash×3 · **23/23 carry a written spec** · corpus coverage: COVERED
 
 An edge's 3D curve and its pcurve disagree as parameterizations: at the same parameter the 3D point and the surface-evaluated pcurve point diverge beyond tolerance (SameParameter violation), the declared parameter ranges differ while SameRange is asserted, the pcurve's range is invalid for its surface domain, or the two representations drift apart mid-edge while agreeing at the ends.
 
@@ -209,13 +211,11 @@ A wire contains a geometrically negligible edge: its two endpoint vertices and i
 
 ### `tkshh-face-wire-orientation-wrong`
 
-*TKShHealing* · 10 fixtures · observed: loads×6, empty×3, crash×1 · **9/10 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 10 fixtures · observed: loads×6, empty×3, crash×1 · **10/10 carry a written spec** · corpus coverage: COVERED
 
 The wires of a face are wound the wrong way relative to the surface normal / to each other: the outer boundary is traversed clockwise (encloses the infinite point), a hole wire is oriented like an outer boundary, or outer and inner senses are swapped so that the material side is inverted. OCCT classifies each wire against the others (point-in-face tests anchored by PerformInfinitePoint) and…
 
-**Test against:** `Tfa236`, `Tfa081`, `Ps002`, `Tfa133`, `Tfa161`, `Tfa186`, `Twi177`, `Twi233`, `Twi267` †, `Twi024`
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Tfa236`, `Tfa081`, `Ps002`, `Tfa133`, `Tfa161`, `Tfa186`, `Twi177`, `Twi233`, `Twi267`, `Twi024`
 
 ### `tkshh-wire-not-closed`
 
@@ -350,13 +350,11 @@ The 3D curves of two consecutive edges do not meet: the end point of edge n's 3D
 
 ### `tkshh-wire-adjacent-vertex-gap`
 
-*TKShHealing* · 8 fixtures · observed: empty×5, loads×3 · **7/8 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 8 fixtures · observed: empty×5, loads×3 · **8/8 carry a written spec** · corpus coverage: COVERED
 
 Consecutive edges of a wire are listed in correct order but do not share a vertex: the end vertex of edge n and the start vertex of edge n+1 are distinct VERTEX instances separated by a small 3D distance. The wire is topologically broken at the junction; the vertices must be merged (identical points) or combined into an averaged vertex.
 
-**Test against:** `Twi003`, `Twi043`, `Twi056`, `Twi116`, `Twi136`, `Twi238`, `Twi243` †, `Twi264`
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Twi003`, `Twi043`, `Twi056`, `Twi116`, `Twi136`, `Twi238`, `Twi243`, `Twi264`
 
 ### `tkshh-wire-tail`
 
@@ -387,23 +385,19 @@ Per-entity repairs elsewhere in the translation pipeline enlarge vertex/edge tol
 
 ### `tkshh-wire-nonadjacent-edges-intersect`
 
-*TKShHealing* · 15 fixtures · observed: loads×10, empty×5 · **14/15 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 15 fixtures · observed: loads×10, empty×5 · **15/15 carry a written spec** · corpus coverage: COVERED
 
 Two non-adjacent edges of the same wire cross in parameter space (global self-intersection, e.g. a figure-eight or bow-tie contour). Repair splits the edges at the crossing, cuts back, or removes the enclosed sub-segment.
 
-**Test against:** `Twi049`, `Twi076`, `Twi157`, `Twi214`, `Twi232`, `Twi263` †, `Twi249`, `Twi250`, `Twi251`, `Gs011`, `Gs009`, `Twi103` …and 3 more
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Twi049`, `Twi076`, `Twi157`, `Twi214`, `Twi232`, `Twi263`, `Twi249`, `Twi250`, `Twi251`, `Gs011`, `Gs009`, `Twi103` …and 3 more
 
 ### `tkshh-tolerance-out-of-range`
 
-*TKShHealing* · 13 fixtures · observed: loads×7, empty×6 · **10/13 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 13 fixtures · observed: loads×7, empty×6 · **13/13 carry a written spec** · corpus coverage: COVERED
 
 A vertex, edge, or face carries a tolerance value that falls outside an application-specified acceptable range [tmin, tmax] -- either unrealistically tight (masking nothing, but inconsistent with the rest of the model) or excessively loose (hiding real geometric gaps/deviations downstream). OCCT repairs this by clamping the offending tolerance to the nearer bound of the range, recursing…
 
-**Test against:** `N040`, `N055`, `N065` †, `N070`, `N080` †, `N089`, `N097`, `N119`, `N128`, `N132`, `N134` †, `N167` …and 1 more
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `N040`, `N055`, `N065`, `N070`, `N080`, `N089`, `N097`, `N119`, `N128`, `N132`, `N134`, `N167` …and 1 more
 
 ### `tkshh-surface-curve-continuity-below-required`
 
@@ -423,13 +417,11 @@ An edge's pcurve traces the boundary in the opposite parametric direction from i
 
 ### `tkshh-wire-edges-disordered`
 
-*TKShHealing* · 10 fixtures · observed: loads×7, empty×3 · **9/10 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 10 fixtures · observed: loads×7, empty×3 · **10/10 carry a written spec** · corpus coverage: COVERED
 
 The edges of a wire are stored out of traversal order: consecutive entries in the edge list do not chain head-to-tail, although a valid ordering (possibly with some edges reversed, or with the closed wire's start rotated) exists. Includes the sub-case where an individual edge's stored orientation is opposite to its traversal direction.
 
-**Test against:** `Twi007`, `Twi078`, `Twi028`, `Twi038`, `Twi159`, `Twi008`, `Twi107`, `Twi200`, `Twi242`, `Twi193` †
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Twi007`, `Twi078`, `Twi028`, `Twi038`, `Twi159`, `Twi008`, `Twi107`, `Twi200`, `Twi242`, `Twi193`
 
 ### `tkshh-face-closed-surface-unsplit-at-seam`
 
@@ -665,13 +657,11 @@ After a merged edge's 3D curve and 2D pcurve(s) are assembled, they may not walk
 
 ### `sew-seam-closed-surface-merge`
 
-*exchange/sewing* · 4 fixtures · observed: loads×3, empty×1 · **3/4 carry a written spec** · corpus coverage: COVERED
+*exchange/sewing* · 4 fixtures · observed: loads×3, empty×1 · **4/4 carry a written spec** · corpus coverage: COVERED
 
 On a periodic/closed surface (e.g. cylinder, cone, torus, sphere), an edge running along the seam can look 'close' to another edge in 3D while actually being unrelated, or can be the correct seam partner despite looking far apart when naively measured. Before approving such a merge, Sewing checks that the two edges' 2D (parametric) footprints actually overlap across the closed direction of the…
 
-**Test against:** `Tsh209` †, `Gp139`, `Gs200`, `Gs204`
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Tsh209`, `Gp139`, `Gs200`, `Gs204`
 
 ### `stp-face-bound-fail-continue`
 
@@ -739,13 +729,11 @@ A face's entire boundary has collapsed within tolerance to a single point: every
 
 ### `tkshh-wire-only-degenerated-edges`
 
-*TKShHealing* · 4 fixtures · observed: loads×3, empty×1 · **3/4 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 4 fixtures · observed: loads×3, empty×1 · **4/4 carry a written spec** · corpus coverage: COVERED
 
 A wire consists solely of degenerated / zero-extent edges (all edges collapse to a single point, e.g. leftover pole caps or authoring debris): it bounds nothing and poisons seam construction and orientation analysis. OCCT removes such wires: FixMissingSeam drops completely-degenerated extra open wires before pairing seam wires; ComposeShell::DispatchWires prunes empty or…
 
-**Test against:** `Tfa224` †, `Tfa096`, `Tfa168`, `Tfa206`
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Tfa224`, `Tfa096`, `Tfa168`, `Tfa206`
 
 ### `bc-free-edge`
 
@@ -917,23 +905,19 @@ An edge spans the full period of a closed curve - its start and end vertex coinc
 
 ### `tkshh-curve-projection-degenerate-parametrization`
 
-*TKShHealing* · 3 fixtures · observed: loads×2, empty×1 · **2/3 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 3 fixtures · observed: loads×2, empty×1 · **3/3 carry a written spec** · corpus coverage: COVERED
 
 A 3D point needs to be projected onto a Geom_Curve/edge whose parametrization is itself abnormal: FirstParameter()>LastParameter() (reversed range), an unbounded/infinite parametric domain (e.g. an unclamped Geom_Line), or a curve that has degenerated to (near-)zero length (e.g. coincident control points). Project()/NextProject() must swap the range, special-case infinite bounds, and tolerate…
 
-**Test against:** `Gs029`, `Gp129` †, `Gp037`
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Gs029`, `Gp129`, `Gp037`
 
 ### `tkshh-shape-unbaked-location-transform`
 
-*TKShHealing* · 3 fixtures · observed: loads×3 · **1/3 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 3 fixtures · observed: loads×3 · **3/3 carry a written spec** · corpus coverage: COVERED
 
 Shape sub-elements (faces, edges, vertices, or entire branches of a compound) carry a non-identity TopLoc_Location transform applied at the topology level rather than having their geometry expressed directly in absolute/global coordinates. This is a normal and valid OCCT representation, but is inconvenient or actively broken for some consumers/algorithms/round-trips that don't correctly track…
 
-**Test against:** `Tsh098` †, `Tsh133` †, `A067`
-
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+**Test against:** `Tsh098`, `Tsh133`, `A067`
 
 ### `tkshh-sliver-solid`
 
@@ -1161,13 +1145,19 @@ Some input edges have geometry pathological enough (e.g. a self-inconsistent 2D/
 
 ### `sew-seam-dual-pcurve-preservation`
 
-*exchange/sewing* · 2 fixtures · observed: loads×2 · **1/2 carry a written spec** · corpus coverage: COVERED
+*exchange/sewing* · 2 fixtures · observed: loads×2 · **2/2 carry a written spec** · corpus coverage: COVERED
 
 A seam edge on a closed/periodic surface (e.g. running along a cylinder's or torus's parametric seam) maps to two different locations in the surface's 2D parameter space depending on which side of the seam you approach from. When such an edge is a participant in a merge, both its forward and reversed 2D-curve representations must be preserved and correctly attached to the resulting merged…
 
-**Test against:** `Tsh209` †, `Tsh250`
+**Test against:** `Tsh209`, `Tsh250`
 
-<sub>† file + CI-checked assertions only — no written `Expected kernel behavior`. Read the `.stp` and the live oracle result.</sub>
+### `sew-vertex-endpoint-pairing-orientation`
+
+*exchange/sewing* · 2 fixtures · observed: loads×2 · **2/2 carry a written spec** · corpus coverage: COVERED
+
+When merging two edges, their two endpoints must be paired up correctly according to the edges' relative orientation: if the edges run in the same direction the first-to-first, second-to-second pairing is correct, but if one is effectively reversed relative to the other, the pairing must cross (first-to-second, second-to-first) or the merged edge would be twisted. Sewing computes this…
+
+**Test against:** `Tsh176`, `Tsh253`
 
 ### `stp-closed-curve-two-vertices`
 
@@ -1368,14 +1358,6 @@ After two faces' edges are merged, downstream consumers (e.g. shading, meshing, 
 During pre-sewing face analysis, edges whose length is below tolerance (effectively zero-length, but not degenerate in the formal topological sense) are identified as 'small' and their endpoint vertices are glued together, collapsing the edge; if the accumulation of this leaves a face with every one of its edges marked small (i.e. the whole face has shrunk to a negligible sliver or point), the…
 
 **Test against:** `Tsh091`
-
-### `sew-vertex-endpoint-pairing-orientation`
-
-*exchange/sewing* · 1 fixtures · observed: loads×1 · **1/1 carry a written spec** · corpus coverage: COVERED
-
-When merging two edges, their two endpoints must be paired up correctly according to the edges' relative orientation: if the edges run in the same direction the first-to-first, second-to-second pairing is correct, but if one is effectively reversed relative to the other, the pairing must cross (first-to-second, second-to-first) or the merged edge would be twisted. Sewing computes this…
-
-**Test against:** `Tsh176`
 
 ### `stp-compcurve-cyclic-ref`
 

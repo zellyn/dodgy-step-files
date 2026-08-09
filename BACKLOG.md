@@ -2620,6 +2620,47 @@ ill-typed, so it tested nothing. With a synthesised DIRECTION, three of the four
 Same failure shape as the inline-entity mistake above -- **an invalid instrument returns
 a negative that looks like a finding.**
 
+#### (M.18) FULL crash census overturns "heterogeneous tail": coverage 74 % -> 89 %. 2026-08-09
+
+**(M.7)'s conclusion was wrong, and the reason is methodological.** I had declared the
+46-crasher tail heterogeneous after one-per-prefix stratified sampling found seven sites
+in eight files. The FULL census (lldb on all 46) shows the opposite:
+
+    23  StepToGeom::MakeVectorWithMagnitude   <- one bucket is HALF the tail
+     5  StepToGeom::MakeDirection
+     4  StepToGeom::MakeAxis1Placement
+     4  <stripped symbol +176>
+     2  STEPControl_ActorRead::TransferEntity
+     8  singletons
+
+Prefix-stratified sampling collapsed **18 consecutive Tsh fixtures (Tsh109-127)** into a
+single representative. **Sampling estimates prevalence; it cannot rule out concentration
+inside a stratum. Census before declaring a tail heterogeneous.**
+
+**Two new input patterns, read straight off the bucket members:**
+
+  4) INLINE ENTITY INSTANCE in argument position — `LINE('',#100,VECTOR('',(1,0,0),1.0))`.
+     Doubly illegal Part-21: instances must be top-level `#N=` statements, and the inline
+     VECTOR's orientation is a bare list where a DIRECTION belongs. The parser cannot bind
+     it; the attribute is null; site A fires. 22/46 unexplained crashers, 4/2353
+     non-crashers (0.2 %) — and all four negatives are deliberate fixtures of this very
+     construct (A101, M050, M097, M157).
+
+  5) CORE-ENTITY ARITY — `VECTOR(#2,100.)`: name omitted, 2 args where 3 are declared
+     (also DIRECTION/LINE/EDGE_CURVE). 5/46 vs 6/2353 (0.3 %), the six negatives again
+     deliberate (Ls015's missing-comma claim IS its arity). This is the TARGETED version
+     of the modal-arity generalisation (M.3) rightly rejected — four hand-verified
+     entities, not 71 learned ones.
+
+**Shipped as checks 4 and 5 in `crash_refusable`: 158/177 = 89 % refusable at parse
+time** (was 131/177 = 74 %). Roadmap regenerated; 639 tests pass.
+
+**The 19 still unexplained, from the census map:** Gn003/004/016 (RW B-spline ::Check),
+M019/020/022/025 + Pmi049/164 (stripped symbols), P009 (2-coord DIRECTION via VECTOR,
+known), U008/009 (TransferEntity), Tsh052 (MakeAxis1Placement, no arity/inline hit),
+Tfa108 (TranslateEdgeLoop), Tfa138/233, Twi154/158, M068. Genuinely small buckets now —
+THIS is what a heterogeneous tail actually looks like.
+
 #### (M.17) Real-file calibration complete: three negatives that sharpen the corpus. 2026-08-09
 
 The remaining oracle dimensions run against the 28 NIST real exports:

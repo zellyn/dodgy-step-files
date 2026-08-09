@@ -108,6 +108,22 @@ def silent_total_loss(tok: dict[str, str]) -> list[str]:
 # because they are the entities the corpus actually malforms this way.
 ARGCOUNT = {"B_SPLINE_SURFACE_WITH_KNOTS": 13, "B_SPLINE_CURVE_WITH_KNOTS": 9}
 
+# Core geometry entities with fixed arities, added after the FULL crash census
+# (2026-08-09) showed a MakeDirection bucket driven by `VECTOR(#2,100.)` -- the
+# name omitted, 2 args where 3 are declared. Hand-verified, not modal-learned.
+CORE_ARITY = {"VECTOR": 3, "DIRECTION": 2, "LINE": 3, "EDGE_CURVE": 5}
+
+# An ENTITY-TYPE name in argument position followed by '(' is an INLINE entity
+# instance -- illegal in Part-21 (instances must be top-level #N= statements;
+# typed values in arguments are only legal for DEFINED types such as measures).
+# The census's largest bucket: LINE('',#100,VECTOR('',(1,0,0),1.0)) -- 19
+# consecutive Tsh fixtures plus variants. 4/2353 non-crashers carry it, all
+# deliberate fixtures of exactly this construct.
+_INLINE_ENTITY_NAMES = ("VECTOR", "DIRECTION", "CARTESIAN_POINT", "LINE", "CIRCLE",
+                        "EDGE_CURVE", "VERTEX_POINT", "AXIS2_PLACEMENT_3D",
+                        "EDGE_LOOP", "ORIENTED_EDGE", "PLANE")
+INLINE_INSTANCE = re.compile(r"[,(]\s*(?:" + "|".join(_INLINE_ENTITY_NAMES) + r")\s*\(")
+
 
 def _split_args(body: str) -> list[str]:
     """Top-level comma split, ignoring commas nested in ( ) or in strings."""
@@ -296,7 +312,7 @@ def crash_refusable(tok: dict[str, str]) -> dict:
     empty_coord = re.compile(
         r"=\s*(?:DIRECTION|CARTESIAN_POINT)\s*\(\s*'[^']*'\s*,\s*\(\s*\)", re.I)
     crash = [f for f, v in tok.items() if v == "signal(11)"]
-    by_type, by_count, by_empty = [], [], []
+    by_type, by_count, by_empty, by_inline, by_arity = [], [], [], [], []
     for fid in crash:
         hits = glob.glob(os.path.join(ROOT, "step-examples", "*", f"{fid}.stp"))
         if not hits:
@@ -315,10 +331,17 @@ def crash_refusable(tok: dict[str, str]) -> dict:
                 break
         if empty_pat.search(txt) or empty_coord.search(txt):
             by_empty.append(fid)
-    union = set(by_type) | set(by_count) | set(by_empty)
+        if INLINE_INSTANCE.search(txt):
+            by_inline.append(fid)
+        for name, want in CORE_ARITY.items():
+            if any(len(_args_of(txt, m)) != want
+                   for m in re.finditer(rf"#\d+\s*=\s*{name}\s*\(", txt)):
+                by_arity.append(fid)
+                break
+    union = set(by_type) | set(by_count) | set(by_empty) | set(by_inline) | set(by_arity)
     return {"total": len(crash), "type": len(by_type), "count": len(by_count),
-            "empty": len(by_empty), "union": len(union), "ids": sorted(union),
-            "empty_ids": sorted(by_empty)}
+            "empty": len(by_empty), "inline": len(by_inline), "arity": len(by_arity),
+            "union": len(union), "ids": sorted(union), "empty_ids": sorted(by_empty)}
 
 
 def load_classes() -> list[dict]:
@@ -476,10 +499,10 @@ def main() -> None:
         r_dev = 100.0 * len(dcrash) / n_dev
         r_ok = 100.0 * n_ok_crash / n_ok if n_ok else 0.0
         cr = crash_refusable(tok)
-        A("## Cheapest crash defence: three checks, before any geometry")
+        A("## Cheapest crash defence: five checks, before any geometry")
         A("")
         A(f"**{cr['union']} of the {cr['total']} crashing fixtures ({100*cr['union']/cr['total']:.0f}%) "
-          "are refusable before a single geometric entity is constructed** — by three "
+          "are refusable before a single geometric entity is constructed** — by five "
           "checks that need nothing but the file and a schema table:")
         A("")
         A(f"1. **Wrong type in a reference slot** ({cr['type']} fixtures) — the single "
@@ -499,8 +522,18 @@ def main() -> None:
           "attempted, which is why no amount of care in the geometry code would catch "
           "them. Present in 1.6% of non-crashing fixtures, so it is a strong signal "
           "rather than a certainty.")
+        A(f"4. **Inline entity instance in an argument** ({cr['inline']} fixtures) — "
+          "`LINE('',#100,VECTOR('',(1,0,0),1.0))`. Entity instances must be top-level "
+          "`#N=` statements; a typed value inside an argument is only legal for defined "
+          "types such as measures, never for entity types. The parser cannot bind the "
+          "inline construct, so the attribute silently becomes null. Present in 0.2% of "
+          "non-crashing fixtures — each a deliberate fixture of this very construct.")
+        A(f"5. **Wrong argument count on core geometry entities** ({cr['arity']} fixtures) "
+          "— `VECTOR(#2,100.)`: the name omitted, two arguments where three are declared, "
+          "so every later value sits in the wrong slot. Same positional mechanism as the "
+          "B-spline case in check 2, on the small entities.")
         A("")
-        A("None of the three needs a kernel, and each produces a diagnostic naming the "
+        A("None of the five needs a kernel, and each produces a diagnostic naming the "
           "entity and what was wrong with it — a far better outcome than a segfault, "
           "and better than the silent empty shape the other sections describe. Note "
           "where check 3 fires: in the reference-graph walk, *before* conversion "
