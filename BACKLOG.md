@@ -2620,6 +2620,29 @@ ill-typed, so it tested nothing. With a synthesised DIRECTION, three of the four
 Same failure shape as the inline-entity mistake above -- **an invalid instrument returns
 a negative that looks like a finding.**
 
+#### (M.14) Five new negative controls: clean-file FP evidence 12 -> 17. 2026-08-09
+
+The SLOT_TYPE proposal's stated weakness was that only 12 known-clean files existed to
+test false positives against. Five new Ctl controls now target exactly the constructs the
+three parse-time checks inspect — each is the VALID twin of a crash-class defect:
+
+    Ctl015  correct 13-arg B_SPLINE_SURFACE_WITH_KNOTS face (site B's positive control,
+            now permanent)
+    Ctl016  correct 9-arg B_SPLINE_CURVE_WITH_KNOTS edge (the 96 %-crash class's clean twin)
+    Ctl017  rational curve with NON-UNIT weights (1,2,1) — valid, must not be flagged
+    Ctl018  disc face: ONE closed circle edge, start==end vertex — legal single-member
+            EDGE_LOOP, the construct several refuted hypotheses stumbled over
+    Ctl019  SURFACE_CURVE with a REAL pcurve (non-empty associated_geometry) — clean twin
+            of the empty-aggregate crash class
+
+All five verified live: occt accept with a real shape, zero diagnostics. Measured against
+all THREE parse-time checks plus the structural oracle: **0 false positives / 17 controls**
+(denominator printed; the vacuous-scan trap from (M.12) is why). test_oracle_controls: 94
+passed — the new controls also harden the existing oracle pipeline's clean-input guarantee.
+
+17 is still a small clean sample — the recommendation to acquire an external valid-STEP
+corpus before adopting SLOT_TYPE stands — but every new control is now a TARGETED probe of
+the exact decision boundary rather than generic clean geometry.
 #### (M.13) Q6 dangling-ref remainder CLOSED: 39/39 triaged, zero accidental. 2026-08-09
 
 The generator-level triage (M.10) called for, done per its fallback (the July local-only
