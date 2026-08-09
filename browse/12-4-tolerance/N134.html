@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal</p></section>
+<p>two edges share one vertex. A tolerance pass that walks edges and updates both endpoints will reach that shared vertex twice; it must deduplicate, so the vertex is updated exactly once. Writing it repeatedly makes the final value depend on edge visit order, which means the same file can produce different tolerances on different runs.</p></section>
 <section><h2>Notes</h2>
 <p>double mutation pattern; tolerance application order nondeterministic</p></section>
 <section><h2>Expected validation</h2>

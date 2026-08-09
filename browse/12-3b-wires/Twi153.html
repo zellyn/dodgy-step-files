@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>one edge is a closed degree-3 B-spline that loops back and crosses itself near (3,3,0). Intersection checking must test each edge AGAINST ITSELF, not only against other edges. Comparing distinct pairs assumes every edge maps parameters to points injectively, and a curve that loops back violates that assumption — the self-crossing is invisible to a pairwise-distinct scan no matter how thorough it is.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

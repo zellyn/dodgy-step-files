@@ -27575,6 +27575,7 @@ B-spline edge has a self-intersection (loops back on itself). CheckIntersectingE
 **Source**: OCCT_HEAL_COVERAGE_V3.md ShapeAnalysis_Wire.CheckIntersectingEdges_at1563 (branches SE-IXIE-*)  
 **Root cause**: Pairwise edge comparison at line 1563 does not test edge against itself; no injection assumption validation
 
+- **Expected kernel behavior**: one edge is a closed degree-3 B-spline that loops back and crosses itself near (3,3,0). Intersection checking must test each edge AGAINST ITSELF, not only against other edges. Comparing distinct pairs assumes every edge maps parameters to points injectively, and a curve that loops back violates that assumption — the self-crossing is invisible to a pairwise-distinct scan no matter how thorough it is.
 - **Status**: FLAGGED 2026-08-07 — numerically sampled the single closed B_SPLINE_CURVE_WITH_KNOTS (poles (0,0),(15,5),(5,15),(-5,10),(-2,2),(0,0), degree 3, knots (0,0,0,0,0.25,0.75,1,1,1,1)) at 4000 points and found zero crossings between non-adjacent chords; closest non-adjacent self-approach measured ~0.385 units, and the curve's closest approach to the claimed crossing point (3,3,0) is ~1.8 units away (actual nearby curve point ≈(3.67,1.33,0)). The control polygon does cross itself, but the smooth curve does not — exactly the class of false claim this section's guidance warns against. Separately, the file's own EDGE_LOOP has only one edge (the self-closing B-spline, `EDGE_CURVE('',#7,#7,#16,.T.)`); the "E1 LINE closing segment" the comment describes does not exist as a wired entity — points #8/#9 are defined but never referenced by any edge or loop. Not specced; needs a fixture whose curve actually self-intersects, or an honest retitle.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
@@ -27630,6 +27631,7 @@ Wire missing an edge between v1 and v2 where dist(v1,v2) < Confusion (effectivel
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 ### Twi161 — ShapeAnalysis_Wire.CheckGap2d on B-spline pcurve
 Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoints but start/end pole positions may differ, leaving a gap in connectivity.
+- **Expected kernel behavior**: two B-spline edges meet at a shared 3D vertex, but their pcurves leave a gap between the end pole of one and the start pole of the next. Continuity in the parametric domain must be checked at the actual pole positions rather than inferred from the edges sharing a vertex in 3D. Two curves can meet in space while their parameterisations do not, and the resulting gap belongs in the report.
 - **Status**: FLAGGED 2026-08-07 — this fixture has zero PCURVE entities (confirmed by grep), so there is no 2D parameter space in which a pcurve gap could exist; the claimed mechanism cannot apply. The two B-spline edges are wired with plain 3D geometry only, and their poles match exactly at both junctions: edge 1's last pole (10.0,0.0,0.0) equals edge 2's first pole (10.0,0.0,0.0), and edge 2's last pole (0.0,0.0,0.0) equals edge 1's first pole — a fully closed, gap-free lens shape in 3D. Not specced; needs either an actual pcurve-bearing fixture or an honest retitle describing a valid closed wire.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
@@ -27956,6 +27958,7 @@ Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGa
 
 **Test hook**: Wire on cylinder crossing seam; CheckOrder(theMode3D=true) should detect reordering needed but doesn't.
 
+- **Expected kernel behavior**: a four-edge wire straddles the seam of a cylinder, where one edge runs forward along the axis in 3D while running backward in the angular parameter. Order classification must consider both the 3D and the parametric traversal and flag the disagreement. Picking one of the two and reporting it as the order silently accepts a wire whose parametric direction is reversed relative to its geometry.
 - **Status**: FLAGGED 2026-08-07 — checked every edge's pcurve against its own declared 3D vertices and all four are self-consistent (mapping (u,v) through the cylinder's (cos u, sin u, v) evaluates to the correct endpoint for every edge, including the two "long way around" arcs at u∈[1.0,2π]). The wire traces a valid, single, non-self-intersecting closed boundary covering ~303° of the cylinder (angle 0 to 1.0 rad is outside this face, presumably belonging to an adjacent face in a fuller model) — there is no 3D-vs-pcurve order clash. This matches the measured `occt=shape(1)/shape(1)` result: OCCT builds one clean face from this file, which is what a valid input should do. Not specced; needs a fixture with a genuine seam-order mismatch, or an honest retitle describing a valid partial-cylinder wire.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
@@ -33549,6 +33552,7 @@ Defect: SetTolerance(shape, t, type) overwrites tolerances on all sub-elements
 even when they already exceed the new tolerance value, causing silent precision
 loss. When tolerance is reduced globally, higher-precision edges/vertices should
 be preserved or warned; instead they are silently clamped downward.
+- **Expected kernel behavior**: the file carries edges deliberately authored at differing tolerances. Applying a tolerance across a whole shape must not silently replace per-element values that disagree with it: an element whose recorded tolerance differs was set that way for a reason, and overwriting it discards how precisely that element was authored. Either keep the more conservative value or report every element whose tolerance the operation changed.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a`
 ### N057 — ShapeAnalysis_ShapeTolerance.GlobalTolerance weight dispatch inversion
@@ -33844,6 +33848,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 
 **Source**: OCCT_HEAL_COVERAGE_V3.md § BRepLib.UpdateInnerTolerances (UIT-001)
 
+- **Expected kernel behavior**: one edge has a zero-length 3D curve alongside a normal edge. When an edge is skipped as degenerate, the vertex update that follows must be skipped with it. Computing vertex tolerances from endpoint values that were never established — because the loop exited before establishing them — writes undefined numbers into the vertices, and nothing downstream can tell those apart from measured ones.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N085 — ShapeAnalysis_Edge.CheckPoints precision-asymmetry
@@ -33912,6 +33917,7 @@ ShapeAnalysis_ShapeTolerance.GlobalTolerance mode=2 (weighted average) counts fo
 
 **File**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-4-tolerance/N093.stp`
 
+- **Expected kernel behavior**: an edge's 3D curve collapses to a single point. A correct kernel must recognise a zero-length curve as degenerate BEFORE sampling it. Sampling a point curve returns the same position every time, and reading that repetition as "the tolerance varies between samples" invents a measurement from geometry that has no extent.
 - **Tier-3 assertion**: n_faces_total == 1
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N094 — ShapeFix_Edge.FixVertexTolerance precision-floor
@@ -34040,6 +34046,7 @@ SameRange called on edge with parameter range [0.999, 1.001] near parametric bou
 ### N109 — ShapeFix_ShapeTolerance.SetTolerance with-cyclic-reference
 
 Shape with cyclic reference in sub-shape graph; SetTolerance recursion lacks cycle detection and loops indefinitely. Closed rectangular face referenced twice in shell structure to create circular topology. Tests recursion termination condition.
+- **Expected kernel behavior**: the shell graph references the same face twice, forming a cycle. Any recursive walk over a shape's sub-elements must track what it has already visited and terminate on revisit. Without that, a legal (if unusual) cyclic reference turns a tolerance query into a non-terminating traversal — the file is not malformed enough to reject, so the guard has to be in the walk.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N110 — ShapeAnalysis_Edge.CheckPoints precision-vs-projection-distance
@@ -34143,6 +34150,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 **Defect category:** Surface singularity / numeric stability  
 **Input pattern:** Edge on conical surface at apex (parametric u=0, degenerate parametric domain)  
 **Triggering condition:** Sampling edge at parametric intervals produces zero-length derivatives on degenerate patch; division-by-zero or normalization singularity
+- **Expected kernel behavior**: edges meet at a cone apex, where the parametric domain is degenerate and the surface derivatives vanish. Sampling an edge near such a point must be guarded: taking a direction from a zero-length derivative means normalising a zero vector. Detect the degenerate point and either skip those samples or take the limit analytically, rather than dividing by a vanishing magnitude.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### N124 — ShapeFix_ShapeTolerance.SetTolerance recursion-stack-overflow
@@ -34253,7 +34261,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Category**: §12.4 tolerance (sub-class: recursive_application)
 - **Sources**: OCCT/ShapeFix_ShapeTolerance.cxx:98
 - **Description**: LimitTolerance(wire, tmin, tmax) recursively processes V1/V2 per edge without deduplication. Shared vertices between edges processed multiple times; tolerance converges nondeterministically.
-- **Expected kernel behavior**: heal
+- **Expected kernel behavior**: two edges share one vertex. A tolerance pass that walks edges and updates both endpoints will reach that shared vertex twice; it must deduplicate, so the vertex is updated exactly once. Writing it repeatedly makes the final value depend on edge visit order, which means the same file can produce different tolerances on different runs.
 - **Notes**: double mutation pattern; tolerance application order nondeterministic
 - **Model impact**: Wire with shared vertex receives tolerance applied twice, last-write-wins semantics
 - **Fixture path**: step-examples/12-4-tolerance/N134.stp
@@ -34273,6 +34281,7 @@ CheckPoints called with precision 1e-3 but projection-distance test uses 1e-6 in
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### N136 — ShapeAnalysis_ShapeTolerance.MaxTolerance.unbounded_edge_iteration
+- **Expected kernel behavior**: one edge carries an unbounded parameter range. Accumulating a maximum tolerance across edges must validate each parameter range before using it: an infinite or unbounded range folded into a maximum produces a value that is not a measurement, and — worse — a spuriously large maximum hides the real tolerance violations elsewhere in the shape behind it.
 - **Pattern**: Tolerance accumulation without parameterization bounds validation
 - **Trigger**: Infinite curve ranges in edge iteration; no overflow guard
 - **Impact**: Spurious max-tolerance values mask real violations

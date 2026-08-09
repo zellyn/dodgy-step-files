@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>a four-edge wire straddles the seam of a cylinder, where one edge runs forward along the axis in 3D while running backward in the angular parameter. Order classification must consider both the 3D and the parametric traversal and flag the disagreement. Picking one of the two and reporting it as the order silently accepts a wire whose parametric direction is reversed relative to its geometry.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
