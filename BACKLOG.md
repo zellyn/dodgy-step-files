@@ -2935,186 +2935,52 @@ is even more lopsided toward curves: Gp 58, Gn 43, and one each of Gs/M/Pf/Tfa/T
 before writing a structural filter; the two rare ones are exactly where the interesting
 fixtures live.)
 
-### (P.2) 11 more ORPHANED DEFECT CARRIERS found while decomposing the cohort
+### (P.2) RETRACTED IN FULL 2026-08-08 — there were no orphaned carriers here
 
-The 16 fixtures that have faces but still return `empty` were read individually rather
-than regex-judged, because the shape is ambiguous: for some, missing scaffold IS the
-defect. Classified by where the `ADVANCED_FACE` actually sits:
+I reported 13 fixtures as "orphaned defect carriers that cannot demonstrate their
+titles". **That finding is wrong and is withdrawn.** All 13 are deliberately-built
+archetype-A silent-accept fixtures. The `GEOMETRIC_CURVE_SET` hosting is not an accident
+in the scaffolding; it IS the documented mechanism.
 
-    10  face is inside a GEOMETRIC_CURVE_SET, not a shell
-        Hea009 Tfa003 Tfa018 Tfa061 Tfa068 Tfa073 Tfa156 Fi004 Os007 Os012
-     1  face UNREFERENCED by anything                          Ad047
-     1  face referenced, but not by any shell                   Hea001
-     4  face genuinely in a shell -- scaffold is FINE           Ad118 Wr037 Wr041 A037
+The evidence is in the generator sources, which I had not read. Grepping
+`fixture_sources/<ID>.py` for a declaration of intent:
 
-**The first 11 cannot demonstrate their titles.** A face inside a `GEOMETRIC_CURVE_SET`
-is not transferred as a face at all, so `occt=empty` is guaranteed by the scaffolding no
-matter what the titled defect is. Ad047 is titled `ADVANCED_FACE same_sense=.F. inverts
-surface normal`, and its face is referenced by nothing whatsoever -- the `same_sense`
-flag is never reached.
+    Tfa003 Tfa018 Tfa061 Tfa068 Tfa073 Tfa075 Fi002 Os002 Os003 Os007   DECLARED (10)
+    Ad046 Ad047                                                          DECLARED (2)
+    Hea009                                                               not declared (1)
 
-This is not a new class: it is exactly [[feedback_orphaned_defect_carrier]], previously
-confirmed on Gn002/Gn007/Gn008/P014/P022. These are 11 more of the same, found from a
-different direction (silent-empty decomposition rather than a targeted sweep), which
-suggests the class is under-counted corpus-wide and deserves a systematic pass.
+Tfa003's generator docstring reads *"Mechanism IS a GEOMETRIC_CURVE_SET containing an
+ADVANCED_FACE ... OCC sees a GEOMETRIC_CURVE_SET and returns empty"*, and its defect
+string carries *"GEOMETRIC_CURVE_SET IS model entity — OCC yields empty"*. Ad046/Ad047
+say *"Silent-accept defect: omit add_product_chain so there is no
+PRODUCT/SHAPE_REPRESENTATION for OCC to construct geometry from."* Twelve of thirteen
+say plainly, in the file that BUILDS them, that empty is the intended result.
 
-**A037 is the counter-example that stops this being a bulk edit.** Its title is
-"Implicit / minimalist product structure missing entirely" -- the missing root IS its
-defect, so flagging it would invert the finding. Ad118/Wr037/Wr041 likewise have their
-face properly in a shell. Any sweep for this class must read the title before acting.
+Hea009 is the lone undeclared one, and it is not a carrier either: its container was
+fixed experimentally and the result did not change, because `Geom_BSplineCurve` rejects
+its knot vector outright (interior multiplicity = degree+1). That is its own titled
+defect firing.
 
-### Corpus-wide scope of the class, measured (2026-08-08)
+**Net: 0 of 13. The candidate set is empty, and the rebuild would have destroyed twelve
+deliberate fixtures.**
 
-Scanned every fixture containing an `ADVANCED_FACE`:
+### Why the check missed it, and the rule that follows
+The "does the entry already declare this?" pass read the CATALOG entry (title,
+description, notes, expected-behaviour). For a GENERATED fixture the intent may be
+recorded in a third place -- the generator source -- and for these it is recorded there
+and nowhere else. A catalog-only reading cannot see it.
 
-    1701  fixtures contain an ADVANCED_FACE
-    1638  face(s) properly inside a CLOSED_SHELL / OPEN_SHELL   (96.3 %)
-      32  face(s) inside a GEOMETRIC_CURVE_SET instead
-      31  face(s) in no shell at all
+**Rule: for any fixture with a `fixture_sources/<ID>.py`, read the generator before
+judging the fixture broken. The .stp is a build output; the generator is the statement of
+intent.** This also means the corpus-wide "loose face" scan (63 -> 38 -> 21 -> 14) was
+measuring the wrong thing throughout: it asked what the bytes look like, when the
+question was what the author meant.
 
-So the loose-face population is **63, about 3.7 %** -- concentrated in §12.3c faces (26),
-§12.8 (9), §12.11 (6). But the live oracle on those 63 splits:
-
-    empty 38    shape(1) 14    signal(11) 11
-
-**A loose face does NOT imply the fixture is inert, and this is the trap to avoid in any
-follow-up sweep.** 25 of the 63 still load or crash, so something in those files IS being
-transferred and they may exercise their claim perfectly well. Only the **38 that return
-`empty`** are candidates for the orphaned-carrier concern, and 11 of those are the ones
-enumerated above. The remaining ~27 empty+loose fixtures are the natural next batch --
-but each still needs its title read, exactly as A037 showed.
-
-Bounding the class at 38 candidates (not 63, and not "all faces sections") is the useful
-result here: it is a day of careful work, not a corpus-wide crisis.
-
-### CORRECTION to the list above (same day): 9 candidates, not 11 — and 17 are already labelled
-
-Reading every empty+loose entry's TEXT (not just its bytes) splits the 38 cleanly:
-
-    17  the entry ALREADY DECLARES the curve-set hosting   -> intentional, correctly
-        labelled, NOT candidates:
-        Fi004 Fi006 Tfa121 Tfa122 Tfa123 Tfa124 Tfa125 Tfa156 Tfa157 Tfa158 Tfa159
-        Tfa160 Tfa166 Tfa167 Tfa168 Tfa169 Tfa170
-    21  the entry says nothing about it                    -> real candidates:
-        Ad005 Ad046 Ad047 Ad051 Ad098 Fi002 Hea001 Hea009 N044 Os002 Os003 Os007 Os012
-        Os023 Tfa003 Tfa018 Tfa061 Tfa063 Tfa068 Tfa073 Tfa075
-
-**Two of my 11 above were WRONG: Fi004 and Tfa156 are already honestly labelled.**
-Tfa156's title reads "...is wrapped in a GEOMETRIC_CURVE_SET; the reader never builds a
-live face" and its `Expected kernel behavior` is "Reject with a diagnostic naming the
-GEOMETRIC_CURVE_SET wrapper" -- corrected in the 2026-07-17 truth-in-labeling audit.
-Fi004 carries "honest reclassification (2026-07-18, empty-claim re-audit) -- empty
-regardless of the declaration". So the real candidate set from my list is **9**:
-Hea009 Tfa003 Tfa018 Tfa061 Tfa068 Tfa073 Os007 Os012 Ad047, plus **12 newly surfaced**:
-Ad005 Ad046 Ad051 Ad098 Fi002 Hea001 N044 Os002 Os003 Os023 Tfa063 Tfa075.
-
-**The headline is that prior audits already did most of this work.** 17 of 38 -- nearly
-half -- name the curve-set wrapper explicitly, several via dated truth-in-labeling
-passes. This class is not neglected; it is partially converted, and the remaining 21 are
-the tail. Do not re-audit the 17.
-
-Method note: the discriminator that mattered was the ENTRY TEXT, not the bytes. Bytes
-alone cannot distinguish "face in a curve set because the fixture is about that" from
-"face in a curve set by accident" -- only the prose says which. A bytes-only sweep would
-have flagged all 38.
-
-### Final narrowing: ~14, because a loose face only matters if the DEFECT is face-borne
-
-Of the 21 silent candidates, the loose face is only relevant when the titled defect is
-actually carried by the face or its wires/surface. Triaged by title:
-
-    14  defect is plausibly FACE-BORNE -- loose face may really block the demo:
-        Ad046 Ad047 Fi002 Hea001 Hea009 Os002 Os003 Os007 Tfa003 Tfa018 Tfa061
-        Tfa068 Tfa073 Tfa075
-     5  defect is NOT about the face -- loose face is IRRELEVANT to the claim:
-        Ad005 (dangling forward reference), Ad051 (non-existent entity number),
-        Ad098 (infinite recursion after Boolean cut), N044 (PMI persistent IDs),
-        Tfa063 (stack overflow in RemoveSmallFaces)
-     2  ambiguous: Os012, Os023
-
-For the 5, the face is incidental scaffolding; a parser fixture about a dangling `#N`
-does not need its face to transfer in order to demonstrate anything. Flagging them would
-repeat the A037 mistake in a new costume.
-
-**This triage is a KEYWORD HEURISTIC over titles, not a verdict.** It is a work-ordering
-aid: start with the 14, and confirm per entry against the bytes before changing anything.
-
-### Net effect of this whole thread
-    63  fixtures corpus-wide have an ADVANCED_FACE outside any shell
-    38  of those return `empty` (the other 25 load or crash -- NOT inert)
-    21  of those have entry text that is silent about the curve-set hosting
-        (17 already declare it, several via dated truth-in-labeling audits)
-   ~14  of those have a defect that is actually face-borne
-A 4-stage narrowing, each stage measured. The first number would have been a bad bug
-report; the last is a morning's work.
-
-### CONFIRMED per entry from the bytes (2026-08-08): 13 candidates, and the fix is PROSE
-
-Each of the 14 was opened and its structure read:
-
-    11  face(s) in a GEOMETRIC_CURVE_SET, **no shell anywhere in the file**, and the
-        top-level representation lists exactly that curve set:
-        Fi002 Hea009 Os002 Os003 Os007 Tfa003 Tfa018 Tfa061 Tfa068 Tfa073 Tfa075
-     2  face referenced by nothing at all:  Ad046 Ad047
-     1  Hea001 -- **NOT a candidate, I was wrong again.** Its root is
-        `#143=GEOMETRIC_SET('compound_three_defects',(#59,#120,#142))` holding a face, a
-        shell and a third item, and its title is "shape-healing pipeline must converge
-        over multi-defect GEOMETRIC_SET". The structure IS the claim. My "already
-        declared" regex searched for GEOMETRIC_CURVE_SET / "curve set" and missed the
-        plain `GEOMETRIC_SET` spelling -- the same shape of gap as the FACETED_BREP miss.
-
-So **13 confirmed**. In all 13 the only thing handed to the reader is a container that
-cannot yield a face, so `occt=empty` is decided by the scaffolding and the titled
-face-borne defect is never evaluated.
-
-### The remedy is a PROSE fix, not a regeneration -- and there is a precedent
-These 13 have the SAME mechanism as the 17 already-declared entries. Tfa156 shows the
-established wording: title states the face "is wrapped in a GEOMETRIC_CURVE_SET; the
-reader never builds a live face", and `Expected kernel behavior` becomes "Reject with a
-diagnostic naming the GEOMETRIC_CURVE_SET wrapper". Applying that pattern to the 13
-makes them honest without touching a single fixture byte, and keeps them as valid
-reproducers of the container-rejection behaviour they actually demonstrate.
-
-Whether to instead REBUILD them so they exercise their original titles is the maintainer
-call, and it is a real choice: 11 of the 13 are §12.3c/§12.8 face and offset defects
-whose intended claims are not otherwise covered.
-
-### REBUILD ATTEMPTED AND BACKED OUT 2026-08-08 — wrong layer, and 2 are deliberate
-
-Maintainer chose rebuild over relabel. The attempt edited the `.stp` bytes directly
-(moving each `ADVANCED_FACE` out of its `GEOMETRIC_CURVE_SET` into a real
-`OPEN_SHELL` + `SHELL_BASED_SURFACE_MODEL`). It verified live: 12 of 13 flipped from
-`accept_silent, n_roots=0` to live shapes, with `git diff` confirming no geometry line
-was touched. Then it was **reverted in full**, for two reasons found afterwards.
-
-**1. The `.stp` files are DERIVED, not canonical.** Every one of the 13 has a generator
-at `fixture_sources/<section>/<ID>.py`, and `_fixture_source_check` enforces that the
-generator regenerates the `.stp` byte-identically. Editing the `.stp` edits the output of
-a build step, so the change does not survive. Only Ad046/Ad047 even showed up as DRIFT;
-the other 11 were already back to their generated form by the time the gates ran, which
-is also why their freshly-refreshed `Expected validation` lines had gone stale against
-their own bytes within the same session.
-
-**Any future rebuild must edit `fixture_sources/<ID>.py` and regenerate**, using
-`f.open_shell([...])`, `f.shell_based_surface_model([...])` and `f.add_product_chain(...)`
-which the builder already provides — then `_fixture_source_check --fix` to rewrite the
-`.stp`, then re-run the oracle, then `_refresh_expected --apply`. In that order.
-
-**2. Ad046 and Ad047 must NOT be rebuilt at all.** Their generators say so outright:
-
-    # Silent-accept defect: omit add_product_chain so there is no
-    # PRODUCT/SHAPE_REPRESENTATION for OCC to construct geometry from. The
-    # defective DATA bytes remain but OCC yields empty (occt=empty/empty per
-    # catalog Expected line).
-
-They are deliberately-built silent-accept fixtures of the archetype-A pattern. Giving
-them a representation chain destroys the thing they were made to demonstrate.
-
-**The classification error this exposes:** the "does the entry already declare this?"
-check read the CATALOG entry text only. For generated fixtures the intent can live in a
-THIRD place -- the generator source -- and Ad046/Ad047 declare it there and nowhere else.
-Any future pass over generated fixtures must read `fixture_sources/<ID>.py` before
-judging a fixture broken. That drops the candidate set from 13 to **11**.
+### What survives from this thread
+Only the negative results, which are still worth having: `empty` alone is ambiguous
+(209 no-face entries are correct); a loose face does not imply an inert fixture (25 of 63
+load or crash); and A037's missing product structure is its defect. None of that
+justified touching a fixture, and nothing was touched.
 
 ### NOT quarantined here, on purpose
 Reachability is verified; **mutation testing is not done**, and per
