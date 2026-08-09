@@ -33,7 +33,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>This file&#x27;s surface entity does not match its schema definition — the control points are a flat list where a grid of rows is required, and the knot and multiplicity attributes are absent — and the edge&#x27;s 3D `LINE` supplies a point where a direction vector belongs. Validate every entity&#x27;s attribute count and attribute types against the schema before constructing geometry from it, and reject offending entities individually with diagnostics naming them while the rest of the model is still built: a partially-initialised surface or curve must never be constructed, and a malformed entity must never terminate the read.</p></section>
 <section><h2>Notes</h2>
-<p>synthesized from earlier wave; backfilled from fixture comment</p></section>
+<p>RUNTIME-VERIFIED 2026-08-08 by minimal reproducer — of the two anomalies named in the title, only the missing attributes cause the abort. Built a correct 13-attribute surface (loads), then introduced each defect alone: a flat control-point list where a grid is required LOADS; knot multiplicities written as reals LOAD; a control-point count contradicting the multiplicities LOADS; **omitting the four attributes, which shifts every later argument into the wrong slot, aborts**. Debugger on the minimal case lands at the same converter entry point and fault address as this fixture. So the flat list is a real byte-level anomaly but is NOT part of the crash mechanism.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

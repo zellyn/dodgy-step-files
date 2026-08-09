@@ -60597,7 +60597,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs138.stp",
     "id": "Gs138",
-    "notes": "synthesized from earlier wave; backfilled from fixture comment",
+    "notes": "RUNTIME-VERIFIED 2026-08-08 by minimal reproducer — of the two anomalies named in the title, only the missing attributes cause the abort. Built a correct 13-attribute surface (loads), then introduced each defect alone: a flat control-point list where a grid is required LOADS; knot multiplicities written as reals LOAD; a control-point count contradicting the multiplicities LOADS; **omitting the four attributes, which shifts every later argument into the wrong slot, aborts**. Debugger on the minimal case lands at the same converter entry point and fault address as this fixture. So the flat list is a real byte-level anomaly but is NOT part of the crash mechanism.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
