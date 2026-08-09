@@ -27,7 +27,16 @@ These are separated from the general `empty` population on purpose. `empty` alon
 
 **Test against:** `Gn001`, `Gn009`, `Gn010`, `Gn013`, `Gn014`, `Gn017`, `Gn018`, `Gn019`, `Gn025`, `Gn026`, `Gn031`, `Gn032`, `Gn033`, `Gn034`, `Gn035`, `Gn037`, `Gn038`, `Gn039`, `Gn046`, `Gn047` …and 86 more
 
-## Cheapest crash defence: check argument counts at parse time
+## Cheapest crash defence: two checks, before any geometry
+
+**78 of the 177 crashing fixtures (44%) are refusable before a single geometric entity is constructed** — by two checks that need nothing but the file and a schema table:
+
+1. **Wrong type in a slot** (60 fixtures). `LINE.dir` is declared `VECTOR`; these files point it at a `DIRECTION` or a `CARTESIAN_POINT`. Repairing that one reference makes the file load — verified individually on 26 of them, so this is cause, not correlation.
+2. **Wrong argument count** (22 fixtures), detailed below.
+
+Neither check needs a kernel. Both produce a diagnostic naming the entity and what was wrong with it — which is a far better outcome than a segfault, and also better than the silent empty shape the other sections describe.
+
+### The argument-count check
 
 Of the fixtures containing a `B_SPLINE_CURVE_WITH_KNOTS` or `B_SPLINE_SURFACE_WITH_KNOTS`:
 
@@ -42,11 +51,13 @@ The reason is positional. These entities are read by slot, so omitting an attrib
 
 **Where it lands varies; the input pattern does not.** Traced crash sites include the vector constructor, the B-spline surface constructor, and the face translator — whichever converter happens to reach the malformed entity first. Treating these as three separate bugs to null-check individually is the expensive path.
 
-**The cheap path:** validate each entity's argument count against the schema *at parse time*, before any geometry is constructed. That is a table lookup and a comparison. It rejects every one of these files with a precise, actionable diagnostic naming the entity and the expected count, and no converter ever sees them. Downstream null-checking, by contrast, has to be repeated at every construction site and still produces a worse error message.
+**The cheap path:** validate argument counts against the schema *at parse time*. That is a table lookup and a comparison. It rejects these files with a precise, actionable diagnostic naming the entity and the expected count, and no converter ever sees them. Downstream null-checking, by contrast, has to be repeated at every construction site and still produces a worse message.
+
+**Scope, measured rather than assumed:** this is a *B-spline* effect, not a universal law. Learning each entity type's arity from the corpus (the modal count over 71 types with enough instances to be confident) and asking whether *any* deviation predicts a crash gives 24% against a 6% base rate — real signal, but four-fold rather than thirty-fold. A wrong count on a `PLANE` or a `VECTOR` mostly does not reach a null dereference. So implement the check everywhere, because it is nearly free and catches malformed files early — but expect the crashes it prevents to be concentrated in the entities with long, heterogeneous argument lists, where a shift silently changes a value's type.
 
 Honest caveat: 1 deviating fixture — `Gn169` — does not crash, so the count is a very strong predictor rather than a law. The correlation was measured across the whole corpus; only some of the crashes were traced to a call site individually.
 
-**Test against:** `Gn043`, `Gn105`, `Gn107`, `Gn173`, `Gp056`, `Gp058`, `Gp060`, `Gp101`, `Gp102`, `Gp104`, `Gs134`, `Gs137`, `Gs138`, `Tfa141`, `Tfa144`, `Tfa172`, `Tfa174`, `Tfa175`, `Tfa180`, `Tfa187` …and 2 more
+**Test against** — everything either check refuses. Wrong count: `Gn043`, `Gn105`, `Gn107`, `Gn173`, `Gp056`, `Gp058`, `Gp060`, `Gp101`, `Gp102`, `Gp104`, `Gs134`, `Gs137`, `Gs138`, `Tfa141`, `Tfa144`, `Tfa172`, `Tfa174`, `Tfa175`, `Tfa180`, `Tfa187`, `Twi227`, `Twi230`. Wrong type: `Gp046`, `Gp047`, `Gp049`, `Gp059`, `Gp096`, `Gp098`, `Gp099`, `Gp131`, `Gs136`, `N121`, `Tfa107`, `Tsh139`, `Tsh140`, `Tsh149`, `Tsh156`, `Tsh158`, `Tsh159`, `Tsh161`, `Tsh162`, `Tsh163` …and 36 more. A kernel that refuses all of these at parse time gives up nothing — every one is a file no correct reader should accept.
 
 ## What this page does *not* cover
 

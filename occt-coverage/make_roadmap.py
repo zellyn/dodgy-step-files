@@ -180,6 +180,63 @@ def argcount_deviants(tok: dict[str, str]) -> tuple[list[str], list[str], int, i
     return sorted(dev_crash), sorted(dev_ok), n_ok, n_ok_crash
 
 
+def _args_of(txt: str, m) -> list[str]:
+    """Argument list of the entity whose opening paren is at m.end()-1."""
+    i, depth = m.end() - 1, 0
+    for j in range(i, len(txt)):
+        if txt[j] == "(":
+            depth += 1
+        elif txt[j] == ")":
+            depth -= 1
+            if depth == 0:
+                return _split_args(txt[i + 1:j])
+    return []
+
+
+def crash_refusable(tok: dict[str, str]) -> dict:
+    """Of the crashing fixtures, how many are refusable BEFORE geometry is built?
+
+    Two checks, both decidable from the file plus a schema table -- no conversion,
+    no geometry, no kernel:
+
+      type   an entity reference sits in a slot whose declared type it is not.
+             Measured on the case traced to a call site: LINE.dir must be a VECTOR.
+      count  a B-spline entity's argument count differs from the schema.
+
+    The union is the honest answer to "what fraction of these crashes could a
+    kernel have refused, with a precise diagnostic, before it tried to build
+    anything?"
+    """
+    ent = re.compile(r"#(\d+)\s*=\s*([A-Z_0-9]+)\s*\(", re.I)
+    crash = [f for f, v in tok.items() if v == "signal(11)"]
+    by_type, by_count = [], []
+    for fid in crash:
+        hits = glob.glob(os.path.join(ROOT, "step-examples", "*", f"{fid}.stp"))
+        if not hits:
+            continue
+        try:
+            txt = open(hits[0], errors="replace").read()
+        except OSError:
+            continue
+        kind = {m.group(1): m.group(2).upper() for m in ent.finditer(txt)}
+        for m in re.finditer(r"#\d+\s*=\s*LINE\s*\(", txt, re.I):
+            a = _args_of(txt, m)
+            if len(a) == 3:
+                r = a[2].strip().lstrip("#")
+                # default VECTOR => an inline/unresolvable ref is not counted as an error
+                if r.isdigit() and kind.get(r, "VECTOR") != "VECTOR":
+                    by_type.append(fid)
+                    break
+        for name, want in ARGCOUNT.items():
+            if any(len(_args_of(txt, m)) != want
+                   for m in re.finditer(rf"=\s*{name}\s*\(", txt, re.I)):
+                by_count.append(fid)
+                break
+    union = set(by_type) | set(by_count)
+    return {"total": len(crash), "type": len(by_type), "count": len(by_count),
+            "union": len(union), "ids": sorted(union)}
+
+
 def load_classes() -> list[dict]:
     out = []
     for path in sorted(glob.glob(os.path.join(ROOT, "occt-coverage", "*", "problems.json"))):
@@ -334,7 +391,24 @@ def main() -> None:
         n_dev = len(dcrash) + len(dok)
         r_dev = 100.0 * len(dcrash) / n_dev
         r_ok = 100.0 * n_ok_crash / n_ok if n_ok else 0.0
-        A("## Cheapest crash defence: check argument counts at parse time")
+        cr = crash_refusable(tok)
+        A("## Cheapest crash defence: two checks, before any geometry")
+        A("")
+        A(f"**{cr['union']} of the {cr['total']} crashing fixtures ({100*cr['union']/cr['total']:.0f}%) "
+          "are refusable before a single geometric entity is constructed** — by two "
+          "checks that need nothing but the file and a schema table:")
+        A("")
+        A(f"1. **Wrong type in a slot** ({cr['type']} fixtures). `LINE.dir` is declared "
+          "`VECTOR`; these files point it at a `DIRECTION` or a `CARTESIAN_POINT`. "
+          "Repairing that one reference makes the file load — verified individually on "
+          "26 of them, so this is cause, not correlation.")
+        A(f"2. **Wrong argument count** ({cr['count']} fixtures), detailed below.")
+        A("")
+        A("Neither check needs a kernel. Both produce a diagnostic naming the entity and "
+          "what was wrong with it — which is a far better outcome than a segfault, and "
+          "also better than the silent empty shape the other sections describe.")
+        A("")
+        A("### The argument-count check")
         A("")
         A("Of the fixtures containing a `B_SPLINE_CURVE_WITH_KNOTS` or "
           "`B_SPLINE_SURFACE_WITH_KNOTS`:")
@@ -364,12 +438,21 @@ def main() -> None:
           "first. Treating these as three separate bugs to null-check individually is "
           "the expensive path.")
         A("")
-        A("**The cheap path:** validate each entity's argument count against the schema "
-          "*at parse time*, before any geometry is constructed. That is a table lookup "
-          "and a comparison. It rejects every one of these files with a precise, "
-          "actionable diagnostic naming the entity and the expected count, and no "
-          "converter ever sees them. Downstream null-checking, by contrast, has to be "
-          "repeated at every construction site and still produces a worse error message.")
+        A("**The cheap path:** validate argument counts against the schema *at parse "
+          "time*. That is a table lookup and a comparison. It rejects these files with "
+          "a precise, actionable diagnostic naming the entity and the expected count, "
+          "and no converter ever sees them. Downstream null-checking, by contrast, has "
+          "to be repeated at every construction site and still produces a worse message.")
+        A("")
+        A("**Scope, measured rather than assumed:** this is a *B-spline* effect, not a "
+          "universal law. Learning each entity type's arity from the corpus (the modal "
+          "count over 71 types with enough instances to be confident) and asking whether "
+          "*any* deviation predicts a crash gives 24% against a 6% base rate — real "
+          "signal, but four-fold rather than thirty-fold. A wrong count on a `PLANE` or "
+          "a `VECTOR` mostly does not reach a null dereference. So implement the check "
+          "everywhere, because it is nearly free and catches malformed files early — but "
+          "expect the crashes it prevents to be concentrated in the entities with long, "
+          "heterogeneous argument lists, where a shift silently changes a value's type.")
         A("")
         if dok:
             plural = ("fixtures", "do") if len(dok) > 1 else ("fixture", "does")
@@ -380,8 +463,13 @@ def main() -> None:
                 "corpus; only some of the crashes were traced to a call site "
                 "individually.")
             A("")
-        A("**Test against:** " + ", ".join(f"`{f}`" for f in dcrash[:20])
-          + ("" if len(dcrash) <= 20 else f" …and {len(dcrash) - 20} more"))
+        rest = [f for f in cr["ids"] if f not in set(dcrash)]
+        A("**Test against** — everything either check refuses. Wrong count: "
+          + ", ".join(f"`{f}`" for f in dcrash)
+          + ". Wrong type: " + ", ".join(f"`{f}`" for f in rest[:20])
+          + (f" …and {len(rest) - 20} more" if len(rest) > 20 else "")
+          + ". A kernel that refuses all of these at parse time gives up nothing — "
+            "every one is a file no correct reader should accept.")
         A("")
 
     A("## What this page does *not* cover")

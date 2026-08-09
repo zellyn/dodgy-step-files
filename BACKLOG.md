@@ -2620,6 +2620,49 @@ ill-typed, so it tested nothing. With a synthesised DIRECTION, three of the four
 Same failure shape as the inline-entity mistake above -- **an invalid instrument returns
 a negative that looks like a finding.**
 
+#### (M.3) How far the argument-count rule generalises -- and the headline number. 2026-08-09
+
+Two follow-ups to (M.2), one bounding it and one strengthening it.
+
+**BOUNDED. The count rule does NOT generalise to all entity types.** Hand-entering
+EXPRESS arities for hundreds of types is impractical, so I learned them from the corpus
+instead: the corpus is overwhelmingly well-formed at the syntax level, so the MODAL
+argument count per entity type IS its schema arity. Guards: >= 30 instances of the type,
+and the mode must hold >= 90 % of them, else the type is dropped rather than guessed at
+(SELECT types and complex instances legitimately vary). That learned 71 arities out of
+429 types seen, and it reproduced both hand-entered B-spline values exactly -- a free
+positive control on the method.
+
+Asking whether *any* non-modal argument count predicts a crash:
+
+    deviates somewhere :  41/172 crash  (24 %)
+    all counts correct : 136/2357 crash  ( 6 %)
+
+Four-fold, not thirty-fold. **The 96 % figure is a B-spline effect, not a law about
+argument counts.** A wrong count on a PLANE or a VECTOR mostly does not reach a null
+dereference; the damage needs a long, heterogeneous argument list where a shift silently
+changes a value's TYPE. Published in the roadmap as a "scope, measured rather than
+assumed" paragraph -- an unqualified rule there would have been wrong.
+
+**THE HEADLINE NUMBER: 44 % of crashes are refusable at parse time.** Both traced input
+patterns are decidable from the file plus a schema table, with no kernel involved:
+
+    wrong TYPE in a slot (LINE.dir must be a VECTOR)  60 fixtures
+    wrong COUNT (B-spline)                            22 fixtures
+    overlap                                            4
+    UNION                                             78 / 177  = 44 %
+
+So a reader that refused these two patterns before constructing geometry would avoid
+nearly half this corpus's crashes and emit a precise diagnostic instead of a segfault.
+That is the strongest single implementer-facing claim the corpus now makes, and it is
+generated (`make_roadmap.py::crash_refusable`) rather than hand-maintained.
+
+**Still unexplained: 99 of 177 crashers (56 %)** match neither pattern, and none of them
+are IFC (that escape hatch is fully spent). Sample: Ad015 Ad050 Ad134 Gb002 Gb003 Gn003
+Gn004 Gn016 Gn055 Gn058 Gp001 Gp019 Gp042 Gp112 Gp113 Gp127 Gp140 Gp141 Gs002 Gs026
+M018-M025. Next step is lldb on a stratified sample of these -- one trace per section
+prefix -- to find whether they concentrate in a fourth site or scatter.
+
 #### (M.2) THE UNIFYING INPUT PATTERN: argument count != schema. 96 % crash. 2026-08-09
 
 Site B's trigger generalises far beyond B-spline surfaces. Counting arguments on every
