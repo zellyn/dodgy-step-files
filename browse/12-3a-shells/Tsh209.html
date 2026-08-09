@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal</p></section>
+<p>the file encodes a cylindrical face whose seam edge is a full circle with the same vertex at both ends, sitting where the parameter wraps (U=0 and U=2π are the same position). A correct kernel must recognise the periodic closure and assign the seam edge a deterministic orientation derived from the surface period, rather than leaving orientation undefined because the two endpoints compare equal. If it cannot decide, it must say so rather than propagating an arbitrary choice into the shell.</p></section>
 <section><h2>Notes</h2>
 <p>parametric-period-crossing, seam-edge-ambiguity</p></section>
 <section><h2>Expected validation</h2>

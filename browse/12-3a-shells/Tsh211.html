@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal</p></section>
+<p>one face carries an inner boundary whose loop holds exactly one zero-length edge — both endpoints are the same vertex. A correct kernel must detect a boundary consisting of a single degenerate edge and drop that boundary, leaving the face with its valid outer loop. Retaining it keeps a hole of zero extent in the face topology, which every later operation must then special-case.</p></section>
 <section><h2>Notes</h2>
 <p>degenerate-wire-pruning, edge-loop-elimination</p></section>
 <section><h2>Expected validation</h2>

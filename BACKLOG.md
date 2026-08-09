@@ -2626,12 +2626,18 @@ Corpus-wide measurement: **3283 of 3336 entries (98.4 %) carry a meaningful
 `Expected kernel behavior`.** Weakest sections: Tfa 91.7 % (21 missing), Tsh 95.3 % (12),
 N 96.0 % (7), Gn 96.5 % (6), Gp 97.9 % (4), Twi 99.0 % (3).
 
-**Filled 4 of the 53** -- Gp126/128/129/130. These are the groundable ones: each is a
+**Filled 9 of the 53** -- Gp126/128/129/130. These are the groundable ones: each is a
 complete connected planar face with four pcurve-carrying edges that OCCT loads to `empty`,
 i.e. members of the silent-total-loss cohort, so the roadmap's verified finding applies
 directly and per-entry.
 
-**Deliberately did NOT fill the other 49.** They differ in kind from every prose batch
+Then filled **Tsh209-213** by the proper method: their generator docstrings state the
+encoded condition exactly (seam edge closing on the parameter period; shell-mode tolerance
+recursion; a boundary that is one zero-length edge; a hole boundary whose contained edge
+disagrees on orientation; a face-boundary collection that must type-filter a stray vertex).
+**Read the generator, not the title** -- the docstrings carry the claim in full.
+
+**Deliberately did NOT fill the remaining 44.** They differ in kind from every prose batch
 shipped today: all are complete wrapped B-reps that LOAD SUCCESSFULLY (`occt=shape(1)`).
 Their claims are BEHAVIOURAL -- what a repair routine should do -- not structural. Nothing
 in the file itself tells you the right answer; you have to know what the titled condition
@@ -2645,7 +2651,7 @@ routine the file may never reach (cf. the RUNTIME-VERIFIED notes added this morn
 prose derived from the title alone risks being wrong as well as empty.
 
 **How to do it properly:** read the fixture and its generator, establish what condition is
-actually encoded, then write the spec. Roughly 49 entries x per-file reading. Titles like
+actually encoded, then write the spec. Roughly 44 entries x per-file reading, and the generator docstrings make it tractable. Titles like
 `Tsh211` "Degenerate edge-only wire removal" and `Tfa219` "vertex_tolerance_mismatch" are
 descriptive enough to start from; `Tfa218` "circle_parameter" is not.
 

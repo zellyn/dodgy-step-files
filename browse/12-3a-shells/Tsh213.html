@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal</p></section>
+<p>the start vertex of one edge in the face&#x27;s outer boundary is ALSO registered as a free-standing vertex directly in the shell. When collecting the boundaries of a face, a correct kernel must filter subshapes by type and skip anything that is not a boundary; passing a bare vertex into boundary processing is a type error, and the guard belongs at the collection step rather than being left to whatever the consumer does with it.</p></section>
 <section><h2>Notes</h2>
 <p>shape-type-filtering, iterator-safety</p></section>
 <section><h2>Expected validation</h2>

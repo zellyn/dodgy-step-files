@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal</p></section>
+<p>a face with a rectangular hole declares the hole boundary as internal while one of the edges inside that boundary is declared external. A correct kernel must detect the disagreement between a boundary&#x27;s orientation and that of an edge it contains, reconcile it — flipping the edge to match the boundary — and account for the change so later segment processing sees consistent orientation. Accepting both orientations as given yields a hole whose winding is self-contradictory.</p></section>
 <section><h2>Notes</h2>
 <p>orientation-mismatch, face-bound-repair</p></section>
 <section><h2>Expected validation</h2>

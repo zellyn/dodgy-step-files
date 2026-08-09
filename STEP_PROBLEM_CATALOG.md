@@ -31614,7 +31614,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Category**: §12.3a shells (sub-class: parametric-seam)
 - **Sources**: OCCT/ShapeFix_Shell.OrientedShells
 - **Description**: Shell with U-closed surface (cylindrical) and seam edge crossing parametric boundary (U=0→2π). Orientation propagation fails to detect period wraparound, causing undefined seam edge orientation.
-- **Expected kernel behavior**: heal
+- **Expected kernel behavior**: the file encodes a cylindrical face whose seam edge is a full circle with the same vertex at both ends, sitting where the parameter wraps (U=0 and U=2π are the same position). A correct kernel must recognise the periodic closure and assign the seam edge a deterministic orientation derived from the surface period, rather than leaving orientation undefined because the two endpoints compare equal. If it cannot decide, it must say so rather than propagating an arbitrary choice into the shell.
 - **Notes**: parametric-period-crossing, seam-edge-ambiguity
 - **Model impact**: Shell with single cylindrical face; reads with orientation-undefined seam.
 - **Fixture path**: step-examples/12-3a-shells/Tsh209.stp
@@ -31631,7 +31631,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Category**: §12.3a shells (sub-class: tolerance-analysis)
 - **Sources**: OCCT/ShapeAnalysis_ShapeTolerance.InTolerance
 - **Description**: Shell containing single face with out-of-range tolerance (0.0015 μm, query [0.001, 0.002]). Recursive shell-mode filtering must include container shell even if child face is in-range. Validates shell-face recursion path.
-- **Expected kernel behavior**: heal
+- **Expected kernel behavior**: a shell contains one face whose vertex tolerances fall inside the queried range while the shell's own recorded tolerance does not. A tolerance query run in shell mode must recurse into child faces and include the containing shell in the result when any child qualifies; excluding the container because only its children match will silently under-report the model's true tolerance span.
 - **Notes**: shell-container-recursion, tolerance-bracket
 - **Model impact**: Shell reads with face-tolerance anomaly; kernel must report shell in result.
 - **Fixture path**: step-examples/12-3a-shells/Tsh210.stp
@@ -31642,7 +31642,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Category**: §12.3a shells (sub-class: degenerate-pruning)
 - **Sources**: OCCT/ShapeFix_ComposeShell.DispatchWires
 - **Description**: Shell face with inner wire containing single degenerate edge (zero-length, both endpoints identical). DispatchWires must detect and remove wire when NbEdges()==1 && Degenerated(edge).
-- **Expected kernel behavior**: heal
+- **Expected kernel behavior**: one face carries an inner boundary whose loop holds exactly one zero-length edge — both endpoints are the same vertex. A correct kernel must detect a boundary consisting of a single degenerate edge and drop that boundary, leaving the face with its valid outer loop. Retaining it keeps a hole of zero extent in the face topology, which every later operation must then special-case.
 - **Notes**: degenerate-wire-pruning, edge-loop-elimination
 - **Model impact**: Face with outer loop plus inner degenerate wire; reads with degenerate wire present.
 - **Fixture path**: step-examples/12-3a-shells/Tsh211.stp
@@ -31653,7 +31653,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Category**: §12.3a shells (sub-class: orientation-repair)
 - **Sources**: OCCT/ShapeFix_ComposeShell.BreakWires
 - **Description**: Face with inner hole wire (INTERNAL orientation) containing edge with EXTERNAL orientation (conflicting). BreakWires must detect and flip edge orientation, incrementing nbnew counter for segment finalization.
-- **Expected kernel behavior**: heal
+- **Expected kernel behavior**: a face with a rectangular hole declares the hole boundary as internal while one of the edges inside that boundary is declared external. A correct kernel must detect the disagreement between a boundary's orientation and that of an edge it contains, reconcile it — flipping the edge to match the boundary — and account for the change so later segment processing sees consistent orientation. Accepting both orientations as given yields a hole whose winding is self-contradictory.
 - **Notes**: orientation-mismatch, face-bound-repair
 - **Model impact**: Face with 4x4 square + 2x2 hole; reads with misoriented hole boundary.
 - **Fixture path**: step-examples/12-3a-shells/Tsh212.stp
@@ -31664,7 +31664,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Category**: §12.3a shells (sub-class: type-safety)
 - **Sources**: OCCT/ShapeFix_ComposeShell.CollectWires
 - **Description**: Face traversal during wire collection must filter non-WIRE shapes (e.g., isolated vertices). Without type guard, non-wire subshapes passed to wire processing, causing type-safety crash.
-- **Expected kernel behavior**: heal
+- **Expected kernel behavior**: the start vertex of one edge in the face's outer boundary is ALSO registered as a free-standing vertex directly in the shell. When collecting the boundaries of a face, a correct kernel must filter subshapes by type and skip anything that is not a boundary; passing a bare vertex into boundary processing is a type error, and the guard belongs at the collection step rather than being left to whatever the consumer does with it.
 - **Notes**: shape-type-filtering, iterator-safety
 - **Model impact**: Shell with face containing isolated vertex; reads with potential type mismatch in traversal.
 - **Fixture path**: step-examples/12-3a-shells/Tsh213.stp

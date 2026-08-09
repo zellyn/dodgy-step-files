@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal</p></section>
+<p>a shell contains one face whose vertex tolerances fall inside the queried range while the shell&#x27;s own recorded tolerance does not. A tolerance query run in shell mode must recurse into child faces and include the containing shell in the result when any child qualifies; excluding the container because only its children match will silently under-report the model&#x27;s true tolerance span.</p></section>
 <section><h2>Notes</h2>
 <p>shell-container-recursion, tolerance-bracket</p></section>
 <section><h2>Expected validation</h2>
