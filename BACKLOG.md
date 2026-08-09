@@ -2620,6 +2620,31 @@ ill-typed, so it tested nothing. With a synthesised DIRECTION, three of the four
 Same failure shape as the inline-entity mistake above -- **an invalid instrument returns
 a negative that looks like a finding.**
 
+#### (M.10) Dangling-ref remainder: measured, NOT acted on. 2026-08-09
+
+Current state: **39 fixtures reference a `#N` that is never defined** (comments and string
+literals stripped). Down from the 99 found in the 2026-07-07 sweep, consistent with the 44
+fixed in PR #30.
+
+**I did not edit any of them, and the reason matters more than the count.** I tried to
+split them into "title claims a reference defect" (15) vs "candidate accidental scaffold
+typo" (24) with a keyword filter. The filter is demonstrably wrong: `Ad051` is titled
+*"Reference to non-existent entity number (negative or out-of-range)"* and landed in the
+ACCIDENTAL bucket because it does not contain the word "dangling". Others in that bucket
+(`Ad124` non-numeric forward-ref, `Ad125` negative ID, `Ad126` explicit-STEP-ID) are
+plainly deliberate too, and the recurring `#9999` / `#9003` / `#9001` targets look like
+builder sentinels meaning "points at nothing on purpose".
+
+Separating accidental from deliberate here requires reading each GENERATOR, not the title
+-- and the 2026-07-07 audit already did that triage into three classes (scaffold-typo,
+malformed-comment `*)`, orphan/self-ref). Acting on a filter I can see is wrong, against a
+population someone already triaged, is precisely how (P.2) happened this morning: 13
+"orphaned carriers" that were all deliberate archetype-A fixtures, retracted in full.
+
+**Next step for whoever picks this up:** start from the 2026-07-07 triage lists, not from a
+fresh title-keyword pass. If those lists are gone, read the 39 generators directly. Do not
+trust a keyword classifier on this population.
+
 #### (M.9) Two prose sub-populations closed; both smaller than filed. 2026-08-09
 
 **no-face `heal` cohort -- DONE.** Filed as a ~209-entry wording pass. Measured: of the 225
