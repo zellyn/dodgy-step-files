@@ -2620,6 +2620,45 @@ ill-typed, so it tested nothing. With a synthesised DIRECTION, three of the four
 Same failure shape as the inline-entity mistake above -- **an invalid instrument returns
 a negative that looks like a finding.**
 
+#### (M.6) Generalise check 1 to EVERY reference slot: 55 % -> 74 %. 2026-08-09
+
+(M.5) noted that check 1 inspected exactly one attribute (`LINE.dir`) and so under-counted.
+Replacing it with a table-driven check over every reference-valued slot in the B-rep core
+-- 14 entity types, 22 attributes, each expectation a SET because these attributes are
+declared with supertypes -- is the largest single improvement so far:
+
+    wrong type in ANY reference slot :  99/177 crashers (56 %)  vs 21/2352 non (0.9 %)
+
+**62x enrichment**, and combined with the argument-count and empty-aggregate checks it
+takes parse-time coverage from **55 % to 131/177 = 74 %**.
+
+Most-violated slots among crashers: `LINE.dir -> DIRECTION` (53), `ADVANCED_FACE.bounds ->
+FACE_INNER_BOUND` (29), `LINE.dir -> CARTESIAN_POINT` (6), `LINE.pnt -> VERTEX_POINT` (4),
+`EDGE_CURVE.edge_geometry -> VERTEX_POINT` (4), `EDGE_LOOP.edge_list -> EDGE_CURVE` (4),
+`ADVANCED_FACE.bounds -> EDGE_LOOP` (4).
+
+##### FACE_INNER_BOUND is not a STEP entity
+29 of the 35 files using `FACE_INNER_BOUND` crash; only 1 non-crasher has it (Hea001).
+ISO 10303-42 defines `FACE_BOUND` and `FACE_OUTER_BOUND` -- there is no
+`FACE_INNER_BOUND`. Inner bounds are plain `FACE_BOUND`. So these files name an entity
+type that does not exist, the reader cannot resolve it, and the face's bound list gets a
+null. **Worth its own check: an entity type absent from the schema is always refusable.**
+
+##### Method note -- the table had to be audited against the negative class
+The first draft reported 27 non-crasher violations. Reading them individually found SIX
+were my omissions, not defects: BEZIER_SURFACE, DEGENERATE_TOROIDAL_SURFACE,
+BLENDED_EDGE_SURFACE, COMPOSITE_CURVE_ON_SURFACE, COMPLEX_TRIANGULATED_FACE and
+TRIANGULATED_FACE are all legitimate subtypes of the supertypes those slots declare.
+Fixing them dropped the non-crasher rate 1.1 % -> 0.9 % and left the crasher count
+unchanged, which is exactly the signature of removing false positives rather than signal.
+**A type table is a hypothesis; audit it against the files it flags in the negative
+class.** The remaining 21 are genuine violations in fixtures that happen not to crash --
+this check identifies schema violations, not crash predictions, and that is the honest
+way to describe it.
+
+##### Next
+46 crashers (26 %) still refuse all three checks.
+
 #### (M.5) Second stratified sample: one big bucket, one REFUTED rule. 2026-08-09
 
 Repeated the stratified-lldb-sample on the 81 still-unexplained crashers, one per

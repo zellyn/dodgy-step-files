@@ -193,6 +193,78 @@ def _args_of(txt: str, m) -> list[str]:
     return []
 
 
+# ---- schema-declared types for reference-valued slots -------------------------
+# Hand-entered from ISO 10303-42 and checked against the corpus: every "violation"
+# reported in a NON-crashing file was read individually, and six legitimate subtypes
+# (BEZIER_SURFACE, DEGENERATE_TOROIDAL_SURFACE, BLENDED_EDGE_SURFACE,
+# COMPOSITE_CURVE_ON_SURFACE, COMPLEX_TRIANGULATED_FACE, TRIANGULATED_FACE) were missing
+# from a first draft. Each expectation is a SET because these attributes are declared
+# with SUPERTYPES -- EDGE_CURVE.edge_geometry is a CURVE, so LINE/CIRCLE/B_SPLINE all fit.
+_SURFACE = {"PLANE", "CYLINDRICAL_SURFACE", "CONICAL_SURFACE", "SPHERICAL_SURFACE",
+            "TOROIDAL_SURFACE", "B_SPLINE_SURFACE_WITH_KNOTS", "B_SPLINE_SURFACE",
+            "RATIONAL_B_SPLINE_SURFACE", "SURFACE_OF_REVOLUTION", "OFFSET_SURFACE",
+            "SURFACE_OF_LINEAR_EXTRUSION", "RECTANGULAR_TRIMMED_SURFACE",
+            "CURVE_BOUNDED_SURFACE", "RECTANGULAR_COMPOSITE_SURFACE", "SURFACE_REPLICA",
+            "BEZIER_SURFACE", "DEGENERATE_TOROIDAL_SURFACE", "BLENDED_EDGE_SURFACE",
+            "UNIFORM_SURFACE", "QUASI_UNIFORM_SURFACE", "SWEPT_SURFACE"}
+_CURVE = {"LINE", "CIRCLE", "ELLIPSE", "HYPERBOLA", "PARABOLA", "POLYLINE",
+          "B_SPLINE_CURVE_WITH_KNOTS", "B_SPLINE_CURVE", "RATIONAL_B_SPLINE_CURVE",
+          "TRIMMED_CURVE", "COMPOSITE_CURVE", "SURFACE_CURVE", "SEAM_CURVE",
+          "INTERSECTION_CURVE", "OFFSET_CURVE_3D", "PCURVE", "CURVE_REPLICA",
+          "BOUNDED_CURVE", "CONIC", "DEGENERATE_PCURVE", "COMPOSITE_CURVE_ON_SURFACE",
+          "BEZIER_CURVE", "UNIFORM_CURVE", "QUASI_UNIFORM_CURVE", "CURVE_ON_SURFACE"}
+_POINT = {"CARTESIAN_POINT", "POINT_ON_CURVE", "POINT_ON_SURFACE", "POINT_REPLICA",
+          "DEGENERATE_PCURVE"}
+_LOOP = {"EDGE_LOOP", "POLY_LOOP", "VERTEX_LOOP"}
+_FBOUND = {"FACE_BOUND", "FACE_OUTER_BOUND"}
+_SHELL = {"CLOSED_SHELL", "OPEN_SHELL", "ORIENTED_CLOSED_SHELL"}
+_FACE = {"ADVANCED_FACE", "FACE_SURFACE", "ORIENTED_FACE", "SUBFACE",
+         "TRIANGULATED_FACE", "COMPLEX_TRIANGULATED_FACE", "CURVE_BOUNDED_SURFACE"}
+
+# entity -> {argument index: (legal types, arg_is_a_list)}
+SLOT_TYPES = {
+    "LINE":                      {1: (_POINT, False), 2: ({"VECTOR"}, False)},
+    "VECTOR":                    {1: ({"DIRECTION"}, False)},
+    "VERTEX_POINT":              {1: (_POINT, False)},
+    "EDGE_CURVE":                {1: ({"VERTEX_POINT"}, False), 2: ({"VERTEX_POINT"}, False),
+                                  3: (_CURVE, False)},
+    "ORIENTED_EDGE":             {3: ({"EDGE_CURVE"}, False)},
+    "EDGE_LOOP":                 {1: ({"ORIENTED_EDGE"}, True)},
+    "FACE_BOUND":                {1: (_LOOP, False)},
+    "FACE_OUTER_BOUND":          {1: (_LOOP, False)},
+    "ADVANCED_FACE":             {1: (_FBOUND, True), 2: (_SURFACE, False)},
+    "FACE_SURFACE":              {1: (_FBOUND, True), 2: (_SURFACE, False)},
+    "CLOSED_SHELL":              {1: (_FACE, True)},
+    "OPEN_SHELL":                {1: (_FACE, True)},
+    "MANIFOLD_SOLID_BREP":       {1: (_SHELL, False)},
+    "SHELL_BASED_SURFACE_MODEL": {1: (_SHELL, True)},
+}
+
+
+def _slot_type_violation(txt: str, kind: dict) -> bool:
+    """Any reference slot holding an entity that is not its declared type.
+
+    Unresolvable references (undefined #N, or complex instances like
+    `#7=(A()B())` that carry no single type name) are treated as UNKNOWN and are
+    NEVER counted -- they belong to the separate dangling-ref class, and counting
+    them here would both double-count and manufacture false positives.
+    """
+    for name, rules in SLOT_TYPES.items():
+        for m in re.finditer(rf"#(\d+)\s*=\s*{name}\s*\(", txt, re.I):
+            args = _args_of(txt, m)
+            for idx, (ok, is_list) in rules.items():
+                if idx >= len(args):
+                    continue
+                a = args[idx].strip()
+                refs = (re.findall(r"#(\d+)", a) if is_list
+                        else ([a.lstrip("#")] if a.startswith("#") else []))
+                for r in refs:
+                    k = kind.get(r)
+                    if k is not None and k not in ok:
+                        return True
+    return False
+
+
 def crash_refusable(tok: dict[str, str]) -> dict:
     """Of the crashing fixtures, how many are refusable BEFORE geometry is built?
 
@@ -234,14 +306,8 @@ def crash_refusable(tok: dict[str, str]) -> dict:
         except OSError:
             continue
         kind = {m.group(1): m.group(2).upper() for m in ent.finditer(txt)}
-        for m in re.finditer(r"#\d+\s*=\s*LINE\s*\(", txt, re.I):
-            a = _args_of(txt, m)
-            if len(a) == 3:
-                r = a[2].strip().lstrip("#")
-                # default VECTOR => an inline/unresolvable ref is not counted as an error
-                if r.isdigit() and kind.get(r, "VECTOR") != "VECTOR":
-                    by_type.append(fid)
-                    break
+        if _slot_type_violation(txt, kind):
+            by_type.append(fid)
         for name, want in ARGCOUNT.items():
             if any(len(_args_of(txt, m)) != want
                    for m in re.finditer(rf"=\s*{name}\s*\(", txt, re.I)):
@@ -416,10 +482,15 @@ def main() -> None:
           "are refusable before a single geometric entity is constructed** — by three "
           "checks that need nothing but the file and a schema table:")
         A("")
-        A(f"1. **Wrong type in a slot** ({cr['type']} fixtures). `LINE.dir` is declared "
-          "`VECTOR`; these files point it at a `DIRECTION` or a `CARTESIAN_POINT`. "
-          "Repairing that one reference makes the file load — verified individually on "
-          "26 of them, so this is cause, not correlation.")
+        A(f"1. **Wrong type in a reference slot** ({cr['type']} fixtures) — the single "
+          "biggest one. Every attribute that names another entity has a declared type; "
+          "these files put something else there. `LINE.dir` is declared `VECTOR` and "
+          "points at a `DIRECTION`; `ADVANCED_FACE.bounds` is declared `FACE_BOUND` and "
+          "holds a raw `EDGE_LOOP`; `EDGE_LOOP.edge_list` holds an `EDGE_CURVE` with no "
+          "`ORIENTED_EDGE` wrapper. Repairing the reference makes the file load — "
+          "verified individually on 26 of the `LINE.dir` cases, so this is cause, not "
+          "correlation. Checking **all** reference slots rather than one flags 56% of "
+          "crashers against **0.9%** of non-crashers.")
         A(f"2. **Wrong argument count** ({cr['count']} fixtures), detailed below.")
         A(f"3. **Empty aggregate where the schema requires one or more** "
           f"({cr['empty']} fixtures) — `SHELL_BASED_SURFACE_MODEL('',())`, "
