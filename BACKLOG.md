@@ -2620,6 +2620,28 @@ ill-typed, so it tested nothing. With a synthesised DIRECTION, three of the four
 Same failure shape as the inline-entity mistake above -- **an invalid instrument returns
 a negative that looks like a finding.**
 
+#### (M.17) Real-file calibration complete: three negatives that sharpen the corpus. 2026-08-09
+
+The remaining oracle dimensions run against the 28 NIST real exports:
+
+  1. `occt_heal_on` vs `occt_heal_off`: **identical on 28/28** — OCCT's healing changes
+     nothing observable (status or shape counts) on any real well-formed export. The
+     healing behaviour the corpus documents fires on MALFORMED input only.
+  2. `part21_strict`: **28/28 `accept_with_warnings`, first warning always
+     `W_FORWARD_REF`, zero errors, zero unresolved refs.** Forward references are
+     UNIVERSAL in real CAD output — every exporter emits entities that reference
+     higher-numbered ids defined later. Implementer-facing corollary worth having:
+     a single-pass parser that resolves references eagerly rejects every real file
+     in existence; resolution must be lazy or two-pass. The corpus's strict parser is
+     correctly calibrated in treating this as a warning, not an error.
+  3. (from M.16) full load: 28/28 `accept`, 1 solid each, zero crashes/silent-empties.
+
+Together these close the real-file calibration question: every check and oracle in the
+repo has now been measured against real CATIA/NX/Creo/SolidWorks output, and the corpus's
+defect findings are confirmed to be about malformed input, not tool fragility. The NIST
+set stays in scratchpad (nothing committed; NIST licensing untouched); re-fetch URL is in
+audit/mining_nist_mbxif_2026-07.md if this ever needs re-running.
+
 #### (M.16) NIST follow-through: 28/28 load clean; the units design question now has byte-level data. 2026-08-09
 
 **Negative result worth keeping: OCCT 7.8.1 loads all 28 real NIST PMI exports cleanly** —
