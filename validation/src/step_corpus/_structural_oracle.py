@@ -157,17 +157,47 @@ _CONV_LENGTH = re.compile(
 )
 
 
+# A length CONVERSION_BASED_UNIT's second argument is its defining measure:
+#   CONVERSION_BASED_UNIT('INCH', #a);  #a = LENGTH_MEASURE_WITH_UNIT(..., #b)
+# where #b (eventually) holds an SI length unit.  ISO 10303-41 REQUIRES that
+# basis, so every inch-authored file necessarily contains an SI mm unit.
+_CONV_LENGTH_REF = re.compile(
+    r"CONVERSION_BASED_UNIT\s*\(\s*'[^']*(?:INCH|FOOT|MIL|METRE|MM|YARD)[^']*'\s*,\s*#(\d+)",
+    re.IGNORECASE,
+)
+_STMT_BODY = re.compile(r"#(\d+)\s*=\s*([^;]*);", re.S)
+
+
 def _length_units(data: str) -> set:
     """Distinct LENGTH units declared in the model (simple or complex form).
 
     Only METRE-based SI units and named length CONVERSION_BASED_UNITs count;
     angle / solid-angle units are irrelevant to model scale and are ignored.
+
+    An SI unit that appears ONLY inside a conversion-based unit's defining
+    measure is that conversion's mandatory basis (ISO 10303-41), not a second
+    model unit — counting it flagged EVERY inch-authored export (20 of 28 NIST
+    real CAD files, 2026-08-09).  Basis entities are excluded.  The exclusion
+    over-approximates (all ids referenced from the measure entity are treated
+    as basis), which can only UNDER-count — preserving the module's fail-safe
+    direction.  A basis entity that is ALSO independently assigned in a unit
+    context is likewise excluded (under-report); scoping units by reachability
+    from the geometry context is a design question left open in BACKLOG (M.15).
     """
     data = _strip_comments(data)
+    ents = {int(m.group(1)): m.group(2) for m in _STMT_BODY.finditer(data)}
+    basis: set = set()
+    for m in _CONV_LENGTH_REF.finditer(data):
+        measure = ents.get(int(m.group(1)), "")
+        for r in _ID_REF.findall(measure):
+            basis.add(int(r))
     units: set = set()
-    for m in _SI_LENGTH.finditer(data):
-        prefix = (m.group(1) or "$").strip(".")
-        units.add(("SI", prefix or "$"))
+    for eid, body in ents.items():
+        if eid in basis:
+            continue
+        for m in _SI_LENGTH.finditer(body):
+            prefix = (m.group(1) or "$").strip(".")
+            units.add(("SI", prefix or "$"))
     for m in _CONV_LENGTH.finditer(data):
         units.add(("CONV", m.group(1).upper()))
     return units

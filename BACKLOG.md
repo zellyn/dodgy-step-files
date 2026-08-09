@@ -2620,6 +2620,38 @@ ill-typed, so it tested nothing. With a synthesised DIRECTION, three of the four
 Same failure shape as the inline-entity mistake above -- **an invalid instrument returns
 a negative that looks like a finding.**
 
+#### (M.15) Real-CAD-export validation: 3 proposed checks 0/28 FP; shipped UNITS check had an every-inch-file bug, fixed. 2026-08-09
+
+Fetched the 28 NIST PMI STEP files (real CATIA/NX/Creo/SolidWorks exports; scratchpad
+only, nothing committed) and ran every check against them.
+
+**The evidence SLOT_TYPE was waiting for:** slot-type, argument-count and empty-aggregate
+produced **ZERO flags on all 28 real exports.** Combined with 0/17 targeted controls, the
+false-positive case against adoption is now empty; what remains for the maintainer is only
+the DRIFT-rebaseline decision in (M.8).
+
+**Found and fixed: `UNITS_INCONSISTENT` flagged 20 of 28 (71 %) real files.** Mechanism,
+verified in bytes: ISO 10303-41 REQUIRES a conversion-based unit to carry an SI defining
+measure — `CONVERSION_BASED_UNIT('INCH',#a); #a=LENGTH_MEASURE_WITH_UNIT(25.4,#b); #b=SI mm`
+— and `_length_units` flat-counted that mandatory basis as a second model unit, so **every
+inch-authored STEP file in existence flagged**. The corpus already knew: one fixture's
+Notes described this exact "accepted false-positive class (U006/A038)", and those fixtures
+deliberately skip the structural assertion because of it.
+
+Fix: exclude SI units inside a conversion's defining measure. Fail-safe direction
+preserved (the exclusion over-approximates, which can only UNDER-count). Blast radius,
+measured before shipping: NIST 20 -> 11; corpus verdicts 32 -> 15 (17 changes, ALL in the
+documented accepted-FP class); the **single** structural assertion (U049, two independent
+SI units, no conversion) unaffected; the one stale Notes sentence updated. 639 tests pass.
+
+**Open design question, deliberately NOT decided here:** 11 of 28 real files still flag,
+because they genuinely carry an SI mm unit context ALONGSIDE inch geometry (typical AP242
+PMI practice: annotation/draughting contexts in mm). Whether "multiple unit contexts, each
+internally consistent" should flag at all — or whether the check should scope to units
+reachable from the GEOMETRY context — changes what the check MEANS, and that is a
+maintainer call. As shipped, the check now says exactly what its docstring claims and no
+longer condemns every inch file for existing.
+
 #### (M.14) Five new negative controls: clean-file FP evidence 12 -> 17. 2026-08-09
 
 The SLOT_TYPE proposal's stated weakness was that only 12 known-clean files existed to
