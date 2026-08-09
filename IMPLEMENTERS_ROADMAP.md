@@ -27,6 +27,27 @@ These are separated from the general `empty` population on purpose. `empty` alon
 
 **Test against:** `Gn001`, `Gn009`, `Gn010`, `Gn013`, `Gn014`, `Gn017`, `Gn018`, `Gn019`, `Gn025`, `Gn026`, `Gn031`, `Gn032`, `Gn033`, `Gn034`, `Gn035`, `Gn037`, `Gn038`, `Gn039`, `Gn046`, `Gn047` …and 86 more
 
+## Cheapest crash defence: check argument counts at parse time
+
+Of the fixtures containing a `B_SPLINE_CURVE_WITH_KNOTS` or `B_SPLINE_SURFACE_WITH_KNOTS`:
+
+| argument count vs. schema | crashes | rate |
+|---|---|---|
+| **deviates** | 22 / 23 | **96%** |
+| correct | 14 / 420 | 3% |
+
+A file that gives one of these entities the wrong *number* of arguments crashes this reference engine almost every time; a file that gets the count right almost never does. Nothing else about the entity predicts a crash nearly as well — a flat control-point list, knot multiplicities written as reals, and a control-point count that contradicts the multiplicities were each tested in isolation against a known-good surface, and **all three load fine**.
+
+The reason is positional. These entities are read by slot, so omitting an attribute does not produce a missing value — it shifts every later argument one position left, and the reader ends up taking a list where the schema promised it an enum. It then uses the result without checking, and dereferences null.
+
+**Where it lands varies; the input pattern does not.** Traced crash sites include the vector constructor, the B-spline surface constructor, and the face translator — whichever converter happens to reach the malformed entity first. Treating these as three separate bugs to null-check individually is the expensive path.
+
+**The cheap path:** validate each entity's argument count against the schema *at parse time*, before any geometry is constructed. That is a table lookup and a comparison. It rejects every one of these files with a precise, actionable diagnostic naming the entity and the expected count, and no converter ever sees them. Downstream null-checking, by contrast, has to be repeated at every construction site and still produces a worse error message.
+
+Honest caveat: 1 deviating fixture — `Gn169` — does not crash, so the count is a very strong predictor rather than a law. The correlation was measured across the whole corpus; only some of the crashes were traced to a call site individually.
+
+**Test against:** `Gn043`, `Gn105`, `Gn107`, `Gn173`, `Gp056`, `Gp058`, `Gp060`, `Gp101`, `Gp102`, `Gp104`, `Gs134`, `Gs137`, `Gs138`, `Tfa141`, `Tfa144`, `Tfa172`, `Tfa174`, `Tfa175`, `Tfa180`, `Tfa187` …and 2 more
+
 ## What this page does *not* cover
 
 **2448 of the 2530 STEP fixtures (97%) carry a written `Expected kernel behavior`.** The other 82 are real fixtures with real, CI-verified assertions — they are good *tests* — but they do not state what a correct kernel should do, so they teach an implementer nothing on their own. They are marked † below. Most of that remainder is deliberate: an entry whose bytes were found to contradict its own title is left unspecced ON PURPOSE, because a specification written on a disproved claim would propagate the error rather than fix it.

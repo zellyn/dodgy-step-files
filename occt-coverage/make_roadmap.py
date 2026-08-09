@@ -104,6 +104,82 @@ def silent_total_loss(tok: dict[str, str]) -> list[str]:
     return sorted(out)
 
 
+# Attribute counts from the AP214/AP242 EXPRESS schema. Only these two are listed
+# because they are the entities the corpus actually malforms this way.
+ARGCOUNT = {"B_SPLINE_SURFACE_WITH_KNOTS": 13, "B_SPLINE_CURVE_WITH_KNOTS": 9}
+
+
+def _split_args(body: str) -> list[str]:
+    """Top-level comma split, ignoring commas nested in ( ) or in strings."""
+    out, depth, cur, instr = [], 0, [], False
+    for ch in body:
+        if instr:
+            cur.append(ch)
+            if ch == "'":
+                instr = False
+            continue
+        if ch == "'":
+            instr = True; cur.append(ch)
+        elif ch == "(":
+            depth += 1; cur.append(ch)
+        elif ch == ")":
+            depth -= 1; cur.append(ch)
+        elif ch == "," and depth == 0:
+            out.append("".join(cur)); cur = []
+        else:
+            cur.append(ch)
+    if "".join(cur).strip():
+        out.append("".join(cur))
+    return out
+
+
+def argcount_deviants(tok: dict[str, str]) -> tuple[list[str], list[str], int, int]:
+    """Fixtures whose B-spline entities carry the wrong NUMBER of arguments.
+
+    Discovered by isolating a crash site: it was not the flat control-point
+    list, nor real-valued multiplicities, nor a control-point count that
+    contradicts the multiplicities -- all three of those LOAD. It was omitting
+    attributes, which shifts every later argument into the wrong slot, so the
+    reader takes (say) a list where the schema promised it an enum.
+
+    Returns (crashing_deviants, non_crashing_deviants, n_correct, n_correct_crash)
+    so the caller can print the base rate alongside. A discriminator without its
+    base rate is not a finding.
+    """
+    dev_crash, dev_ok, n_ok, n_ok_crash = [], [], 0, 0
+    for fid, t in tok.items():
+        hits = glob.glob(os.path.join(ROOT, "step-examples", "*", f"{fid}.stp"))
+        if not hits:
+            continue
+        try:
+            txt = open(hits[0], errors="replace").read()
+        except OSError:
+            continue
+        seen = deviates = False
+        for name, want in ARGCOUNT.items():
+            for m in re.finditer(rf"=\s*{name}\s*\(", txt, re.I):
+                seen = True
+                i, depth = m.end() - 1, 0
+                for j in range(i, len(txt)):
+                    if txt[j] == "(":
+                        depth += 1
+                    elif txt[j] == ")":
+                        depth -= 1
+                        if depth == 0:
+                            if len(_split_args(txt[i + 1:j])) != want:
+                                deviates = True
+                            break
+        if not seen:
+            continue
+        crashed = t == "signal(11)"
+        if deviates:
+            (dev_crash if crashed else dev_ok).append(fid)
+        else:
+            n_ok += 1
+            n_ok_crash += crashed
+    return sorted(dev_crash), sorted(dev_ok), n_ok, n_ok_crash
+
+
 def load_classes() -> list[dict]:
     out = []
     for path in sorted(glob.glob(os.path.join(ROOT, "occt-coverage", "*", "problems.json"))):
@@ -251,6 +327,61 @@ def main() -> None:
         A("")
         A("**Test against:** " + ", ".join(f"`{f}`" for f in stl[:20])
           + ("" if len(stl) <= 20 else f" …and {len(stl) - 20} more"))
+        A("")
+
+    dcrash, dok, n_ok, n_ok_crash = argcount_deviants(tok)
+    if dcrash:
+        n_dev = len(dcrash) + len(dok)
+        r_dev = 100.0 * len(dcrash) / n_dev
+        r_ok = 100.0 * n_ok_crash / n_ok if n_ok else 0.0
+        A("## Cheapest crash defence: check argument counts at parse time")
+        A("")
+        A("Of the fixtures containing a `B_SPLINE_CURVE_WITH_KNOTS` or "
+          "`B_SPLINE_SURFACE_WITH_KNOTS`:")
+        A("")
+        A("| argument count vs. schema | crashes | rate |")
+        A("|---|---|---|")
+        A(f"| **deviates** | {len(dcrash)} / {n_dev} | **{r_dev:.0f}%** |")
+        A(f"| correct | {n_ok_crash} / {n_ok} | {r_ok:.0f}% |")
+        A("")
+        A("A file that gives one of these entities the wrong *number* of arguments "
+          "crashes this reference engine almost every time; a file that gets the count "
+          "right almost never does. Nothing else about the entity predicts a crash "
+          "nearly as well — a flat control-point list, knot multiplicities written as "
+          "reals, and a control-point count that contradicts the multiplicities were "
+          "each tested in isolation against a known-good surface, and **all three "
+          "load fine**.")
+        A("")
+        A("The reason is positional. These entities are read by slot, so omitting an "
+          "attribute does not produce a missing value — it shifts every later argument "
+          "one position left, and the reader ends up taking a list where the schema "
+          "promised it an enum. It then uses the result without checking, and "
+          "dereferences null.")
+        A("")
+        A("**Where it lands varies; the input pattern does not.** Traced crash sites "
+          "include the vector constructor, the B-spline surface constructor, and the "
+          "face translator — whichever converter happens to reach the malformed entity "
+          "first. Treating these as three separate bugs to null-check individually is "
+          "the expensive path.")
+        A("")
+        A("**The cheap path:** validate each entity's argument count against the schema "
+          "*at parse time*, before any geometry is constructed. That is a table lookup "
+          "and a comparison. It rejects every one of these files with a precise, "
+          "actionable diagnostic naming the entity and the expected count, and no "
+          "converter ever sees them. Downstream null-checking, by contrast, has to be "
+          "repeated at every construction site and still produces a worse error message.")
+        A("")
+        if dok:
+            plural = ("fixtures", "do") if len(dok) > 1 else ("fixture", "does")
+            A(f"Honest caveat: {len(dok)} deviating {plural[0]} — "
+              + ", ".join(f"`{f}`" for f in dok)
+              + f" — {plural[1]} not crash, so the count is a very strong predictor "
+                "rather than a law. The correlation was measured across the whole "
+                "corpus; only some of the crashes were traced to a call site "
+                "individually.")
+            A("")
+        A("**Test against:** " + ", ".join(f"`{f}`" for f in dcrash[:20])
+          + ("" if len(dcrash) <= 20 else f" …and {len(dcrash) - 20} more"))
         A("")
 
     A("## What this page does *not* cover")
