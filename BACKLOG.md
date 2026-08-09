@@ -2657,6 +2657,23 @@ empty-aggregate check, and DIRECTION/CARTESIAN_POINT were simply missing from it
 list. 1 crasher, **0 non-crashers** -- zero false positives, so it costs nothing. Check 3
 now covers it; total 97/177 (55 %).
 
+##### What the TranslateFace bucket is NOT
+All four have a proper surface in `face_geometry`, so it is not a mistyped face geometry.
+But the composition differs sharply: **Gp056 uses an `EDGE_LOOP` DIRECTLY as a face
+bound** (and puts an `EDGE_CURVE` straight in the loop with no `ORIENTED_EDGE`), where
+the schema requires a `FACE_BOUND`. Tfa037/Tsh049/Twi079 all use proper
+`FACE_OUTER_BOUND`/`FACE_INNER_BOUND` with `ORIENTED_EDGE`s. So a shared crash OFFSET
+does not imply a shared input pattern -- several different null handles reach the same
+line.
+
+**The generalisation this suggests, and the reason check 1 under-counts:** "wrong type in
+a slot" should be applied to EVERY reference-valued attribute, against the schema's
+declared type for that attribute. My implementation checks exactly one attribute
+(`LINE.dir`), which is why its 60 is a floor. `ADVANCED_FACE.bounds` and
+`EDGE_LOOP.edge_list` are two more instances visible in this bucket alone. A kernel that
+type-checks all of them at parse time subsumes checks 1 and 3 and probably a good part of
+the remaining 80.
+
 ##### Next
 80 unexplained. Trace more of the TranslateFace::Init + 1852 bucket and find what those
 four files share -- a single input pattern there would be the biggest remaining win.
