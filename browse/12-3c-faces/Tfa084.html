@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>the inner notch boundary is 0.1 mm wide, so removing it leaves the surviving outer edges 0.1 mm apart. Removing a notch is only a repair if the edges left behind actually meet: measure the residual gap and, when one remains, either bridge it or report the notch as unremovable. Deleting the boundary and leaving a gap converts a visible defect into an invisible one.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(36) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

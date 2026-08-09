@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>one seam vertex carries tolerance 0.001 while another carries 10.0 — four orders of magnitude apart in a single edge chain. Concatenating edges into a continuous chain must validate that their tolerances are comparable first. Feeding a mixed-tolerance array to a continuity test makes the verdict depend on which tolerance the algorithm happens to use, so the same chain can be judged continuous or not.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

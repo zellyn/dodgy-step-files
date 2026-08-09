@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>the spherical face carries two inner boundaries that are zero-extent edges at the north pole — the same vertex, the same point. Measure each boundary&#x27;s extent and consolidate or drop the degenerate ones before treating them as bounds. A zero-extent boundary contributes no constraint but is counted as one, so the face appears multiply-bounded while being bounded only once.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

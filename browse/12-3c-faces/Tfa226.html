@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>a cylindrical face is merged wire by wire. A wire handle must be validated before it is merged into face topology — the guard belongs at the point of merge, not in the caller. This fixture is the positive case: it exists so a kernel can confirm the guard is present and that a valid wire still merges cleanly through it.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

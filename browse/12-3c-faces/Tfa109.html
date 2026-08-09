@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>a thin triangular face has a tip angle near 120° while its area and bounding dimensions are small enough to pass the size thresholds. Classifying a small face as a spike must test that the tip is actually acute, not only that the face is small: a wedge and a spike need different repairs, and a size test alone cannot tell them apart.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(21) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

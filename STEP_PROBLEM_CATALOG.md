@@ -25283,6 +25283,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(45) ifc=schema_n/a`
 ### Tfa084 — free-bounds analysis.CheckNotches gap-after-fix
 Rectangular face with interior notch that, when removed, leaves 0.1-unit gap between surviving edges. CheckNotches must flag orphaned gaps as invalid; defect: gap detection skipped.
+- **Expected kernel behavior**: the inner notch boundary is 0.1 mm wide, so removing it leaves the surviving outer edges 0.1 mm apart. Removing a notch is only a repair if the edges left behind actually meet: measure the residual gap and, when one remains, either bridge it or report the notch as unremovable. Deleting the boundary and leaving a gap converts a visible defect into an invisible one.
 - **Tier-3 assertion**: n_faces_total == 6
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(36) ifc=schema_n/a`
 ### Tfa085 — FACE_INNER_BOUND wrapping a single, non-closed edge crashes the reader (SIGSEGV) before any split-face logic can run
@@ -25551,6 +25552,7 @@ Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-16): the top fac
 
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3c-faces/Tfa109.stp`
 
+- **Expected kernel behavior**: a thin triangular face has a tip angle near 120° while its area and bounding dimensions are small enough to pass the size thresholds. Classifying a small face as a spike must test that the tip is actually acute, not only that the face is small: a wedge and a spike need different repairs, and a size test alone cannot tell them apart.
 - **Tier-3 assertion**: n_faces_total == 5
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(21) ifc=schema_n/a`
 ### Tfa110 — Single-edge circular wire orientation ambiguity
@@ -25565,6 +25567,7 @@ Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-16): the top fac
 
 
 **Coverage**: 5 fixtures synthesized per OCCT_HEAL_COVERAGE_V3.md wave 21 specifications. All fixtures conform to mandatory PRODUCT chain and STEP-AP structure.
+- **Expected kernel behavior**: the face's outer boundary is a single closed circle whose start and end are the same vertex. Inside/outside cannot be decided by a winding test over a vertex sequence when there is only one vertex. Determine orientation from the surface normal and the curve's parametric direction instead; a polygon-winding assumption has no defined answer here and will return whatever the loop's arbitrary start happens to produce.
 - **Tier-3 assertion**: n_faces_total == 3
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 3.0
@@ -26570,7 +26573,7 @@ Rectangular face (10x10, x/y in [0,10]) with a closed 2-edge `FACE_BOUND` "split
 - **Category**: §12.3c faces (sub-class: seam-synthesis)
 - **Sources**: OCCT/ShapeFix_Face.FixMissingSeam (line 1724)
 - **Description**: Toroidal surface with missing seam wire. Tests null-surface-guard branch preventing dereference on uninitialized surface handles before IsUClosed/IsVClosed checks.
-- **Expected kernel behavior**: heal
+- **Expected kernel behavior**: a toroidal face covers a full revolution in U but omits the seam edge. Two requirements: confirm the surface is present before querying whether it closes in U or V, and treat a periodic surface whose face lacks the seam as needing the seam synthesised — or reject it. Querying closure through an absent surface is a null dereference on a file that is otherwise well-formed.
 - **Notes**: Null surface guard; dereference protection
 - **Model impact**: Seam synthesis attempted; guard ensures safe null-check
 - **Fixture path**: step-examples/12-3c-faces/Tfa203.stp
@@ -26742,6 +26745,7 @@ Rectangular face (10x10, x/y in [0,10]) with a closed 2-edge `FACE_BOUND` "split
 **Defect**: Edge reversal in seam detection without forward-flag update (line 1829, UnionPCurves).
 **Minimal reproducer**: Build seam edge on periodic surface; set isForward=true; reverse edge; isForward tracking stale; accumulated pcurve orientation corrupted.
 **Healing path**: Capture isForward after seam reversal branch; validate forward-flag consistency across seam edges.
+- **Expected kernel behavior**: the seam edge appears twice in one loop, once forward and once reversed, to close the revolution. When such an edge is reversed during merging, its per-use orientation must be recomputed rather than read from a flag captured before the reversal. A stale orientation flag silently inverts the accumulated parametric direction for one of the two uses.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "torus"
 - **Tier-3 assertion**: face[0].quadric.major_radius == 2.0
@@ -26754,6 +26758,7 @@ Rectangular face (10x10, x/y in [0,10]) with a closed 2-edge `FACE_BOUND` "split
 **Defect**: Nested TrimmedCurve BasisCurve extraction loses inner bounds (line 1876, UnionPCurves).
 **Minimal reproducer**: TrimmedCurve(TrimmedCurve(Line, [5,15]), [8,12]) unwrapped to outer level; inner [5,15] lost; effective range becomes [8,12].
 **Healing path**: Detect nesting depth; recursively extract all bound layers; reconstruct proper trim envelope.
+- **Expected kernel behavior**: the defect edge's pcurve is a trimmed curve over another trimmed curve — an outer range of [8,12] over an inner range of [5,15]. Reducing a nested trim to its basis curve must COMPOSE the ranges, taking their intersection; discarding the inner bounds and keeping only the outer collapses the effective range and silently changes which part of the curve the edge refers to.
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tfa218 — circle_parameter
@@ -26761,6 +26766,7 @@ Rectangular face (10x10, x/y in [0,10]) with a closed 2-edge `FACE_BOUND` "split
 **Defect**: Circle parameter wraparound fails; periodic domain spanning 2π boundary produces inverted range (line 1930, UnionPCurves).
 **Minimal reproducer**: Edge on torus spanning seam 6.0→0.5 (wrapping); aNewF=6.0, aNewL=0.5; swap reverses to [0.5,6.0]; range invalid.
 **Healing path**: Detect wraparound via ElCLib parameter comparison; normalize range modulo 2π; preserve interval sense.
+- **Expected kernel behavior**: the seam spans the period boundary, running from u=5.8 through 2π to u=0.5. When the end parameter is numerically smaller than the start on a periodic direction, add the period — do not swap them. Swapping produces the complementary arc: a range that is well-formed, plausible, and describes the wrong part of the surface.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "torus"
 - **Tier-3 assertion**: face[0].quadric.major_radius == 3.0
@@ -26773,6 +26779,7 @@ Rectangular face (10x10, x/y in [0,10]) with a closed 2-edge `FACE_BOUND` "split
 **Defect**: Vertex tolerance inconsistency in edge chain appended without hierarchy validation (line 1971, UnionPCurves).
 **Minimal reproducer**: Edge chain with vertices aTol[0]=0.001, aTol[1]=10.0; no synchronization; ConcatC1 receives heterogeneous tolerance array.
 **Healing path**: Validate tolerance hierarchy before accumulation; cap per-vertex tolerance to cumulative aMaxTol; synchronize tolerance state.
+- **Expected kernel behavior**: one seam vertex carries tolerance 0.001 while another carries 10.0 — four orders of magnitude apart in a single edge chain. Concatenating edges into a continuous chain must validate that their tolerances are comparable first. Feeding a mixed-tolerance array to a continuity test makes the verdict depend on which tolerance the algorithm happens to use, so the same chain can be judged continuous or not.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
@@ -26786,12 +26793,14 @@ Rectangular face (10x10, x/y in [0,10]) with a closed 2-edge `FACE_BOUND` "split
 **Defect**: ConcatC1 output array validation skipped; incompatible fragments force-merged (line 2037, UnionPCurves).
 **Minimal reproducer**: Feed Line+Circle with large gap; ConcatC1 produces 2 fragments; code iterates Add() anyway; artificial continuity created.
 **Healing path**: Check concatc2d quality before merge; skip low-quality fragments; fail gracefully if ConcatC1 < threshold coherence.
+- **Expected kernel behavior**: the loop mixes a straight edge and a circular arc separated by a gap wide enough that concatenation yields two fragments rather than one. A fragment count greater than one means the chain is NOT continuous, and that result must be honoured: report it instead of merging the fragments anyway. Force-merging produces a curve that claims continuity across a discontinuity it still contains.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: edge[1].curve_type == "circle"
 - **Tier-3 assertion**: edge[1].analytic.radius == 1.0
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(13) ifc=schema_n/a`
 ### Tfa221 — missing-seam recovery.null-surface-guard
 Degenerated torus (R=0.5, r=1.0); single EDGE_LOOP with 4 lines; tests null-surface guard at face-repair.cxx:1724. Defect: if mySurf.IsNull() guard omitted, null dereference at IsUClosed(). Canonical PRODUCT chain; DIRECTION ratios unit magnitude.
+- **Expected kernel behavior**: the torus is given a minor radius of 1.0 against a major radius of 0.5, so the tube swallows its own hole and the surface self-intersects. A kernel must reject or flag this configuration when the surface is constructed, rather than carrying it forward — and must confirm the surface exists before querying its closure, since an invalid construction may leave nothing to query.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "torus"
 - **Tier-3 assertion**: face[0].quadric.major_radius == 0.5
@@ -26808,6 +26817,7 @@ Degenerated torus (R=0.5, r=1.0); single EDGE_LOOP with 4 lines; tests null-surf
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(329) ifc=schema_n/a`
 ### Tfa222 — missing-seam recovery.no-closure-early-exit
 Open B-spline surface (unclosed U, V); 4-edge EDGE_LOOP with 2 B_SPLINE_CURVE_WITH_KNOTS edges and 2 straight line edges; tests early exit when surface open in both directions (line 1732). Defect: without early return, kernel attempts seam insertion on non-closed surface. Fully ISO-compliant.
+- **Expected kernel behavior**: the B-spline surface is open in both U and V, so there is no seam to insert. Check closure in at least one direction before attempting seam insertion and return early when the surface is open in both. Proceeding regardless means constructing a seam on a surface that has no periodic direction for it to lie on.
 - **OCC behavior**: OCCT loads B_SPLINE_SURFACE_WITH_KNOTS directly; surface_type="bspline", is_rational=False; edges are B_SPLINE_CURVE_WITH_KNOTS (not rational, is_rational=False on edges).
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "bspline"
@@ -26816,12 +26826,14 @@ Open B-spline surface (unclosed U, V); 4-edge EDGE_LOOP with 2 B_SPLINE_CURVE_WI
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 ### Tfa223 — missing-seam recovery.infinite-bounds-fallback
 Conical surface (apex at origin, semi-angle 0.5); single degenerated EDGE_LOOP (cone-tip); tests infinite-bounds fallback at line 1759. Defect: infinite U/V bounds bypass wire-bound substitution, causing NaN in seam-placement arithmetic.
+- **Expected kernel behavior**: the face's only boundary is a point-circle at the apex of a cone, where the parametric bounds are infinite. When surface bounds are unbounded, substitute bounds derived from the wire before any arithmetic. Computing a seam position from infinite bounds yields NaN, which then propagates silently through every subsequent comparison — NaN compares false against everything, so the failure never trips a check.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cone"
 - **Tier-3 assertion**: face[0].quadric.semi_angle == 0.5
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
 ### Tfa224 — missing-seam recovery.degenerate-wire-consolidation
 Sphere with 3 degenerate wires (zero-extent edges at same vertex); multi-bound face (outer + 2 holes); tests degenerate-wire removal at line 1872. Defect: without consolidation, degenerated seams collapse to singularity.
+- **Expected kernel behavior**: the spherical face carries two inner boundaries that are zero-extent edges at the north pole — the same vertex, the same point. Measure each boundary's extent and consolidate or drop the degenerate ones before treating them as bounds. A zero-extent boundary contributes no constraint but is counted as one, so the face appears multiply-bounded while being bounded only once.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "sphere"
 - **Tier-3 assertion**: face[0].quadric.radius == 3.0
@@ -26831,11 +26843,13 @@ Sphere with 3 degenerate wires (zero-extent edges at same vertex); multi-bound f
 ### Tfa225 — missing-seam recovery.seam-boundary-clamping
 U-closed BSpline surface; 2-edge loop with period-wrap geometry; tests seam-boundary clamping at line 2224. Defect: out-of-bounds seam placement (u > 2π) bypasses AdjustToPeriod, producing invalid parameter range.
 
+- **Expected kernel behavior**: a two-edge loop on a U-closed surface places a seam beyond the period, at u=2 where the period is 2. Seam parameters must be reduced into the period before use. An out-of-range seam produces a parameter interval that does not correspond to any part of the surface, and the range check that would have caught it is the one being bypassed.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "bspline"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a`
 ### Tfa226 — face-repair.Add.null-wire-guard
 Fresh null-wire guard in Add() prevents null-reference corruption; wire validation before topology merge.
+- **Expected kernel behavior**: a cylindrical face is merged wire by wire. A wire handle must be validated before it is merged into face topology — the guard belongs at the point of merge, not in the caller. This fixture is the positive case: it exists so a kernel can confirm the guard is present and that a valid wire still merges cleanly through it.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
@@ -26846,6 +26860,7 @@ Fresh null-wire guard in Add() prevents null-reference corruption; wire validati
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Tfa227 — face-repair.ClearModes.init-all-modes
 Mode-flag initialization (-1 default) prevents undefined comparisons in NeedFix(); healer state precondition.
+- **Expected kernel behavior**: every fix-mode flag must be explicitly initialised — here to a sentinel meaning "use the global default" — before any code compares against them. Comparing against uninitialised state gives answers that depend on whatever occupied that memory, which is the worst kind of bug to chase: it reproduces only sometimes and changes with unrelated edits.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "torus"
 - **Tier-3 assertion**: face[0].quadric.major_radius == 2.0
@@ -26948,6 +26963,7 @@ Mode-flag initialization (-1 default) prevents undefined comparisons in NeedFix(
 ### Tfa235 — missing-seam recovery P-curve absence on torus
 
 TOROIDAL_SURFACE face with U-seam loop traversing toroidal topology; missing P-curve geometry on seam edge. Tests P-curve lookup failure path and early abort before seam insertion.
+- **Expected kernel behavior**: the seam edge of this toroidal face carries no pcurve at all. Look the pcurve up and, when it is absent, abort the seam operation cleanly with a diagnostic naming the edge. Continuing without it means computing a seam position from geometry the file never supplied.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "torus"
 - **Tier-3 assertion**: face[0].quadric.major_radius == 4.0
@@ -26969,6 +26985,7 @@ TOROIDAL_SURFACE face with U-seam loop traversing toroidal topology; missing P-c
 ### Tfa237 — face-repair.SplitEdge (line-2653)
 
 Edge-division on non-manifold geometry; curve parameterization via vertical spine through cylindrical seam topology.
+- **Expected kernel behavior**: an edge is divided using a B-spline spine that spans the cylindrical seam. Splitting an edge whose curve crosses a seam must also split it AT the seam: a single resulting edge that straddles the seam has no single valid pcurve, because the parameterisation is discontinuous exactly where the edge continues.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cylinder"
 - **Tier-3 assertion**: face[0].quadric.radius == 1.0
@@ -26980,6 +26997,7 @@ Edge-division on non-manifold geometry; curve parameterization via vertical spin
 ### Tfa238 — face-repair.SplitEdge (line-2741)
 
 Multi-point edge subdivision; overlapping parameter intervals via meridian B-spline and closing circle on spherical patch.
+- **Expected kernel behavior**: subdivision points on a spherical patch produce overlapping parameter intervals, from a meridian B-spline and a closing circle. Subdivision parameters must be sorted and deduplicated before segments are cut. Overlapping intervals yield segments of zero or negative length, and a negative-length segment inverts orientation rather than being empty.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "sphere"
 - **Tier-3 assertion**: face[0].quadric.radius == 2.0
@@ -26999,6 +27017,7 @@ Single `ADVANCED_FACE` on a bilinear (degree 1x1) `RATIONAL_B_SPLINE_SURFACE` (c
 
 Integrated face-healing pipeline; mode-dependent cascade via base-slant-apex decomposition on conical degenerate closure.
 
+- **Expected kernel behavior**: a cone whose apex converges to a point requires several healing stages in sequence. The stages must be ordered so the degenerate apex is consolidated BEFORE any stage that depends on the closure being well-defined. Running orientation or closure repair against an unconsolidated apex means each stage repairs the previous stage's artefacts rather than the input.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[0].surface_type == "cone"
 - **Tier-3 assertion**: edge[0].curve_type == "circle"
@@ -27069,6 +27088,7 @@ Integrated face-healing pipeline; mode-dependent cascade via base-slant-apex dec
 **Fixture**: `step-examples/12-3c-faces/Tfa245.stp`
 
 **Expected behavior**: load both faces without complaint; no seam-synthesis logic is required or exercised by two independently-authored, ordinary quad-bounded faces.
+- **Expected kernel behavior**: a hemispherical face is bounded by a full equatorial circle but nothing bounds it at the pole, where the surface is singular. Close the topology by synthesising a degenerate edge at the pole, or report the face as unbounded at its singularity. Leaving it implicitly closed means the face's boundary does not enclose its own area, and area or volume queries will disagree with the geometry.
 - **Tier-3 assertion**: load == "ok"
 - **Tier-3 assertion**: face[1].surface_type == "sphere"
 - **Tier-3 assertion**: face[1].quadric.radius == 3.0

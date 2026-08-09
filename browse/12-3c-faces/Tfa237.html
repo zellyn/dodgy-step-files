@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>an edge is divided using a B-spline spine that spans the cylindrical seam. Splitting an edge whose curve crosses a seam must also split it AT the seam: a single resulting edge that straddles the seam has no single valid pcurve, because the parameterisation is discontinuous exactly where the edge continues.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

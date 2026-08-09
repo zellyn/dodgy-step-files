@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>a two-edge loop on a U-closed surface places a seam beyond the period, at u=2 where the period is 2. Seam parameters must be reduced into the period before use. An out-of-range seam produces a parameter interval that does not correspond to any part of the surface, and the range check that would have caught it is the one being bypassed.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=reject ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

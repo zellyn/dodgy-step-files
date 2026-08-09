@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>the torus is given a minor radius of 1.0 against a major radius of 0.5, so the tube swallows its own hole and the surface self-intersects. A kernel must reject or flag this configuration when the surface is constructed, rather than carrying it forward — and must confirm the surface exists before querying its closure, since an invalid construction may leave nothing to query.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(329) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>every fix-mode flag must be explicitly initialised — here to a sentinel meaning &quot;use the global default&quot; — before any code compares against them. Comparing against uninitialised state gives answers that depend on whatever occupied that memory, which is the worst kind of bug to chase: it reproduces only sometimes and changes with unrelated edits.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

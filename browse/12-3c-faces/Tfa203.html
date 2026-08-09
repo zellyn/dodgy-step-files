@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal</p></section>
+<p>a toroidal face covers a full revolution in U but omits the seam edge. Two requirements: confirm the surface is present before querying whether it closes in U or V, and treat a periodic surface whose face lacks the seam as needing the seam synthesised — or reject it. Querying closure through an absent surface is a null dereference on a file that is otherwise well-formed.</p></section>
 <section><h2>Notes</h2>
 <p>Null surface guard; dereference protection</p></section>
 <section><h2>Expected validation</h2>

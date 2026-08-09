@@ -2620,40 +2620,39 @@ ill-typed, so it tested nothing. With a synthesised DIRECTION, three of the four
 Same failure shape as the inline-entity mistake above -- **an invalid instrument returns
 a negative that looks like a finding.**
 
-#### (M.11) Spec coverage 98.4 %; the last 49 need per-file reading, NOT a template. 2026-08-09
+#### (M.11) SPEC COVERAGE 100 % — 3336/3336. 2026-08-09
 
-Corpus-wide measurement: **3283 of 3336 entries (98.4 %) carry a meaningful
-`Expected kernel behavior`.** Weakest sections: Tfa 91.7 % (21 missing), Tsh 95.3 % (12),
-N 96.0 % (7), Gn 96.5 % (6), Gp 97.9 % (4), Twi 99.0 % (3).
+Every catalog entry now carries a meaningful `Expected kernel behavior`. Started the day
+at 98.4 % (3283/3336); the 53 gaps are closed.
 
-**Filled 32 of the 53** (21 remain, ALL Tfa) -- Gp126/128/129/130. These are the groundable ones: each is a
-complete connected planar face with four pcurve-carrying edges that OCCT loads to `empty`,
-i.e. members of the silent-total-loss cohort, so the roadmap's verified finding applies
-directly and per-entry.
+**What unlocked it.** The first pass concluded these needed "per-file reading" and deferred
+44 of them. That was under-informed: **the generator docstrings state each encoded
+condition in full.** Reading the GENERATOR rather than the title turned a speculative job
+into a mechanical one. The lesson generalises past this task -- I deferred work on the
+assumption the information was unavailable, without checking whether it was. Measure
+FEASIBILITY, not just population size.
 
-Then filled **Tsh209-213** by the proper method: their generator docstrings state the
-encoded condition exactly (seam edge closing on the parameter period; shell-mode tolerance
-recursion; a boundary that is one zero-length edge; a hole boundary whose contained edge
-disagrees on orientation; a face-boundary collection that must type-filter a stray vertex).
-**Read the generator, not the title** -- the docstrings carry the claim in full.
+**Order closed:** Gp126/128/130/129 (silent-total-loss members) -> Tsh209-213 -> the Tsh
+remainder -> N + Twi -> Gn -> Tfa 21.
 
-**Remaining 21, all in Tfa.** They differ in kind from every prose batch
-shipped today: all are complete wrapped B-reps that LOAD SUCCESSFULLY (`occt=shape(1)`).
-Their claims are BEHAVIOURAL -- what a repair routine should do -- not structural. Nothing
-in the file itself tells you the right answer; you have to know what the titled condition
-is and what correct handling looks like.
+**What the writing surfaced.** Several recurring implementer lessons, now stated in the
+entries rather than left implicit:
+  - a lazy-initialised query must distinguish "not yet determined" from "nothing found"
+    (Tsh189/190) -- an empty default is indistinguishable from a clean result
+  - a declared flag must be validated against topology, not trusted (Tsh192 closed-shell)
+  - checks carry unstated assumptions the fixture makes visible: edges are injective
+    (Twi153), a shared 3D vertex implies 2D continuity (Twi161), a parameter range is
+    finite (N136)
+  - on a periodic parameter, ADD the period when end < start; swapping yields the
+    complementary arc -- well-formed, plausible, and wrong (Tfa218)
+  - NaN from infinite bounds never trips a check, because NaN compares false against
+    everything (Tfa223)
+  - a spurious maximum HIDES the real violations behind it (N136)
 
-**Why a template would be actively harmful here.** `Expected kernel behavior` is scored by
-a VACUOUS regex precisely to stop filler. Templated prose across 49 entries would flip them
-to "specced" in every metric while telling an implementer nothing -- it would raise the
-number to 100 % and lower the corpus's actual value. Several of these titles also name a
-routine the file may never reach (cf. the RUNTIME-VERIFIED notes added this morning), so
-prose derived from the title alone risks being wrong as well as empty.
-
-**How to do it properly:** read the fixture and its generator, establish what condition is
-actually encoded, then write the spec. 21 entries x per-file reading. Tsh, N, Twi and Gn are complete; only Tfa remains. Titles like
-`Tsh211` "Degenerate edge-only wire removal" and `Tfa219` "vertex_tolerance_mismatch" are
-descriptive enough to start from; `Tfa218` "circle_parameter" is not.
+**A template was refused throughout.** `Expected kernel behavior` is scored by a VACUOUS
+regex precisely to stop filler; 44 templated entries would have reported 100 % while
+telling an implementer nothing. Every entry states the encoded condition, the required
+behaviour, and the consequence of omitting it.
 
 #### (M.10) Dangling-ref remainder: measured, NOT acted on. 2026-08-09
 

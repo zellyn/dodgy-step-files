@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>subdivision points on a spherical patch produce overlapping parameter intervals, from a meridian B-spline and a closing circle. Subdivision parameters must be sorted and deduplicated before segments are cut. Overlapping intervals yield segments of zero or negative length, and a negative-length segment inverts orientation rather than being empty.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

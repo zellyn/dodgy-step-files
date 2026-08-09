@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>the face&#x27;s only boundary is a point-circle at the apex of a cone, where the parametric bounds are infinite. When surface bounds are unbounded, substitute bounds derived from the wire before any arithmetic. Computing a seam position from infinite bounds yields NaN, which then propagates silently through every subsequent comparison — NaN compares false against everything, so the failure never trips a check.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

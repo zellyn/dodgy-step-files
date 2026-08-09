@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>the defect edge&#x27;s pcurve is a trimmed curve over another trimmed curve — an outer range of [8,12] over an inner range of [5,15]. Reducing a nested trim to its basis curve must COMPOSE the ranges, taking their intersection; discarding the inner bounds and keeping only the outer collapses the effective range and silently changes which part of the curve the edge refers to.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
