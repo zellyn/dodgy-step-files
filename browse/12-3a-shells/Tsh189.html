@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal</p></section>
+<p>the shell holds one face with a zero-length edge — two of its vertices sit at the same point. Two requirements: the degenerate edge must be reported as bad, and a query for the bad-edge set must never return an empty default when the analysis behind it has not been run. An empty result that means &quot;not computed yet&quot; is indistinguishable from one that means &quot;nothing wrong&quot;, and a caller cannot tell the difference; the query must run the analysis or refuse.</p></section>
 <section><h2>Notes</h2>
 <p>initialization-order; lazy-init; myBad.Extent; TopoDS_Compound</p></section>
 <section><h2>Expected validation</h2>

@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>the face&#x27;s placement carries a non-identity origin at (5,3,2) embedded directly in the face&#x27;s own geometry, while the shell above it is what a caller would strip a transform from. Removing a transform at the container level must either push that transform down into every geometry it governed or be refused; clearing the container while leaving an embedded non-identity placement in place moves the model without saying so, and the coordinates a caller reads afterwards no longer agree with where the geometry actually is.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">

@@ -30695,6 +30695,7 @@ Perform runs multiple sub-fixers (FixFaceOrientation, FixWireGaps, FixShellOrien
 - **Tier-3 assertion**: load == "ok"
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 ### Tsh098 — ShapeUpgrade_RemoveLocations.Remove location-after-traversal
+- **Expected kernel behavior**: the face's placement carries a non-identity origin at (5,3,2) embedded directly in the face's own geometry, while the shell above it is what a caller would strip a transform from. Removing a transform at the container level must either push that transform down into every geometry it governed or be refused; clearing the container while leaving an embedded non-identity placement in place moves the model without saying so, and the coordinates a caller reads afterwards no longer agree with where the geometry actually is.
 - **Status**: FLAGGED 2026-08-07 (12-3a-shells unspec pass) — Comment claims 'RemoveLocations removes top-level shell location but face AXIS2_PLACEMENT_3D (5,3,2) is retained.' The file contains exactly ONE AXIS2_PLACEMENT_3D entity total (#33, origin (5,3,2)), used directly by the face's PLANE. There is no second, parent-level location/transform entity anywhere in the file to be 'removed' -- no MAPPED_ITEM, no representation-level placement, nothing. The face is simply and consistently translated to (5,3,2) as authored. Nothing in the bytes demonstrates a location-removal-propagation defect; the fixture does not exercise the claimed mechanism.
 
 **Axis**: `location-transform` | **Source**: wave-14
@@ -30910,6 +30911,7 @@ Shell with 5 faces; Perform's early-exit condition (myStatus contains FAIL2) tri
 - **Tier-3 assertion**: n_faces_total == 4
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(25) ifc=schema_n/a`
 ### Tsh133 — ShapeUpgrade_RemoveLocations.Remove top-down
+- **Expected kernel behavior**: a parent transform is removed while the child placement retains its own translation of (1,0,0). Removing a transform from a parent must cascade into child placements, or the operation must fail rather than partially apply. A half-applied transform removal leaves child geometry at coordinates that no longer relate to the parent frame, and nothing downstream can detect that the two disagree.
 - **Status**: FLAGGED 2026-08-07 (12-3a-shells unspec pass) — Comment claims 'top-level AXIS2_PLACEMENT_3D at (0,0,0) is the parent location ... RemoveLocations.Remove strips parent location but leaves child stale.' Same issue as Tsh098: the file contains exactly ONE AXIS2_PLACEMENT_3D entity total (#33, origin (1,0,0)), used directly by the face's PLANE. There is no separate parent-level placement at (0,0,0) or anywhere else in the file. The claimed two-level parent/child transform structure does not exist in the bytes.
 **Defect**: RemoveLocations called top-down on COMPOUND with transformed sub-shapes; parent transform removed but child local transforms stale.
 **Expected**: Child geometry should update when parent location removed.
@@ -31404,7 +31406,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Category**: §12.3a shells (sub-class: initialization-order)
 - **Sources**: OCCT/ShapeAnalysis_Shell::BadEdges (line 283)
 - **Description**: BadEdges() returns compound from uninitialized myBad without validation. Calling before Perform() completes exposes lazy-init violation. Shell contains degenerate zero-length edge to trigger analysis path.
-- **Expected kernel behavior**: heal
+- **Expected kernel behavior**: the shell holds one face with a zero-length edge — two of its vertices sit at the same point. Two requirements: the degenerate edge must be reported as bad, and a query for the bad-edge set must never return an empty default when the analysis behind it has not been run. An empty result that means "not computed yet" is indistinguishable from one that means "nothing wrong", and a caller cannot tell the difference; the query must run the analysis or refuse.
 - **Notes**: initialization-order; lazy-init; myBad.Extent; TopoDS_Compound
 - **Model impact**: Returns uninitialized compound or empty set instead of reported bad edges
 - **Fixture path**: step-examples/12-3a-shells/Tsh189.stp
@@ -31415,7 +31417,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Category**: §12.3a shells (sub-class: initialization-order)
 - **Sources**: OCCT/ShapeAnalysis_Shell::FreeEdges (line 305)
 - **Description**: FreeEdges() returns compound from uninitialized myFree without completion guard. Open shell with incomplete edge loop creates free edges; FreeEdges() called before analysis state initialized.
-- **Expected kernel behavior**: heal
+- **Expected kernel behavior**: the face's boundary wires only three of its four edges, leaving one boundary segment unpaired. That free edge must be reported, and — as with the bad-edge query — asking for the free-edge set before the analysis has run must not yield an empty collection that reads as "the shell is closed". Distinguish "no free edges" from "not yet determined".
 - **Notes**: initialization-order; lazy-init; myFree.Extent; HasFreeEdges
 - **Model impact**: Fails to detect free-edge topology; returns uninitialized extent
 - **Fixture path**: step-examples/12-3a-shells/Tsh190.stp
@@ -31426,7 +31428,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Category**: §12.3a shells (sub-class: unbounded-iteration)
 - **Sources**: OCCT/ShapeFix_Shell::FixFaceOrientation (line 1455)
 - **Description**: Multi-connected edges (3+ faces sharing edge) only handled if isAccountMultiConex=true; loop processing lacks iteration bound. Three faces share single edge; aMapMultiConnectEdges exhaustively populated without complexity limit.
-- **Expected kernel behavior**: heal
+- **Expected kernel behavior**: one edge is shared by three faces, not two. A correct kernel must recognise that an edge with more than two adjacent faces is non-manifold, handle orientation deterministically or decline to fix it, and do so in work bounded by the size of the input. Enumerating the face combinations around such an edge without a bound turns a small pathological model into an unbounded computation.
 - **Notes**: unbounded_iteration; isAccountMultiConex; aFaceCount > 2; aMapMultiConnectEdges
 - **Model impact**: O(n^2) or worse complexity; potential hang on pathological meshes
 - **Fixture path**: step-examples/12-3a-shells/Tsh191.stp
@@ -31437,7 +31439,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Category**: §12.3a shells (sub-class: invariant-violation)
 - **Sources**: OCCT/ShapeFix_Shell::Perform (line 159)
 - **Description**: Shell marked closed but FixFaceOrientation detects free edges post-fix; Closed() flag not reset. Face edges offset by tolerance creating gap; shell incorrectly remains marked as closed.
-- **Expected kernel behavior**: heal
+- **Expected kernel behavior**: the shell declares itself closed, but one edge endpoint sits 1e-5 away from the vertex it should meet, so the boundary does not actually close. The declared flag must be validated against the topology rather than trusted: if a gap leaves free edges, the kernel must correct the flag or report the contradiction. Carrying a closed marker on a shell that is open lets later solid construction assume watertightness it does not have.
 - **Notes**: invariant_violation; closed_flag_sync; Closed(); HasFreeEdges; FixFaceOrientation
 - **Model impact**: Downstream solid construction assumes watertight geometry; fails validation
 - **Fixture path**: step-examples/12-3a-shells/Tsh192.stp
@@ -31448,7 +31450,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Category**: §12.3a shells (sub-class: tolerance-branch)
 - **Sources**: OCCT/ShapeUpgrade_ShellSewing::Apply (line 99)
 - **Description**: Two shells with coincident faces at exactly tolerance boundary 1e-7; Apply doesn't classify consistently across tolerance threshold. Sewing analysis distance-filter decision point triggers branching uncertainty.
-- **Expected kernel behavior**: heal
+- **Expected kernel behavior**: two shells sit with their coincident boundaries separated by exactly the sewing tolerance, 1e-7. Behaviour at exactly the threshold must be defined and deterministic — decide whether the comparison is inclusive or exclusive and apply that consistently — so the same input always merges or always does not. A result that depends on floating-point rounding at the boundary makes sewing unreproducible across builds and platforms.
 - **Notes**: tolerance; distance_tolerance_filter_second_pass; BRepBuilderAPI_Sewing.cxx:1732
 - **Model impact**: Inconsistent face merging; shells may or may not sew depending on tolerance epsilon
 - **Fixture path**: step-examples/12-3a-shells/Tsh193.stp

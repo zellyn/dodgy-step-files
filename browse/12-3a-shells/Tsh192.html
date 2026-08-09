@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal</p></section>
+<p>the shell declares itself closed, but one edge endpoint sits 1e-5 away from the vertex it should meet, so the boundary does not actually close. The declared flag must be validated against the topology rather than trusted: if a gap leaves free edges, the kernel must correct the flag or report the contradiction. Carrying a closed marker on a shell that is open lets later solid construction assume watertightness it does not have.</p></section>
 <section><h2>Notes</h2>
 <p>invariant_violation; closed_flag_sync; Closed(); HasFreeEdges; FixFaceOrientation</p></section>
 <section><h2>Expected validation</h2>

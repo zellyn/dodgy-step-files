@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal</p></section>
+<p>two shells sit with their coincident boundaries separated by exactly the sewing tolerance, 1e-7. Behaviour at exactly the threshold must be defined and deterministic — decide whether the comparison is inclusive or exclusive and apply that consistently — so the same input always merges or always does not. A result that depends on floating-point rounding at the boundary makes sewing unreproducible across builds and platforms.</p></section>
 <section><h2>Notes</h2>
 <p>tolerance; distance_tolerance_filter_second_pass; BRepBuilderAPI_Sewing.cxx:1732</p></section>
 <section><h2>Expected validation</h2>

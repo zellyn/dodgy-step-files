@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal</p></section>
+<p>one edge is shared by three faces, not two. A correct kernel must recognise that an edge with more than two adjacent faces is non-manifold, handle orientation deterministically or decline to fix it, and do so in work bounded by the size of the input. Enumerating the face combinations around such an edge without a bound turns a small pathological model into an unbounded computation.</p></section>
 <section><h2>Notes</h2>
 <p>unbounded_iteration; isAccountMultiConex; aFaceCount &gt; 2; aMapMultiConnectEdges</p></section>
 <section><h2>Expected validation</h2>
