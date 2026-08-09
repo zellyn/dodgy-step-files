@@ -2620,6 +2620,51 @@ ill-typed, so it tested nothing. With a synthesised DIRECTION, three of the four
 Same failure shape as the inline-entity mistake above -- **an invalid instrument returns
 a negative that looks like a finding.**
 
+#### (M.2) THE UNIFYING INPUT PATTERN: argument count != schema. 96 % crash. 2026-08-09
+
+Site B's trigger generalises far beyond B-spline surfaces. Counting arguments on every
+`B_SPLINE_SURFACE_WITH_KNOTS` (13 required) and `B_SPLINE_CURVE_WITH_KNOTS` (9 required)
+across the corpus:
+
+    fixtures containing one of these entities        443
+      argument count DEVIATES from the schema     22/23 crash   (96 %)
+      argument count is correct                  14/420 crash   ( 3 %)
+
+**A 32x enrichment, and by far the strongest discriminator found in this whole
+investigation.** Compare the structural hypotheses that all failed their controls
+(single-edge EDGE_LOOP 22 % vs 12 %, non-closed singleton curve 85 % vs 73 %).
+
+The 22 crashers: Gn043 Gn105 Gn107 Gn173 Gp056 Gp058 Gp060 Gp101 Gp102 Gp104 Gs134 Gs137
+Gs138 Tfa141 Tfa144 Tfa172 Tfa174 Tfa175 Tfa180 Tfa187 Twi227 Twi230.
+Deviating but NOT crashing: Gn169 (single exception, unexplained).
+
+Nine distinct deviations occur, in both directions -- curves with 6, 7, 8, 10 and 11
+arguments where 9 are required; surfaces with 9, 11, 14 and 15 where 13 are required.
+
+**This explains the crash cohort that BACKLOG (M) could not.** Gp056/058/060/101/102/104
+and friends were previously filed as "crashes, but not the malformed-LINE family, cause
+unknown". They are argument-shape defects.
+
+##### Three call sites, one bug
+Stack traces confirm the site depends on which converter reaches the malformed entity
+first, not on the defect class:
+
+    StepToGeom::MakeVectorWithMagnitude    addr 0x18   LINE.dir is a DIRECTION not a VECTOR
+    StepToGeom::MakeBSplineSurface + 960   addr 0x10   Gs138, Gs134, and the minimal repro
+    StepToTopoDS_TranslateFace::Init +1852 addr 0x18   Gp056 -- reached via the FACE that
+                                                       references the malformed curve
+
+All three are the same failure: the reader trusts a parsed entity whose shape it never
+checked, and dereferences a null handle.
+
+##### Why this matters more than the individual fixtures
+The input pattern is **statically checkable, before any geometry is constructed**. A
+kernel that validates argument counts against the schema at PARSE time rejects every one
+of these 22 files with a precise diagnostic, and never reaches the converter at all.
+That is a cheaper and more complete defence than any amount of null-checking downstream,
+and it is the single most actionable thing this corpus has to say about crash-proofing a
+STEP reader.
+
 #### SITE B ISOLATED 2026-08-08 — it is an ARGUMENT-SHAPE error, built from scratch
 
 Gs138 and Twi227 each carry 3+ simultaneous malformations, so no ablation of them could
