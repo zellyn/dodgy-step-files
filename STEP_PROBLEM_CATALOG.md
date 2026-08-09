@@ -27379,6 +27379,7 @@ FixClosed chains FixConnected → FixDegenerated → FixLacking sequentially. Af
 
 **Status**: FLAGGED 2026-08-07 — measured the four pcurves and they do not show any disjoint-region or seam-reorder problem. Edge pcurves run u∈[0,π/2]→[π/2,π]→[π,3π/2]→[3π/2,2π] in strict, monotonically increasing sequence, each edge's 3D CIRCLE arc (radius 2.5) matching its own pcurve exactly (e.g. edge 1's 3D vertices sit at angle 0° and 90°, matching its pcurve's u=0 and u=π/2). The wire is a perfectly ordinary, non-self-intersecting closed quarter-arc loop with no seam crossing, no shift, and no disjoint UV span — it does not demonstrate the claimed defect. The prior "Status: VALID" self-certification does not hold up under independent verification. Needs a new fixture or an honest retitle; not specced pending that decision.
 
+- **Expected kernel behavior**: this model is a bare curve set — it carries no face and no shell — so returning no solid is CORRECT here and is not the defect. `heal` means the wire-level condition (edges that fall into disjoint parametric regions when ordered) must be detected and reported; it does not mean geometry should appear. A kernel should diagnose that condition and continue processing the remaining entities rather than discarding the model without comment.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi128 — ShapeAnalysis_Wire.CheckTail tail-edge orientation flip
@@ -27446,6 +27447,7 @@ Wire on SURFACE_OF_REVOLUTION (periodic in θ) with pcurves shifted by π (half 
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi135 — ShapeAnalysis_Wire.CheckGap2d trimmed-pcurve gap
 Adjacent edges with pcurves defined as TRIMMED_CURVEs of different basis line curves. CheckGap2d compares 2d endpoints in the trimmed parameter spaces instead of evaluating the actual basis curve positions, reporting false gaps.
+- **Expected kernel behavior**: this model is a bare curve set — it carries no face and no shell — so returning no solid is CORRECT here and is not the defect. `heal` means the wire-level condition (a parametric gap between consecutive edges on a trimmed curve) must be detected and reported; it does not mean geometry should appear. A kernel should diagnose that condition and continue processing the remaining entities rather than discarding the model without comment.
 - **Status**: FLAGGED 2026-08-07 — measured all three edges end-to-end and the wire is fully continuous with no actual gap. Edge 1's TRIMMED_CURVE evaluates at its own end parameter (t=5, direction (1,0.6) unnormalized as (0.857493,0.514496)×1.16619) to (5.0,3.0), exactly matching edge 2's start (5.0,3.0); edge 2 evaluates at t=5 to (8.0,7.0), matching edge 3's start; edge 3 evaluates back to (0.0,0.0), matching edge 1's start. Both the 2D pcurve chain and the 3D chain close exactly. The claimed defect (raw trim-parameter comparison across differently-scaled curves producing a false report) is a hypothesis about an internal comparison method, not something this input's geometry demonstrates — the geometry itself is a valid, closed triangle. Not specced pending a fixture that actually contains a positional gap.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -27727,6 +27729,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 **Failure mode**: Single-direction sweep misses mixed-mode case; incomplete reordering  
 **Minimal reproducer**: Five-edge wire [forward, forward, forward, forward, reverse]; call FixReorder; expect correct ordering, observe partial result  
 **Search anchors**: `FixReorder`, `reverse-then-forward`, `mixed orientation`
+- **Expected kernel behavior**: this model is a bare curve set — it carries no face and no shell — so returning no solid is CORRECT here and is not the defect. `heal` means the wire-level condition (an edge sequence whose orientation reverses mid-loop) must be detected and reported; it does not mean geometry should appear. A kernel should diagnose that condition and continue processing the remaining entities rather than discarding the model without comment.
 - **Status**: FLAGGED 2026-08-07 — traced the pentagon and it closes correctly. Edges 1-4 (`.T.`) run A(0,0,0)→B(8,0,0)→C(10,6,0)→D(5,10,0)→E(-2,6,0); edge 5's EDGE_CURVE (labeled `reverse_orientation_edge`) is itself defined A→E, but its ORIENTED_EDGE is flagged `.F.`, so it is walked E→A — exactly compensating for the curve's stored direction and closing the loop correctly: A→B→C→D→E→A. This is the ordinary, correct use of the orientation flag, not a case a reorder pass fails on; the wire does not demonstrate the claimed defect. Not specced; needs a fixture with a genuine unresolvable mixed-orientation break, or an honest retitle.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -27765,6 +27768,7 @@ Adjacent edges with B-spline pcurves. CheckGap2d evaluates at knot vector endpoi
 
 **Fixture:** Pentagon wire with final short edge using B-spline parametrization with negative parameter range. CheckTail's binary search fails due to [0, length] bounds assumption.
 
+- **Expected kernel behavior**: this model is a bare curve set — it carries no face and no shell — so returning no solid is CORRECT here and is not the defect. `heal` means the wire-level condition (a trailing segment addressed at a negative parameter) must be detected and reported; it does not mean geometry should appear. A kernel should diagnose that condition and continue processing the remaining entities rather than discarding the model without comment.
 - **Status**: FLAGGED 2026-08-07 — this pentagon closes correctly and is not a tail. The closing edge (labeled `tail_negative_param_range`) is a degree-1 B_SPLINE_CURVE_WITH_KNOTS whose two poles are exactly E=(-2,6,0) and A=(0,0,0) — the same endpoints its EDGE_CURVE declares — so it is a normal closing side of the pentagon (A→B→C→D→E→A), just represented with a knot vector of (-0.5,-0.5,0.0,0.0) instead of (0,0,1,1). Negative knot values are valid Part 21; they don't change what 3D segment the curve represents. There is no actual tail or gap here, only an unusual (but schema-legal) parameter domain on one edge. Not specced; needs a fixture with a genuine tail protrusion, or an honest retitle.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -27791,6 +27795,7 @@ Wire whose self-intersection fix produces output that re-introduces a different 
 ### Twi179 — ShapeAnalysis_Wire.CheckGap2d on-trimmed-pcurve
 
 Adjacent edges with `TRIMMED_CURVE` pcurves. `CheckGap2d` compares trim bounds against untrimmed parameters and incorrectly reports gap values when both edges are trimmed.
+- **Expected kernel behavior**: this model is a bare curve set — it carries no face and no shell — so returning no solid is CORRECT here and is not the defect. `heal` means the wire-level condition (a parametric gap measured on a trimmed curve) must be detected and reported; it does not mean geometry should appear. A kernel should diagnose that condition and continue processing the remaining entities rather than discarding the model without comment.
 - **Status**: FLAGGED 2026-08-07 — evaluated both TRIMMED_CURVE pcurves at their actual endpoints and they connect exactly. Edge A's pcurve is trimmed to parameter range [0.0,0.5] on its own underlying LINE (magnitude 2.0/unit param) and evaluates from (0,0) to (1,0); edge B's pcurve is trimmed to [0.0,0.5] on a *different* underlying LINE and evaluates from (1,0) to (1,1) — the two trimmed curves meet exactly at (1.0,0.0), with no positional gap in 2D or 3D. The two edges' trim parameters both happen to be [0.0,0.5], but they're on different base curves, so comparing raw trim numbers across them is meaningless — evaluating positions (which is what a kernel must do) shows full continuity. Not specced; needs a fixture with an actual positional pcurve gap, or an honest retitle.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -27803,6 +27808,7 @@ Wire with 4 consecutive edges all having tiny gaps between them. `FixGaps3d` bri
 ### Twi181 — ShapeAnalysis_Wire.CheckGap3d B-spline-vs-LINE
 
 Adjacent edges where one is a `B_SPLINE_CURVE` and the other is `LINE`. `CheckGap3d`'s endpoint extraction applies different parametric interpretation for the two curve types, causing false gap detection.
+- **Expected kernel behavior**: this model is a bare curve set — it carries no face and no shell — so returning no solid is CORRECT here and is not the defect. `heal` means the wire-level condition (a 3D gap between adjacent edges carrying different curve types) must be detected and reported; it does not mean geometry should appear. A kernel should diagnose that condition and continue processing the remaining entities rather than discarding the model without comment.
 - **Status**: FLAGGED 2026-08-07 — the file's own comment admits "zero actual 3-D gap" here, and that checks out: the degree-1 B-spline's poles are exactly (0,0,0) and (1,0,0), matching its EDGE_CURVE's declared vertices, and the following LINE starts exactly at (1,0,0) where the B-spline ends. There is no positional discrepancy between the two curve types to detect — the claimed defect is purely a hypothesis about two internal code paths disagreeing, not something this input's geometry demonstrates. Not specced; needs a fixture with an actual B-spline/LINE endpoint mismatch, or an honest retitle.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -28129,6 +28135,7 @@ Single edge with cusp at start vertex. FixSelfIntersectingEdge tries to split at
 
 **Search anchors**: `FixReorder`, `mixed curve types`, `LINE CIRCLE BSPLINE`, `vertex merge`, `heterogeneous edges`.
 
+- **Expected kernel behavior**: this model is a bare curve set — it carries no face and no shell — so returning no solid is CORRECT here and is not the defect. `heal` means the wire-level condition (shared vertices across mixed curve types during reordering) must be detected and reported; it does not mean geometry should appear. A kernel should diagnose that condition and continue processing the remaining entities rather than discarding the model without comment.
 - **Status**: FLAGGED 2026-08-07 — this Defect/Fixture text above doesn't match the bytes (it says the arc runs "(5,0) to (7.071,7.071)", but the actual CIRCLE is centered at the origin with the arc's real second vertex at (3.53553390593,3.53553390593,0) — 45° at radius 5 from the origin, not (7.071,7.071)). Correcting for that: the LINE (0,0,0)→(5,0,0)), the CIRCLE arc ((5,0,0)→(3.536,3.536,0), both points verified at radius 5 from the origin), and the degree-2 B-spline ((3.536,3.536,0)→(0,0,0), poles matching those exact endpoints) connect correctly at every junction — a valid, closed, type-heterogeneous triangle with no actual vertex-merge failure. Not specced; needs a fixture with a genuine cross-type vertex mismatch, or an honest retitle.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -28429,6 +28436,7 @@ Geometric defects in wire topology and edge coherence.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi243 — ShapeAnalysis_Wire.CheckConnected
+- **Expected kernel behavior**: this model is a bare curve set — it carries no face and no shell — so returning no solid is CORRECT here and is not the defect. `heal` means the wire-level condition (consecutive edges that do not meet at a shared vertex) must be detected and reported; it does not mean geometry should appear. A kernel should diagnose that condition and continue processing the remaining entities rather than discarding the model without comment.
 - **Defect**: Sharp discontinuity at junction (non-smooth tangent transition)
 - **Geometry**: Closed EDGE_LOOP with 90° kink at shared vertex (edges form square; tangent direction inverts at each corner)
 - **Test axiom**: CheckConnected flags discontinuous tangent; FixConnected may blend or split at sharp angle
@@ -28591,6 +28599,7 @@ ShapeAnalysis_Wire.CheckOrder silently skips validation when 2D mode requested b
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi263 — CheckSelfIntersection acyclic-crossing
 Wire with self-crossing edges in acyclic configuration; detection depends on segment traversal order.
+- **Expected kernel behavior**: this model is a bare curve set — it carries no face and no shell — so returning no solid is CORRECT here and is not the defect. `heal` means the wire-level condition (two edges of the same loop crossing one another) must be detected and reported; it does not mean geometry should appear. A kernel should diagnose that condition and continue processing the remaining entities rather than discarding the model without comment.
 - **Status**: FLAGGED 2026-08-07 — the fixture's own header comment admits this: "cross_e1 and cross_e3 are parallel non-crossing segments — wire is valid rectangle." Verified: (0,0,0)→(2,0,0)→(2,1,0)→(0,1,0)→(0,0,0) is a plain, closed, non-self-intersecting rectangle; nothing in it crosses. Not specced; this fixture doesn't demonstrate any self-intersection. Needs a fixture with an actual crossing, or an honest retitle acknowledging it's a valid rectangle.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -28612,6 +28621,7 @@ Wire with 3D curve reversing at edge junction; FixGap3d fails to detect reversal
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi267 — ShapeAnalysis_Wire.CheckOuterBound
 Wire outer-bound detection; IsOuterBound flag not propagated correctly after outer boundary classification.
+- **Expected kernel behavior**: this model is a bare curve set — it carries no face and no shell — so returning no solid is CORRECT here and is not the defect. `heal` means the wire-level condition (which of several loops is the outer boundary) must be detected and reported; it does not mean geometry should appear. A kernel should diagnose that condition and continue processing the remaining entities rather than discarding the model without comment.
 - **Status**: FLAGGED 2026-08-07 — the wire itself is a plain, valid, closed 2x1 rectangle with no defect. The absence of a FACE_OUTER_BOUND wrapper is not unique to this fixture; it's the same bare-EDGE_LOOP-in-GEOMETRIC_CURVE_SET convention used throughout this batch of minimal wire fixtures (compare Twi115, Twi116, etc.), not a condition specific to an "outer bound" claim. Not specced; needs an actual multi-loop face where outer-bound identification is contestable, or an honest retitle.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
@@ -28658,6 +28668,7 @@ Wire on closed surface: regular edge + seam (V→V). Seam must exclude from loop
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Twi275 — CheckLoop Multi-Vertex Self-Loop
+- **Expected kernel behavior**: this model is a bare curve set — it carries no face and no shell — so returning no solid is CORRECT here and is not the defect. `heal` means the wire-level condition (a loop that returns to a vertex it has already visited) must be detected and reported; it does not mean geometry should appear. A kernel should diagnose that condition and continue processing the remaining entities rather than discarding the model without comment.
 - **Status**: DUPLICATE of Twi260 (marked 2026-08-02) — byte-identical once entity labels and comments are normalised (32 entities each, geometry identical); Twi275's own header comment begins with the string "Twi260", a builder copy-paste. Removed from the tkshh-wire-multivertex-loop coverage list, which Twi260 already covers. Retained on disk rather than deleted so the mutation snapshot and section reports stay valid. No `Expected kernel behavior` is written here deliberately: it would duplicate Twi260's. See BACKLOG (J).
 Three self-loop edges at V1. Tests double-append binding and multi-vertex gate. Extent=6 after appends triggers loop detection. **Path**: `step-examples/12-3b-wires/Twi275.stp`
 - **Tier-3 assertion**: shape_null == True
@@ -33635,6 +33646,7 @@ same-parameter constraint cannot be achieved at the ceiling value.
 **Tolerance state**: High tolerance (1e-1) in GEOMETRIC_REPRESENTATION_CONTEXT.
 
 **Expected behavior**: LimitTolerance(compound, max=1e-4) should limit all geometry; actual behavior skips the solid's interior faces/edges/vertices.
+- **Expected kernel behavior**: this model is a bare curve set — it carries no face and no shell — so returning no solid is CORRECT here and is not the defect. `heal` means the wire-level condition (a tolerance limit applied to only part of the entity tree) must be detected and reported; it does not mean geometry should appear. A kernel should diagnose that condition and continue processing the remaining entities rather than discarding the model without comment.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 - **Notes**:
@@ -33717,6 +33729,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 
 **Bug:** colinear shortcut skips parameter correspondence check.
 
+- **Expected kernel behavior**: this model is a bare curve set — it carries no face and no shell — so returning no solid is CORRECT here and is not the defect. `heal` means the wire-level condition (colinear sample points on an edge) must be detected and reported; it does not mean geometry should appear. A kernel should diagnose that condition and continue processing the remaining entities rather than discarding the model without comment.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N075 — ShapeFix_ShapeTolerance.SetTolerance vertex-not-in-shape
@@ -33728,6 +33741,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 **Expected:** Apply vertex tolerance to incident vertices of all faces OR raise error.
 
 **Bug:** silent no-op; user believes vertices were updated.
+- **Expected kernel behavior**: this model is a bare curve set — it carries no face and no shell — so returning no solid is CORRECT here and is not the defect. `heal` means the wire-level condition (a tolerance set against a vertex that is not part of the shape) must be detected and reported; it does not mean geometry should appear. A kernel should diagnose that condition and continue processing the remaining entities rather than discarding the model without comment.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N076 — ShapeAnalysis_ShapeTolerance.AddTolerance cumulative-mode
@@ -33773,6 +33787,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 
 **Trigger**: Call ShapeAnalysis_Edge::CheckPointsAreOnEdges on the pole-touching edge. Expected: vertex at (0,0,10) marked as on edge; Observed: false negative due to singular U.
 
+- **Expected kernel behavior**: this model is a bare curve set — it carries no face and no shell — so returning no solid is CORRECT here and is not the defect. `heal` means the wire-level condition (sample points sitting at a surface pole) must be detected and reported; it does not mean geometry should appear. A kernel should diagnose that condition and continue processing the remaining entities rather than discarding the model without comment.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N080 — ShapeFix_ShapeTolerance.LimitTolerance recursive-only-vertex
@@ -33783,6 +33798,7 @@ LimitTolerance(shape, 0, 0.01) treats lower=0 as "skip lower check" AND skips up
 
 **Trigger**: Call ShapeFix_ShapeTolerance::LimitTolerance(compound, 1e-6, 1e-4, TopAbs_VERTEX). Expected: apply limits to all 8 vertices; Observed: descent halts at Face 1, leaving Face 2 vertices untouched.
 
+- **Expected kernel behavior**: this model is a bare curve set — it carries no face and no shell — so returning no solid is CORRECT here and is not the defect. `heal` means the wire-level condition (a recursive tolerance limit that reaches only vertices) must be detected and reported; it does not mean geometry should appear. A kernel should diagnose that condition and continue processing the remaining entities rather than discarding the model without comment.
 - **Tier-3 assertion**: shape_null == True
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### N081 — BRepLib.UpdateEdgeTol dual-path divergence

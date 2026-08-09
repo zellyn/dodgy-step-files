@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>this model is a bare curve set — it carries no face and no shell — so returning no solid is CORRECT here and is not the defect. `heal` means the wire-level condition (a trailing segment addressed at a negative parameter) must be detected and reported; it does not mean geometry should appear. A kernel should diagnose that condition and continue processing the remaining entities rather than discarding the model without comment.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
 <section><h2>Tier-3 assertions</h2><ul class="assertions">
