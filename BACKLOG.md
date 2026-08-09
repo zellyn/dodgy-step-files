@@ -2620,6 +2620,33 @@ ill-typed, so it tested nothing. With a synthesised DIRECTION, three of the four
 Same failure shape as the inline-entity mistake above -- **an invalid instrument returns
 a negative that looks like a finding.**
 
+#### SITE B ISOLATED 2026-08-08 — it is an ARGUMENT-SHAPE error, built from scratch
+
+Gs138 and Twi227 each carry 3+ simultaneous malformations, so no ablation of them could
+name the trigger. Built a minimal `B_SPLINE_SURFACE_WITH_KNOTS` fixture from nothing,
+proved the correct 13-argument form LOADS (the positive control), then introduced exactly
+one defect at a time:
+
+    baseline, correct 13-arg form                          -> loads
+    flat control-point list (Gs138/Twi227 shape)           -> LOADS   (not the trigger)
+    knot multiplicities written as REALS                   -> LOADS   (not the trigger)
+    flags omitted, knots/mults shifted into wrong slots    -> CRASH(139)
+    control-point count contradicts multiplicities         -> LOADS   (not the trigger)
+
+`lldb` on the crashing variant: `EXC_BAD_ACCESS addr=0x10`,
+`StepToGeom::MakeBSplineSurface + 960` -- byte-identical call site and offset to Gs138
+and Twi227. **The trigger is omitting `surface_form` / `u_closed` / `v_closed` /
+`self_intersect`, which shifts every later argument into the wrong slot**, so the reader
+takes a list where it expects an enum and downcasts without checking.
+
+This independently re-confirms, from the opposite direction, that the flat control-point
+list is NOT the cause -- the hypothesis refuted earlier by ablation.
+
+**Both sites are therefore ONE bug.** Site A: wrong ENTITY type in a slot
+(`DIRECTION` where `VECTOR` is declared). Site B: wrong ARGUMENT SHAPE, which puts the
+wrong type in a slot. Same failure, same absent null check. A kernel that validates the
+declared type of every argument position before downcasting avoids the entire class.
+
 #### The 3 non-confirmed fixtures: a SECOND crash site, same bug shape
 
 Stack traces (`lldb -b -o run -o "bt 2"`) on the three that still crash with every
@@ -3051,6 +3078,43 @@ reproducers of the container-rejection behaviour they actually demonstrate.
 Whether to instead REBUILD them so they exercise their original titles is the maintainer
 call, and it is a real choice: 11 of the 13 are §12.3c/§12.8 face and offset defects
 whose intended claims are not otherwise covered.
+
+### REBUILD ATTEMPTED AND BACKED OUT 2026-08-08 — wrong layer, and 2 are deliberate
+
+Maintainer chose rebuild over relabel. The attempt edited the `.stp` bytes directly
+(moving each `ADVANCED_FACE` out of its `GEOMETRIC_CURVE_SET` into a real
+`OPEN_SHELL` + `SHELL_BASED_SURFACE_MODEL`). It verified live: 12 of 13 flipped from
+`accept_silent, n_roots=0` to live shapes, with `git diff` confirming no geometry line
+was touched. Then it was **reverted in full**, for two reasons found afterwards.
+
+**1. The `.stp` files are DERIVED, not canonical.** Every one of the 13 has a generator
+at `fixture_sources/<section>/<ID>.py`, and `_fixture_source_check` enforces that the
+generator regenerates the `.stp` byte-identically. Editing the `.stp` edits the output of
+a build step, so the change does not survive. Only Ad046/Ad047 even showed up as DRIFT;
+the other 11 were already back to their generated form by the time the gates ran, which
+is also why their freshly-refreshed `Expected validation` lines had gone stale against
+their own bytes within the same session.
+
+**Any future rebuild must edit `fixture_sources/<ID>.py` and regenerate**, using
+`f.open_shell([...])`, `f.shell_based_surface_model([...])` and `f.add_product_chain(...)`
+which the builder already provides — then `_fixture_source_check --fix` to rewrite the
+`.stp`, then re-run the oracle, then `_refresh_expected --apply`. In that order.
+
+**2. Ad046 and Ad047 must NOT be rebuilt at all.** Their generators say so outright:
+
+    # Silent-accept defect: omit add_product_chain so there is no
+    # PRODUCT/SHAPE_REPRESENTATION for OCC to construct geometry from. The
+    # defective DATA bytes remain but OCC yields empty (occt=empty/empty per
+    # catalog Expected line).
+
+They are deliberately-built silent-accept fixtures of the archetype-A pattern. Giving
+them a representation chain destroys the thing they were made to demonstrate.
+
+**The classification error this exposes:** the "does the entry already declare this?"
+check read the CATALOG entry text only. For generated fixtures the intent can live in a
+THIRD place -- the generator source -- and Ad046/Ad047 declare it there and nowhere else.
+Any future pass over generated fixtures must read `fixture_sources/<ID>.py` before
+judging a fixture broken. That drops the candidate set from 13 to **11**.
 
 ### NOT quarantined here, on purpose
 Reachability is verified; **mutation testing is not done**, and per
