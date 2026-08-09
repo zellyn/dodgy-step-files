@@ -2620,6 +2620,39 @@ ill-typed, so it tested nothing. With a synthesised DIRECTION, three of the four
 Same failure shape as the inline-entity mistake above -- **an invalid instrument returns
 a negative that looks like a finding.**
 
+#### (M.13) Q6 dangling-ref remainder CLOSED: 39/39 triaged, zero accidental. 2026-08-09
+
+The generator-level triage (M.10) called for, done per its fallback (the July local-only
+lists are gone; read the generators directly). Result: **no fixture needs editing.**
+
+**26 of 39** declare the dangling reference as their mechanism in the generator docstring
+or title (words like dangling/undefined/non-existent/orphan/self-ref/points-at-nothing).
+
+**6 more confirmed deliberate by reading the referencing line's context:** A111 and Xp044
+name the target `vrml_placeholder`/placeholder in a REPRESENTATION_MAP; Tb024's `#9999` IS
+the claimed wrong location reference; Twi277 labels its curve `null_after_downcast`;
+Ls018's `#5` is inside the verbatim reproducer snippet its recipe quotes; M136's absent
+ids are the claim (APPROVED_ITEM pointing outside the design context).
+
+**7 were the real question — remnants of the #418 product-chain removal** (comments like
+"#9000 is APPLICATION_CONTEXT in PRODUCT chain" referencing entities that cleanup
+deleted): Ad042 Ad078 Ad083 Ad096 Ad125 Le021 Le025. Disposition decided by MUTATION
+PROBE, not judgment: define each missing entity with its schema-correct type
+(APPLICATION_CONTEXT / PRODUCT_DEFINITION_CONTEXT / REPRESENTATION_CONTEXT /
+representation-item / PRODUCT_CONTEXT) and re-run the live oracle.
+
+    all 7: oracle result IDENTICAL with the entity defined  ->  INERT
+
+The refs are scaffold noise with zero behavioural effect; every entry's claim is
+untouched. And they should NOT be "repaired": the corpus deliberately hosts dangling refs
+as a defect class (38 fixtures assert DANGLING_REF), repairing these would churn 7
+generators + regens for no behavioural gain, and the structural oracle already surfaces
+them to any consumer who cares.
+
+This closes the Q6 remainder. Contrast with the morning's (P.2): same instinct ("these
+look accidental"), opposite outcome path — this time the intervention was run BEFORE any
+edit, and it said don't.
+
 #### (M.12) RETRACTED — the "25 missing baselines / 7 hidden crashers" claim was wrong. 2026-08-09
 
 **What I claimed:** 25 STEP entries carry no `Expected validation` line; 7 of them crash;
