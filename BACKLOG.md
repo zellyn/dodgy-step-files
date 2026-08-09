@@ -2620,6 +2620,47 @@ ill-typed, so it tested nothing. With a synthesised DIRECTION, three of the four
 Same failure shape as the inline-entity mistake above -- **an invalid instrument returns
 a negative that looks like a finding.**
 
+#### (M.8) PROPOSAL for maintainer: structural-oracle v3 `SLOT_TYPE`. 2026-08-09
+
+Not implemented -- deliberately. Adding an oracle code changes `summary["structural"]`
+for ~120 fixtures, which rewrites their `Expected validation` lines and creates DRIFT
+across the corpus. Per the scope rule, that is a maintainer decision, so this records the
+evidence and stops.
+
+**The check.** For every reference-valued attribute, does the referenced entity have the
+schema-declared type? 14 entity types / 22 attributes of the B-rep core; each expectation
+is a SET because these attributes are declared with supertypes. Unresolvable refs and
+complex instances are UNKNOWN and never flagged (that is `DANGLING_REF`'s job).
+Implementation exists today in `occt-coverage/make_roadmap.py::_slot_type_violation`;
+adopting it means moving it into `_structural_oracle.py` beside the other codes.
+
+**Why it fits the structural-oracle thesis.** It is exactly the oracle-INVISIBLE class the
+module was built for: 99 of the 177 crashers violate it, and shape-counts cannot see the
+violation at all -- the file either crashes or silently yields nothing.
+
+**False-positive evidence, and its limit.**
+
+    clean negative controls (step-controls/**/*.stp)   0 flagged / 12
+    non-crashing catalog fixtures                     21 flagged / 2352  (0.9 %)
+
+The 21 were read individually: all are genuine type violations in fixtures that happen
+not to crash, not spec-legal-but-unusual constructs. An earlier draft flagged 27; six
+were MY table's omissions (BEZIER_SURFACE, DEGENERATE_TOROIDAL_SURFACE,
+BLENDED_EDGE_SURFACE, COMPOSITE_CURVE_ON_SURFACE, COMPLEX_TRIANGULATED_FACE,
+TRIANGULATED_FACE -- all legitimate subtypes) and were fixed.
+
+**The honest weakness: only 12 known-clean files exist to test against.** The repo has no
+NIST/MBx-IF-style valid-STEP corpus, and the 2352 non-crashers are mostly deliberate
+defect fixtures, so they are NOT a clean-file sample. The module's own bar is "LOW
+false-positive rate on CLEAN files is critical", and 12 files is thin evidence for that
+bar even though it passed. **Recommend acquiring a real valid-STEP corpus and re-running
+this before adopting.**
+
+*Methodology note:* my first control run reported "0 false positives" from a glob that
+matched **zero files** -- `step-controls/*.stp` when the layout is
+`step-controls/<section>/Ctl*.stp`. A vacuous pass reads exactly like a real one. Always
+print the denominator; the count of things scanned is part of the result.
+
 #### (M.7) The tail is heterogeneous; extending the type table does not pay. 2026-08-09
 
 Third stratified-lldb sample, over the 46 crashers that refuse all three checks
