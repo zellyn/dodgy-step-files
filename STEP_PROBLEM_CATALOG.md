@@ -32448,7 +32448,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Category**: §12.2a pcurves
 - **Sources**: OCCT/ShapeAnalysis_Edge::CheckCurve3dWithPCurve
 - **Description**: Analyzer silently passes when 3D curve endpoints and P-curve projections don't match under plane projection; fails to detect inconsistency specific to planar surfaces (Geom_Plane).
-- **Expected kernel behavior**: heal: detect and correct the issue; reject: if precondition unrecoverable
+- **Expected kernel behavior**: the file supplies a complete, connected planar face bounded by four edges that carry pcurves, so a correct kernel must not answer with an empty shape. Either build the face — dropping or approximating the single defective curve and reporting that it did so — or reject the file with a diagnostic naming the curve. Returning nothing without an error silently discards a well-formed model, which is the worst of the three outcomes for the user.
 - **Notes**: synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer
 - **Model impact**: Edge on plane with 3D line from (0,0,0)→(5,0,0) but P-curve line (0,0)→(5.5,0) in 2D. Endpoint mismatch under projection not detected.
 - **Fixture path**: step-examples/12-2a-pcurves/Gp126.stp
@@ -32469,7 +32469,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Category**: §12.2a pcurves
 - **Sources**: OCCT/ShapeFix_Edge::FixAddPCurve
 - **Description**: Non-identity location with offset surface causes Transformed() to return incompatible type; down_cast fails, exception handling missing.
-- **Expected kernel behavior**: heal: detect and correct the issue; reject: if precondition unrecoverable
+- **Expected kernel behavior**: the file supplies a complete, connected planar face bounded by four edges that carry pcurves, so a correct kernel must not answer with an empty shape. Either build the face — dropping or approximating the single defective curve and reporting that it did so — or reject the file with a diagnostic naming the curve. Returning nothing without an error silently discards a well-formed model, which is the worst of the three outcomes for the user.
 - **Notes**: synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer
 - **Model impact**: Edge on OFFSET_SURFACE with non-identity location. Transformed() returns surface that fails safe down_cast to expected type, causing null dereference or exception.
 - **Fixture path**: step-examples/12-2a-pcurves/Gp128.stp
@@ -32480,7 +32480,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Category**: §12.2a pcurves
 - **Sources**: OCCT/ShapeAnalysis_Curve::Project
 - **Description**: Project returns NaN on degenerate curves; comparison NaN < f is false, allowing return false via dist > tol path, silently masking failure.
-- **Expected kernel behavior**: heal: detect and correct the issue; reject: if precondition unrecoverable
+- **Expected kernel behavior**: the file supplies a complete, connected planar face bounded by four edges that carry pcurves, so a correct kernel must not answer with an empty shape. Either build the face — dropping or approximating the single defective curve and reporting that it did so — or reject the file with a diagnostic naming the curve. Returning nothing without an error silently discards a well-formed model, which is the worst of the three outcomes for the user.
 - **Notes**: synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer
 - **Model impact**: Degenerate B-spline with all control points identical (collapses to point). Project returns NaN; distance check fails to catch.
 - **Fixture path**: step-examples/12-2a-pcurves/Gp129.stp
@@ -32491,7 +32491,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Category**: §12.2a pcurves
 - **Sources**: OCCT/ShapeFix_Edge::FixSameParameter
 - **Description**: B-spline 3D span [0..10] vs P-curve 2D span [0..2] parameter mismatch silent; FixSameParameter misses compression ratio inconsistency.
-- **Expected kernel behavior**: heal: detect and correct the issue; reject: if precondition unrecoverable
+- **Expected kernel behavior**: the file supplies a complete, connected planar face bounded by four edges that carry pcurves, so a correct kernel must not answer with an empty shape. Either build the face — dropping or approximating the single defective curve and reporting that it did so — or reject the file with a diagnostic naming the curve. Returning nothing without an error silently discards a well-formed model, which is the worst of the three outcomes for the user.
 - **Notes**: synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer
 - **Model impact**: B-spline in 3D with knot range [0,10], P-curve B-spline with knot range [0,2]. Parameter sync failure undetected.
 - **Fixture path**: step-examples/12-2a-pcurves/Gp130.stp

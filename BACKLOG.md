@@ -2620,6 +2620,35 @@ ill-typed, so it tested nothing. With a synthesised DIRECTION, three of the four
 Same failure shape as the inline-entity mistake above -- **an invalid instrument returns
 a negative that looks like a finding.**
 
+#### (M.11) Spec coverage 98.4 %; the last 49 need per-file reading, NOT a template. 2026-08-09
+
+Corpus-wide measurement: **3283 of 3336 entries (98.4 %) carry a meaningful
+`Expected kernel behavior`.** Weakest sections: Tfa 91.7 % (21 missing), Tsh 95.3 % (12),
+N 96.0 % (7), Gn 96.5 % (6), Gp 97.9 % (4), Twi 99.0 % (3).
+
+**Filled 4 of the 53** -- Gp126/128/129/130. These are the groundable ones: each is a
+complete connected planar face with four pcurve-carrying edges that OCCT loads to `empty`,
+i.e. members of the silent-total-loss cohort, so the roadmap's verified finding applies
+directly and per-entry.
+
+**Deliberately did NOT fill the other 49.** They differ in kind from every prose batch
+shipped today: all are complete wrapped B-reps that LOAD SUCCESSFULLY (`occt=shape(1)`).
+Their claims are BEHAVIOURAL -- what a repair routine should do -- not structural. Nothing
+in the file itself tells you the right answer; you have to know what the titled condition
+is and what correct handling looks like.
+
+**Why a template would be actively harmful here.** `Expected kernel behavior` is scored by
+a VACUOUS regex precisely to stop filler. Templated prose across 49 entries would flip them
+to "specced" in every metric while telling an implementer nothing -- it would raise the
+number to 100 % and lower the corpus's actual value. Several of these titles also name a
+routine the file may never reach (cf. the RUNTIME-VERIFIED notes added this morning), so
+prose derived from the title alone risks being wrong as well as empty.
+
+**How to do it properly:** read the fixture and its generator, establish what condition is
+actually encoded, then write the spec. Roughly 49 entries x per-file reading. Titles like
+`Tsh211` "Degenerate edge-only wire removal" and `Tfa219` "vertex_tolerance_mismatch" are
+descriptive enough to start from; `Tfa218` "circle_parameter" is not.
+
 #### (M.10) Dangling-ref remainder: measured, NOT acted on. 2026-08-09
 
 Current state: **39 fixtures reference a `#N` that is never defined** (comments and string

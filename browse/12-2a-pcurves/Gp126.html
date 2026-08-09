@@ -30,7 +30,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: detect and correct the issue; reject: if precondition unrecoverable</p></section>
+<p>the file supplies a complete, connected planar face bounded by four edges that carry pcurves, so a correct kernel must not answer with an empty shape. Either build the face — dropping or approximating the single defective curve and reporting that it did so — or reject the file with a diagnostic naming the curve. Returning nothing without an error silently discards a well-formed model, which is the worst of the three outcomes for the user.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer</p></section>
 <section><h2>Expected validation</h2>
