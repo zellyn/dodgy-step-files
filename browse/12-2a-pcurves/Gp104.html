@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject at parse time: `B_SPLINE_CURVE_WITH_KNOTS` is given 10 arguments where the schema declares 9. A shifted argument list silently retypes every later value, so validate arity before constructing the curve.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Live oracle output</h2>

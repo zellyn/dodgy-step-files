@@ -22895,6 +22895,7 @@ B-spline degree-3 curve with poles clustered in XY plane but high-curvature inte
 ### Gn055 — ShapeUpgrade_SplitSurface knot-spec mismatch on QUASI_UNIFORM
 
 Degree-2 B-spline surface marked `.QUASI_UNIFORM_KNOTS.` but knot vectors are piecewise (0.0, 0.25, 0.75, 1.0) and (0.0, 0.4, 0.6, 1.0). Init dispatch recognizes form tag and skips careful split logic, causing incorrect patch extraction.
+- **Expected kernel behavior**: reject at parse time: `LINE.pnt` is declared `CARTESIAN_POINT` but names a `VERTEX_POINT`, and the `SHELL_BASED_SURFACE_MODEL` boundary list holds a face where a shell is declared. Diagnose the slot and its expected type; do not dereference the resolved handle.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=reject`
 ### Gn056 — ShapeAnalysis_Curve.FillBndBox exact-mode knot-boundary clamping
 
@@ -22916,6 +22917,7 @@ Full-circle CIRCLE entity with radius 1,000,000 meters. GetSamplePoints caps at 
 ### Gn058 — ShapeUpgrade_ConvertSurfaceToBezierBasis symmetric-knot asymmetric extraction
 
 Degree-2 B-spline surface with symmetric knot vectors (0.0, 0.5, 1.0) in both U and V. Extraction algorithm applies knot insertions in order-dependent sequence, producing asymmetric Bezier patches despite symmetric input structure.
+- **Expected kernel behavior**: reject at parse time: `LINE.pnt` is declared `CARTESIAN_POINT` but names a `VERTEX_POINT`, and the `SHELL_BASED_SURFACE_MODEL` boundary list holds a face where a shell is declared. Diagnose the slot and its expected type; do not dereference the resolved handle.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=reject`
 ### Gn059 — ShapeAnalysis_Curve.FillBndBox SearchForExtremum drift
 
@@ -31907,6 +31909,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 **Description**: Edge's face has non-identity LOCATION; CheckCurve3dWithPCurve applies transformation to 3D samples but uses untransformed pcurve samples, causing systematic offset between domain and range.  
 **Reproducer**: Create edge with transformed face location; call CheckCurve3dWithPCurve; observe offset discrepancy.  
 **Expected kernel behavior**: Apply LOCATION transformation symmetrically to both 3D and pcurve samples during comparison.  
+- **Expected kernel behavior**: reject at parse time: `B_SPLINE_CURVE_WITH_KNOTS` is given 10 arguments where the schema declares 9, so every later argument sits in the wrong slot; additionally `ADVANCED_FACE.bounds` holds a raw `EDGE_LOOP` where a `FACE_BOUND` is declared, and that loop lists an `EDGE_CURVE` with no `ORIENTED_EDGE` wrapper. Report the entity and the expected arity/type.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=accept(0)`
 
 ---
@@ -31950,6 +31953,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 **Description**: Edge pcurve sits at U=0 seam of cylinder; GetEndTangent2d picks wrong side of seam, returning ambiguous tangent direction.  
 **Reproducer**: Create cylinder with seam edge at U=0; call GetEndTangent2d; verify tangent is unambiguous.  
 **Expected kernel behavior**: GetEndTangent2d detects seam position; normalizes to consistent side (U<π or U>π convention).  
+- **Expected kernel behavior**: reject at parse time: `B_SPLINE_CURVE_WITH_KNOTS` is given 10 arguments where the schema declares 9; additionally `ADVANCED_FACE.bounds` holds a raw `EDGE_LOOP` where a `FACE_BOUND` is declared, and that loop lists an `EDGE_CURVE` with no `ORIENTED_EDGE` wrapper. Report the entity and the expected arity/type.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=accept(0)`
 
 ### Gp061 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve sample-count threshold
@@ -32226,6 +32230,7 @@ Edge whose 3D curve and pcurve trace the same geometric path but with reversed p
 **Method**: `ShapeAnalysis_Edge::CheckCurve3dWithPCurve`  
 **Defect class**: `pcurve`  
 
+- **Expected kernel behavior**: reject at parse time: `LINE.dir` is declared `VECTOR` but names a `CARTESIAN_POINT`. Diagnose the mistyped reference instead of constructing a direction from whatever the handle resolves to.
 - **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Gp097 — ShapeFix_Edge.FixAddPCurve composite-curve-on-surface
@@ -32247,6 +32252,7 @@ Two edges where an arc is tangent to a line at a single point. CheckOverlapping 
 **Method**: `ShapeAnalysis_Edge::CheckOverlapping`  
 **Defect class**: `incomplete_diagnostics`  
 
+- **Expected kernel behavior**: reject at parse time: `LINE.dir` is declared `VECTOR` but names a `CARTESIAN_POINT`. Diagnose the mistyped reference instead of constructing a direction from whatever the handle resolves to.
 - **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Gp099 — ShapeFix_Edge.FixSameParameter very-long-edge
@@ -32257,6 +32263,7 @@ Edge of extreme length (1e6 units). FixSameParameter's tolerance computation und
 **Method**: `ShapeFix_Edge::FixSameParameter`  
 **Defect class**: `tolerance_escalation`  
 
+- **Expected kernel behavior**: reject at parse time: `LINE.dir` is declared `VECTOR` but names a `CARTESIAN_POINT`. Diagnose the mistyped reference instead of constructing a direction from whatever the handle resolves to.
 - **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Gp100 — ShapeAnalysis_Edge.GetEndTangent2d POLYLINE first-point
@@ -32272,10 +32279,12 @@ PCURVE as POLYLINE. GetEndTangent2d uses last two points for last endpoint but f
 ### Gp101 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve sample-skip near-endpoint
 
 Edge on cylindrical surface with helix 3D curve deviating midspan from cylinder surface. PCurve is circle. Algorithm skips first/last sample to avoid endpoint coincidence noise, losing midspan deviation information; midspan parameter mismatch undetected.
+- **Expected kernel behavior**: reject at parse time: `B_SPLINE_CURVE_WITH_KNOTS` is given 10 arguments where the schema declares 9. A shifted argument list silently retypes every later value, so validate arity before constructing the curve.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Gp102 — ShapeFix_Edge.FixAddPCurve toroidal projection
 
 Edge on torus near minor radius singularity (v ≈ 0). 3D curve is spiral. FixAddPCurve's projection algorithm diverges; projected pcurve is mathematically invalid due to singular Jacobian at minor circle.
+- **Expected kernel behavior**: reject at parse time: `B_SPLINE_CURVE_WITH_KNOTS` is given 10 arguments where the schema declares 9. A shifted argument list silently retypes every later value, so validate arity before constructing the curve.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Gp103 — ShapeAnalysis_Edge.CheckPCurveRange CIRCLE-vs-trim-mismatch
 
@@ -32288,6 +32297,7 @@ Plane edge with 3D circle arc from parameter 0.5 to 6.0 rad (outside [0, 2π]). 
 ### Gp104 — ShapeFix_Edge.FixSameParameter offset-curve-3d
 
 Plane edge whose 3D curve is OFFSET_CURVE (0.2 offset from base B-spline). PCurve is B-spline matching base, not offset. FixSameParameter doesn't propagate offset distance into SameParameter tolerance calculation; edge marked SameParameter=true despite offset mismatch.
+- **Expected kernel behavior**: reject at parse time: `B_SPLINE_CURVE_WITH_KNOTS` is given 10 arguments where the schema declares 9. A shifted argument list silently retypes every later value, so validate arity before constructing the curve.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Gp105 — ShapeAnalysis_Edge.CheckOverlapping zero-tolerance-overlap
 
@@ -32336,10 +32346,12 @@ Pcurve B-spline with zero tangent derivative at endpoint (last two control point
 ### Gp112 — ShapeFix_Edge.FixAddPCurve scaled-surface
 
 Edge on surface with internal scaling transformation. FixAddPCurve constructs pcurve in original coordinate system instead of the scaled one, creating geometric inconsistency.
+- **Expected kernel behavior**: reject at parse time: an aggregate the schema declares with a lower bound of one is written empty. An empty list must not be resolved to a null collection that later traversal walks unguarded.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Gp113 — ShapeAnalysis_Edge.CheckOverlapping different-curves-same-geometry
 
 Two edges with equivalent geometry but different curve types: one LINE and one BSpline approximation. CheckOverlapping's curve-type-aware comparison reports non-overlapping despite identical geometry.
+- **Expected kernel behavior**: reject at parse time: an aggregate the schema declares with a lower bound of one is written empty. An empty list must not be resolved to a null collection that later traversal walks unguarded.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Gp114 — ShapeFix_Edge.FixSameParameter periodic-curve-with-non-periodic-pcurve
 
@@ -32436,7 +32448,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Category**: §12.2a pcurves
 - **Sources**: OCCT/ShapeAnalysis_Edge::CheckCurve3dWithPCurve
 - **Description**: Analyzer silently returns false when P-curve extraction fails (FAIL1 status), masking missing or corrupt parametric curve data.
-- **Expected kernel behavior**: heal: detect and correct the issue; reject: if precondition unrecoverable
+- **Expected kernel behavior**: reject at parse time: an aggregate the schema declares with a lower bound of one is written empty. An empty list must not be resolved to a null collection that later traversal walks unguarded.
 - **Notes**: synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer
 - **Model impact**: SURFACE_CURVE with empty pcurve list on cylindrical surface. CheckCurve3dWithPCurve returns false without reporting extraction failure.
 - **Fixture path**: step-examples/12-2a-pcurves/Gp127.stp

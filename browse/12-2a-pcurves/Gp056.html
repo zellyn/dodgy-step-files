@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject at parse time: `B_SPLINE_CURVE_WITH_KNOTS` is given 10 arguments where the schema declares 9, so every later argument sits in the wrong slot; additionally `ADVANCED_FACE.bounds` holds a raw `EDGE_LOOP` where a `FACE_BOUND` is declared, and that loop lists an `EDGE_CURVE` with no `ORIENTED_EDGE` wrapper. Report the entity and the expected arity/type.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=accept(0)</code></p></section>
 <section><h2>Live oracle output</h2>

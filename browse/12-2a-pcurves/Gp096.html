@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject at parse time: `LINE.dir` is declared `VECTOR` but names a `CARTESIAN_POINT`. Diagnose the mistyped reference instead of constructing a direction from whatever the handle resolves to.</p></section>
 <section><h2>Notes</h2>
 <p>RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file&#x27;s straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).</p></section>
 <section><h2>Expected validation</h2>

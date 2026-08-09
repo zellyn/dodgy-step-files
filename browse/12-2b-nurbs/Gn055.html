@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal or reject (mechanism-specific; see Description)</p></section>
+<p>reject at parse time: `LINE.pnt` is declared `CARTESIAN_POINT` but names a `VERTEX_POINT`, and the `SHELL_BASED_SURFACE_MODEL` boundary list holds a face where a shell is declared. Diagnose the slot and its expected type; do not dereference the resolved handle.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=reject</code></p></section>
 <section><h2>Live oracle output</h2>

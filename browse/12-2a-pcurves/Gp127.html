@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>heal: detect and correct the issue; reject: if precondition unrecoverable</p></section>
+<p>reject at parse time: an aggregate the schema declares with a lower bound of one is written empty. An empty list must not be resolved to a null collection that later traversal walks unguarded.</p></section>
 <section><h2>Notes</h2>
 <p>synthesized fixture from v3 deep-pass; falsifiable claim per Minimal reproducer</p></section>
 <section><h2>Expected validation</h2>
