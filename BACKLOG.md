@@ -2620,6 +2620,41 @@ ill-typed, so it tested nothing. With a synthesised DIRECTION, three of the four
 Same failure shape as the inline-entity mistake above -- **an invalid instrument returns
 a negative that looks like a finding.**
 
+#### (M.7) The tail is heterogeneous; extending the type table does not pay. 2026-08-09
+
+Third stratified-lldb sample, over the 46 crashers that refuse all three checks
+(Gn003 M019 P009 Pmi049 Tfa108 Tsh052 Twi154 U008):
+
+    StepToTopoDS_TranslateEdgeLoop::Init + 9152   Tfa108
+    StepToGeom::MakeAxis1Placement + 36           Tsh052
+    StepToGeom::MakeTrimmedCurve + 176            Twi154
+    STEPControl_ActorRead::TransferEntity + 80    U008
+    RWStepGeom_RWBSplineCurveWithKnots::Check     Gn003
+    StepToGeom::MakeVectorWithMagnitude + 32      P009
+    <stripped symbol>                             M019, Pmi049
+
+**No dominant bucket remains.** The first two samples each found one; this one finds
+seven sites across eight files. The high-yield patterns are extracted and the tail is
+genuinely long -- that is a result, and it is the right moment to stop rather than keep
+tracing individually.
+
+**MEASURED AND REVERTED:** three of those sites are placement/curve slots the B-rep-only
+table does not cover, so extending it to AXIS1_PLACEMENT, AXIS2_PLACEMENT_2D/3D,
+TRIMMED_CURVE, PLANE/CYLINDRICAL/CONICAL/SPHERICAL/TOROIDAL_SURFACE.position, CIRCLE,
+ELLIPSE, VERTEX_LOOP, POLY_LOOP and PCURVE looked like the obvious next move. Measured:
+
+    B-rep core table only : 99/177 crashers  (56 %)  vs 21/2352 non (0.9 %)
+    extended table        : 100/177 crashers (56 %)  vs 24/2352 non (1.0 %)
+
+**+1 crasher for +3 non-crashers.** Reverted. The rules are not wrong -- they are real
+schema constraints -- but they buy no crash coverage and would have meant publishing three
+more flags I had not audited against the negative class. Do not re-derive this extension
+expecting a gain.
+
+##### Where this campaign stands
+74 % of crashes refusable at parse time by three checks, all generated. 46 crashers
+(26 %) remain, spread across at least seven call sites with no shared input pattern found.
+
 #### (M.6) Generalise check 1 to EVERY reference slot: 55 % -> 74 %. 2026-08-09
 
 (M.5) noted that check 1 inspected exactly one attribute (`LINE.dir`) and so under-counted.
