@@ -202,14 +202,25 @@ def crash_refusable(tok: dict[str, str]) -> dict:
       type   an entity reference sits in a slot whose declared type it is not.
              Measured on the case traced to a call site: LINE.dir must be a VECTOR.
       count  a B-spline entity's argument count differs from the schema.
+      empty  an aggregate written '()' in a slot the schema declares non-empty.
+             Traced to RW<Entity>::Share -- the reference-graph walk, which runs
+             BEFORE any geometry conversion.
 
     The union is the honest answer to "what fraction of these crashes could a
     kernel have refused, with a precise diagnostic, before it tried to build
     anything?"
     """
     ent = re.compile(r"#(\d+)\s*=\s*([A-Z_0-9]+)\s*\(", re.I)
+    # EXPRESS declares each of these aggregates with a lower bound of 1. Restricted to
+    # these types on purpose: many STEP aggregates may legitimately be empty, so a
+    # blanket "()" search would be noise rather than a check.
+    nonempty = ("SHELL_BASED_SURFACE_MODEL", "TESSELLATED_SHELL", "SURFACE_CURVE",
+                "CLOSED_SHELL", "OPEN_SHELL", "EDGE_LOOP", "FACE_OUTER_BOUND",
+                "ADVANCED_FACE", "MANIFOLD_SOLID_BREP", "GEOMETRIC_CURVE_SET",
+                "POLY_LOOP", "VERTEX_LOOP", "TESSELLATED_SOLID", "TRIANGULATED_FACE")
+    empty_pat = re.compile(r"=\s*(" + "|".join(nonempty) + r")\s*\([^;]*?\(\s*\)", re.I)
     crash = [f for f, v in tok.items() if v == "signal(11)"]
-    by_type, by_count = [], []
+    by_type, by_count, by_empty = [], [], []
     for fid in crash:
         hits = glob.glob(os.path.join(ROOT, "step-examples", "*", f"{fid}.stp"))
         if not hits:
@@ -232,9 +243,12 @@ def crash_refusable(tok: dict[str, str]) -> dict:
                    for m in re.finditer(rf"=\s*{name}\s*\(", txt, re.I)):
                 by_count.append(fid)
                 break
-    union = set(by_type) | set(by_count)
+        if empty_pat.search(txt):
+            by_empty.append(fid)
+    union = set(by_type) | set(by_count) | set(by_empty)
     return {"total": len(crash), "type": len(by_type), "count": len(by_count),
-            "union": len(union), "ids": sorted(union)}
+            "empty": len(by_empty), "union": len(union), "ids": sorted(union),
+            "empty_ids": sorted(by_empty)}
 
 
 def load_classes() -> list[dict]:
@@ -392,10 +406,10 @@ def main() -> None:
         r_dev = 100.0 * len(dcrash) / n_dev
         r_ok = 100.0 * n_ok_crash / n_ok if n_ok else 0.0
         cr = crash_refusable(tok)
-        A("## Cheapest crash defence: two checks, before any geometry")
+        A("## Cheapest crash defence: three checks, before any geometry")
         A("")
         A(f"**{cr['union']} of the {cr['total']} crashing fixtures ({100*cr['union']/cr['total']:.0f}%) "
-          "are refusable before a single geometric entity is constructed** — by two "
+          "are refusable before a single geometric entity is constructed** — by three "
           "checks that need nothing but the file and a schema table:")
         A("")
         A(f"1. **Wrong type in a slot** ({cr['type']} fixtures). `LINE.dir` is declared "
@@ -403,10 +417,19 @@ def main() -> None:
           "Repairing that one reference makes the file load — verified individually on "
           "26 of them, so this is cause, not correlation.")
         A(f"2. **Wrong argument count** ({cr['count']} fixtures), detailed below.")
+        A(f"3. **Empty aggregate where the schema requires one or more** "
+          f"({cr['empty']} fixtures) — `SHELL_BASED_SURFACE_MODEL('',())`, "
+          "`TESSELLATED_SHELL('',(),$)`, `SURFACE_CURVE('',#33,(),.PCURVE_S1.)`. "
+          "These crash in the *reference-graph walk*, before conversion is even "
+          "attempted, which is why no amount of care in the geometry code would catch "
+          "them. Present in 1.6% of non-crashing fixtures, so it is a strong signal "
+          "rather than a certainty.")
         A("")
-        A("Neither check needs a kernel. Both produce a diagnostic naming the entity and "
-          "what was wrong with it — which is a far better outcome than a segfault, and "
-          "also better than the silent empty shape the other sections describe.")
+        A("None of the three needs a kernel, and each produces a diagnostic naming the "
+          "entity and what was wrong with it — a far better outcome than a segfault, "
+          "and better than the silent empty shape the other sections describe. Note "
+          "where check 3 fires: in the reference-graph walk, *before* conversion "
+          "starts. Robustness in the geometry code cannot reach it.")
         A("")
         A("### The argument-count check")
         A("")

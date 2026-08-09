@@ -27,14 +27,15 @@ These are separated from the general `empty` population on purpose. `empty` alon
 
 **Test against:** `Gn001`, `Gn009`, `Gn010`, `Gn013`, `Gn014`, `Gn017`, `Gn018`, `Gn019`, `Gn025`, `Gn026`, `Gn031`, `Gn032`, `Gn033`, `Gn034`, `Gn035`, `Gn037`, `Gn038`, `Gn039`, `Gn046`, `Gn047` …and 86 more
 
-## Cheapest crash defence: two checks, before any geometry
+## Cheapest crash defence: three checks, before any geometry
 
-**78 of the 177 crashing fixtures (44%) are refusable before a single geometric entity is constructed** — by two checks that need nothing but the file and a schema table:
+**96 of the 177 crashing fixtures (54%) are refusable before a single geometric entity is constructed** — by three checks that need nothing but the file and a schema table:
 
 1. **Wrong type in a slot** (60 fixtures). `LINE.dir` is declared `VECTOR`; these files point it at a `DIRECTION` or a `CARTESIAN_POINT`. Repairing that one reference makes the file load — verified individually on 26 of them, so this is cause, not correlation.
 2. **Wrong argument count** (22 fixtures), detailed below.
+3. **Empty aggregate where the schema requires one or more** (19 fixtures) — `SHELL_BASED_SURFACE_MODEL('',())`, `TESSELLATED_SHELL('',(),$)`, `SURFACE_CURVE('',#33,(),.PCURVE_S1.)`. These crash in the *reference-graph walk*, before conversion is even attempted, which is why no amount of care in the geometry code would catch them. Present in 1.6% of non-crashing fixtures, so it is a strong signal rather than a certainty.
 
-Neither check needs a kernel. Both produce a diagnostic naming the entity and what was wrong with it — which is a far better outcome than a segfault, and also better than the silent empty shape the other sections describe.
+None of the three needs a kernel, and each produces a diagnostic naming the entity and what was wrong with it — a far better outcome than a segfault, and better than the silent empty shape the other sections describe. Note where check 3 fires: in the reference-graph walk, *before* conversion starts. Robustness in the geometry code cannot reach it.
 
 ### The argument-count check
 
@@ -57,7 +58,7 @@ The reason is positional. These entities are read by slot, so omitting an attrib
 
 Honest caveat: 1 deviating fixture — `Gn169` — does not crash, so the count is a very strong predictor rather than a law. The correlation was measured across the whole corpus; only some of the crashes were traced to a call site individually.
 
-**Test against** — everything either check refuses. Wrong count: `Gn043`, `Gn105`, `Gn107`, `Gn173`, `Gp056`, `Gp058`, `Gp060`, `Gp101`, `Gp102`, `Gp104`, `Gs134`, `Gs137`, `Gs138`, `Tfa141`, `Tfa144`, `Tfa172`, `Tfa174`, `Tfa175`, `Tfa180`, `Tfa187`, `Twi227`, `Twi230`. Wrong type: `Gp046`, `Gp047`, `Gp049`, `Gp059`, `Gp096`, `Gp098`, `Gp099`, `Gp131`, `Gs136`, `N121`, `Tfa107`, `Tsh139`, `Tsh140`, `Tsh149`, `Tsh156`, `Tsh158`, `Tsh159`, `Tsh161`, `Tsh162`, `Tsh163` …and 36 more. A kernel that refuses all of these at parse time gives up nothing — every one is a file no correct reader should accept.
+**Test against** — everything either check refuses. Wrong count: `Gn043`, `Gn105`, `Gn107`, `Gn173`, `Gp056`, `Gp058`, `Gp060`, `Gp101`, `Gp102`, `Gp104`, `Gs134`, `Gs137`, `Gs138`, `Tfa141`, `Tfa144`, `Tfa172`, `Tfa174`, `Tfa175`, `Tfa180`, `Tfa187`, `Twi227`, `Twi230`. Wrong type: `Ad015`, `Ad050`, `Gb002`, `Gb003`, `Gp001`, `Gp019`, `Gp042`, `Gp046`, `Gp047`, `Gp049`, `Gp059`, `Gp096`, `Gp098`, `Gp099`, `Gp112`, `Gp113`, `Gp127`, `Gp131`, `Gp140`, `Gp141` …and 54 more. A kernel that refuses all of these at parse time gives up nothing — every one is a file no correct reader should accept.
 
 ## What this page does *not* cover
 
