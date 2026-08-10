@@ -2774,6 +2774,19 @@ inspected individually): 76 assertions added, 30 skipped with reasons.**
     (this also closes the M.24 "pending reachability probe" skip for these two), and
     corrected OCC-behavior to state the empty-aggregate crash is the witnessed bug and the
     titled geometry condition is byte-level provenance only. Structural assertions 274 -> 276.
+  - **Empty-SBSM sweep (2026-08-10):** grepped `shell_based_surface_model([])` across all
+    generators — 4 hits: Gs002, Gb002 (resolved above), **Tfa002** (LEFT AS-IS: its titled
+    "unbound ADVANCED_FACE" IS a genuine empty-bounds EMPTY_AGGREGATE, already honestly
+    asserted — a distinct empty-aggregate variant, not a mislabel), and **Gb003** (RECLASSIFIED:
+    a triple-mismatch — title "closed B-spline cusp", but #6 is a B-spline CURVE bound as
+    `ADVANCED_FACE.face_geometry` where a SURFACE is declared (struct==SLOT_TYPE, kept as the
+    asserted verdict), inside an orphaned empty `SHELL_BASED_SURFACE_MODEL('',())` that is the
+    real signal(11) source; the titled cusp is neither correctly wired nor reachable. Dropped
+    its vacuous shape_null==True tier-3 assertion, fixed the self-contradictory "crashes...
+    silently accepts" OCC-behavior, added honest-reclassification note). Gb003 is a
+    mislabeled-duplicate candidate for maintainer regen/quarantine (it demonstrates SLOT_TYPE +
+    EMPTY_AGGREGATE, both covered elsewhere, not its titled B-spline cusp) — made truthful in
+    place; the deeper regen/quarantine call remains a maintainer decision.
   - Pf025 (empty OPEN_SHELL is scaffold, claim is the vertex-loop bound),
     M070/M193/M194/M195/M199 (empty lists incidental to tessellation minimalism),
     3 `.input` quarantine files (no catalog entries).

@@ -55926,7 +55926,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gb003.stp",
     "id": "Gb003",
-    "notes": "Bug-reporter synonyms: \"B-spline cusp at closure\", \"tangent jump at periodicity\". Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: \"B-spline cusp at closure\", \"tangent jump at periodicity\", \"closed B-spline has reversed end-tangent\", \"closure tangent reversed\", \"C0 closure but no C1 on closed BSpline\".",
+    "notes": "**Honest reclassification (2026-08-10)**: orphaned-defect carrier with a wrong-type binding — the titled closed-B-spline cusp is NOT demonstrated. The closed B-spline CURVE #6 is bound as the `face_geometry` of `ADVANCED_FACE` #10 where a SURFACE is declared (`struct == SLOT_TYPE`, the asserted verdict — a curve is not a surface), and #10's `OPEN_SHELL` is unreferenced by the empty `SHELL_BASED_SURFACE_MODEL('',())`. Bug-reporter synonyms: \"B-spline cusp at closure\", \"tangent jump at periodicity\". Bytes alone are insufficient to demonstrate the titled defect; needs a sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer — RUNTIME-VERIFIED (2026-08-10, validation/.venv OCP/OCCT 7.8.1) the crash comes from the empty surface model (`struct == EMPTY_AGGREGATE` at #12), not the titled cusp; the wrong-type curve-as-surface (#10) and the cusp curve (#6) sit upstream and are never reached. Kernel-bug witnessed: the empty-aggregate crash is a genuine robustness failure (receivers must reject an empty shell model); the reversed-end-tangent condition is byte-level / runtime-only provenance. Synonyms: \"B-spline cusp at closure\", \"tangent jump at periodicity\", \"closed B-spline has reversed end-tangent\", \"closure tangent reversed\", \"C0 closure but no C1 on closed BSpline\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "runtime-only",
@@ -55944,12 +55944,9 @@
     ],
     "taxonomy": [
       "crash",
-      "silent-loss",
       "geometry"
     ],
-    "tier3_assertions": [
-      "shape_null == True"
-    ],
+    "tier3_assertions": [],
     "title": "Closed B-spline curve has reversed end-tangent"
   },
   {

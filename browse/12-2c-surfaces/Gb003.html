@@ -16,7 +16,6 @@
 <p class="category">§12.2c (sub-class: B-spline closure tangent)</p>
 <p class="tag-pills">
 <a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
-<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
 </p>
 </header>
@@ -36,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Reject the smooth-closure claim; or open the curve at the cusp.</p></section>
 <section><h2>Notes</h2>
-<p>Bug-reporter synonyms: &quot;B-spline cusp at closure&quot;, &quot;tangent jump at periodicity&quot;. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog&#x27;s allowed set ({heal, reject}). Kernel-bug witnessed: catalog allows either heal or reject; OCC silently accepts the bad input without doing either. Synonyms: &quot;B-spline cusp at closure&quot;, &quot;tangent jump at periodicity&quot;, &quot;closed B-spline has reversed end-tangent&quot;, &quot;closure tangent reversed&quot;, &quot;C0 closure but no C1 on closed BSpline&quot;.</p></section>
+<p>**Honest reclassification (2026-08-10)**: orphaned-defect carrier with a wrong-type binding — the titled closed-B-spline cusp is NOT demonstrated. The closed B-spline CURVE #6 is bound as the `face_geometry` of `ADVANCED_FACE` #10 where a SURFACE is declared (`struct == SLOT_TYPE`, the asserted verdict — a curve is not a surface), and #10&#x27;s `OPEN_SHELL` is unreferenced by the empty `SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,())`. Bug-reporter synonyms: &quot;B-spline cusp at closure&quot;, &quot;tangent jump at periodicity&quot;. Bytes alone are insufficient to demonstrate the titled defect; needs a sibling input fixture. Tagged provenance_tier: runtime-only. **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer — RUNTIME-VERIFIED (2026-08-10, validation/.venv OCP/OCCT 7.8.1) the crash comes from the empty surface model (`struct == EMPTY_AGGREGATE` at #12), not the titled cusp; the wrong-type curve-as-surface (#10) and the cusp curve (#6) sit upstream and are never reached. Kernel-bug witnessed: the empty-aggregate crash is a genuine robustness failure (receivers must reject an empty shell model); the reversed-end-tangent condition is byte-level / runtime-only provenance. Synonyms: &quot;B-spline cusp at closure&quot;, &quot;tangent jump at periodicity&quot;, &quot;closed B-spline has reversed end-tangent&quot;, &quot;closure tangent reversed&quot;, &quot;C0 closure but no C1 on closed BSpline&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>
@@ -45,9 +44,6 @@
 <li><code>contains(b&#x27;B_SPLINE_CURVE_WITH_KNOTS(&#x27;)</code></li>
 <li><code>contains(b&#x27;.T.,.F.&#x27;)</code></li>
 <li><code>count_entity_def(b&#x27;CARTESIAN_POINT&#x27;) == 5</code></li>
-</ul></section>
-<section><h2>Tier-3 assertions</h2><ul class="assertions">
-<li><code>shape_null == True</code></li>
 </ul></section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
