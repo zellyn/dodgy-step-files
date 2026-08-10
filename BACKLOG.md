@@ -253,6 +253,20 @@ nightly rebaseline. assimp §12.15 still pending (needs new section + raw-file w
       far-origin float32 collapse (Tb/Xp); wasm-address-space is borderline-platform (Pf/Xp or describe-only).
       → SYNTH TASK #496.
 
+**Wave 5 — MINED 2026-08-10 (INDEPENDENT non-OCCT readers — 1 novel, near-saturated; the saturation-law prediction that non-OCCT readers still yield):**
+- [x] **truck-stepio + NIST STEPcode + ruststep semantic layer** → `audit/mining_independent_readers_2026-08-10.md`.
+      16 candidates, ~8 genuine "OCCT-accepts / independent-reader-rejects" divergences, **1 net-new**.
+      Confirms [[project_mining_saturation]]: non-OCCT readers DO diverge (unlike FreeCAD Wave 4), but the
+      conformance-trap constructs they choke on (complex multi-type instances → Ls010; derived-`*`
+      `NAMED_UNIT(*)` → line 1092 exact incl. the reordered-leaves variant; legal empty `()` styles list →
+      line 18490 exact; BOOLEAN/LOGICAL `.T./.F./.U.` → Ls035 family; axis∥ref_direction NaN → AXIS_DEGENERATE)
+      are the SAME constructs the corpus already catalogs as defect fixtures, so they were pre-covered. The
+      one genuine gap: **Ls057** — EXPRESS `--` line comment in a Part-21 body (ruststep #71), which the
+      `/* */`-only §12-1c comment fixtures (Ls029-032/055/056) never covered. Live-measured divergence:
+      part21_strict REJECTS (swallows the `#2` entity on the `--` line) where it accept_with_warnings on
+      clean Ls056; occt/gmsh accept-silent. Shipped. Residual novelty is narrow lexical edge cases + SELECT
+      segfaults (reader-internal, not clean input patterns) — no wave warranted.
+
 **Wave 4 — MINED 2026-08-10 (FreeCAD issue tracker — SATURATED, 0 novel, as the OCCT-wrapping-importer thesis predicts):**
 - [x] **FreeCAD/FreeCAD GitHub issues** → `audit/mining_freecad_2026-08-10.md`. ~19 candidates, ~10 strongly
       synthesizable, **0 net-new** against the 3,352-entry corpus. Every synthesizable input pattern already

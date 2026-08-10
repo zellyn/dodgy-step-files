@@ -13882,6 +13882,20 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Model impact**: Tokenizer or grammar mismatch causes the affected entity (or the whole DATA section) to fail to parse; no entity is constructed at the offending instance number, and back-references to it become dangling.
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
+### Ls057 — EXPRESS `--` line comment in a Part-21 body swallows the entity that follows it
+- **Category**: §12.1c comment framing
+- **Sources**: Pattern-mined from ricosjp/ruststep #71 (bare `--` tail comment mis-scopes following content) (Apache-2.0/MIT — pattern only, no bytes copied); ISO 10303-21 §6.3 (block comment is the ONLY exchange-file comment form); ISO 10303-11 (EXPRESS `--` line comment)
+- **Description**: ISO 10303-21 §6.3 defines exactly one comment form for a Part-21 exchange file: the block comment `/* ... */`. The double-hyphen `--` end-of-line comment is EXPRESS (Part-11 / `.exp` schema) syntax and is not valid in a Part-21 exchange file. A reader that reuses an EXPRESS lexer for its Part-21 tokenizer — a common implementation shortcut — treats `--` as a line comment and silently swallows the rest of that physical line, including a live entity instance (`#2=CARTESIAN_POINT('swallowed',...)`) and its terminating `;`. A conforming Part-21 reader instead sees `--` as two consecutive minus tokens: a lexical error. This is a cross-reader conformance trap for a new kernel — keep EXPRESS line-comment handling out of the Part-21 lexer, or a real entity on the same line vanishes with no diagnostic.
+- **Reproducer recipe**: in DATA, a line `-- <text>: #2=CARTESIAN_POINT('swallowed',(0.,0.,0.));` — the `--` opens an EXPRESS line comment that runs to end-of-line, so a `--`-tolerant reader drops the `#2` entity and its `;` entirely.
+- **Expected kernel behavior**: reject the double-hyphen as invalid Part-21 punctuation (Part-21 has no `--` comment); at minimum, never let EXPRESS line-comment handling silently drop a real entity — if the token stream is ambiguous, diagnose rather than discard.
+- **Notes**: **See also**: Ls055, Ls056 (sibling ruststep-derived comment-framing fixtures). **Cross-reader divergence, live-measured (2026-08-10, validation/.venv OCP/OCCT 7.8.1)**: the pure-Python Part-21 validator `part21_strict` REJECTS this file (`E_UNRESOLVED_REFS`, parsing only 2 of the 3 entities — the `--` swallowed `#2`), where it `accept_with_warnings` on the clean sibling Ls056; OCC and gmsh both accept-silent and build no shape (the model root is loose `DIRECTION`s / a swallowed `CARTESIAN_POINT` with no shape-representation root, so empty is expected regardless of the syntax defect). The defect is oracle-visible on the structural/Part-21 axis, not the shape-count axis. Synonyms: "double-hyphen comment in STEP", "EXPRESS line comment in Part-21", "dash-dash comment swallows entity", "end-of-line comment exchange file", "EXPRESS lexer leaks into Part-21 tokenizer". Provenance tier: bytes-only.
+- **Byte assertion**: contains(b'-- EXPRESS line comment')
+- **Byte assertion**: contains(b"CARTESIAN_POINT('swallowed'")
+- **Tier-3 assertion**: shape_null == True
+- **Severity**: P1
+- **Model impact**: A single `--` on the same line as a real entity silently deletes that entity for any reader whose lexer honors EXPRESS line comments; back-references to the dropped instance become dangling, and the loss carries no diagnostic — the worst case is a file that imports "successfully" with a part quietly missing.
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
+
 ---
 
 ## §12.3a more shells (UnifySameDomain)

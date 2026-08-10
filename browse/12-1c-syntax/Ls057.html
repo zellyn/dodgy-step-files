@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ls057 — EXPRESS `--` line comment in a Part-21 body swallows the entity that follows it</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.1c Part-21 grammar</a> <span class="sep">/</span> <span class="current">Ls057</span>
+</nav>
+<header class="title-bar">
+<h1>Ls057 <span class="sep">—</span> <span class="entry-title">EXPRESS `--` line comment in a Part-21 body swallows the entity that follows it</span></h1>
+<p class="category">§12.1c comment framing</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-syntax" href="../by-tag/syntax/index.html">syntax</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-1c-syntax/Ls057.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-1c-syntax/Ls057.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from ricosjp/ruststep #71 (bare `--` tail comment mis-scopes following content) (Apache-2.0/MIT — pattern only, no bytes copied)</li>
+<li>ISO 10303-21 §6.3 (block comment is the ONLY exchange-file comment form)</li>
+<li>ISO 10303-11 (EXPRESS `--` line comment)</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>ISO 10303-21 §6.3 defines exactly one comment form for a Part-21 exchange file: the block comment `/* ... */`. The double-hyphen `--` end-of-line comment is EXPRESS (Part-11 / `.exp` schema) syntax and is not valid in a Part-21 exchange file. A reader that reuses an EXPRESS lexer for its Part-21 tokenizer — a common implementation shortcut — treats `--` as a line comment and silently swallows the rest of that physical line, including a live entity instance (`#2=CARTESIAN_POINT(&#x27;swallowed&#x27;,...)`) and its terminating `;`. A conforming Part-21 reader instead sees `--` as two consecutive minus tokens: a lexical error. This is a cross-reader conformance trap for a new kernel — keep EXPRESS line-comment handling out of the Part-21 lexer, or a real entity on the same line vanishes with no diagnostic.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>in DATA, a line `-- &lt;text&gt;: #2=CARTESIAN_POINT(&#x27;swallowed&#x27;,(0.,0.,0.));` — the `--` opens an EXPRESS line comment that runs to end-of-line, so a `--`-tolerant reader drops the `#2` entity and its `;` entirely.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject the double-hyphen as invalid Part-21 punctuation (Part-21 has no `--` comment); at minimum, never let EXPRESS line-comment handling silently drop a real entity — if the token stream is ambiguous, diagnose rather than discard.</p></section>
+<section><h2>Notes</h2>
+<p>**See also**: Ls055, Ls056 (sibling ruststep-derived comment-framing fixtures). **Cross-reader divergence, live-measured (2026-08-10, validation/.venv OCP/OCCT 7.8.1)**: the pure-Python Part-21 validator `part21_strict` REJECTS this file (`E_UNRESOLVED_REFS`, parsing only 2 of the 3 entities — the `--` swallowed `#2`), where it `accept_with_warnings` on the clean sibling Ls056; OCC and gmsh both accept-silent and build no shape (the model root is loose `DIRECTION`s / a swallowed `CARTESIAN_POINT` with no shape-representation root, so empty is expected regardless of the syntax defect). The defect is oracle-visible on the structural/Part-21 axis, not the shape-count axis. Synonyms: &quot;double-hyphen comment in STEP&quot;, &quot;EXPRESS line comment in Part-21&quot;, &quot;dash-dash comment swallows entity&quot;, &quot;end-of-line comment exchange file&quot;, &quot;EXPRESS lexer leaks into Part-21 tokenizer&quot;. Provenance tier: bytes-only.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Provenance tier</h2>
+<p><code>bytes-only</code> — defect not fully embodied in fixture bytes.</p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;-- EXPRESS line comment&#x27;)</code></li>
+<li><code>contains(b&quot;CARTESIAN_POINT(&#x27;swallowed&#x27;&quot;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == True</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Ls055.html">Ls055</a>, <a href="Ls056.html">Ls056</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Ls057: an EXPRESS double-hyphen line comment appears in the Part-21 DATA section; ISO 10303-21 6.3 permits only slash-star block comments, so -- is not a valid Part-21 comment; a reader that reuses an EXPRESS lexer treats -- as an end-of-line comment and swallows the rest of that physical line, including a live CARTESIAN_POINT entity and its terminating semicolon, with no diagnostic; a conforming reader sees -- as two minus tokens and a lexical error; expected kernel behavior: reject the double-hyphen as invalid Part-21 punctuation, or at minimum never let EXPRESS line-comment handling drop a real entity silently; synonyms: double-hyphen comment in STEP, EXPRESS line comment in Part-21, dash-dash comment swallows entity, end-of-line comment exchange file, EXPRESS lexer leaks into Part-21; the double-hyphen and the swallowed CARTESIAN_POINT are the defect carriers */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ls057&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ls057.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=DIRECTION(&#x27;d&#x27;,(1.,0.,0.));
+<span class="lineno">10</span><mark>-- EXPRESS line comment</mark> (illegal in Part-21); an EXPRESS-lexer reader swallows the rest of this line: #2=<mark>CARTESIAN_POINT(&#x27;swallowed&#x27;</mark>,(0.,0.,0.));
+<span class="lineno">11</span>#3=DIRECTION(&#x27;after&#x27;,(0.,1.,0.));
+<span class="lineno">12</span>ENDSEC;
+<span class="lineno">13</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ls056.html">&larr; Ls056</a> <a class="up" href="index.html">§12.1c Part-21 grammar</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

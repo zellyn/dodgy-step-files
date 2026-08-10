@@ -1,0 +1,13 @@
+ISO-10303-21;
+/* Ls057: an EXPRESS double-hyphen line comment appears in the Part-21 DATA section; ISO 10303-21 6.3 permits only slash-star block comments, so -- is not a valid Part-21 comment; a reader that reuses an EXPRESS lexer treats -- as an end-of-line comment and swallows the rest of that physical line, including a live CARTESIAN_POINT entity and its terminating semicolon, with no diagnostic; a conforming reader sees -- as two minus tokens and a lexical error; expected kernel behavior: reject the double-hyphen as invalid Part-21 punctuation, or at minimum never let EXPRESS line-comment handling drop a real entity silently; synonyms: double-hyphen comment in STEP, EXPRESS line comment in Part-21, dash-dash comment swallows entity, end-of-line comment exchange file, EXPRESS lexer leaks into Part-21; the double-hyphen and the swallowed CARTESIAN_POINT are the defect carriers */
+HEADER;
+FILE_DESCRIPTION(('Ls057'),'2;1');
+FILE_NAME('Ls057.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }'));
+ENDSEC;
+DATA;
+#1=DIRECTION('d',(1.,0.,0.));
+-- EXPRESS line comment (illegal in Part-21); an EXPRESS-lexer reader swallows the rest of this line: #2=CARTESIAN_POINT('swallowed',(0.,0.,0.));
+#3=DIRECTION('after',(0.,1.,0.));
+ENDSEC;
+END-ISO-10303-21;
