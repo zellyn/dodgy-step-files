@@ -36,7 +36,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>Reject with status: return the undefined status to the caller; do not return a NaN or arbitrary unit vector. Must not silently accept.</p></section>
 <section><h2>Notes</h2>
-<p>Common cause of NaN propagation when the caller assumes Defined. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. Synonyms: &quot;surface tangent undefined&quot;, &quot;normal not computable&quot;, &quot;pole on surface returns LProp_Status.Undefined&quot;, &quot;surface partial derivatives vanish at parameter&quot;, &quot;U-tangent zero at sphere pole&quot;.</p></section>
+<p>**Honest reclassification (2026-08-10)**: confirmed orphaned-defect carrier — the signal(11) is an empty-`SHELL_BASED_SURFACE_MODEL` crash (`struct == EMPTY_AGGREGATE`), not an undefined-tangent witness; the titled pole-tangent condition is oracle-invisible at load (a wired sphere face builds shape(1) with no NaN — see OCC behavior). Resolves the M.22 probe and the M.24 assertion skip. Common cause of NaN propagation when the caller assumes Defined; bytes alone are insufficient to demonstrate the titled defect. Tagged provenance_tier: runtime-only. Synonyms: &quot;surface tangent undefined&quot;, &quot;normal not computable&quot;, &quot;pole on surface returns LProp_Status.Undefined&quot;, &quot;surface partial derivatives vanish at parameter&quot;, &quot;U-tangent zero at sphere pole&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Provenance tier</h2>
@@ -44,9 +44,6 @@
 <section><h2>Byte assertions</h2><ul class="assertions">
 <li><code>contains(b&#x27;SPHERICAL_SURFACE(&#x27;)</code></li>
 <li><code>count_entity_def(b&#x27;SPHERICAL_SURFACE&#x27;) == 1</code></li>
-</ul></section>
-<section><h2>Tier-3 assertions</h2><ul class="assertions">
-<li><code>shape_null == True</code></li>
 </ul></section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>

@@ -34,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>accept the analytic surface and treat its parameter range correctly for seam insertion and bbox computation, or reject as malformed (a kernel that requires `minor &lt; major` should refuse rather than silently mis-bound).</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;torus minor radius greater than major (lemon shape)&quot;, &quot;apple torus minor equals major&quot;, &quot;self-intersecting torus no central hole&quot;, &quot;lemon-shape torus collapses bounding box&quot;, &quot;TOROIDAL_SURFACE with minor_radius &gt;= major_radius&quot;.</p></section>
+<p>**Honest reclassification (2026-08-10)**: confirmed orphaned-defect carrier — the signal(11) is an empty-`SHELL_BASED_SURFACE_MODEL` crash (`struct == EMPTY_AGGREGATE`), not a degenerate-torus witness; the titled `minor&gt;=major` condition is oracle-invisible at load (a wired lemon torus builds shape(1) identical to a valid torus — see OCC behavior). Resolves the M.22 probe and the M.24 assertion skip. Synonyms: &quot;torus minor radius greater than major (lemon shape)&quot;, &quot;apple torus minor equals major&quot;, &quot;self-intersecting torus no central hole&quot;, &quot;lemon-shape torus collapses bounding box&quot;, &quot;TOROIDAL_SURFACE with minor_radius &gt;= major_radius&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Closure intent</h2>
@@ -43,9 +43,6 @@
 <li><code>contains(b&#x27;TOROIDAL_SURFACE(&#x27;)</code></li>
 <li><code>contains(b&#x27;2.0,3.0&#x27;)</code></li>
 <li><code>contains(b&#x27;VERTEX_LOOP(&#x27;)</code></li>
-</ul></section>
-<section><h2>Tier-3 assertions</h2><ul class="assertions">
-<li><code>shape_null == True</code></li>
 </ul></section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>

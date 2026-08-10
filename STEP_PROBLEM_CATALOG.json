@@ -55887,7 +55887,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gb002.stp",
     "id": "Gb002",
-    "notes": "Common cause of NaN propagation when the caller assumes Defined. Bytes alone are insufficient to demonstrate this defect; needs sibling input fixture. Tagged provenance_tier: runtime-only. Synonyms: \"surface tangent undefined\", \"normal not computable\", \"pole on surface returns LProp_Status.Undefined\", \"surface partial derivatives vanish at parameter\", \"U-tangent zero at sphere pole\".",
+    "notes": "**Honest reclassification (2026-08-10)**: confirmed orphaned-defect carrier — the signal(11) is an empty-`SHELL_BASED_SURFACE_MODEL` crash (`struct == EMPTY_AGGREGATE`), not an undefined-tangent witness; the titled pole-tangent condition is oracle-invisible at load (a wired sphere face builds shape(1) with no NaN — see OCC behavior). Resolves the M.22 probe and the M.24 assertion skip. Common cause of NaN propagation when the caller assumes Defined; bytes alone are insufficient to demonstrate the titled defect. Tagged provenance_tier: runtime-only. Synonyms: \"surface tangent undefined\", \"normal not computable\", \"pole on surface returns LProp_Status.Undefined\", \"surface partial derivatives vanish at parameter\", \"U-tangent zero at sphere pole\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "runtime-only",
@@ -55900,14 +55900,14 @@
     "sources": [
       "OCCT GeomLProp_SLProps (LProp_Status::Undefined) (uncovered class evidence)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
     ],
-    "tier3_assertions": [
-      "shape_null == True"
-    ],
+    "tier3_assertions": [],
     "title": "Surface tangent / normal undefined at a parameter (LProp_Status.Undefined)"
   },
   {
@@ -56049,7 +56049,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-2c-surfaces/Gs002.stp",
     "id": "Gs002",
-    "notes": "Synonyms: \"torus minor radius greater than major (lemon shape)\", \"apple torus minor equals major\", \"self-intersecting torus no central hole\", \"lemon-shape torus collapses bounding box\", \"TOROIDAL_SURFACE with minor_radius >= major_radius\".",
+    "notes": "**Honest reclassification (2026-08-10)**: confirmed orphaned-defect carrier — the signal(11) is an empty-`SHELL_BASED_SURFACE_MODEL` crash (`struct == EMPTY_AGGREGATE`), not a degenerate-torus witness; the titled `minor>=major` condition is oracle-invisible at load (a wired lemon torus builds shape(1) identical to a valid torus — see OCC behavior). Resolves the M.22 probe and the M.24 assertion skip. Synonyms: \"torus minor radius greater than major (lemon shape)\", \"apple torus minor equals major\", \"self-intersecting torus no central hole\", \"lemon-shape torus collapses bounding box\", \"TOROIDAL_SURFACE with minor_radius >= major_radius\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -56062,14 +56062,14 @@
     "sources": [
       "G010, G011, G066"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
     ],
-    "tier3_assertions": [
-      "shape_null == True"
-    ],
+    "tier3_assertions": [],
     "title": "Degenerate (lemon/apple) torus where minor_radius >= major_radius"
   },
   {

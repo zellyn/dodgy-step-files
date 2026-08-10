@@ -2758,14 +2758,22 @@ inspected individually): 76 assertions added, 30 skipped with reasons.**
     shape — a placeholder-geometry-style pattern shared by 11 fixtures. Their
     claims are header-level, so no assertion; whether the scaffold should carry a
     real point is a separate (behavior-preserving?) regen decision.
-  - Gs002/Gb002: PROBED same day — **confirmed orphaned-defect carriers.** The
-    titled TOROIDAL_SURFACE / SPHERICAL_SURFACE, their ADVANCED_FACE, bound, and
-    OPEN_SHELL are ALL unreachable from the shape root; the reachable branch is
-    only the empty `SHELL_BASED_SURFACE_MODEL('',())`, and both fixtures' Expected
-    signal(11) therefore comes from the EMPTY AGGREGATE, not the titled
-    degenerate-torus / undefined-tangent claim. Same class as the confirmed
-    Gn002/Gn007/Gn008/P014/P022 carriers; quarantine/regen is a maintainer call
-    per scope discipline — recorded here with the evidence.
+  - Gs002/Gb002: **RESOLVED 2026-08-10 — reclassified in place, no quarantine needed.**
+    PROBED and confirmed orphaned-defect carriers: the titled TOROIDAL_SURFACE /
+    SPHERICAL_SURFACE + face + bound + OPEN_SHELL are all unreachable; both fixtures'
+    signal(11) comes from the empty `SHELL_BASED_SURFACE_MODEL('',())` (EMPTY_AGGREGATE),
+    not the titled defect. The generator bug is `f.shell_based_surface_model([])` — an
+    EMPTY shell list; the built OPEN_SHELL is never referenced. **Measure-the-claim
+    control comparison:** wiring the shell (`(#11)`) makes OCC ACCEPT and build shape(1)
+    — one torus/sphere face, 8v/4e, BRepCheck valid — IDENTICAL in counts and validity to
+    a valid `minor<major` torus control, proving the degenerate `minor>=major` (and the
+    pole-tangent) condition is oracle-INVISIBLE even when reachable. So rewiring does NOT
+    rescue the titled claim (it removes the only demonstrable signal). Resolution: kept in
+    place, honest-reclassified — dropped the vacuous `shape_null==True` tier-3 assertion
+    (tier3 crashes rc=-11, never evaluates), added the genuine `struct == EMPTY_AGGREGATE`
+    (this also closes the M.24 "pending reachability probe" skip for these two), and
+    corrected OCC-behavior to state the empty-aggregate crash is the witnessed bug and the
+    titled geometry condition is byte-level provenance only. Structural assertions 274 -> 276.
   - Pf025 (empty OPEN_SHELL is scaffold, claim is the vertex-loop bound),
     M070/M193/M194/M195/M199 (empty lists incidental to tessellation minimalism),
     3 `.input` quarantine files (no catalog entries).
