@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M200 — Polygon loop with an empty vertex-point list</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M200</span>
+</nav>
+<header class="title-bar">
+<h1>M200 <span class="sep">—</span> <span class="entry-title">Polygon loop with an empty vertex-point list</span></h1>
+<p class="category">§12.8 mixed (sub-class: empty mandatory aggregate — polygon loop with no points; reader crash)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M200.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M200.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>ISO 10303-42 `poly_loop.polygon` (LIST [3:?] OF cartesian_point)</li>
+<li>nonempty-aggregate table row POLY_LOOP of the structural-linter v4 — no prior claimant.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A faceted face whose boundary is `POLY_LOOP(&#x27;empty_polygon&#x27;,())` — the polygon list empty where the schema requires at least three points. A polygon loop IS its point list; with the list empty the face has a bound entity and zero geometry, the degenerate limit of the mesh-as-B-rep encodings this section catalogs.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>`ADVANCED_FACE` on a plane whose `FACE_OUTER_BOUND` wraps a `POLY_LOOP` with `()` for its polygon list.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>refuse at parse time — the schema&#x27;s lower bound of three points is checkable before any geometry — and never crash on a countable emptiness.</p></section>
+<section><h2>Notes</h2>
+<p>RUNTIME-VERIFIED (2026-08-10, this worktree, OCP/OCCT 7.8.1): hard crash in BOTH heal modes and the mesh-based reader. The faceted-boundary member of the empty-aggregate crash family (the edge-loop and shell spellings are long-standing corpus crashers; the polygon spelling had no claimant). The non-kernel structural linter reports `EMPTY_AGGREGATE` without crashing. Synonyms: &quot;poly loop empty polygon&quot;, &quot;polygon loop no points&quot;, &quot;empty facet boundary crash&quot;, &quot;zero point polygon&quot;. Provenance tier: bytes-sufficient.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&quot;POLY_LOOP(&#x27;empty_polygon&#x27;,())&quot;)</code></li>
+<li><code>count_entity_def(b&#x27;CARTESIAN_POINT&#x27;) &gt;= 1</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M200: ADVANCED_FACE whose FACE_OUTER_BOUND wraps <mark>POLY_LOOP(&#x27;empty_polygon&#x27;,())</mark> â the polygon list empty where the schema requires at least three points; a polygon loop is nothing but its point list, so the face has a bound and no geometry. Reachable through the shell and shape representation */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;M200&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;M200.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span><mark>#1=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=PLANE(&#x27;&#x27;,#4);
+<span class="lineno">15</span>#6=<mark>POLY_LOOP(&#x27;empty_polygon&#x27;,())</mark>;
+<span class="lineno">16</span>#7=FACE_OUTER_BOUND(&#x27;&#x27;,#6,.T.);
+<span class="lineno">17</span>#8=ADVANCED_FACE(&#x27;m200_facet&#x27;,(#7),#5,.T.);
+<span class="lineno">18</span>#9=OPEN_SHELL(&#x27;&#x27;,(#8));
+<span class="lineno">19</span>#10=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#9));
+<span class="lineno">20</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">21</span>#9051=PRODUCT(&#x27;M200&#x27;,&#x27;M200&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">22</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">23</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">24</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">25</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">26</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">27</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">28</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">29</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">30</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">31</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#10),#9060);
+<span class="lineno">32</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">33</span>ENDSEC;
+<span class="lineno">34</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M199.html">&larr; M199</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="M201.html">M201 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

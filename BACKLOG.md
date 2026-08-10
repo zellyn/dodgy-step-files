@@ -2620,6 +2620,40 @@ ill-typed, so it tested nothing. With a synthesised DIRECTION, three of the four
 Same failure shape as the inline-entity mistake above -- **an invalid instrument returns
 a negative that looks like a finding.**
 
+#### (M.23) v4 table-row census -> 10 new fixtures; FOUR new crashers incl. the census's biggest signature. 2026-08-10
+
+Applied the (M.21) row-coverage question to the v4 tables, counting only ASSERTED
+deliberate claimants: ARG_COUNT 3/6 rows covered, NONEMPTY_AGGREGATE 11/18, inline
+names 3/11. Synthesized the 10 distinct gaps (deferred the 8 inline-NAME variants —
+same construct, different spelling; measure-first note below). Live results:
+
+  - **Twi307 (two-arg VECTOR, name omitted): signal(11)** — the crash census's
+    single largest byte pattern finally has a fixture that CLAIMS it.
+  - **Twi310 (empty CARTESIAN_POINT coords): signal(11)** — the point spelling
+    of the empty-coordinate crash (direction spelling already claimed).
+  - **M200 (empty POLY_LOOP): signal(11)** — faceted-boundary member of the
+    empty-aggregate crash family.
+  - **M201 (empty TESSELLATED_SOLID, AP242): signal(11)** — the container-
+    before-contents crash reproduces at solid level exactly as at shell level.
+  - Twi308/Twi309 (LINE / EDGE_CURVE with one SURPLUS argument): whole 4-edge
+    boundary silently discarded -> unbounded plane. Asymmetry finding: a missing
+    argument (Twi307) crashes; a surplus one silently amputates.
+  - Gn180 (empty B-spline SURFACE net): face silently dropped -> empty shell,
+    while the byte-identical CURVE defect (Gn003) crashes. Same asymmetry class.
+  - Tfa265 (empty FACE_OUTER_BOUND slot): third distinct producer bug converging
+    on the identical silent unbounded face (after wrong-type and flattening).
+  - Tsh268 (empty MANIFOLD_SOLID_BREP outer, complete shell orphaned): silent
+    total loss, identical to the wrong-type-outer sibling.
+  - Twi311 (empty VERTEX_LOOP): mildest outcome — vacuous bound silently dropped,
+    disc intact.
+
+Crash census 178 -> 182, refusable 164 -> 168, still 92%. Corpus 3342 -> 3352;
+structural assertions 248 -> 258. ARG_COUNT rows now 6/6, NONEMPTY 18/18.
+Deferred: the 8 uncovered inline-name rows (AXIS2_PLACEMENT_3D, CIRCLE, EDGE_CURVE,
+EDGE_LOOP, LINE, ORIENTED_EDGE, PLANE, VERTEX_POINT as the inline entity) — one
+construct in different spellings; before synthesizing, measure whether the receiver
+behavior differs by consumer site at all (if not, one or two suffice).
+
 #### (M.22) Structural-oracle v4: the crash campaign's remaining three checks adopted as codes. 2026-08-10
 
 ARG_COUNT (schema-fixed arities: both B-spline-with-knots forms + VECTOR/DIRECTION/

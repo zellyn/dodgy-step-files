@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M201 — Tessellated solid with an empty items list</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M201</span>
+</nav>
+<header class="title-bar">
+<h1>M201 <span class="sep">—</span> <span class="entry-title">Tessellated solid with an empty items list</span></h1>
+<p class="category">§12.8 mixed (sub-class: empty mandatory aggregate — tessellated solid with no items; reader crash)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M201.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M201.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>AP242 `tessellated_solid.items` (SET [1:?])</li>
+<li>nonempty-aggregate table row TESSELLATED_SOLID of the structural-linter v4 — the SHELL spelling of this defect is a long-standing corpus crasher</li>
+<li>the solid spelling had no claimant.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>An AP242 file whose only geometry is `TESSELLATED_SOLID(&#x27;empty_items&#x27;,(),$)` — the items list empty where the schema requires at least one tessellated structured item, the optional exact-geometry link unset — carried by a tessellated shape representation. Same producer bug as the empty-shell sibling (emitting the container before its contents and never filling it), one level up the tessellation hierarchy.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a `TESSELLATED_SOLID` with `()` for its items and `$` for its geometric link, referenced by a `TESSELLATED_SHAPE_REPRESENTATION`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>refuse at parse time on the empty mandatory set and continue with the rest of the file; never abort on a countable emptiness.</p></section>
+<section><h2>Notes</h2>
+<p>RUNTIME-VERIFIED (2026-08-10, this worktree, OCP/OCCT 7.8.1): hard crash in BOTH heal modes and the mesh-based reader — confirming the empty-container crash reproduces at solid level exactly as at shell level. The non-kernel structural linter reports `EMPTY_AGGREGATE` without crashing. Synonyms: &quot;tessellated solid empty items&quot;, &quot;empty tessellation container solid&quot;, &quot;AP242 tessellated solid no items crash&quot;, &quot;container emitted before contents&quot;. Provenance tier: bytes-sufficient.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&quot;TESSELLATED_SOLID(&#x27;empty_items&#x27;,(),$)&quot;)</code></li>
+<li><code>count_entity_def(b&#x27;TESSELLATED_SHAPE_REPRESENTATION&#x27;) == 1</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M201: <mark>TESSELLATED_SOLID(&#x27;empty_items&#x27;,(),$)</mark> â the items list empty where the schema requires at least one tessellated structured item, the exact-geometry link unset; carried by a tessellated shape representation, so the empty container is what the receiver is asked to build */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;M201&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;M201.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#1=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">10</span>#2=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">11</span>#3=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">12</span>#4=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#1,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">13</span>#5=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#4))GLOBAL_UNIT_ASSIGNED_CONTEXT((#1,#2,#3))REPRESENTATION_CONTEXT(&#x27;part&#x27;,&#x27;3D&#x27;));
+<span class="lineno">14</span>#6=<mark>TESSELLATED_SOLID(&#x27;empty_items&#x27;,(),$)</mark>;
+<span class="lineno">15</span><mark>#7=TESSELLATED_SHAPE_REPRESENTATION(</mark>&#x27;&#x27;,(#6),#5);
+<span class="lineno">16</span>ENDSEC;
+<span class="lineno">17</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M200.html">&larr; M200</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="Os001.html">Os001 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

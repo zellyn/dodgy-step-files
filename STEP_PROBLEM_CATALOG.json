@@ -55735,6 +55735,49 @@
   },
   {
     "byte_assertions": [
+      "contains(b\"B_SPLINE_SURFACE_WITH_KNOTS('empty_net'\")",
+      "matches(rb\"B_SPLINE_SURFACE_WITH_KNOTS\\('empty_net',1,1,\\(\\)\")"
+    ],
+    "category": "§12.2b nurbs (sub-class: empty mandatory aggregate — surface control net absent)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A face whose surface is written `B_SPLINE_SURFACE_WITH_KNOTS('empty_net',1,1,(),...)` — degree 1x1, the control-points list empty where the schema requires at least a 2x2 net. Knot vectors and multiplicities are present and self-consistent for the missing net, so every argument EXCEPT the net reads plausibly. The square boundary chain below the face is complete and correct.",
+    "expected_kernel_behavior": "refuse the surface at parse time — an empty control net is checkable before any geometry — and report the face unbuildable rather than silently dropping it; the complete boundary chain deserves a diagnostic pointing at the one entity that failed.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2b-nurbs/Gn180.stp",
+    "id": "Gn180",
+    "notes": "RUNTIME-VERIFIED (2026-08-10, this worktree, OCP/OCCT 7.8.1): both heal modes accept and return one root containing 1 shell and ZERO faces — the face on the empty-net surface is dropped without a diagnostic; the mesh-based reader returns nothing. Sharp asymmetry with the curve spelling of the same defect, which CRASHES the reader: an empty control net kills the process at curve level but silently amputates at surface level. The non-kernel structural linter reports `EMPTY_AGGREGATE` for both. Synonyms: \"b-spline surface empty control points\", \"surface control net missing\", \"empty net knots present\", \"face dropped empty spline surface\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`ADVANCED_FACE` whose face geometry is a `B_SPLINE_SURFACE_WITH_KNOTS` with `()` for its control-points list and otherwise self-consistent knot arguments; boundary chain complete.",
+    "section": "12.2b",
+    "section_dir": "12-2b-nurbs",
+    "see_also": [],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "ISO 10303-42 `b_spline_surface.control_points_list` (LIST [2:?] OF LIST [2:?])",
+      "nonempty-aggregate table row B_SPLINE_SURFACE_WITH_KNOTS of the structural-linter v4 — the CURVE spelling of this defect is a long-standing corpus crasher",
+      "the surface spelling had no claimant."
+    ],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
+    "taxonomy": [
+      "crash",
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\"",
+      "n_faces_total == 0"
+    ],
+    "title": "B-spline surface with an empty control-points list"
+  },
+  {
+    "byte_assertions": [
       "contains(b'LINE(')",
       "count_entity_def(b'CARTESIAN_POINT') >= 5"
     ],
@@ -74395,6 +74438,47 @@
   },
   {
     "byte_assertions": [
+      "contains(b\"MANIFOLD_SOLID_BREP('solid_outer_empty',())\")",
+      "count_entity_def(b'CLOSED_SHELL') == 1"
+    ],
+    "category": "§12.3a shells (sub-class: empty mandatory aggregate — solid outer slot holding nothing)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A complete watertight 6x6x6 cube whose solid is written `MANIFOLD_SOLID_BREP('solid_outer_empty',())` — an empty aggregate in the outer slot where a closed-shell reference belongs — while the `CLOSED_SHELL` named `tsh268_unlisted_shell`, correctly listing all six faces, is present in the file and referenced by nothing. The repair is one re-pointed reference.",
+    "expected_kernel_behavior": "detect the empty mandatory slot; recover by re-pointing to the unique complete unreferenced closed shell in the file, or reject with a diagnostic naming the slot. Returning an empty model with a success status while a watertight cube sits fully described in the file is the worst available outcome.",
+    "expected_validation": "occt=empty/empty gmsh=empty ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3a-shells/Tsh268.stp",
+    "id": "Tsh268",
+    "notes": "RUNTIME-VERIFIED (2026-08-10, this worktree, OCP/OCCT 7.8.1): both heal modes accept and produce NOTHING — zero roots, null shape, no diagnostic; the mesh-based reader is empty too. Identical observable outcome to the wrong-type-outer sibling: whether the outer slot holds a face or holds nothing, the whole product silently vanishes. The non-kernel structural linter distinguishes the two (`SLOT_TYPE` vs `EMPTY_AGGREGATE`). Synonyms: \"manifold solid empty outer slot\", \"solid boundary reference empty\", \"orphaned shell empty outer\", \"silent empty import cube present\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "a `MANIFOLD_SOLID_BREP` whose outer slot is `()`; a complete closed shell over the same solid's faces defined in the same file but reachable from nothing.",
+    "section": "12.3a",
+    "section_dir": "12-3a-shells",
+    "see_also": [],
+    "sender": "",
+    "severity": "P1",
+    "sources": [
+      "ISO 10303-42 `manifold_solid_brep.outer`",
+      "nonempty-aggregate table row MANIFOLD_SOLID_BREP of the structural-linter v4 — no prior claimant. Empty-slot sibling of the wrong-type-outer fixture in this section."
+    ],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
+    "taxonomy": [
+      "spec-violation",
+      "topology"
+    ],
+    "tier3_assertions": [
+      "shape_null == True"
+    ],
+    "title": "Manifold solid whose outer slot holds an empty aggregate while its shell sits unreferenced"
+  },
+  {
+    "byte_assertions": [
       "contains(b\"EDGE_LOOP('',())\")",
       "count_entity_def(b'ORIENTED_EDGE') == 0"
     ],
@@ -85393,6 +85477,213 @@
     "title": "Vertex whose geometry reference is a direction, not a point: a point-versus-direction slot swap at one corner"
   },
   {
+    "byte_assertions": [
+      "count_entity_def(b'VECTOR') == 4",
+      "matches(rb\"=VECTOR\\(#\\d+,10\\.0\\)\")"
+    ],
+    "category": "§12.3b wires (sub-class: fixed-arity violation — vector emitted without its name argument; reader crash)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A 10x10 square face whose bottom edge's direction vector is written `VECTOR(#dir,10.0)` — direction and magnitude only, the leading name argument dropped, so every subsequent argument sits one slot early. The other three edges are correct and the malformed vector is wired into the wire via its line and edge.",
+    "expected_kernel_behavior": "refuse at parse time with an argument-count diagnostic — the entity's arity is schema-fixed and checkable before any geometry is built — or, healing, recognize the shifted-slot pattern (first argument a direction reference where a string is declared) and reinsert the missing name. A crash on a countable deviation is never acceptable.",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3b-wires/Twi307.stp",
+    "id": "Twi307",
+    "notes": "RUNTIME-VERIFIED (2026-08-10, this worktree, OCP/OCCT 7.8.1): hard crash — process death by memory fault in BOTH heal modes and the mesh-based reader. This is the deliberate canonical claimant for the byte pattern behind the crash census's largest bucket (the shifted magnitude is consumed where the orientation belongs). The non-kernel structural linter reports `ARG_COUNT` without crashing. Synonyms: \"vector missing name argument\", \"two-argument vector crash\", \"argument slots shifted left one\", \"name omitted entity arity\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "one `VECTOR` of an otherwise-correct closed wire emitted with two arguments (reference, real) instead of three; nothing else altered.",
+    "section": "12.3b",
+    "section_dir": "12-3b-wires",
+    "see_also": [],
+    "sender": "",
+    "severity": "P1",
+    "sources": [
+      "ISO 10303-42 `vector` declared arity (3: name, orientation, magnitude)",
+      "fixed-arity table row VECTOR of the structural-linter v4 — the 2026-08-10 per-row census found the corpus's single largest crash-census byte pattern (`VECTOR(#dir,mag)`) had NO fixture claiming it: every carrier was a fixture about something else whose scaffold happened to contain one."
+    ],
+    "structural_assertions": [
+      "struct == ARG_COUNT"
+    ],
+    "taxonomy": [
+      "crash",
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "Vector written with two arguments: the name slot omitted entirely"
+  },
+  {
+    "byte_assertions": [
+      "count_entity_def(b'LINE') == 4",
+      "matches(rb\"=LINE\\('',#\\d+,#\\d+,\\.T\\.\\)\")"
+    ],
+    "category": "§12.3b wires (sub-class: fixed-arity violation — extra trailing argument, reference slots aligned)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A 10x10 square face whose bottom edge's line is written `LINE('',#pnt,#vec,.T.)` — a stray boolean appended, four arguments where the schema declares three. Every reference slot holds its declared type, so a purely type-based reference check passes; only counting the arguments catches the deviation. The malformed line is wired into the wire via its edge.",
+    "expected_kernel_behavior": "refuse or warn at parse time on the argument count, or ignore the surplus argument and keep the line — the point and vector are present and correct, so the edge is fully recoverable. Silently discarding the entire boundary is the failure mode to avoid.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3b-wires/Twi308.stp",
+    "id": "Twi308",
+    "notes": "RUNTIME-VERIFIED (2026-08-10, this worktree, OCP/OCCT 7.8.1): both heal modes accept and return 1 face with ZERO edges and vertices — the surplus argument on ONE line causes the ENTIRE four-edge boundary to be silently discarded, leaving the unbounded plane. Contrast with the two-argument vector fixture (same table row family): a missing argument crashes, a surplus one silently amputates the boundary. The non-kernel structural linter reports `ARG_COUNT`. Synonyms: \"line extra fourth argument\", \"surplus trailing argument entity\", \"boundary dropped over argument count\", \"one bad line empties wire\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "one `LINE` of an otherwise-correct closed wire emitted with an extra trailing argument; slots otherwise aligned and correctly typed.",
+    "section": "12.3b",
+    "section_dir": "12-3b-wires",
+    "see_also": [],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "ISO 10303-42 `line` declared arity (3)",
+      "fixed-arity table row LINE of the structural-linter v4 — no prior corpus claimant for a line-arity deviation."
+    ],
+    "structural_assertions": [
+      "struct == ARG_COUNT"
+    ],
+    "taxonomy": [
+      "crash",
+      "topology"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\"",
+      "n_faces_total == 1",
+      "n_edges_total == 0"
+    ],
+    "title": "Line written with a stray fourth argument after its vector"
+  },
+  {
+    "byte_assertions": [
+      "count_entity_def(b'EDGE_CURVE') == 4",
+      "matches(rb\"=EDGE_CURVE\\('',#\\d+,#\\d+,#\\d+,\\.T\\.,\\.T\\.\\)\")"
+    ],
+    "category": "§12.3b wires (sub-class: fixed-arity violation — duplicated trailing flag, reference slots aligned)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A 10x10 square face whose bottom edge is written `EDGE_CURVE('',#v1,#v2,#curve,.T.,.T.)` — the trailing same-sense flag duplicated, six arguments where the schema declares five. All reference slots hold their declared types. The duplicate-flag shape matches a writer emitting one column per attribute of its widest edge-table row for every edge.",
+    "expected_kernel_behavior": "refuse or warn at parse time on the argument count, or ignore the surplus flag — vertices, curve, and sense are all present and correct, so the edge is fully recoverable. Silently discarding the entire boundary over one surplus token is the failure mode to avoid.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3b-wires/Twi309.stp",
+    "id": "Twi309",
+    "notes": "RUNTIME-VERIFIED (2026-08-10, this worktree, OCP/OCCT 7.8.1): identical observable outcome to the surplus-argument line fixture — 1 face, zero edges and vertices, the whole boundary silently gone. As with the flattening pair in the faces section, the import result gives no indication WHICH entity carried the surplus argument. The non-kernel structural linter reports `ARG_COUNT`. Synonyms: \"edge duplicated sense flag\", \"six argument edge\", \"surplus flag boundary dropped\", \"edge arity deviation silent\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "one `EDGE_CURVE` of an otherwise-correct closed wire emitted with its final flag twice; slots otherwise aligned and correctly typed.",
+    "section": "12.3b",
+    "section_dir": "12-3b-wires",
+    "see_also": [],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "ISO 10303-42 `edge_curve` declared arity (5)",
+      "fixed-arity table row EDGE_CURVE of the structural-linter v4 — no prior corpus claimant for an edge-arity deviation."
+    ],
+    "structural_assertions": [
+      "struct == ARG_COUNT"
+    ],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\"",
+      "n_faces_total == 1",
+      "n_edges_total == 0"
+    ],
+    "title": "Edge written with its same-sense flag duplicated"
+  },
+  {
+    "byte_assertions": [
+      "contains(b\"CARTESIAN_POINT('corner_no_coords',())\")",
+      "count_entity_def(b'CARTESIAN_POINT') >= 4"
+    ],
+    "category": "§12.3b wires (sub-class: empty mandatory aggregate — point with no coordinates; reader crash)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "The origin corner of an otherwise-correct 10x10 square wire is written `CARTESIAN_POINT('corner_no_coords',())` — the coordinate list empty where the schema requires one to three reals. The point is consumed twice, as the corner vertex's geometry and as the bottom edge's line origin, so the coordinate-less point is wired into the wire through two paths.",
+    "expected_kernel_behavior": "refuse at parse time — a point with no coordinates is never valid in any context and the empty aggregate is checkable before geometry — or recover the corner from the incident edges' curve geometry. A crash is never acceptable.",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3b-wires/Twi310.stp",
+    "id": "Twi310",
+    "notes": "RUNTIME-VERIFIED (2026-08-10, this worktree, OCP/OCCT 7.8.1): hard crash in BOTH heal modes and the mesh-based reader. Joins the empty-coordinate direction fixture as the second coordinate-list crasher, on the point spelling. The non-kernel structural linter reports `EMPTY_AGGREGATE` without crashing. Synonyms: \"cartesian point empty coordinates\", \"point with no coordinate list\", \"empty coordinate aggregate crash\", \"zero-length point coordinates\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "one `CARTESIAN_POINT` of a closed wire emitted with `()` for its coordinate list; consumed by a vertex and a curve origin.",
+    "section": "12.3b",
+    "section_dir": "12-3b-wires",
+    "see_also": [],
+    "sender": "",
+    "severity": "P1",
+    "sources": [
+      "ISO 10303-42 `cartesian_point.coordinates` (LIST [1:3] OF length_measure)",
+      "nonempty-aggregate table row CARTESIAN_POINT of the structural-linter v4 — the direction spelling of this defect had a claimant, the point spelling did not."
+    ],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
+    "taxonomy": [
+      "crash",
+      "topology"
+    ],
+    "tier3_assertions": [],
+    "title": "Cartesian point with an empty coordinate list"
+  },
+  {
+    "byte_assertions": [
+      "contains(b\"VERTEX_LOOP('vloop_no_vertex',())\")",
+      "count_entity_def(b'FACE_BOUND') == 1"
+    ],
+    "category": "§12.3b wires (sub-class: empty mandatory aggregate — vertex loop naming no vertex)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A planar disc of radius 5 with a correct circular outer bound whose second face bound wraps `VERTEX_LOOP('vloop_no_vertex',())` — the loop-vertex slot holding an empty aggregate instead of a vertex reference. A vertex loop exists to name exactly one vertex (bounding a face at a single point, as at a cone apex); with the slot empty the bound names nothing, yet the chain above it is fully wired.",
+    "expected_kernel_behavior": "detect the empty mandatory slot at parse time and either drop the vacuous bound WITH a diagnostic or reject; silently pretending the bound was never there erases the producer's (garbled) intent to pin the face at a point.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3b-wires/Twi311.stp",
+    "id": "Twi311",
+    "notes": "RUNTIME-VERIFIED (2026-08-10, this worktree, OCP/OCCT 7.8.1): both heal modes accept and return the disc intact (1 face, 1 edge, 2 vertices) — the bound wrapping the empty vertex loop is silently dropped, no diagnostic. The mildest outcome in this wave, and the only empty-aggregate row where the receiver loses nothing but the (empty) bound itself. The non-kernel structural linter reports `EMPTY_AGGREGATE`. Synonyms: \"vertex loop empty vertex slot\", \"vertex loop names no vertex\", \"empty loop-vertex aggregate\", \"face bound naming nothing\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "a face with a correct outer bound plus one `FACE_BOUND` wrapping a `VERTEX_LOOP` whose vertex slot is `()`.",
+    "section": "12.3b",
+    "section_dir": "12-3b-wires",
+    "see_also": [],
+    "sender": "",
+    "severity": "P3",
+    "sources": [
+      "ISO 10303-42 `vertex_loop.loop_vertex`",
+      "nonempty-aggregate table row VERTEX_LOOP of the structural-linter v4 — the corpus's existing vertex-loop fixtures all carry a real vertex."
+    ],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
+    "taxonomy": [
+      "silent-loss",
+      "spec-violation",
+      "topology"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\"",
+      "n_faces_total == 1",
+      "n_edges_total == 1"
+    ],
+    "title": "Vertex loop whose vertex slot holds an empty aggregate"
+  },
+  {
     "byte_assertions": [],
     "category": "§12.3 (sub-class: shape-healing) — pipeline",
     "closure_defect": null,
@@ -95701,6 +95992,49 @@
       "n_faces_total == 0"
     ],
     "title": "Face whose geometry slot holds the axis placement its plane was never built from"
+  },
+  {
+    "byte_assertions": [
+      "contains(b\"FACE_OUTER_BOUND('outer_bound_empty',(),.T.)\")",
+      "count_entity_def(b'EDGE_LOOP') == 0"
+    ],
+    "category": "§12.3c faces (sub-class: empty mandatory aggregate — bound slot holding nothing)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A face whose outer bound is written `FACE_OUTER_BOUND('outer_bound_empty',(),.T.)` — the bound slot holding an empty aggregate where a loop reference belongs; no loop, edge, or curve exists anywhere in the file. Distinct from the unbounded face in this section (no bound entity at all) and from the wrong-type bound fixtures (slot holds a real entity of the wrong kind): here the bound exists and points at nothing.",
+    "expected_kernel_behavior": "detect the empty mandatory slot at parse time and reject with a diagnostic naming the bound; there is nothing in the file from which to recover a boundary, so keeping the face silently unbounded misrepresents the model's extent.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-3c-faces/Tfa265.stp",
+    "id": "Tfa265",
+    "notes": "RUNTIME-VERIFIED (2026-08-10, this worktree, OCP/OCCT 7.8.1): both heal modes accept and return 1 face with zero edges and vertices — the empty bound is dropped without a diagnostic and the unbounded plane survives, the same observable outcome as the wrong-type bound fixtures. Three different byte-level producer bugs (wrong-type reference, one- or two-level flattening, empty slot) now demonstrably converge on the identical silent unbounded face. The non-kernel structural linter distinguishes them (`SLOT_TYPE` vs `EMPTY_AGGREGATE`). Synonyms: \"face outer bound empty slot\", \"bound references nothing\", \"empty aggregate in bound slot\", \"unbounded face from empty bound\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`ADVANCED_FACE` on a plane with one `FACE_OUTER_BOUND` whose bound slot is `()`; boundary chain absent from the file entirely.",
+    "section": "12.3c",
+    "section_dir": "12-3c-faces",
+    "see_also": [],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "ISO 10303-42 `face_outer_bound.bound`",
+      "nonempty-aggregate table row FACE_OUTER_BOUND of the structural-linter v4 — no prior claimant."
+    ],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
+    "taxonomy": [
+      "spec-violation",
+      "topology"
+    ],
+    "tier3_assertions": [
+      "load == \"ok\"",
+      "n_faces_total == 1",
+      "n_edges_total == 0"
+    ],
+    "title": "Face outer bound whose bound slot holds an empty aggregate"
   },
   {
     "byte_assertions": [
@@ -123393,6 +123727,83 @@
       "brepcheck.valid == False"
     ],
     "title": "Tessellated face's per-face normal row has the wrong number of components; the reader silently leaves every node's normal unset rather than misreading the row"
+  },
+  {
+    "byte_assertions": [
+      "contains(b\"POLY_LOOP('empty_polygon',())\")",
+      "count_entity_def(b'CARTESIAN_POINT') >= 1"
+    ],
+    "category": "§12.8 mixed (sub-class: empty mandatory aggregate — polygon loop with no points; reader crash)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A faceted face whose boundary is `POLY_LOOP('empty_polygon',())` — the polygon list empty where the schema requires at least three points. A polygon loop IS its point list; with the list empty the face has a bound entity and zero geometry, the degenerate limit of the mesh-as-B-rep encodings this section catalogs.",
+    "expected_kernel_behavior": "refuse at parse time — the schema's lower bound of three points is checkable before any geometry — and never crash on a countable emptiness.",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-8-mixed/M200.stp",
+    "id": "M200",
+    "notes": "RUNTIME-VERIFIED (2026-08-10, this worktree, OCP/OCCT 7.8.1): hard crash in BOTH heal modes and the mesh-based reader. The faceted-boundary member of the empty-aggregate crash family (the edge-loop and shell spellings are long-standing corpus crashers; the polygon spelling had no claimant). The non-kernel structural linter reports `EMPTY_AGGREGATE` without crashing. Synonyms: \"poly loop empty polygon\", \"polygon loop no points\", \"empty facet boundary crash\", \"zero point polygon\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "`ADVANCED_FACE` on a plane whose `FACE_OUTER_BOUND` wraps a `POLY_LOOP` with `()` for its polygon list.",
+    "section": "12.8",
+    "section_dir": "12-8-mixed",
+    "see_also": [],
+    "sender": "",
+    "severity": "P1",
+    "sources": [
+      "ISO 10303-42 `poly_loop.polygon` (LIST [3:?] OF cartesian_point)",
+      "nonempty-aggregate table row POLY_LOOP of the structural-linter v4 — no prior claimant."
+    ],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
+    "taxonomy": [
+      "crash"
+    ],
+    "tier3_assertions": [],
+    "title": "Polygon loop with an empty vertex-point list"
+  },
+  {
+    "byte_assertions": [
+      "contains(b\"TESSELLATED_SOLID('empty_items',(),$)\")",
+      "count_entity_def(b'TESSELLATED_SHAPE_REPRESENTATION') == 1"
+    ],
+    "category": "§12.8 mixed (sub-class: empty mandatory aggregate — tessellated solid with no items; reader crash)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "An AP242 file whose only geometry is `TESSELLATED_SOLID('empty_items',(),$)` — the items list empty where the schema requires at least one tessellated structured item, the optional exact-geometry link unset — carried by a tessellated shape representation. Same producer bug as the empty-shell sibling (emitting the container before its contents and never filling it), one level up the tessellation hierarchy.",
+    "expected_kernel_behavior": "refuse at parse time on the empty mandatory set and continue with the rest of the file; never abort on a countable emptiness.",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-8-mixed/M201.stp",
+    "id": "M201",
+    "notes": "RUNTIME-VERIFIED (2026-08-10, this worktree, OCP/OCCT 7.8.1): hard crash in BOTH heal modes and the mesh-based reader — confirming the empty-container crash reproduces at solid level exactly as at shell level. The non-kernel structural linter reports `EMPTY_AGGREGATE` without crashing. Synonyms: \"tessellated solid empty items\", \"empty tessellation container solid\", \"AP242 tessellated solid no items crash\", \"container emitted before contents\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "a `TESSELLATED_SOLID` with `()` for its items and `$` for its geometric link, referenced by a `TESSELLATED_SHAPE_REPRESENTATION`.",
+    "section": "12.8",
+    "section_dir": "12-8-mixed",
+    "see_also": [],
+    "sender": "",
+    "severity": "P1",
+    "sources": [
+      "AP242 `tessellated_solid.items` (SET [1:?])",
+      "nonempty-aggregate table row TESSELLATED_SOLID of the structural-linter v4 — the SHELL spelling of this defect is a long-standing corpus crasher",
+      "the solid spelling had no claimant."
+    ],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
+    "taxonomy": [
+      "crash"
+    ],
+    "tier3_assertions": [],
+    "title": "Tessellated solid with an empty items list"
   },
   {
     "byte_assertions": [],

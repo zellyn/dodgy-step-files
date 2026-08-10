@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Twi310 — Cartesian point with an empty coordinate list</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3b Wires / loops / edges</a> <span class="sep">/</span> <span class="current">Twi310</span>
+</nav>
+<header class="title-bar">
+<h1>Twi310 <span class="sep">—</span> <span class="entry-title">Cartesian point with an empty coordinate list</span></h1>
+<p class="category">§12.3b wires (sub-class: empty mandatory aggregate — point with no coordinates; reader crash)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3b-wires/Twi310.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3b-wires/Twi310.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>ISO 10303-42 `cartesian_point.coordinates` (LIST [1:3] OF length_measure)</li>
+<li>nonempty-aggregate table row CARTESIAN_POINT of the structural-linter v4 — the direction spelling of this defect had a claimant, the point spelling did not.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>The origin corner of an otherwise-correct 10x10 square wire is written `CARTESIAN_POINT(&#x27;corner_no_coords&#x27;,())` — the coordinate list empty where the schema requires one to three reals. The point is consumed twice, as the corner vertex&#x27;s geometry and as the bottom edge&#x27;s line origin, so the coordinate-less point is wired into the wire through two paths.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>one `CARTESIAN_POINT` of a closed wire emitted with `()` for its coordinate list; consumed by a vertex and a curve origin.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>refuse at parse time — a point with no coordinates is never valid in any context and the empty aggregate is checkable before geometry — or recover the corner from the incident edges&#x27; curve geometry. A crash is never acceptable.</p></section>
+<section><h2>Notes</h2>
+<p>RUNTIME-VERIFIED (2026-08-10, this worktree, OCP/OCCT 7.8.1): hard crash in BOTH heal modes and the mesh-based reader. Joins the empty-coordinate direction fixture as the second coordinate-list crasher, on the point spelling. The non-kernel structural linter reports `EMPTY_AGGREGATE` without crashing. Synonyms: &quot;cartesian point empty coordinates&quot;, &quot;point with no coordinate list&quot;, &quot;empty coordinate aggregate crash&quot;, &quot;zero-length point coordinates&quot;. Provenance tier: bytes-sufficient.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&quot;CARTESIAN_POINT(&#x27;corner_no_coords&#x27;,())&quot;)</code></li>
+<li><code>count_entity_def(b&#x27;CARTESIAN_POINT&#x27;) &gt;= 4</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Twi310: the origin corner written as <mark>CARTESIAN_POINT(&#x27;corner_no_coords&#x27;,())</mark> â empty coordinate list where the schema requires one to three reals; consumed both as the corner vertex&#x27;s geometry and as the bottom edge&#x27;s line origin, so the coordinate-less point is wired into the wire through two paths */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Twi310&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Twi310.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span><mark>#1=CARTESIAN_POINT(&#x27;corner_no_coords&#x27;,())</mark>;
+<span class="lineno">11</span><mark>#2=CARTESIAN_POINT(</mark>&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">12</span><mark>#3=CARTESIAN_POINT(</mark>&#x27;&#x27;,(10.0,10.0,0.0));
+<span class="lineno">13</span><mark>#4=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.0,10.0,0.0));
+<span class="lineno">14</span>#5=VERTEX_POINT(&#x27;&#x27;,#1);
+<span class="lineno">15</span>#6=VERTEX_POINT(&#x27;&#x27;,#2);
+<span class="lineno">16</span>#7=VERTEX_POINT(&#x27;&#x27;,#3);
+<span class="lineno">17</span>#8=VERTEX_POINT(&#x27;&#x27;,#4);
+<span class="lineno">18</span>#9=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">19</span>#10=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">20</span>#11=DIRECTION(&#x27;&#x27;,(-1.0,0.0,0.0));
+<span class="lineno">21</span>#12=DIRECTION(&#x27;&#x27;,(0.0,-1.0,0.0));
+<span class="lineno">22</span>#13=VECTOR(&#x27;&#x27;,#9,10.0);
+<span class="lineno">23</span>#14=LINE(&#x27;&#x27;,#1,#13);
+<span class="lineno">24</span>#15=EDGE_CURVE(&#x27;&#x27;,#5,#6,#14,.T.);
+<span class="lineno">25</span>#16=VECTOR(&#x27;&#x27;,#10,10.0);
+<span class="lineno">26</span>#17=LINE(&#x27;&#x27;,#2,#16);
+<span class="lineno">27</span>#18=EDGE_CURVE(&#x27;&#x27;,#6,#7,#17,.T.);
+<span class="lineno">28</span>#19=VECTOR(&#x27;&#x27;,#11,10.0);
+<span class="lineno">29</span>#20=LINE(&#x27;&#x27;,#3,#19);
+<span class="lineno">30</span>#21=EDGE_CURVE(&#x27;&#x27;,#7,#8,#20,.T.);
+<span class="lineno">31</span>#22=VECTOR(&#x27;&#x27;,#12,10.0);
+<span class="lineno">32</span>#23=LINE(&#x27;&#x27;,#4,#22);
+<span class="lineno">33</span>#24=EDGE_CURVE(&#x27;&#x27;,#8,#5,#23,.T.);
+<span class="lineno">34</span>#25=ORIENTED_EDGE(&#x27;&#x27;,$,$,#15,.T.);
+<span class="lineno">35</span>#26=ORIENTED_EDGE(&#x27;&#x27;,$,$,#18,.T.);
+<span class="lineno">36</span>#27=ORIENTED_EDGE(&#x27;&#x27;,$,$,#21,.T.);
+<span class="lineno">37</span>#28=ORIENTED_EDGE(&#x27;&#x27;,$,$,#24,.T.);
+<span class="lineno">38</span>#29=EDGE_LOOP(&#x27;&#x27;,(#25,#26,#27,#28));
+<span class="lineno">39</span><mark>#30=CARTESIAN_POINT(</mark>&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">40</span>#31=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">41</span>#32=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#30,#31,#9);
+<span class="lineno">42</span>#33=PLANE(&#x27;&#x27;,#32);
+<span class="lineno">43</span>#34=FACE_OUTER_BOUND(&#x27;&#x27;,#29,.T.);
+<span class="lineno">44</span>#35=ADVANCED_FACE(&#x27;twi310_square&#x27;,(#34),#33,.T.);
+<span class="lineno">45</span>#36=OPEN_SHELL(&#x27;&#x27;,(#35));
+<span class="lineno">46</span>#37=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#36));
+<span class="lineno">47</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">48</span>#9051=PRODUCT(&#x27;Twi310&#x27;,&#x27;Twi310&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">49</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">50</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">51</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">52</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">53</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">54</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">55</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">56</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">57</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">58</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#37),#9060);
+<span class="lineno">59</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">60</span>ENDSEC;
+<span class="lineno">61</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Twi309.html">&larr; Twi309</a> <a class="up" href="index.html">§12.3b Wires / loops / edges</a> <a class="next" href="Twi311.html">Twi311 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

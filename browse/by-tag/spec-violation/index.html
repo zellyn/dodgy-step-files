@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1><span class="tag tag-spec-violation">spec-violation</span></h1>
 <p class="blurb">Input violates ISO 10303 / AP-spec text and should be rejected.</p>
-<p class="meta">396 entries</p>
+<p class="meta">399 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Section</th><th>Expected validation</th></tr></thead><tbody>
@@ -407,11 +407,14 @@
 <tr><td><a href="../../12-3c-faces/Tfa262.html"><code>Tfa262</code></a></td><td>Face outer bound referencing the closed edge curve itself: both the oriented-edge and edge-loop levels are missing</td><td><a href="../../12-3c-faces/index.html">§12.3c Faces / sewing / free bound</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-3c-faces/Tfa263.html"><code>Tfa263</code></a></td><td>Face whose bounds list holds a bare edge loop where face-bound wrappers are declared</td><td><a href="../../12-3c-faces/index.html">§12.3c Faces / sewing / free bound</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-3c-faces/Tfa264.html"><code>Tfa264</code></a></td><td>Face whose geometry slot holds the axis placement its plane was never built from</td><td><a href="../../12-3c-faces/index.html">§12.3c Faces / sewing / free bound</a></td><td><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-3c-faces/Tfa265.html"><code>Tfa265</code></a></td><td>Face outer bound whose bound slot holds an empty aggregate</td><td><a href="../../12-3c-faces/index.html">§12.3c Faces / sewing / free bound</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-3a-shells/Tsh065.html"><code>Tsh065</code></a></td><td>Tessellated shell with shared nodes between adjacent triangulated faces</td><td><a href="../../12-3a-shells/index.html">§12.3a Shells / orientation</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-3a-shells/Tsh066.html"><code>Tsh066</code></a></td><td>Same `CLOSED_SHELL` referenced from two `MANIFOLD_SOLID_BREP` entities</td><td><a href="../../12-3a-shells/index.html">§12.3a Shells / orientation</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-3a-shells/Tsh067.html"><code>Tsh067</code></a></td><td>Inner void shell extends beyond outer shell extent (void poking through)</td><td><a href="../../12-3a-shells/index.html">§12.3a Shells / orientation</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(108) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-3a-shells/Tsh266.html"><code>Tsh266</code></a></td><td>Manifold solid whose outer reference points at a face while the complete closed shell sits unreferenced</td><td><a href="../../12-3a-shells/index.html">§12.3a Shells / orientation</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-3a-shells/Tsh268.html"><code>Tsh268</code></a></td><td>Manifold solid whose outer slot holds an empty aggregate while its shell sits unreferenced</td><td><a href="../../12-3a-shells/index.html">§12.3a Shells / orientation</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-3b-wires/Twi306.html"><code>Twi306</code></a></td><td>Vertex whose geometry reference is a direction, not a point: a point-versus-direction slot swap at one corner</td><td><a href="../../12-3b-wires/index.html">§12.3b Wires / loops / edges</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-3b-wires/Twi311.html"><code>Twi311</code></a></td><td>Vertex loop whose vertex slot holds an empty aggregate</td><td><a href="../../12-3b-wires/index.html">§12.3b Wires / loops / edges</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-13-writer-pathology/Wr033.html"><code>Wr033</code></a></td><td>`FILE_SCHEMA` declares schema version that does not exist</td><td><a href="../../12-13-writer-pathology/index.html">§12.13 Writer pathology</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-12-cross-product/Xp043.html"><code>Xp043</code></a></td><td>CATIA AP242 → Inventor: top-level PRODUCT_DEFINITION without SDR</td><td><a href="../../12-12-cross-product/index.html">§12.12 Cross-product</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
 </tbody></table>

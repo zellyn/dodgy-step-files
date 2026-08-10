@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>§12.3b Wires / loops / edges</h1>
 <p class="blurb">Wire / loop / edge pathologies: self-intersecting wires, half-edge orphans, misordered loops.</p>
-<p class="meta">297 entries</p>
+<p class="meta">302 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
@@ -315,6 +315,11 @@
 <tr><td><a href="Twi304.html"><code>Twi304</code></a></td><td>Multi-face shared full-circle edge that must NOT be collapsed as a &quot;small edge&quot; (protection case)</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(12) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Twi305.html"><code>Twi305</code></a></td><td>Apex-bridging edge already PRESENT at the cone singularity (single, correctly positioned): dgnr/replace input</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Twi306.html"><code>Twi306</code></a></td><td>Vertex whose geometry reference is a direction, not a point: a point-versus-direction slot swap at one corner</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Twi307.html"><code>Twi307</code></a></td><td>Vector written with two arguments: the name slot omitted entirely</td><td><code>bytes-sufficient</code></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Twi308.html"><code>Twi308</code></a></td><td>Line written with a stray fourth argument after its vector</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Twi309.html"><code>Twi309</code></a></td><td>Edge written with its same-sense flag duplicated</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Twi310.html"><code>Twi310</code></a></td><td>Cartesian point with an empty coordinate list</td><td><code>bytes-sufficient</code></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Twi311.html"><code>Twi311</code></a></td><td>Vertex loop whose vertex slot holds an empty aggregate</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></td></tr>
 </tbody></table>
 </main>
 <footer>

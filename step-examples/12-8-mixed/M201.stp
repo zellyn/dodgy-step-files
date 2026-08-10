@@ -1,0 +1,17 @@
+ISO-10303-21;
+/* M201: TESSELLATED_SOLID('empty_items',(),$) — the items list empty where the schema requires at least one tessellated structured item, the exact-geometry link unset; carried by a tessellated shape representation, so the empty container is what the receiver is asked to build */
+HEADER;
+FILE_DESCRIPTION(('M201'),'2;1');
+FILE_NAME('M201.stp','2026-06-17T00:00:00',(''),(''),'cad-research-suite','','');
+FILE_SCHEMA(('AP242_MANAGED_MODEL_BASED_3D_ENGINEERING_MIM_LF { 1 0 10303 442 1 1 4 }'));
+ENDSEC;
+DATA;
+#1=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+#2=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+#3=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+#4=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-6),#1,'distance_accuracy_value','');
+#5=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#4))GLOBAL_UNIT_ASSIGNED_CONTEXT((#1,#2,#3))REPRESENTATION_CONTEXT('part','3D'));
+#6=TESSELLATED_SOLID('empty_items',(),$);
+#7=TESSELLATED_SHAPE_REPRESENTATION('',(#6),#5);
+ENDSEC;
+END-ISO-10303-21;
