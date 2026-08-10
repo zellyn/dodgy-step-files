@@ -32,6 +32,8 @@
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Face 3 is a degenerate triangle whose three EDGE_CURVEs all run from vertex #26 back to itself (zero length) using a private CARTESIAN_POINT at (20,20,0) shared by no other face. A kernel must never crash on this input: reject the degenerate face (all edges zero-length, self-referencing start/end vertex) with a diagnostic, and when a face carrying an otherwise-unreferenced vertex is dropped, also drop that vertex from the shell rather than leaving it referenced only by already-removed topology.</p></section>
+<section><h2>Notes</h2>
+<p>RUNTIME-VERIFIED 2026-08-09 — this file&#x27;s recorded `signal(11)` is driven by an inline entity instance written directly inside another entity&#x27;s argument list (a vector constructor carrying a bare coordinate list where a direction reference belongs). A conforming exchange file may only define entity instances as top-level numbered statements, so the reader cannot bind the inline construct, the attribute resolves to null, and the abort happens during loading — before any repair routine runs. Full census in `BACKLOG.md` (M.18).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">
