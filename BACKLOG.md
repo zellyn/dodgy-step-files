@@ -253,6 +253,20 @@ nightly rebaseline. assimp §12.15 still pending (needs new section + raw-file w
       far-origin float32 collapse (Tb/Xp); wasm-address-space is borderline-platform (Pf/Xp or describe-only).
       → SYNTH TASK #496.
 
+**Wave 4 — MINED 2026-08-10 (FreeCAD issue tracker — SATURATED, 0 novel, as the OCCT-wrapping-importer thesis predicts):**
+- [x] **FreeCAD/FreeCAD GitHub issues** → `audit/mining_freecad_2026-08-10.md`. ~19 candidates, ~10 strongly
+      synthesizable, **0 net-new** against the 3,352-entry corpus. Every synthesizable input pattern already
+      has an entry, several near-exact: #31724 recursive-ref DoS → Ad107/Ad027/Pf012/Pf013/Pf030; #22123
+      bad-string → P003/Le017; #15685 CONFIG_CONTROL_DESIGN+no-PRODUCT → **P001** (exact); #16681 off-axis
+      revolution → **Gs045** (exact); #17807 compound-merge free-edge drop → **P017** (exact); #5882
+      supplemental-axis → A022/A038; #18575 transparency → P019. The large-assembly/helix OOM reports
+      (#14565/#6311/#18735/#18151) are scale-driven (oracle-invisible at fixture scale) and the O(N²)
+      color-lookup is a library-internal, not an input pattern. **Do NOT open a fixture wave** — manufacturing
+      near-duplicates would degrade the corpus (quality-over-completeness). Positive completeness signal:
+      FreeCAD's importer is OCCT-based, so its import-side reports converge on classes OCCT's own tracker
+      already yielded (task #114). Genuinely-new veins now require a NON-OCCT importer's tracker or a
+      writer-pathology source that isn't a re-export of OCCT output.
+
 **Wave 3 — MINED 2026-07-11 (independent mesh kernels → high yield, as predicted):**
 - [x] **trimesh + Open3D** → `audit/mining_trimesh_open3d_2026-07.md`. 12 novel (11 §12.15 Ip* parse-layer:
       OBJ backslash line-continuation, face-like-substring-in-name, binary-STL-"solid"-header trap,
