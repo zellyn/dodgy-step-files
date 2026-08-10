@@ -2648,6 +2648,43 @@ argument position). Same playbook as (M.20):
   are, but EMPTY_AGGREGATE includes `.input` quarantine files and scaffold cases
   that need individual judgment).
 
+**Follow-up EXECUTED same day (per-fixture audit of all 106, offending entities
+inspected individually): 76 assertions added, 30 skipped with reasons.**
+
+- ASSERTED 76: ARG_COUNT 16 (Ls015/Ls017 comma defects whose byte consequence IS
+  a deviant arity; the 14 malformed-B-spline crash-family fixtures), EMPTY_AGGREGATE
+  35 (the empty-loop/shell/face/bounds families, the eight
+  `SURFACE_CURVE('',#n,(),...)` missing-pcurve encodings, Ad134's empty DIRECTION,
+  M018/M069 tessellation), INLINE_INSTANCE 25 (all: Tsh109-127, Twi218-220,
+  M050/M096/M097/M157 — every one a deliberate carrier). Assertion lines 172 -> 248.
+- SKIPPED 30, each with a finding attached:
+  - 8 ARG_COUNT: `VECTOR(#n,mag)` name-omitted TWO-ARG VECTORS (Wr016,
+    M051/054/056/057/060/072/073) — not those fixtures' TITLED claims, so no
+    assertion. PROBED same day (reachability BFS from the shape root + Expected
+    lines): **five of the eight DO crash** (M051/057/060/072/073, Expected
+    signal(11), reachable two-arg vector = the census's MakeVectorWithMagnitude
+    signature) — they belong to the documented "crashes on a scaffold
+    malformation, not its titled defect" class of section (M). Wr016's three are
+    UNREACHABLE orphans (consistent with its shape(1) accept — and with its own
+    orphan-re-output claim). M054 goes silent-empty; M056 accepts despite a
+    graph-REACHABLE two-arg vector — graph reachability is not converter reach.
+  - 11 EMPTY_AGGREGATE: the header-pathology scaffold (Wr001-004, Wr026-030,
+    Wr033, Lh019) uses an EMPTY `GEOMETRIC_CURVE_SET('...',())` as its minimal
+    shape — a placeholder-geometry-style pattern shared by 11 fixtures. Their
+    claims are header-level, so no assertion; whether the scaffold should carry a
+    real point is a separate (behavior-preserving?) regen decision.
+  - Gs002/Gb002: PROBED same day — **confirmed orphaned-defect carriers.** The
+    titled TOROIDAL_SURFACE / SPHERICAL_SURFACE, their ADVANCED_FACE, bound, and
+    OPEN_SHELL are ALL unreachable from the shape root; the reachable branch is
+    only the empty `SHELL_BASED_SURFACE_MODEL('',())`, and both fixtures' Expected
+    signal(11) therefore comes from the EMPTY AGGREGATE, not the titled
+    degenerate-torus / undefined-tangent claim. Same class as the confirmed
+    Gn002/Gn007/Gn008/P014/P022 carriers; quarantine/regen is a maintainer call
+    per scope discipline — recorded here with the evidence.
+  - Pf025 (empty OPEN_SHELL is scaffold, claim is the vertex-loop bound),
+    M070/M193/M194/M195/M199 (empty lists incidental to tessellation minimalism),
+    3 `.input` quarantine files (no catalog entries).
+
 #### (M.21) Slot-type table coverage census -> 7 new fixtures; every table row now has a canonical claimant. 2026-08-10
 
 With SLOT_TYPE live as an oracle, the principled growth question became: does every

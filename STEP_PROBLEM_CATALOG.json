@@ -1766,7 +1766,9 @@
       "03-occt-tests.md R045 (empty `EDGE_LOOP`), R037 (empty wire), R050 (empty `APPLIED_GROUP_ASSIGNMENT`)",
       "08-occt-gitlog.md G023 (BSpline with zero poles), G035 (empty entity iterator)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "crash",
       "adversarial"
@@ -2436,7 +2438,9 @@
       "08-occt-gitlog.md G035",
       "18-other-issues.md I004 (`TESSELLATED_SHELL((), $)`)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "crash",
       "adversarial"
@@ -2836,7 +2840,9 @@
     "sources": [
       "CVE-2024-23133 (Autodesk ASMDATAX228A.dll on STP)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "crash",
       "adversarial"
@@ -3493,7 +3499,9 @@
       "OCCT MANTIS#0023938",
       "OCCT MANTIS#0024517 (OCCT MANTIS tracker 502 as of 2026-05-02)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "silent-loss",
       "adversarial"
@@ -5140,7 +5148,9 @@
       "OCCT Mantis 33665 (`DIRECTION('',())` — empty `direction_ratios` list dereferenced in `StepGeom_Direction::NbDirectionRatios` during `TransferRoots`, yielding a null-deref segfault). B4 wave-10 DEF-W10-A (LGPL-clean — pattern only, no upstream bytes copied",
       "reproducibility-verified 2026-07-04)."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "crash",
       "adversarial"
@@ -5387,7 +5397,9 @@
     "sources": [
       "synthesized cross-product."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "crash",
       "interop"
@@ -5462,7 +5474,9 @@
     "sources": [
       "synthesized cross-product."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "interop"
     ],
@@ -5613,7 +5627,9 @@
     "sources": [
       "synthesized cross-product."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "interop"
     ],
@@ -6077,7 +6093,9 @@
     "sources": [
       "synthesized cross-product."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "interop"
     ],
@@ -7557,7 +7575,9 @@
       "OCCT MANTIS#0027xxx-class",
       "bug-reporter language: \"empty list, expected at least one face\" (OCCT MANTIS tracker 502 as of 2026-05-02)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "silent-loss",
       "writer"
@@ -41192,7 +41212,9 @@
     "sources": [
       "S006"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == ARG_COUNT"
+    ],
     "taxonomy": [
       "syntax"
     ],
@@ -41266,7 +41288,9 @@
     "sources": [
       "A017, N051"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == ARG_COUNT"
+    ],
     "taxonomy": [
       "syntax"
     ],
@@ -42436,7 +42460,9 @@
       "14-brlcad-rhino.md K014",
       "19-datasets.md D025 (FreeCAD #5783)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -43014,7 +43040,9 @@
     "sources": [
       "05-occt-shapefix.md F068 (`ShapeFix_ComposeShell.hxx:127`)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -43939,7 +43967,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -45989,7 +46019,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == ARG_COUNT"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -46022,7 +46054,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == ARG_COUNT"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -46091,7 +46125,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == ARG_COUNT"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -46364,7 +46400,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -46397,7 +46435,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -46884,7 +46924,9 @@
     "sources": [
       "OCCT/ShapeAnalysis_Edge::CheckCurve3dWithPCurve"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -47328,7 +47370,9 @@
     "sources": [
       "OCCT/ShapeFix_ComposeShell"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -47361,7 +47405,9 @@
     "sources": [
       "OCCT/ShapeAnalysis_Edge.GetEndTangent2d"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -49624,7 +49670,9 @@
     "sources": [
       "08-occt-gitlog.md (G023, Mantis 0027575, OCCT 7252382)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -50917,7 +50965,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == ARG_COUNT"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -53083,7 +53133,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == ARG_COUNT"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -53150,7 +53202,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == ARG_COUNT"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -55423,7 +55477,9 @@
     "sources": [
       "OCCT/ShapeAnalysis_Surface, ShapeUpgrade_SplitSurfaceContinuity"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == ARG_COUNT"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -56528,7 +56584,9 @@
     "sources": [
       "R027, G073"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -63204,7 +63262,9 @@
     "sources": [
       "OCCT BRepCheck_Shell.cxx:155 (uncovered class evidence)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "topology"
     ],
@@ -64469,7 +64529,9 @@
     "sources": [
       "OCCT BRepBuilderAPI_FastSewing.cxx:183, 220 (FS_FaceWithNullSurface) (uncovered class evidence)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "topology"
     ],
@@ -65488,7 +65550,9 @@
       "03-occt-tests.md R045 (bug33307)",
       "04-occt-translation.md Q001, Q028, Q029"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -66548,7 +66612,9 @@
       "OCCT MANTIS#0033398",
       "OCCT MANTIS#0033006 (OCCT MANTIS tracker 502 as of 2026-05-02)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -67512,7 +67578,9 @@
     "sources": [
       "OCCT method line ShapeAnalysis_Shell.LoadShells:46 (LoadShells_at46)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "topology"
     ],
@@ -68608,7 +68676,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == INLINE_INSTANCE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -68641,7 +68711,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == INLINE_INSTANCE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -68674,7 +68746,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == INLINE_INSTANCE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -68707,7 +68781,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == INLINE_INSTANCE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -68740,7 +68816,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == INLINE_INSTANCE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -68773,7 +68851,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == INLINE_INSTANCE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -68806,7 +68886,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == INLINE_INSTANCE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -68839,7 +68921,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == INLINE_INSTANCE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -68872,7 +68956,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == INLINE_INSTANCE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -68905,7 +68991,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == INLINE_INSTANCE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -68940,7 +69028,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == INLINE_INSTANCE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -68975,7 +69065,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == INLINE_INSTANCE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -69010,7 +69102,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == INLINE_INSTANCE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -69045,7 +69139,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == INLINE_INSTANCE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -69080,7 +69176,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == INLINE_INSTANCE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -69148,7 +69246,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == INLINE_INSTANCE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -69181,7 +69281,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == INLINE_INSTANCE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -69214,7 +69316,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == INLINE_INSTANCE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -69520,7 +69624,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "topology"
     ],
@@ -70583,7 +70689,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "topology"
     ],
@@ -71128,7 +71236,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "topology"
     ],
@@ -74314,7 +74424,9 @@
       "04-occt-translation.md Q001",
       "03-occt-tests.md R045 (bug33307)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -81997,7 +82109,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == INLINE_INSTANCE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -82030,7 +82144,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == INLINE_INSTANCE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -82063,7 +82179,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == INLINE_INSTANCE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -82422,7 +82540,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == ARG_COUNT"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -83185,7 +83305,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "topology"
     ],
@@ -85853,7 +85975,9 @@
       "FreeCAD #20396",
       "bug-reporter language: \"Models exported to STEP crash or produce empty objects\", \"appears to export fine but results in an empty object\", \"STL and 3MF export work, STEP doesn't\"."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "topology"
     ],
@@ -85967,7 +86091,9 @@
       "03-occt-tests R047 (bug24283)",
       "04-occt-translation Q019"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -90970,7 +91096,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == ARG_COUNT"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -91076,7 +91204,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == ARG_COUNT"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -92114,7 +92244,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == ARG_COUNT"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -92189,7 +92321,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == ARG_COUNT"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -92222,7 +92356,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == ARG_COUNT"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -92649,7 +92785,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == ARG_COUNT"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -94851,7 +94989,9 @@
     "sources": [
       "Pattern-mined from FreeCAD/FreeCAD#17807 (LGPL-clean — pattern only, no bytes copied). User-reported reproducer: \"STEP: import missing Edges\"."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "topology"
     ],
@@ -116124,7 +116264,9 @@
       "18-other-issues.md (I004)",
       "OCCT issue #667"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "crash"
     ],
@@ -117373,7 +117515,9 @@
       "prostep ivip MBx-IF status update",
       "CAx-IF Composites RP v4.4"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == INLINE_INSTANCE"
+    ],
     "taxonomy": [
       "geometry"
     ],
@@ -118133,7 +118277,9 @@
       "OCCT MANTIS#0033410",
       "OCCT MANTIS#0033491 (OCCT MANTIS tracker 502 as of 2026-05-02)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == EMPTY_AGGREGATE"
+    ],
     "taxonomy": [
       "crash"
     ],
@@ -119172,7 +119318,9 @@
     "sources": [
       "deduced from ISO 10303-238 §6.2 trajectory G0/G1 continuity rules"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == INLINE_INSTANCE"
+    ],
     "taxonomy": [
       "crash",
       "spec-violation"
@@ -119211,7 +119359,9 @@
     "sources": [
       "deduced from ISO 10303-238 §6.4 workingstep / its_feature link"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == INLINE_INSTANCE"
+    ],
     "taxonomy": [
       "spec-violation"
     ],
@@ -121528,7 +121678,9 @@
       "16-iso-spec ISO 10303-210 §5 (solder_mask_layer / pad exposure)",
       "bug-reporter language: \"AP210 solder mask over pad\", \"PCB pad masked\", \"ECAD reflow blocked\"."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == INLINE_INSTANCE"
+    ],
     "taxonomy": [
       "spec-violation"
     ],
