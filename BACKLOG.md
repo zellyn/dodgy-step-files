@@ -2649,10 +2649,18 @@ same construct, different spelling; measure-first note below). Live results:
 
 Crash census 178 -> 182, refusable 164 -> 168, still 92%. Corpus 3342 -> 3352;
 structural assertions 248 -> 258. ARG_COUNT rows now 6/6, NONEMPTY 18/18.
-Deferred: the 8 uncovered inline-name rows (AXIS2_PLACEMENT_3D, CIRCLE, EDGE_CURVE,
-EDGE_LOOP, LINE, ORIENTED_EDGE, PLANE, VERTEX_POINT as the inline entity) — one
-construct in different spellings; before synthesizing, measure whether the receiver
-behavior differs by consumer site at all (if not, one or two suffice).
+Deferred inline-name rows: PROBED same day and CLOSED with zero new fixtures.
+Scratchpad probes placed an inline instance at each of the 8 uncovered consumer
+sites (LINE/CIRCLE/VERTEX_POINT in an edge, EDGE_CURVE in an oriented edge,
+ORIENTED_EDGE in a loop, EDGE_LOOP in a bound, PLANE in a face,
+AXIS2_PLACEMENT_3D in a plane) and ran the live oracle on each: **all eight are
+behaviorally uniform — accept + null shape (silent total loss), no crash.** The
+inline construct has exactly TWO receiver behaviors, and both already have
+deliberate claimants: crash (specific to a line's vector slot — Twi218-220, the
+Tsh109-127 cohort) and silent drop (M050/M096/M097/M157). Eight per-spelling
+fixtures would restate one behavior eight times; per quality-over-completeness,
+none were added. The inline-name rows of the census regex remain intentionally
+broader than the fixture set.
 
 #### (M.22) Structural-oracle v4: the crash campaign's remaining three checks adopted as codes. 2026-08-10
 
