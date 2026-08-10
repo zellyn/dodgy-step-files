@@ -3215,7 +3215,9 @@
       "OCCT MANTIS#0033603",
       "OCCT MANTIS#0032314 (OCCT MANTIS tracker 502 as of 2026-05-02)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "silent-loss",
       "adversarial"
@@ -5066,7 +5068,9 @@
       "https://github.com/Open-Cascade-SAS/OCCT/issues/383, https://github.com/Open-Cascade-SAS/OCCT/pull/407 (`STEPCAFControl_Reader.cxx:3007` — pre-fix passes `Lower()` indices into `gp_Dir::SetCoord()` instead of `Value(Lower())`",
       "post-fix reads the array values). NIST `nist_stc_07_asme1_ap242-e3.stp` is the reference file that surfaced the crash. B4 wave-8 DEF-AAA (LGPL-clean — pattern only, no upstream bytes copied)."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == AXIS_DEGENERATE"
+    ],
     "taxonomy": [
       "crash",
       "adversarial"
@@ -5947,7 +5951,9 @@
     "sources": [
       "synthesized cross-product."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == AXIS_DEGENERATE"
+    ],
     "taxonomy": [
       "interop"
     ],
@@ -7730,7 +7736,9 @@
       "OCCT MANTIS#0028xxx-class",
       "bug-reporter language: \"duplicate instance number\", \"two entities with same #N\" (OCCT MANTIS tracker 502 as of 2026-05-02)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DUPLICATE_ID"
+    ],
     "taxonomy": [
       "writer"
     ],
@@ -39185,7 +39193,9 @@
     "sources": [
       "07-stepcode-ifcopenshell T015, 12-adversarial A006, 16-iso-spec N034"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DUPLICATE_ID"
+    ],
     "taxonomy": [
       "silent-loss",
       "spec-violation",
@@ -39854,7 +39864,9 @@
     "sources": [
       "16-iso-spec ISO 10303-21 Ed.3 §7 (intra-section vs cross-section reference)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DUPLICATE_ID"
+    ],
     "taxonomy": [
       "spec-violation",
       "syntax"
@@ -40326,7 +40338,9 @@
       "Pattern-mined from ricosjp/ruststep token.rs::entity_instance_name (Apache-2.0/MIT — pattern only, no bytes copied)",
       "ISO 10303-21 §6.4.4.3 NOTE 2 (leading zeros not significant)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DUPLICATE_ID"
+    ],
     "taxonomy": [
       "silent-loss",
       "spec-violation",
@@ -56993,7 +57007,9 @@
     "sources": [
       "Q056, Q057, S020, S021, W020"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == AXIS_DEGENERATE"
+    ],
     "taxonomy": [
       "geometry"
     ],
@@ -103452,7 +103468,9 @@
       "10-vendor-kbs.md V056 (eng-tips threads/step-file-import-scaling-problem.395939)",
       "10-vendor-kbs.md V049 (assembly STEP scale mismatch)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == UNITS_INCONSISTENT"
+    ],
     "taxonomy": [
       "crash",
       "units"
@@ -103488,7 +103506,9 @@
     "sources": [
       "22-niche-forums.md Y011 (gitlab.com/kicad/code/kicad/-/issues/22139)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == UNITS_INCONSISTENT"
+    ],
     "taxonomy": [
       "crash",
       "units"
@@ -103880,7 +103900,9 @@
     "sources": [
       "03-occt-tests.md R054 (bug23567 — `stepfileunits` returned wrong primary unit)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == UNITS_INCONSISTENT"
+    ],
     "taxonomy": [
       "units"
     ],
@@ -103961,7 +103983,9 @@
       "17-standards-bodies.md M020 (PrePoMax forum",
       "OCCT default-mm vs CONVERSION_BASED chain)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == UNITS_INCONSISTENT"
+    ],
     "taxonomy": [
       "units"
     ],
@@ -104238,7 +104262,9 @@
       "OCCT MANTIS#0033101",
       "OCCT MANTIS#0032239 (OCCT MANTIS tracker 502 as of 2026-05-02)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == UNITS_INCONSISTENT"
+    ],
     "taxonomy": [
       "units"
     ],
@@ -117280,7 +117306,9 @@
       "sfa-grafx3d.tcl:1579",
       "sfa-supp.tcl:528"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == AXIS_DEGENERATE"
+    ],
     "taxonomy": [
       "pmi"
     ],
@@ -118527,7 +118555,9 @@
     "sources": [
       "OCCT STEPControl_ActorRead.cxx:2179, 2183 (transformation relation handling) (uncovered class evidence)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == AXIS_DEGENERATE"
+    ],
     "taxonomy": [
       "assembly"
     ],
@@ -122176,7 +122206,9 @@
       "OCCT MANTIS#0025602",
       "bug-reporter language: \"important for IGES and STEP file format to add check if wrong data are read from the file\", \"reader silently accepts cross-references that don't resolve\", \"no input validation in STEP reader\". (OCCT MANTIS tracker 502 as of 2026-05-02)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == DANGLING_REF"
+    ],
     "taxonomy": [
       "silent-loss"
     ],

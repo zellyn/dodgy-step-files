@@ -802,6 +802,7 @@ Entries within each section are not implicitly ordered. See the *Index by catego
 - **Byte assertion**: matches(rb'(?s)#4=PRODUCT.*#4=PRODUCT')
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: Cross-references that depend on the duplicated/illegal instance number resolve to the wrong entity (or to NULL); affected sub-trees attach to incorrect parents and the resulting BRep contains dangling or mis-typed references.
+- **Structural assertion**: struct == DUPLICATE_ID
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Lh023 — Whitespace, tab, or comment between `#` and digits of an instance ID
@@ -2819,6 +2820,7 @@ End of file.
 - **Byte assertion**: count(b'DIRECTION(\'\',(0.0,0.0,1.0))') >= 2
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: The affected surface or curve has degenerate parameterization (zero-length axis, non-unit direction, near-zero radius); evaluations at the degenerate parameter produce NaN/Inf, which propagates into face bounds and downstream BRep operations.
+- **Structural assertion**: struct == AXIS_DEGENERATE
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### Gs037 — Offset of a surface-of-linear-extrusion fails iso-curve evaluation
@@ -6186,6 +6188,7 @@ _Section summary: 31 entries._
 - **OCC behavior**: crashes (signal 11) on this fixture (catalog disallows crash). Kernel-bug witnessed: receivers should produce one of {heal}; never crash.
 - **Severity**: P0
 - **Model impact**: Parser dereferences invalid memory while processing the malformed token; the load process is killed by a signal and no shape is delivered.
+- **Structural assertion**: struct == UNITS_INCONSISTENT
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ---
@@ -6205,6 +6208,7 @@ _Section summary: 31 entries._
 - **OCC behavior**: crashes with signal(11); outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture; never crash.
 - **Severity**: P0
 - **Model impact**: Parser dereferences invalid memory while processing the malformed token; the load process is killed by a signal and no shape is delivered.
+- **Structural assertion**: struct == UNITS_INCONSISTENT
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ---
@@ -6385,6 +6389,7 @@ _Section summary: 31 entries._
 - **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared units defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
+- **Structural assertion**: struct == UNITS_INCONSISTENT
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ---
@@ -6418,6 +6423,7 @@ _Section summary: 31 entries._
 - **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared units defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
+- **Structural assertion**: struct == UNITS_INCONSISTENT
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ---
@@ -6564,6 +6570,7 @@ _Section summary: 31 entries._
 - **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared units defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P1
 - **Model impact**: Unit/coordinate-system metadata is wrong or missing; coordinates are interpreted at the wrong scale or in the wrong frame, so the loaded geometry is the right shape at the wrong size or pose.
+- **Structural assertion**: struct == UNITS_INCONSISTENT
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### U039 — Plane-angle unit declared as DEGREE but values stored as radians (or vice-versa)
@@ -13585,6 +13592,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 2
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
+- **Structural assertion**: struct == AXIS_DEGENERATE
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(2) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-8-mixed/M067.stp
 
@@ -14100,6 +14108,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **OCC behavior**: silently accepts with diagnostic but loads empty result; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ad088 — Crash on reading STEP with malformed parameter values
@@ -15225,6 +15234,7 @@ _Section summary: 52 entries._
 - **OCC behavior**: accepts with ERR diagnostic (empty result); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
+- **Structural assertion**: struct == AXIS_DEGENERATE
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### M037 — AP209 FEM element wrong node count
@@ -18055,6 +18065,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: both heal modes accept and load the SAME shape(1) — a valid planar face (v8 e4 f1, BRepCheck valid). The declared defects (zero-magnitude `DIRECTION` #9063 and the mutually-cyclic `AXIS2_PLACEMENT_3D` pair #9064/#9065) are orphan entities the loaded shape never references; removing them leaves shape-counts and validity unchanged. shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Cross-subsystem interaction surfaces an inconsistency between two kernel passes; one pass sees the entity as valid and another as invalid, leaving the loaded model in an internally inconsistent state.
+- **Structural assertion**: struct == AXIS_DEGENERATE
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ---
@@ -19017,6 +19028,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'@geom') or contains(b'@geometry')
 - **Tier-3 assertion**: load != "ok"
 - **Model impact**: Cross-references that depend on the duplicated/illegal instance number resolve to the wrong entity (or to NULL); affected sub-trees attach to incorrect parents and the resulting BRep contains dangling or mis-typed references.
+- **Structural assertion**: struct == DUPLICATE_ID
 - **Expected validation**: `occt=reject/reject gmsh=reject ifc=schema_n/a`
 
 ### Lh040 — `FILE_INFO` Edition-3 record contradicting `FILE_NAME` date
@@ -24410,6 +24422,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **OCC behavior**: OCC loads the file and produces no shape (empty). Re-audit (2026-07-18, empty-claim re-audit): the only model-root geometry is a toy `GEOMETRIC_CURVE_SET` of `CARTESIAN_POINT`s; a payload of this kind has no shape-representation root and OCC's STEP transfer maps it to no TopoDS shape even when well-formed (confirmed by a clean-copy re-run and a matching well-formed control — both load empty). The declared writer-cosmetic defect therefore cannot manifest as lost geometry: there is no shape to build whether or not the defect is present (base and clean both empty). The empty result is toy/placeholder topology, not a defect-driven silent data-loss, so this is not a proven kernel bug.
 - **Severity**: P2
 - **Model impact**: The two entities sharing an instance number race for the back-references; the resulting model attaches each cross-reference to whichever the resolver picks (often last-wins), so structurally identical files load with different topology.
+- **Structural assertion**: struct == DUPLICATE_ID
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Wr016 — Re-output of intermediate construction entities (orphan geometry)
@@ -34848,6 +34861,7 @@ Distance 0.099999 mm compared against 0.1 mm tolerance w/o margin buffer. Single
 - **OCC behavior**: accepts and loads a valid shape(1); the declared defect is the dangling #9999 cross-reference: a clean resolved reference yields an identical, equally-valid shape, so the silent-accept is oracle-invisible, so it does not survive into the built shape. Perturbing the defect from clean to grossly exaggerated leaves shape-counts (v-e-w-f-shell-solid-compound = 0-0-0-1-1-0-0) and BRepCheck validity (valid) unchanged under heal_on; shape(1) does not witness a kernel bug.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
+- **Structural assertion**: struct == DANGLING_REF
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Pmi094 — XCAF GD&T data does not round-trip to STEP AP242 PMI
@@ -39407,6 +39421,7 @@ exercised against CGAL PMP / MeshFix.
 - **Tier-3 assertion**: load == "ok"
 - **Severity**: P1
 - **Model impact**: Cross-references that depend on the aliased instance number resolve to the wrong entity (or to NULL); affected sub-trees attach to incorrect parents and the resulting BRep contains dangling or mis-typed references.
+- **Structural assertion**: struct == DUPLICATE_ID
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Lh052 — Conformant AP203 file rejected at the `DATA;` boundary (independent-parser differential)
@@ -48421,6 +48436,7 @@ exercised against CGAL PMP / MeshFix.
 - **OCC behavior**: accepts (post-fix); OCCT ≥ 8.0 loads the cube `MANIFOLD_SOLID_BREP` as shape(1) and reads the datum-reference-modifier chain without crashing (either normalizes the colinear axis or emits a schema warning). Pre-fix OCCT ≤ 7.9 raises `gp_Dir::CrossCross()` "result vector has zero norm" from `STEPCAFControl_Reader.cxx:3007` — a segfault-adjacent crash on the datum-axis path. Post-fix OCCT emits no parse diagnostic for the dropped AP242 Ed.3-only entities.
 - **Severity**: P0
 - **Model impact**: Pre-fix OCCT ≤ 7.9 reader crashes on every AP242 Ed.3 file whose `DATUM_REFERENCE_MODIFIER` chain matches the NIST `nist_stc_07_asme1_ap242-e3.stp` structure — a large class of NIST-authored PMI test files. Downstream MBD/MBE workflows using pre-fix OCCT-based CAD kernels (FreeCAD ≤ v0.20, Salome-Platform ≤ v9.9, KiCad ≤ v7) cannot load AP242 Ed.3 datum-reference test files at all.
+- **Structural assertion**: struct == AXIS_DEGENERATE
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(54) ifc=schema_n/a`
 
 ### Ad133 — OCCT #1327 / FreeCAD #30266: OCCT 8.0 STEP writer regression drops curved-surface entities on re-export

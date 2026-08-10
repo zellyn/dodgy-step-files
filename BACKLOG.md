@@ -2620,6 +2620,21 @@ ill-typed, so it tested nothing. With a synthesised DIRECTION, three of the four
 Same failure shape as the inline-entity mistake above -- **an invalid instrument returns
 a negative that looks like a finding.**
 
+#### (M.24) The assertion audit applied to the v1/v2 codes: 16 added, 3 skipped. 2026-08-10
+
+Final round of the per-fixture assertion pattern: the 19 fixtures whose lint
+verdict is a v1/v2 code (DUPLICATE_ID / DANGLING_REF / UNITS_INCONSISTENT /
+AXIS_DEGENERATE) without an assertion. 16 asserted — the code IS the titled
+claim in each (all four duplicate-id fixtures incl. Lh051's leading-zero
+aliasing, both dangling-ref claimants Ad087/M161, five degenerate-axis fixtures
+incl. M067's zero-vector direction and M036's near-identical datum axes, all
+five multi-unit-context fixtures U008/U009/U025/U028/U038). 3 skipped with
+reasons: Ls018 (claim is the `;;` syntax — the v2 skip, reconfirmed), Pmi019
+(degenerate axis incidental to its viewpoint-modeling claim), A038 (units
+incidental to its assembly-geometry claim; its `SI_UNIT(.INCH.,...)` invalid
+prefix is part of the fixture's own content). **Structural assertions 258 ->
+274; every fixture whose lint verdict matches its claim is now pinned.**
+
 #### (M.23) v4 table-row census -> 10 new fixtures; FOUR new crashers incl. the census's biggest signature. 2026-08-10
 
 Applied the (M.21) row-coverage question to the v4 tables, counting only ASSERTED
