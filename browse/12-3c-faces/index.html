@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>§12.3c Faces / sewing / free bound</h1>
 <p class="blurb">Face / sewing / free-bound pathologies, including non-manifold sewing seams and degenerate trimming loops.</p>
-<p class="meta">269 entries</p>
+<p class="meta">273 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
@@ -287,6 +287,10 @@
 <tr><td><a href="Tfa258.html"><code>Tfa258</code></a></td><td>Spherical face bounded only by the equator: the pole-bridging degenerate edge and the seam are both absent</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Tfa259.html"><code>Tfa259</code></a></td><td>Conical face bounded only by a full-revolution belt circle, apex BELOW the belt in V</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Tfa260.html"><code>Tfa260</code></a></td><td>Conical face bounded only by a full-revolution belt circle on the mirrored nappe, apex ABOVE the belt in V</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tfa261.html"><code>Tfa261</code></a></td><td>Face bound referencing the oriented edge of a closed circle directly: the one-element edge loop wrapper is missing</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tfa262.html"><code>Tfa262</code></a></td><td>Face outer bound referencing the closed edge curve itself: both the oriented-edge and edge-loop levels are missing</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tfa263.html"><code>Tfa263</code></a></td><td>Face whose bounds list holds a bare edge loop where face-bound wrappers are declared</td><td><code>bytes-sufficient</code></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Tfa264.html"><code>Tfa264</code></a></td><td>Face whose geometry slot holds the axis placement its plane was never built from</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></td></tr>
 </tbody></table>
 </main>
 <footer>

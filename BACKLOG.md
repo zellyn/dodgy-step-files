@@ -2620,6 +2620,36 @@ ill-typed, so it tested nothing. With a synthesised DIRECTION, three of the four
 Same failure shape as the inline-entity mistake above -- **an invalid instrument returns
 a negative that looks like a finding.**
 
+#### (M.21) Slot-type table coverage census -> 7 new fixtures; every table row now has a canonical claimant. 2026-08-10
+
+With SLOT_TYPE live as an oracle, the principled growth question became: does every
+(consumer entity, slot) row of the table have at least one fixture whose violation
+exercises THAT row? Census over the 125 SLOT_TYPE carriers: **13 of 20 rows covered,
+7 rows with zero claimants** — CLOSED_SHELL[1], MANIFOLD_SOLID_BREP[1], FACE_BOUND[1],
+FACE_OUTER_BOUND[1], FACE_SURFACE[1], FACE_SURFACE[2], VERTEX_POINT[1].
+
+Synthesized one fixture per gap (Tsh265/Tsh266, Tfa261-264, Twi306), each a minimal
+complete model with exactly ONE wrong-typed slot, nothing orphaned (except Tsh266's
+deliberately-unreferenced repair-target shell). Live-measured, and the 7 rows produced
+FIVE DISTINCT receiver behaviors — evidence the rows are genuinely different defects,
+not restatements:
+
+  - Tsh265 (loop in shell face set): silent partial loss — 5 of 6 faces survive, the
+    "closed" shell arrives open, no diagnostic.
+  - Tsh266 (face as solid outer) and Twi306 (direction as vertex geometry): SILENT
+    TOTAL LOSS — accept + null shape, though the complete geometry is in the file.
+    Two new members of the silent-total-loss family.
+  - Tfa261/Tfa262 (oriented-edge / edge-curve as bound): face kept, boundary silently
+    discarded -> unbounded plane in place of a disc. One-level and two-level flattening
+    are indistinguishable from the imported result — itself a finding.
+  - Tfa263 (bare loop in bounds list): **NEW CRASHER** — signal(11) in both heal modes
+    AND the mesh reader. Crash census 177 -> 178, refusable 163 -> 164, still 92%.
+  - Tfa264 (placement as face geometry): face dropped entirely -> empty shell.
+
+Each entry carries byte assertions, `struct == SLOT_TYPE`, measured tier-3 assertions
+(none for the crasher), and live-computed Expected lines. Slot-type row coverage is now
+**20/20**.
+
 #### (M.20) DECISIONS EXECUTED: SLOT_TYPE is structural-oracle v3; UNITS_INCONSISTENT rescoped. 2026-08-09
 
 Maintainer approved both open proposals; both shipped together.

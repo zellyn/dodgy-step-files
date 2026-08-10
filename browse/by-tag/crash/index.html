@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1><span class="tag tag-crash">crash</span></h1>
 <p class="blurb">Kernel-side crash (signal-11 / segfault, runtime-error, infinite-loop, OOM).</p>
-<p class="meta">283 entries</p>
+<p class="meta">284 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Section</th><th>Expected validation</th></tr></thead><tbody>
@@ -203,6 +203,7 @@
 <tr><td><a href="../../12-3c-faces/Tfa180.html"><code>Tfa180</code></a></td><td>PLANE face with outer and inner wires sharing a B-spline curve edge crashes the reader (SIGSEGV) even with the inner wire removed; coincident-edge wire merging is never reached</td><td><a href="../../12-3c-faces/index.html">§12.3c Faces / sewing / free bound</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-3c-faces/Tfa187.html"><code>Tfa187</code></a></td><td>ADVANCED_FACE on a filleted cone-like B-spline surface crashes the reader (SIGSEGV); pin-face checking is never reached</td><td><a href="../../12-3c-faces/index.html">§12.3c Faces / sewing / free bound</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-3c-faces/Tfa233.html"><code>Tfa233</code></a></td><td>ADVANCED_FACE on a SURFACE_OF_REVOLUTION with a degenerate seam (profile edge used forward and reversed) crashes the reader (SIGSEGV); periodic-degenerate seam repair is never reached</td><td><a href="../../12-3c-faces/index.html">§12.3c Faces / sewing / free bound</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-3c-faces/Tfa263.html"><code>Tfa263</code></a></td><td>Face whose bounds list holds a bare edge loop where face-bound wrappers are declared</td><td><a href="../../12-3c-faces/index.html">§12.3c Faces / sewing / free bound</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-3a-shells/Tsh023.html"><code>Tsh023</code></a></td><td>Empty `EDGE_LOOP` / empty face list on shells</td><td><a href="../../12-3a-shells/index.html">§12.3a Shells / orientation</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-3a-shells/Tsh024.html"><code>Tsh024</code></a></td><td>`CONNECTED_FACE_SET` containing non-face entities</td><td><a href="../../12-3a-shells/index.html">§12.3a Shells / orientation</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-3a-shells/Tsh049.html"><code>Tsh049</code></a></td><td>Internal edges lost during shell-level face merge</td><td><a href="../../12-3a-shells/index.html">§12.3a Shells / orientation</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>

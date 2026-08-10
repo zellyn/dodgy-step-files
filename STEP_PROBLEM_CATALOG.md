@@ -49370,6 +49370,21 @@ exercised against CGAL PMP / MeshFix.
 - **Model impact**: A wire-healer that only knows how to INSERT a missing degenerate edge (never replace an existing-but-wrong one) leaves a producer-supplied, potentially malformed apex bridge in place uncorrected, risking downstream mis-parametrization at the singularity.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a`
 
+### Twi306 — Vertex whose geometry reference is a direction, not a point: a point-versus-direction slot swap at one corner
+- **Category**: §12.3b wires (sub-class: wrong-type reference — vertex-geometry slot holds a direction, not a point)
+- **Sources**: ISO 10303-42 `vertex_point.vertex_geometry` declared type (point); slot-type table row VERTEX_POINT[1] of the structural-linter v3 — the 2026-08-10 per-row coverage census found this row had NO corpus claimant (every prior point-slot carrier in the corpus mis-types a line origin, never a vertex).
+- **Description**: A 10x10 square face on the plane z=0 whose corner vertex `vertex_holds_direction` references the `DIRECTION` (1,0,0) — the same direction entity the bottom edge legitimately uses for its line — instead of the corner `CARTESIAN_POINT` (0,0,0), which remains in the file as a line origin. The swap is plausible in any writer that keys points and directions by index into one geometry table, and nothing about the file LOOKS wrong: a direction's three coordinates read exactly like a position. Both edges meeting at that corner inherit the poisoned vertex, so the wrong-typed reference is wired into the wire.
+- **Reproducer recipe**: one `VERTEX_POINT` of an otherwise-correct closed wire whose vertex_geometry slot references a `DIRECTION` (ideally one legitimately used elsewhere in the same file) instead of a `CARTESIAN_POINT`.
+- **Expected kernel behavior**: detect at reference-resolution time that the vertex-geometry slot holds a direction where a point is declared; recover the corner position from the incident edges' curve endpoints (both lines pass through the true corner), or reject with a diagnostic naming the vertex. Discarding the entire model over one recoverable corner — silently — is the worst available outcome.
+- **Notes**: RUNTIME-VERIFIED (2026-08-10, this worktree, OCP/OCCT 7.8.1): both heal modes accept the file and produce NOTHING — zero roots, null shape, no diagnostic — although only one of four vertices is poisoned and both incident edges carry enough geometry to reconstruct it; the mesh-based reader is empty too. Silent total loss from a single wrong-typed reference. The non-kernel structural linter reports the wrong-typed slot (`SLOT_TYPE`). Synonyms: "vertex point references direction entity", "point versus direction slot swap", "vertex geometry wrong type", "single bad vertex empties whole model". Provenance tier: bytes-sufficient.
+- **Byte assertion**: count_entity_def(b'VERTEX_POINT') == 4
+- **Byte assertion**: contains(b'vertex_holds_direction')
+- **Tier-3 assertion**: shape_null == True
+- **Structural assertion**: struct == SLOT_TYPE
+- **OCC behavior**: silent-accept; the parser accepts and the transfer produces no shape — one mis-typed vertex reference among four kills the entire square face with no diagnostic.
+- **Severity**: P1
+- **Model impact**: A file whose geometry is 99% intact imports as empty with a success status; because the poisoned reference LOOKS like a valid coordinate triple, byte-level inspection does not reveal it — only reference-type checking does — so the data loss is silent at every level short of a schema-aware validator.
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Tsh248 — Three shells (two cylindrical, one planar) meet along one 3D line: N-way non-manifold merge candidate disambiguation
 - **Category**: §12.3a shells (sub-class: sewing non-manifold candidate disambiguation — `sew-nonmanifold-candidate-disambiguation`)
 - **Sources**: occt-coverage PARTIAL audit, `exchange/problems.json` `sew-nonmanifold-candidate-disambiguation` (`BRepBuilderAPI_Sewing::AnalysisNearestEdges`, `BRepBuilderAPI_Sewing.cxx:1360-1382,1394-1439`). M045 (the sole existing fixture) hits more than one raw non-manifold merge candidate only incidentally — its actual purpose is an unrelated attribute-loss demonstration — and every candidate lies on a flat, non-periodic surface, so the closed/periodic-surface disambiguation arm is never engaged.
@@ -49772,6 +49787,40 @@ exercised against CGAL PMP / MeshFix.
 - **Model impact**: Pipelines that enable the opt-in small-solid pass but leave its merge flag at the default silently DELETE debris that is welded to the real part, quietly removing material and opening the shared wall; pipelines that skip the pass entirely ship the spurious extra body. The flag only matters at all on inputs like this one, so the difference goes unnoticed until a mass-property or Boolean step disagrees with the authoring system.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(43) ifc=schema_n/a`
 
+### Tsh265 — Closed shell listing a bare edge loop as its sixth face: the top boundary is one level too shallow
+- **Category**: §12.3a shells (sub-class: wrong-type reference — shell face-set member is a loop, not a face)
+- **Sources**: ISO 10303-42 `closed_shell.cfs_faces` declared type (SET OF face); slot-type table row CLOSED_SHELL[1] of the structural-linter v3 — the 2026-08-10 per-row coverage census found this row had NO corpus claimant (every prior wrong-typed shell aggregate exercised the open-shell spelling).
+- **Description**: A complete 10x10x10 cube whose writer flattened one branch of its topology tree: bottom/front/back/left/right are real `ADVANCED_FACE`s, but the top boundary appears only as the `EDGE_LOOP` named `top_loop_listed_as_face`, listed sixth in the `CLOSED_SHELL`'s face set. The loop's four oriented edges, their edge curves, and all eight vertices are present and correct — only the face-and-bound wrapper level above the loop was skipped. Every entity is reachable from the shape representation; nothing is an orphan.
+- **Reproducer recipe**: a `CLOSED_SHELL` whose face list mixes five `ADVANCED_FACE` references with one `EDGE_LOOP` reference; the loop's own chain (oriented edges over lines) is complete and would bound the missing planar face exactly.
+- **Expected kernel behavior**: detect that a member of the shell's face set is a loop, not a face; either recover the missing face (the loop and the cube's planar geometry pin it down exactly) or drop the member WITH a diagnostic that the shell is no longer closed. Silently emitting a five-face open box as if the file were complete is the failure mode to avoid.
+- **Notes**: RUNTIME-VERIFIED (2026-08-10, this worktree, OCP/OCCT 7.8.1): both heal modes accept and return one root with exactly 5 faces / 20 edges / 40 vertices and 1 shell — the loop member of the face set is silently dropped, no diagnostic, and the "closed" shell arrives open at the top. The mesh-based reader agrees (5 surfaces). The non-kernel structural linter reports the wrong-typed slot (`SLOT_TYPE`). Synonyms: "closed shell contains edge loop instead of face", "shell face list holds loop entity", "topology tree flattened one level shell", "open box from silently dropped shell member". Provenance tier: bytes-sufficient.
+- **Byte assertion**: count_entity_def(b'ADVANCED_FACE') == 5
+- **Byte assertion**: count_entity_def(b'CLOSED_SHELL') == 1
+- **Byte assertion**: contains(b'top_loop_listed_as_face')
+- **Tier-3 assertion**: load == "ok"
+- **Tier-3 assertion**: n_faces_total == 5
+- **Structural assertion**: struct == SLOT_TYPE
+- **OCC behavior**: silent-accept-with-loss; the wrong-typed member of the shell's face set is dropped without any diagnostic and the remaining five faces load as a single shell, so a nominally closed shell arrives open.
+- **Severity**: P2
+- **Model impact**: A watertight box silently becomes an open five-sided shell; downstream volume computation, offsetting, or 3D printing sees a non-manifold boundary and either fails or fabricates the missing wall differently than the authoring system intended.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(25) ifc=schema_n/a`
+
+### Tsh266 — Manifold solid whose outer reference points at a face while the complete closed shell sits unreferenced
+- **Category**: §12.3a shells (sub-class: wrong-type reference — solid outer slot holds a face, not a closed shell)
+- **Sources**: ISO 10303-42 `manifold_solid_brep.outer` declared type (closed_shell); slot-type table row MANIFOLD_SOLID_BREP[1] of the structural-linter v3 — the 2026-08-10 per-row coverage census found this row had NO corpus claimant.
+- **Description**: A complete watertight 8x8x8 cube in which the writer descended one level too far when emitting the solid: the `MANIFOLD_SOLID_BREP` named `solid_outer_is_face` references the cube's bottom `ADVANCED_FACE` as its outer boundary, while the `CLOSED_SHELL` named `tsh266_orphaned_shell` — which correctly lists all six faces — is present in the file but referenced by nothing. The wrong-typed reference is on the solid, which IS reachable from the shape representation; the repair target (the shell) is one re-pointed reference away.
+- **Reproducer recipe**: a `MANIFOLD_SOLID_BREP` whose outer slot references an `ADVANCED_FACE`; a complete `CLOSED_SHELL` over the same six faces defined in the same file but reachable from nothing.
+- **Expected kernel behavior**: detect that the solid's outer boundary reference is a face where a closed shell is declared; recover by re-pointing to the complete unreferenced shell that contains that very face (it is the unique closed shell in the file), or reject with a diagnostic naming the mis-typed slot. Returning an empty model without a word — while a watertight cube sits fully described in the file — is the worst available outcome.
+- **Notes**: RUNTIME-VERIFIED (2026-08-10, this worktree, OCP/OCCT 7.8.1): both heal modes accept the file and produce NOTHING — zero roots, null shape, no diagnostic — despite the complete shell being present; the mesh-based reader is empty too. This joins the silent-total-geometry-loss family (complete connected boundary representation in, empty result out). The non-kernel structural linter reports the wrong-typed slot (`SLOT_TYPE`). Synonyms: "manifold solid outer references face not shell", "solid boundary one level too deep", "orphaned closed shell recoverable by repointing", "empty import complete cube present". Provenance tier: bytes-sufficient.
+- **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') == 1
+- **Byte assertion**: count_entity_def(b'CLOSED_SHELL') == 1
+- **Byte assertion**: contains(b'solid_outer_is_face')
+- **Tier-3 assertion**: shape_null == True
+- **Structural assertion**: struct == SLOT_TYPE
+- **OCC behavior**: silent-accept; the parser accepts and the transfer produces no shape at all — the mis-typed outer reference kills the entire product with no diagnostic, although every entity needed to rebuild the cube is in the file.
+- **Severity**: P1
+- **Model impact**: A user imports a file containing a complete watertight cube and gets an empty document with a success status; the part vanishes from assemblies and batch pipelines without any error to flag which file — or which reference — was at fault.
+- **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ### Tfa258 — Spherical face bounded only by the equator: the pole-bridging degenerate edge and the seam are both absent
 - **Category**: §12.3c faces (sub-class: `tkshh-wire-missing-or-bad-degenerated-edge`, subvariant "sphere with single wire open in U: degenerated pole edge synthesized")
 - **Sources**: occt-coverage PARTIAL audit, `tkshhealing/problems.json` `tkshh-wire-missing-or-bad-degenerated-edge` subvariant 6. `ShapeFix_Face::FixMissingSeam` — `ShapeFix_Face.cxx:1631-1699` @ `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`; surface-type branch chain at `:1638-1681` (degenerate torus `:1639-1650`, SPHERE `:1651-1656`, B-spline V-pinch `:1657-1665`, B-spline U-pinch `:1666-1680`, fall-through `return Standard_False` at `:1680`); synthesized edge built at `:1683-1699`; wire-openness test `CheckWire` at `:1440-1506`. This arm was left with no fixture when the 2026-07-17 re-audit removed Tfa245 (which contains no sphere pole at all).
@@ -49826,6 +49875,79 @@ exercised against CGAL PMP / MeshFix.
 - **Model impact**: A receiver that implements only the common apex-below orientation of this repair leaves the mirrored-nappe case unbounded, or bridges it in the wrong U direction and produces a self-overlapping parametric boundary; both fail downstream at the tip, and the second variant fails silently with a face that looks bounded but is traversed backwards.
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(6) ifc=schema_n/a`
 
+### Tfa261 — Face bound referencing the oriented edge of a closed circle directly: the one-element edge loop wrapper is missing
+- **Category**: §12.3c faces (sub-class: wrong-type reference — face-bound slot holds an oriented edge, not a loop)
+- **Sources**: ISO 10303-42 `face_bound.bound` declared type (loop); slot-type table row FACE_BOUND[1] of the structural-linter v3 — the 2026-08-10 per-row coverage census found this row had NO corpus claimant.
+- **Description**: A planar disc of radius 6 bounded by a single closed circular edge (one `EDGE_CURVE` with the same `VERTEX_POINT` at both ends). The writer judged the one-element loop wrapper redundant and pointed `FACE_BOUND`'s bound slot straight at the `ORIENTED_EDGE` named `bound_holds_oriented_edge`; no `EDGE_LOOP` exists anywhere in the file. A single closed edge is exactly the case where a producer is tempted to skip the loop level, and the resulting file is otherwise minimal and fully referenced — no orphan entities at all.
+- **Reproducer recipe**: `ADVANCED_FACE` with one `FACE_BOUND` whose bound slot references an `ORIENTED_EDGE` over a closed circular edge; the edge-loop level absent from the file entirely.
+- **Expected kernel behavior**: detect that the bound slot holds an oriented edge where a loop is declared; recover the boundary by synthesizing the missing one-element loop around it (the closed edge bounds the disc exactly), or reject with a diagnostic. Keeping the face while silently discarding its boundary produces an unbounded plane, which is a different and larger surface than the disc that was sent.
+- **Notes**: RUNTIME-VERIFIED (2026-08-10, this worktree, OCP/OCCT 7.8.1): both heal modes accept and return one root with 1 face and ZERO edges and vertices — the face survives but its boundary is silently discarded, so the received face is the unbounded plane, not the radius-6 disc. The mesh-based reader keeps one surface. The non-kernel structural linter reports the wrong-typed slot (`SLOT_TYPE`). Synonyms: "face bound references oriented edge directly", "missing one-element edge loop wrapper", "single closed edge no loop level", "boundary dropped unbounded face". Provenance tier: bytes-sufficient.
+- **Byte assertion**: count_entity_def(b'FACE_BOUND') == 1
+- **Byte assertion**: count_entity_def(b'EDGE_LOOP') == 0
+- **Byte assertion**: contains(b'bound_holds_oriented_edge')
+- **Tier-3 assertion**: load == "ok"
+- **Tier-3 assertion**: n_faces_total == 1
+- **Tier-3 assertion**: n_edges_total == 0
+- **Structural assertion**: struct == SLOT_TYPE
+- **OCC behavior**: silent-accept-with-loss; the face is kept and its wrong-typed bound is dropped without a diagnostic, so the shape contains a face with no boundary at all — an unbounded plane in place of a disc.
+- **Severity**: P2
+- **Model impact**: A bounded disc silently becomes an infinite plane; anything downstream that trims, meshes, or intersects against the face operates on the wrong surface extent, and area-based checks (mass properties, nesting, costing) diverge from the authoring system without an error anywhere.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+
+### Tfa262 — Face outer bound referencing the closed edge curve itself: both the oriented-edge and edge-loop levels are missing
+- **Category**: §12.3c faces (sub-class: wrong-type reference — face-outer-bound slot holds an edge curve, not a loop)
+- **Sources**: ISO 10303-42 `face_outer_bound.bound` declared type (loop); slot-type table row FACE_OUTER_BOUND[1] of the structural-linter v3 — the 2026-08-10 per-row coverage census found this row had NO corpus claimant. Deeper-flattening sibling of the one-level skip (which is its own fixture in this section).
+- **Description**: A planar disc of radius 4 bounded by a single closed circular edge. The writer pointed `FACE_OUTER_BOUND`'s bound slot straight at the `EDGE_CURVE` named `outer_bound_holds_edge_curve` — TWO levels of the boundary hierarchy (oriented edge and edge loop) are absent from the file, not one. The file is otherwise minimal and fully referenced; the only anomaly is the depth of that single reference.
+- **Reproducer recipe**: `ADVANCED_FACE` with one `FACE_OUTER_BOUND` whose bound slot references a closed circular `EDGE_CURVE` directly; no `ORIENTED_EDGE` and no `EDGE_LOOP` anywhere in the file.
+- **Expected kernel behavior**: detect that the bound slot holds an edge curve where a loop is declared; recover by synthesizing the two missing wrapper levels around the closed edge, or reject with a diagnostic naming the slot. As with the one-level sibling, silently discarding the boundary while keeping the face turns a finite disc into an unbounded plane.
+- **Notes**: RUNTIME-VERIFIED (2026-08-10, this worktree, OCP/OCCT 7.8.1): identical observable outcome to the one-level skip — both heal modes return 1 face with zero edges and vertices, boundary silently gone. That equivalence is itself the finding: the receiver gives no indication whether one or two hierarchy levels were absent, so a repair tool cannot distinguish the two writer bugs from the imported result alone. The non-kernel structural linter reports the wrong-typed slot (`SLOT_TYPE`). Synonyms: "face outer bound references edge curve directly", "two boundary levels skipped", "bound slot holds curve not loop", "disc becomes unbounded plane". Provenance tier: bytes-sufficient.
+- **Byte assertion**: count_entity_def(b'FACE_OUTER_BOUND') == 1
+- **Byte assertion**: count_entity_def(b'ORIENTED_EDGE') == 0
+- **Byte assertion**: count_entity_def(b'EDGE_LOOP') == 0
+- **Byte assertion**: contains(b'outer_bound_holds_edge_curve')
+- **Tier-3 assertion**: load == "ok"
+- **Tier-3 assertion**: n_faces_total == 1
+- **Tier-3 assertion**: n_edges_total == 0
+- **Structural assertion**: struct == SLOT_TYPE
+- **OCC behavior**: silent-accept-with-loss; the wrong-typed outer bound is dropped without a diagnostic and the face survives unbounded — indistinguishable from the one-level flattening at the shape level.
+- **Severity**: P2
+- **Model impact**: Same downstream failure as the one-level sibling — an infinite plane where a radius-4 disc was sent — with the added trap that the import result cannot tell a repair tool WHICH flattening the producer committed.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
+
+### Tfa263 — Face whose bounds list holds a bare edge loop where face-bound wrappers are declared
+- **Category**: §12.3c faces (sub-class: wrong-type reference — face bounds-list element is a loop, not a face bound; reader crash)
+- **Sources**: ISO 10303-42 `face_surface.bounds` declared type (SET OF face_bound); slot-type table row FACE_SURFACE[1] of the structural-linter v3 — the 2026-08-10 per-row coverage census found this row had NO corpus claimant, and the corpus had no mis-typed face in this spelling at all (every prior carrier of a wrong-typed bounds list uses the advanced-face spelling).
+- **Description**: A planar disc of radius 5 whose boundary chain below the defect is complete and correct — closed circle, oriented edge, one-element `EDGE_LOOP` named `loop_listed_as_bound` — but the face's bounds list contains that loop DIRECTLY, skipping the face-bound wrapper (and with it the bound's orientation flag). One list element one level too deep is the file's only anomaly; every entity is referenced.
+- **Reproducer recipe**: a face in the face-surface spelling whose bounds list is `(#loop)` where `#loop` is an `EDGE_LOOP`; no face-bound entity of any kind in the file.
+- **Expected kernel behavior**: refuse at parse time with a reference-type diagnostic — the same schema-declared slot-type check that admits face-bound wrappers rejects a loop here — or recover by synthesizing the missing wrapper with default orientation. A hard crash on a reference whose type is checkable before any geometry is built is never acceptable.
+- **Notes**: RUNTIME-VERIFIED (2026-08-10, this worktree, OCP/OCCT 7.8.1): hard crash — process death by memory fault, in BOTH heal modes and in the mesh-based reader as well (all three exit with the segmentation-violation signal). The crash is decidable from the file alone: the mis-typed reference sits in a slot whose declared type a table lookup verifies at parse time, which is precisely the refusal the crash-defence section of the implementers roadmap describes. The non-kernel structural linter (which never builds geometry) reports it as `SLOT_TYPE` without crashing. Synonyms: "face bounds list contains edge loop directly", "missing face bound wrapper crash", "loop in bounds set reader crash", "wrong type in face boundary list". Provenance tier: bytes-sufficient.
+- **Byte assertion**: count_entity_def(b'FACE_SURFACE') == 1
+- **Byte assertion**: count_entity_def(b'FACE_BOUND') == 0
+- **Byte assertion**: count_entity_def(b'FACE_OUTER_BOUND') == 0
+- **Byte assertion**: contains(b'loop_listed_as_bound')
+- **Structural assertion**: struct == SLOT_TYPE
+- **OCC behavior**: signal(11) — the translation of the mis-typed bounds list dereferences the loop as if it were a face bound and dies on a memory fault; both heal settings and the mesh-based reader crash identically, so no setting of the healer protects the caller.
+- **Severity**: P1
+- **Model impact**: One flattened list element in one face takes down the entire importing process — batch converters, web viewers, and PDM indexers die mid-run with no exception to catch and no indication of which file or entity was responsible.
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
+
+### Tfa264 — Face whose geometry slot holds the axis placement its plane was never built from
+- **Category**: §12.3c faces (sub-class: wrong-type reference — face-geometry slot holds a placement, not a surface)
+- **Sources**: ISO 10303-42 `face_surface.face_geometry` declared type (surface); slot-type table row FACE_SURFACE[2] of the structural-linter v3 — the 2026-08-10 per-row coverage census found this row had NO corpus claimant. Same defect family as the corpus's surface-of-revolution axis carriers (placement supplied where a differently-typed entity is declared), here on the face's own geometry slot.
+- **Description**: A disc of radius 3 whose boundary chain is complete and correct — closed circle, oriented edge, edge loop, face outer bound — but whose face-geometry slot references the `AXIS2_PLACEMENT_3D` named `placement_as_face_geometry`. The `PLANE` that placement was meant to parent never appears in the file: the writer emitted the placement reference where the surface belongs and dropped the surface level entirely. The placement pins down the intended plane exactly, so the face is fully recoverable.
+- **Reproducer recipe**: a face in the face-surface spelling whose face_geometry slot references an `AXIS2_PLACEMENT_3D`; no surface entity of any type in the file; boundary chain complete.
+- **Expected kernel behavior**: detect that the face-geometry slot holds a placement where a surface is declared; recover by constructing the plane the placement defines (its axis is the plane normal, its origin the plane origin) or reject with a diagnostic. Silently emitting a shell whose face has been dropped hands the receiver an empty container with a success status.
+- **Notes**: RUNTIME-VERIFIED (2026-08-10, this worktree, OCP/OCCT 7.8.1): both heal modes accept and return one root containing 1 shell and ZERO faces — the face with the wrong-typed geometry slot is dropped entirely, no diagnostic; the mesh-based reader returns nothing at all. Contrast with the wrong-typed BOUND fixtures in this section, where the face survives unbounded: a bad boundary reference loses the boundary, a bad geometry reference loses the whole face. The non-kernel structural linter reports the wrong-typed slot (`SLOT_TYPE`). Synonyms: "face geometry references axis placement", "placement instead of plane surface slot", "surface level dropped placement kept", "empty shell face discarded". Provenance tier: bytes-sufficient.
+- **Byte assertion**: count_entity_def(b'FACE_SURFACE') == 1
+- **Byte assertion**: count_entity_def(b'PLANE') == 0
+- **Byte assertion**: contains(b'placement_as_face_geometry')
+- **Tier-3 assertion**: load == "ok"
+- **Tier-3 assertion**: n_faces_total == 0
+- **Structural assertion**: struct == SLOT_TYPE
+- **OCC behavior**: silent-accept-with-loss; the face whose geometry slot is mis-typed is dropped without a diagnostic, leaving a shape that contains an empty shell — the mesh-based reader consequently produces nothing.
+- **Severity**: P2
+- **Model impact**: The received model contains a shell with no faces — visually empty in most viewers — while the import reports success; the disc's full description (boundary plus the placement that determines its plane) is sitting in the file, recoverable by one entity synthesis.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gp194 — Like-seam edge on a host that wraps around in U yet declares no period AND is not a B-spline (extrusion of a closed non-periodic curve)
 - **Category**: §12.2a pcurves (sub-class: `tkshh-nonperiodic-bspline-seamlike-edge`, subvariant "non-B-spline base surface requiring approximation before periodicity can be set")
 - **Sources**: occt-coverage PARTIAL audit, `tkshhealing/problems.json` `tkshh-nonperiodic-bspline-seamlike-edge` subvariant 3. `ShapeUpgrade_UnifySameDomain::IntUnifyFaces` — `ShapeUpgrade_UnifySameDomain.cxx` @ `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`: `Uperiod` derived from `aBaseSurface->IsUPeriodic()` at `:2946`, seam/like-seam classification at `:3204-3218`, branch gate `myConcatBSplines && !EdgeWith2pcurves.IsNull() && !SeamFound` at `:3221`, `Uperiod == 0.` test at `:3243`, `aBSplineSurface.IsNull()` test at `:3252`, `GeomConvert_ApproxSurface` at `:3258`, `SetUPeriodic`/`SetVPeriodic` at `:3264`/`:3269`.

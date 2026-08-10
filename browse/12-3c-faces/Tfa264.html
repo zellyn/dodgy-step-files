@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa264 — Face whose geometry slot holds the axis placement its plane was never built from</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa264</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa264 <span class="sep">—</span> <span class="entry-title">Face whose geometry slot holds the axis placement its plane was never built from</span></h1>
+<p class="category">§12.3c faces (sub-class: wrong-type reference — face-geometry slot holds a placement, not a surface)</p>
+<p class="severity-badge severity-p2">P2 — spec deviation (no data loss)</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa264.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa264.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>ISO 10303-42 `face_surface.face_geometry` declared type (surface)</li>
+<li>slot-type table row FACE_SURFACE[2] of the structural-linter v3 — the 2026-08-10 per-row coverage census found this row had NO corpus claimant. Same defect family as the corpus&#x27;s surface-of-revolution axis carriers (placement supplied where a differently-typed entity is declared), here on the face&#x27;s own geometry slot.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A disc of radius 3 whose boundary chain is complete and correct — closed circle, oriented edge, edge loop, face outer bound — but whose face-geometry slot references the `AXIS2_PLACEMENT_3D` named `placement_as_face_geometry`. The `PLANE` that placement was meant to parent never appears in the file: the writer emitted the placement reference where the surface belongs and dropped the surface level entirely. The placement pins down the intended plane exactly, so the face is fully recoverable.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a face in the face-surface spelling whose face_geometry slot references an `AXIS2_PLACEMENT_3D`; no surface entity of any type in the file; boundary chain complete.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>detect that the face-geometry slot holds a placement where a surface is declared; recover by constructing the plane the placement defines (its axis is the plane normal, its origin the plane origin) or reject with a diagnostic. Silently emitting a shell whose face has been dropped hands the receiver an empty container with a success status.</p></section>
+<section><h2>Notes</h2>
+<p>RUNTIME-VERIFIED (2026-08-10, this worktree, OCP/OCCT 7.8.1): both heal modes accept and return one root containing 1 shell and ZERO faces — the face with the wrong-typed geometry slot is dropped entirely, no diagnostic; the mesh-based reader returns nothing at all. Contrast with the wrong-typed BOUND fixtures in this section, where the face survives unbounded: a bad boundary reference loses the boundary, a bad geometry reference loses the whole face. The non-kernel structural linter reports the wrong-typed slot (`SLOT_TYPE`). Synonyms: &quot;face geometry references axis placement&quot;, &quot;placement instead of plane surface slot&quot;, &quot;surface level dropped placement kept&quot;, &quot;empty shell face discarded&quot;. Provenance tier: bytes-sufficient.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;FACE_SURFACE&#x27;) == 1</code></li>
+<li><code>count_entity_def(b&#x27;PLANE&#x27;) == 0</code></li>
+<li><code>contains(b&#x27;placement_as_face_geometry&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>load == &quot;ok&quot;</code></li>
+<li><code>n_faces_total == 0</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tfa264: FACE_SURFACE whose face_geometry slot references AXIS2_PLACEMENT_3D(&#x27;<mark>placement_as_face_geometry</mark>&#x27;) â the placement the plane would have been built from â and no PLANE (or any other surface) exists in the file. The boundary chain (closed circle, oriented edge, edge loop, face outer bound) is complete; the surface level alone was dropped */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tfa264&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Tfa264.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;<mark>placement_as_face_geometry</mark>&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=CIRCLE(&#x27;&#x27;,#4,3.0);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(3.0,0.0,0.0));
+<span class="lineno">16</span>#7=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">17</span>#8=EDGE_CURVE(&#x27;&#x27;,#7,#7,#5,.T.);
+<span class="lineno">18</span>#9=ORIENTED_EDGE(&#x27;&#x27;,$,$,#8,.T.);
+<span class="lineno">19</span>#10=EDGE_LOOP(&#x27;&#x27;,(#9));
+<span class="lineno">20</span>#11=FACE_OUTER_BOUND(&#x27;&#x27;,#10,.T.);
+<span class="lineno">21</span><mark>#12=FACE_SURFACE(</mark>&#x27;tfa264_disc&#x27;,(#11),#4,.T.);
+<span class="lineno">22</span>#13=OPEN_SHELL(&#x27;&#x27;,(#12));
+<span class="lineno">23</span>#14=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#13));
+<span class="lineno">24</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">25</span>#9051=PRODUCT(&#x27;Tfa264&#x27;,&#x27;Tfa264&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">26</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">27</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">28</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">29</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">30</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">31</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">32</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">33</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">34</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">35</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#14),#9060);
+<span class="lineno">36</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">37</span>ENDSEC;
+<span class="lineno">38</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa263.html">&larr; Tfa263</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tfa263 — Face whose bounds list holds a bare edge loop where face-bound wrappers are declared</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.3c Faces / sewing / free bound</a> <span class="sep">/</span> <span class="current">Tfa263</span>
+</nav>
+<header class="title-bar">
+<h1>Tfa263 <span class="sep">—</span> <span class="entry-title">Face whose bounds list holds a bare edge loop where face-bound wrappers are declared</span></h1>
+<p class="category">§12.3c faces (sub-class: wrong-type reference — face bounds-list element is a loop, not a face bound; reader crash)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-3c-faces/Tfa263.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-3c-faces/Tfa263.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>ISO 10303-42 `face_surface.bounds` declared type (SET OF face_bound)</li>
+<li>slot-type table row FACE_SURFACE[1] of the structural-linter v3 — the 2026-08-10 per-row coverage census found this row had NO corpus claimant, and the corpus had no mis-typed face in this spelling at all (every prior carrier of a wrong-typed bounds list uses the advanced-face spelling).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A planar disc of radius 5 whose boundary chain below the defect is complete and correct — closed circle, oriented edge, one-element `EDGE_LOOP` named `loop_listed_as_bound` — but the face&#x27;s bounds list contains that loop DIRECTLY, skipping the face-bound wrapper (and with it the bound&#x27;s orientation flag). One list element one level too deep is the file&#x27;s only anomaly; every entity is referenced.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a face in the face-surface spelling whose bounds list is `(#loop)` where `#loop` is an `EDGE_LOOP`; no face-bound entity of any kind in the file.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>refuse at parse time with a reference-type diagnostic — the same schema-declared slot-type check that admits face-bound wrappers rejects a loop here — or recover by synthesizing the missing wrapper with default orientation. A hard crash on a reference whose type is checkable before any geometry is built is never acceptable.</p></section>
+<section><h2>Notes</h2>
+<p>RUNTIME-VERIFIED (2026-08-10, this worktree, OCP/OCCT 7.8.1): hard crash — process death by memory fault, in BOTH heal modes and in the mesh-based reader as well (all three exit with the segmentation-violation signal). The crash is decidable from the file alone: the mis-typed reference sits in a slot whose declared type a table lookup verifies at parse time, which is precisely the refusal the crash-defence section of the implementers roadmap describes. The non-kernel structural linter (which never builds geometry) reports it as `SLOT_TYPE` without crashing. Synonyms: &quot;face bounds list contains edge loop directly&quot;, &quot;missing face bound wrapper crash&quot;, &quot;loop in bounds set reader crash&quot;, &quot;wrong type in face boundary list&quot;. Provenance tier: bytes-sufficient.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>count_entity_def(b&#x27;FACE_SURFACE&#x27;) == 1</code></li>
+<li><code>count_entity_def(b&#x27;FACE_BOUND&#x27;) == 0</code></li>
+<li><code>count_entity_def(b&#x27;FACE_OUTER_BOUND&#x27;) == 0</code></li>
+<li><code>contains(b&#x27;loop_listed_as_bound&#x27;)</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Tfa263: FACE_SURFACE whose bounds list is (EDGE_LOOP(&#x27;<mark>loop_listed_as_bound</mark>&#x27;)) â the loop sits directly in a list ISO 10303-42 declares as a set of FACE_BOUNDs; the wrapper level (and its orientation flag) is absent. Disc of radius 5 on a plane at z=0; the loop chain below the defect is complete and every entity is referenced */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Tfa263&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Tfa263.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=PLANE(&#x27;&#x27;,#4);
+<span class="lineno">15</span>#6=CIRCLE(&#x27;&#x27;,#4,5.0);
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(5.0,0.0,0.0));
+<span class="lineno">17</span>#8=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">18</span>#9=EDGE_CURVE(&#x27;&#x27;,#8,#8,#6,.T.);
+<span class="lineno">19</span>#10=ORIENTED_EDGE(&#x27;&#x27;,$,$,#9,.T.);
+<span class="lineno">20</span>#11=EDGE_LOOP(&#x27;<mark>loop_listed_as_bound</mark>&#x27;,(#10));
+<span class="lineno">21</span><mark>#12=FACE_SURFACE(</mark>&#x27;tfa263_disc&#x27;,(#11),#5,.T.);
+<span class="lineno">22</span>#13=OPEN_SHELL(&#x27;&#x27;,(#12));
+<span class="lineno">23</span>#14=SHELL_BASED_SURFACE_MODEL(&#x27;&#x27;,(#13));
+<span class="lineno">24</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">25</span>#9051=PRODUCT(&#x27;Tfa263&#x27;,&#x27;Tfa263&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">26</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">27</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">28</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">29</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">30</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">31</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">32</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">33</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">34</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">35</span>#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION(&#x27;&#x27;,(#14),#9060);
+<span class="lineno">36</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">37</span>ENDSEC;
+<span class="lineno">38</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Tfa262.html">&larr; Tfa262</a> <a class="up" href="index.html">§12.3c Faces / sewing / free bound</a> <a class="next" href="Tfa264.html">Tfa264 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>
