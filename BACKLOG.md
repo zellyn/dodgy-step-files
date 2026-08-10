@@ -2620,6 +2620,34 @@ ill-typed, so it tested nothing. With a synthesised DIRECTION, three of the four
 Same failure shape as the inline-entity mistake above -- **an invalid instrument returns
 a negative that looks like a finding.**
 
+#### (M.22) Structural-oracle v4: the crash campaign's remaining three checks adopted as codes. 2026-08-10
+
+ARG_COUNT (schema-fixed arities: both B-spline-with-knots forms + VECTOR/DIRECTION/
+LINE/EDGE_CURVE), EMPTY_AGGREGATE (the restricted nonempty-aggregate list +
+DIRECTION/CARTESIAN_POINT empty coords), INLINE_INSTANCE (entity-type name in
+argument position). Same playbook as (M.20):
+
+- **Measured before adoption**: 0 FP / 17 controls, 0 FP / 28 NIST real exports;
+  corpus verdicts ARG_COUNT 24, EMPTY_AGGREGATE 57, INLINE_INSTANCE 25 — every hit
+  list matches the crash campaign's known-deliberate families (Tsh109-127 inline,
+  Twi218-220 inline claimants, Gn003 empty knots, Xp/Wr empty-aggregate sections).
+- **Priority**: after SLOT_TYPE, before UNITS/AXIS. Verified against the full
+  preemption census: all 24 asserted fixtures that also carry a v4 pattern assert
+  SLOT_TYPE or DANGLING_REF (higher priority), U049/Ad135 carry none —
+  **172/172 existing assertions hold**.
+- **Implementation lesson worth keeping**: the text-level census version of
+  INLINE_INSTANCE matched Tfa263's own header COMMENT (which quotes the defect
+  pattern in prose). The oracle checkers therefore run on parsed entities with
+  strings stripped, and skip complex instances (whose body legitimately contains
+  `TYPE(` sequences). Quoted/commented patterns can no longer flag.
+- **Single-sourcing**: ARGCOUNT/CORE_ARITY/INLINE_INSTANCE/nonempty now import from
+  the oracle in `make_roadmap.py`; regenerated roadmap is BYTE-IDENTICAL (164/178).
+- **No new assertions in this commit** — zero CI-surface change. Follow-up: a
+  per-fixture read of the 106 v4-verdict fixtures to add `struct == <CODE>`
+  assertions where the pattern IS the fixture's claim (the hit lists suggest most
+  are, but EMPTY_AGGREGATE includes `.input` quarantine files and scaffold cases
+  that need individual judgment).
+
 #### (M.21) Slot-type table coverage census -> 7 new fixtures; every table row now has a canonical claimant. 2026-08-10
 
 With SLOT_TYPE live as an oracle, the principled growth question became: does every

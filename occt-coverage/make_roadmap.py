@@ -25,12 +25,19 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "IMPLEMENTERS_ROADMAP.md")
 
-# The slot-type table is CANONICAL in the structural oracle (v3, 2026-08-09) —
-# one table, two checkers: the oracle's entity-level linter and this script's
-# text-level crash census. This script keeps its own checker so the published
+# The slot-type table (v3) and the arg-count / nonempty-aggregate / inline
+# tables (v4) are CANONICAL in the structural oracle — one set of tables, two
+# checkers: the oracle's entity-level linter and this script's text-level
+# crash census. This script keeps its own checkers so the published
 # crash-refusability numbers cannot drift with tokenizer differences.
 sys.path.insert(0, os.path.join(ROOT, "validation", "src"))
-from step_corpus._structural_oracle import SLOT_TYPES  # noqa: E402
+from step_corpus._structural_oracle import (  # noqa: E402
+    ARG_COUNTS, INLINE_INSTANCE, NONEMPTY_AGGREGATE_TYPES, SLOT_TYPES,
+)
+
+_SPLINES = ("B_SPLINE_SURFACE_WITH_KNOTS", "B_SPLINE_CURVE_WITH_KNOTS")
+ARGCOUNT = {k: ARG_COUNTS[k] for k in _SPLINES}
+CORE_ARITY = {k: v for k, v in ARG_COUNTS.items() if k not in _SPLINES}
 
 # ---------------------------------------------------------------- load
 
@@ -112,25 +119,14 @@ def silent_total_loss(tok: dict[str, str]) -> list[str]:
     return sorted(out)
 
 
-# Attribute counts from the AP214/AP242 EXPRESS schema. Only these two are listed
-# because they are the entities the corpus actually malforms this way.
-ARGCOUNT = {"B_SPLINE_SURFACE_WITH_KNOTS": 13, "B_SPLINE_CURVE_WITH_KNOTS": 9}
-
-# Core geometry entities with fixed arities, added after the FULL crash census
-# (2026-08-09) showed a MakeDirection bucket driven by `VECTOR(#2,100.)` -- the
-# name omitted, 2 args where 3 are declared. Hand-verified, not modal-learned.
-CORE_ARITY = {"VECTOR": 3, "DIRECTION": 2, "LINE": 3, "EDGE_CURVE": 5}
-
-# An ENTITY-TYPE name in argument position followed by '(' is an INLINE entity
-# instance -- illegal in Part-21 (instances must be top-level #N= statements;
-# typed values in arguments are only legal for DEFINED types such as measures).
-# The census's largest bucket: LINE('',#100,VECTOR('',(1,0,0),1.0)) -- 19
-# consecutive Tsh fixtures plus variants. 4/2353 non-crashers carry it, all
-# deliberate fixtures of exactly this construct.
-_INLINE_ENTITY_NAMES = ("VECTOR", "DIRECTION", "CARTESIAN_POINT", "LINE", "CIRCLE",
-                        "EDGE_CURVE", "VERTEX_POINT", "AXIS2_PLACEMENT_3D",
-                        "EDGE_LOOP", "ORIENTED_EDGE", "PLANE")
-INLINE_INSTANCE = re.compile(r"[,(]\s*(?:" + "|".join(_INLINE_ENTITY_NAMES) + r")\s*\(")
+# ARGCOUNT / CORE_ARITY / INLINE_INSTANCE now come from the structural oracle
+# (imported at the top of this file, v4 2026-08-10). Provenance of each stays
+# with the canonical copy: the two B-spline counts are the entities the corpus
+# actually malforms; CORE_ARITY was added after the FULL crash census showed a
+# MakeDirection bucket driven by `VECTOR(#2,100.)` (hand-verified, not
+# modal-learned); INLINE_INSTANCE was the census's largest bucket --
+# LINE('',#100,VECTOR('',(1,0,0),1.0)), 19 consecutive Tsh fixtures plus
+# variants, 4/2353 non-crashers all deliberate carriers of the construct.
 
 
 def _split_args(body: str) -> list[str]:
@@ -268,17 +264,12 @@ def crash_refusable(tok: dict[str, str]) -> dict:
     anything?"
     """
     ent = re.compile(r"#(\d+)\s*=\s*([A-Z_0-9]+)\s*\(", re.I)
-    # EXPRESS declares each of these aggregates with a lower bound of 1. Restricted to
-    # these types on purpose: many STEP aggregates may legitimately be empty, so a
-    # blanket "()" search would be noise rather than a check.
-    nonempty = ("SHELL_BASED_SURFACE_MODEL", "TESSELLATED_SHELL", "SURFACE_CURVE",
-                "CLOSED_SHELL", "OPEN_SHELL", "EDGE_LOOP", "FACE_OUTER_BOUND",
-                "ADVANCED_FACE", "MANIFOLD_SOLID_BREP", "GEOMETRIC_CURVE_SET",
-                "POLY_LOOP", "VERTEX_LOOP", "TESSELLATED_SOLID", "TRIANGULATED_FACE",
-                # B-spline pole/knot lists are schema-mandated non-empty; Gn003's
-                # `B_SPLINE_CURVE_WITH_KNOTS('empty',3,(),...,(),())` crashes the
-                # RW-layer Check. 0 non-crashers carry the pattern.
-                "B_SPLINE_CURVE_WITH_KNOTS", "B_SPLINE_SURFACE_WITH_KNOTS")
+    # EXPRESS declares each of these aggregates with a lower bound of 1 — the
+    # canonical list lives in the structural oracle (v4); DIRECTION and
+    # CARTESIAN_POINT are excluded here because this census checks their empty
+    # coordinate lists with the dedicated empty_coord pattern below.
+    nonempty = tuple(t for t in NONEMPTY_AGGREGATE_TYPES
+                     if t not in ("DIRECTION", "CARTESIAN_POINT"))
     empty_pat = re.compile(r"=\s*(" + "|".join(nonempty) + r")\s*\([^;]*?\(\s*\)", re.I)
     # A DIRECTION or CARTESIAN_POINT with no coordinates at all is the same defect and
     # is never valid. Zero false positives across the corpus, so it costs nothing.

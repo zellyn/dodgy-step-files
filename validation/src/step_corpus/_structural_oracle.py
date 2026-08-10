@@ -53,6 +53,24 @@ v3 check (added 2026-08-09, adopted from the crash-refusability campaign):
                        which imports the table from here — ONE table, two
                        checkers.
 
+v4 checks (added 2026-08-10, the crash campaign's remaining parse-time checks,
+each measured at zero false positives on 17 clean controls and 28 real NIST
+CAD exports before adoption):
+  ARG_COUNT          — an entity of a schema-fixed-arity type (B-spline
+                       curve/surface with knots, and the core VECTOR /
+                       DIRECTION / LINE / EDGE_CURVE set) whose argument
+                       count deviates from the schema.
+  EMPTY_AGGREGATE    — a ``()`` inside an entity whose EXPRESS declaration
+                       requires a nonempty aggregate (restricted list — many
+                       STEP aggregates may legitimately be empty).
+  INLINE_INSTANCE    — an entity-type name in argument position followed by
+                       ``(``: an inline entity instance, illegal Part-21.
+                       Matched on string-stripped per-entity args so quoted /
+                       commented occurrences never flag (the text-level census
+                       version of this check once matched a fixture's own
+                       header comment — that lesson is why these run on parsed
+                       entities, not raw text).
+
 v3 also rescopes UNITS_INCONSISTENT (2026-08-09): only units ASSIGNED by a
 GLOBAL_UNIT_ASSIGNED_CONTEXT count toward "ambiguous model scale". A length
 unit that exists merely as a conversion basis or a self-denominated measure
@@ -69,10 +87,14 @@ import math
 import re
 
 # Priority order: structural-graph errors first, then typing errors, then
-# semantic defects. SLOT_TYPE sits after DANGLING_REF (an unresolvable ref is
-# reported as dangling, never as a type violation) and before the semantic
-# checks.
+# schema-shape errors (v4), then semantic defects. SLOT_TYPE sits after
+# DANGLING_REF (an unresolvable ref is reported as dangling, never as a type
+# violation). The three v4 codes sit after SLOT_TYPE: every asserted fixture
+# that carries both a wrong-typed slot and a v4 pattern keeps its SLOT_TYPE
+# verdict (verified: all 24 overlapping asserted fixtures assert SLOT_TYPE or
+# DANGLING_REF, none assert UNITS/AXIS — 2026-08-10).
 CODES = ("DUPLICATE_ID", "DANGLING_REF", "SLOT_TYPE",
+         "ARG_COUNT", "EMPTY_AGGREGATE", "INLINE_INSTANCE",
          "UNITS_INCONSISTENT", "AXIS_DEGENERATE")
 
 _PERP_TOL = 1e-6       # |cos(axis, ref)| >= 1 - tol  =>  parallel  => degenerate
@@ -282,6 +304,97 @@ def slot_type_violations(ents: dict[int, tuple[str, str]]) -> list[int]:
     return sorted(bad)
 
 
+# ---- v4 (2026-08-10): the crash campaign's other parse-time checks ----------
+# All three measured at ZERO false positives on 17 clean controls and 28 real
+# NIST CAD exports before adoption. CANONICAL here; make_roadmap.py's census
+# keeps its own text-level checkers but imports these tables.
+
+# Schema-fixed argument counts (name slot included). The B-spline rows are the
+# crash campaign's strongest count discriminators; the core-entity rows are the
+# targeted CORE_ARITY set (5/46 crashers vs 6/2353 non-crashers when adopted).
+ARG_COUNTS = {
+    "B_SPLINE_SURFACE_WITH_KNOTS": 13,
+    "B_SPLINE_CURVE_WITH_KNOTS": 9,
+    "VECTOR": 3,
+    "DIRECTION": 2,
+    "LINE": 3,
+    "EDGE_CURVE": 5,
+}
+
+# EXPRESS declares each of these aggregates with a lower bound of 1. Restricted
+# on purpose: many STEP aggregates may legitimately be empty, so a blanket "()"
+# search would flag valid files rather than defects.
+NONEMPTY_AGGREGATE_TYPES = (
+    "SHELL_BASED_SURFACE_MODEL", "TESSELLATED_SHELL", "SURFACE_CURVE",
+    "CLOSED_SHELL", "OPEN_SHELL", "EDGE_LOOP", "FACE_OUTER_BOUND",
+    "ADVANCED_FACE", "MANIFOLD_SOLID_BREP", "GEOMETRIC_CURVE_SET",
+    "POLY_LOOP", "VERTEX_LOOP", "TESSELLATED_SOLID", "TRIANGULATED_FACE",
+    "B_SPLINE_CURVE_WITH_KNOTS", "B_SPLINE_SURFACE_WITH_KNOTS",
+    # A DIRECTION or CARTESIAN_POINT with no coordinates at all is the same
+    # defect and is never valid.
+    "DIRECTION", "CARTESIAN_POINT",
+)
+
+# An entity-type name in ARGUMENT position followed by "(" — an inline entity
+# instance, illegal in Part-21 (instances must be top-level #N= statements).
+# Matched against string-stripped argument text only: a fixture whose header
+# comment or entity NAME quotes the pattern must not flag (the census version
+# of this check matched a comment and taught us that — 2026-08-10).
+_INLINE_ENTITY_NAMES = ("VECTOR", "DIRECTION", "CARTESIAN_POINT", "LINE",
+                        "CIRCLE", "EDGE_CURVE", "VERTEX_POINT",
+                        "AXIS2_PLACEMENT_3D", "EDGE_LOOP", "ORIENTED_EDGE",
+                        "PLANE")
+INLINE_INSTANCE = re.compile(
+    r"[,(]\s*(?:" + "|".join(_INLINE_ENTITY_NAMES) + r")\s*\(")
+
+_EMPTY_AGG = re.compile(r"\(\s*\)")
+
+
+def arg_count_violations(ents: dict[int, tuple[str, str]]) -> list[int]:
+    """Entities of a fixed-arity type whose argument count deviates.
+
+    FAIL-SAFE: only simple typed entities the tokenizer parsed are counted;
+    complex instances and unparsed statements are invisible (under-report).
+    """
+    bad = []
+    for eid, (typ, args) in ents.items():
+        want = ARG_COUNTS.get(typ)
+        if want is not None and len(_split_top(args)) != want:
+            bad.append(eid)
+    return sorted(bad)
+
+
+def empty_aggregate_violations(ents: dict[int, tuple[str, str]]) -> list[int]:
+    """Entities of a schema-nonempty-aggregate type containing a ``()``.
+
+    String literals are stripped from the argument text first, so a name like
+    ``'has () inside'`` cannot flag. FAIL-SAFE: under-reports on anything the
+    tokenizer missed.
+    """
+    bad = []
+    for eid, (typ, args) in ents.items():
+        if typ in NONEMPTY_AGGREGATE_TYPES and _EMPTY_AGG.search(_STR_LIT.sub("''", args)):
+            bad.append(eid)
+    return sorted(bad)
+
+
+def inline_instance_violations(ents: dict[int, tuple[str, str]]) -> list[int]:
+    """Entities whose argument text contains an inline entity instance.
+
+    Matched per-entity on string-stripped args (comments were stripped at
+    parse time), so quoted or commented occurrences of the pattern never
+    flag. Complex instances (empty type: ``#N=(A()B())``) are SKIPPED — their
+    body legitimately contains ``TYPE(`` sequences, which is legal Part-21
+    external-mapping syntax, not an inline instance. FAIL-SAFE: under-reports
+    on unparsed statements and complex instances.
+    """
+    bad = []
+    for eid, (typ, args) in ents.items():
+        if typ and INLINE_INSTANCE.search(_STR_LIT.sub("''", args)):
+            bad.append(eid)
+    return sorted(bad)
+
+
 def _floats(args: str) -> list[float]:
     return [float(x) for x in _FLOAT.findall(args)]
 
@@ -379,6 +492,12 @@ def lint_text(text: str) -> str:
         return "DANGLING_REF"
     if slot_type_violations(ents):
         return "SLOT_TYPE"
+    if arg_count_violations(ents):
+        return "ARG_COUNT"
+    if empty_aggregate_violations(ents):
+        return "EMPTY_AGGREGATE"
+    if inline_instance_violations(ents):
+        return "INLINE_INSTANCE"
     if len(_length_units(data)) > 1:
         return "UNITS_INCONSISTENT"
     if degenerate_axes(ents):
@@ -394,6 +513,9 @@ def lint_detail(text: str) -> dict:
         "DUPLICATE_ID": duplicate_ids(data),
         "DANGLING_REF": dangling_refs(data),
         "SLOT_TYPE": slot_type_violations(ents),
+        "ARG_COUNT": arg_count_violations(ents),
+        "EMPTY_AGGREGATE": empty_aggregate_violations(ents),
+        "INLINE_INSTANCE": inline_instance_violations(ents),
         "UNITS_INCONSISTENT": sorted(str(u) for u in _length_units(data)) if len(_length_units(data)) > 1 else [],
         "AXIS_DEGENERATE": degenerate_axes(ents),
     }
