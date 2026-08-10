@@ -37,6 +37,28 @@ v2 check (added 2026-07-17):
                        invent a false positive. References are scanned with string
                        literals stripped. Verified zero FP across the full corpus.
 
+v3 check (added 2026-08-09, adopted from the crash-refusability campaign):
+  SLOT_TYPE          — an entity reference sits in a slot whose schema-declared
+                       type it is not (e.g. ``LINE.dir`` holding a DIRECTION
+                       where a VECTOR is declared, or SURFACE_OF_REVOLUTION's
+                       axis holding an AXIS2_PLACEMENT_3D where AXIS1_PLACEMENT
+                       is declared). This is the single strongest crash
+                       discriminator the corpus has found: wrong-type slots
+                       predict OCCT ``signal(11)`` at 96% vs a 3% base rate,
+                       because the converters downcast without checking.
+                       Validated at zero false positives on 17 clean controls,
+                       28 real NIST CAD exports, and an individual read of every
+                       corpus hit (2026-08-08). Same scoping as the units-fix
+                       era: also scoped in ``make_roadmap.py::crash_refusable``,
+                       which imports the table from here — ONE table, two
+                       checkers.
+
+v3 also rescopes UNITS_INCONSISTENT (2026-08-09): only units ASSIGNED by a
+GLOBAL_UNIT_ASSIGNED_CONTEXT count toward "ambiguous model scale". A length
+unit that exists merely as a conversion basis or a self-denominated measure
+(PMI tolerance, derived unit) denominates its own value and creates no
+ambiguity — counting those flagged 20 of 28 real inch-authored NIST exports.
+
 ``lint_text`` / ``lint_file`` return a single most-salient code string, or the
 literal ``"ok"`` when no defect is found. Used both as a validate2 oracle
 (``summary["structural"]``) and directly by tests (fast, no subprocess).
@@ -46,8 +68,12 @@ from __future__ import annotations
 import math
 import re
 
-# Priority order: structural-graph errors first, then semantic defects.
-CODES = ("DUPLICATE_ID", "DANGLING_REF", "UNITS_INCONSISTENT", "AXIS_DEGENERATE")
+# Priority order: structural-graph errors first, then typing errors, then
+# semantic defects. SLOT_TYPE sits after DANGLING_REF (an unresolvable ref is
+# reported as dangling, never as a type violation) and before the semantic
+# checks.
+CODES = ("DUPLICATE_ID", "DANGLING_REF", "SLOT_TYPE",
+         "UNITS_INCONSISTENT", "AXIS_DEGENERATE")
 
 _PERP_TOL = 1e-6       # |cos(axis, ref)| >= 1 - tol  =>  parallel  => degenerate
 _ZERO_TOL = 1e-12      # a direction whose magnitude^2 is below this is zero
@@ -141,6 +167,121 @@ def dangling_refs(text: str) -> list[int]:
     return sorted(referenced - defined)
 
 
+# ---- SLOT_TYPE (v3) — schema-declared types for reference-valued slots -------
+# Hand-entered from ISO 10303-42 and checked against the corpus: every "violation"
+# reported in a NON-crashing file was read individually, and six legitimate subtypes
+# (BEZIER_SURFACE, DEGENERATE_TOROIDAL_SURFACE, BLENDED_EDGE_SURFACE,
+# COMPOSITE_CURVE_ON_SURFACE, COMPLEX_TRIANGULATED_FACE, TRIANGULATED_FACE) were missing
+# from a first draft. Each expectation is a SET because these attributes are declared
+# with SUPERTYPES — EDGE_CURVE.edge_geometry is a CURVE, so LINE/CIRCLE/B_SPLINE all fit.
+# This is the CANONICAL copy; occt-coverage/make_roadmap.py imports it.
+_SURFACE = {"PLANE", "CYLINDRICAL_SURFACE", "CONICAL_SURFACE", "SPHERICAL_SURFACE",
+            "TOROIDAL_SURFACE", "B_SPLINE_SURFACE_WITH_KNOTS", "B_SPLINE_SURFACE",
+            "RATIONAL_B_SPLINE_SURFACE", "SURFACE_OF_REVOLUTION", "OFFSET_SURFACE",
+            "SURFACE_OF_LINEAR_EXTRUSION", "RECTANGULAR_TRIMMED_SURFACE",
+            "CURVE_BOUNDED_SURFACE", "RECTANGULAR_COMPOSITE_SURFACE", "SURFACE_REPLICA",
+            "BEZIER_SURFACE", "DEGENERATE_TOROIDAL_SURFACE", "BLENDED_EDGE_SURFACE",
+            "UNIFORM_SURFACE", "QUASI_UNIFORM_SURFACE", "SWEPT_SURFACE"}
+_CURVE = {"LINE", "CIRCLE", "ELLIPSE", "HYPERBOLA", "PARABOLA", "POLYLINE",
+          "B_SPLINE_CURVE_WITH_KNOTS", "B_SPLINE_CURVE", "RATIONAL_B_SPLINE_CURVE",
+          "TRIMMED_CURVE", "COMPOSITE_CURVE", "SURFACE_CURVE", "SEAM_CURVE",
+          "INTERSECTION_CURVE", "OFFSET_CURVE_3D", "PCURVE", "CURVE_REPLICA",
+          "BOUNDED_CURVE", "CONIC", "DEGENERATE_PCURVE", "COMPOSITE_CURVE_ON_SURFACE",
+          "BEZIER_CURVE", "UNIFORM_CURVE", "QUASI_UNIFORM_CURVE", "CURVE_ON_SURFACE"}
+_POINT = {"CARTESIAN_POINT", "POINT_ON_CURVE", "POINT_ON_SURFACE", "POINT_REPLICA",
+          "DEGENERATE_PCURVE"}
+_LOOP = {"EDGE_LOOP", "POLY_LOOP", "VERTEX_LOOP"}
+_FBOUND = {"FACE_BOUND", "FACE_OUTER_BOUND"}
+_SHELL = {"CLOSED_SHELL", "OPEN_SHELL", "ORIENTED_CLOSED_SHELL"}
+_FACE = {"ADVANCED_FACE", "FACE_SURFACE", "ORIENTED_FACE", "SUBFACE",
+         "TRIANGULATED_FACE", "COMPLEX_TRIANGULATED_FACE", "CURVE_BOUNDED_SURFACE"}
+
+# entity -> {argument index: (legal types, arg_is_a_list)}
+SLOT_TYPES = {
+    "LINE":                      {1: (_POINT, False), 2: ({"VECTOR"}, False)},
+    "VECTOR":                    {1: ({"DIRECTION"}, False)},
+    "VERTEX_POINT":              {1: (_POINT, False)},
+    "EDGE_CURVE":                {1: ({"VERTEX_POINT"}, False), 2: ({"VERTEX_POINT"}, False),
+                                  3: (_CURVE, False)},
+    "ORIENTED_EDGE":             {3: ({"EDGE_CURVE"}, False)},
+    "EDGE_LOOP":                 {1: ({"ORIENTED_EDGE"}, True)},
+    "FACE_BOUND":                {1: (_LOOP, False)},
+    "FACE_OUTER_BOUND":          {1: (_LOOP, False)},
+    "ADVANCED_FACE":             {1: (_FBOUND, True), 2: (_SURFACE, False)},
+    "FACE_SURFACE":              {1: (_FBOUND, True), 2: (_SURFACE, False)},
+    "CLOSED_SHELL":              {1: (_FACE, True)},
+    "OPEN_SHELL":                {1: (_FACE, True)},
+    "MANIFOLD_SOLID_BREP":       {1: (_SHELL, False)},
+    "SHELL_BASED_SURFACE_MODEL": {1: (_SHELL, True)},
+    # axis_position is declared AXIS1_PLACEMENT; files supplying an
+    # AXIS2_PLACEMENT_3D crash the revolution converter (the long-open
+    # Twi144 mystery — a repair that fixes every other wrong-type slot
+    # still crashes on this one).
+    "SURFACE_OF_REVOLUTION":     {2: ({"AXIS1_PLACEMENT"}, False)},
+}
+
+
+def _split_top(args: str) -> list[str]:
+    """Split an argument string on top-level commas (paren- and string-aware)."""
+    out, depth, cur, i, n = [], 0, [], 0, len(args)
+    while i < n:
+        c = args[i]
+        if c == "'":                      # Part-21 string; '' is an escaped quote
+            j = i + 1
+            while j < n:
+                if args[j] == "'":
+                    if j + 1 < n and args[j + 1] == "'":
+                        j += 2
+                        continue
+                    break
+                j += 1
+            cur.append(args[i:j + 1])
+            i = j + 1
+            continue
+        if c == "(":
+            depth += 1
+        elif c == ")":
+            depth -= 1
+        elif c == "," and depth == 0:
+            out.append("".join(cur))
+            cur = []
+            i += 1
+            continue
+        cur.append(c)
+        i += 1
+    out.append("".join(cur))
+    return out
+
+
+def slot_type_violations(ents: dict[int, tuple[str, str]]) -> list[int]:
+    """Entity ids with a reference slot holding an entity of the wrong type.
+
+    FAIL-SAFE by construction: a reference that does not resolve to a simple
+    typed entity — undefined ``#N`` (that is DANGLING_REF's job), a complex
+    instance like ``#7=(A()B())`` which carries no single type name, or an
+    entity the tokenizer missed — is UNKNOWN and is NEVER counted. A missed
+    definition can therefore only under-report.
+    """
+    kind = {eid: typ for eid, (typ, _args) in ents.items() if typ}
+    bad: set[int] = set()
+    for eid, (typ, args) in ents.items():
+        rules = SLOT_TYPES.get(typ)
+        if not rules:
+            continue
+        parts = _split_top(args)
+        for idx, (ok, is_list) in rules.items():
+            if idx >= len(parts):
+                continue
+            a = parts[idx].strip()
+            refs = (_ID_REF.findall(a) if is_list
+                    else ([a[1:]] if a.startswith("#") and a[1:].isdigit() else []))
+            if any(kind.get(int(r)) not in ok
+                   for r in refs if kind.get(int(r)) is not None):
+                bad.add(eid)
+                break
+    return sorted(bad)
+
+
 def _floats(args: str) -> list[float]:
     return [float(x) for x in _FLOAT.findall(args)]
 
@@ -157,49 +298,48 @@ _CONV_LENGTH = re.compile(
 )
 
 
-# A length CONVERSION_BASED_UNIT's second argument is its defining measure:
-#   CONVERSION_BASED_UNIT('INCH', #a);  #a = LENGTH_MEASURE_WITH_UNIT(..., #b)
-# where #b (eventually) holds an SI length unit.  ISO 10303-41 REQUIRES that
-# basis, so every inch-authored file necessarily contains an SI mm unit.
-_CONV_LENGTH_REF = re.compile(
-    r"CONVERSION_BASED_UNIT\s*\(\s*'[^']*(?:INCH|FOOT|MIL|METRE|MM|YARD)[^']*'\s*,\s*#(\d+)",
-    re.IGNORECASE,
-)
 _STMT_BODY = re.compile(r"#(\d+)\s*=\s*([^;]*);", re.S)
+# The unit list of a GLOBAL_UNIT_ASSIGNED_CONTEXT (simple or inside a complex
+# instance): the first argument is an aggregate of unit-entity references.
+_GUAC_LIST = re.compile(r"GLOBAL_UNIT_ASSIGNED_CONTEXT\s*\(\s*\(([^)]*)\)", re.S)
 
 
 def _length_units(data: str) -> set:
-    """Distinct LENGTH units declared in the model (simple or complex form).
+    """Distinct LENGTH units ASSIGNED by a GLOBAL_UNIT_ASSIGNED_CONTEXT.
+
+    Only context-assigned units define the model's scale — that is what
+    "ambiguous model scale" means. Two populations of length units are
+    deliberately NOT counted (2026-08-09, measured on 28 real NIST CAD
+    exports where counting them flagged 20 inch-authored files):
+
+      - a conversion-based unit's defining measure (ISO 10303-41 REQUIRES an
+        SI basis inside every inch unit — it is the definition of the inch,
+        not a second model unit);
+      - self-denominated measures (PMI tolerances, derived units): a
+        LENGTH_MEASURE_WITH_UNIT that names its own unit is unambiguous by
+        construction.
 
     Only METRE-based SI units and named length CONVERSION_BASED_UNITs count;
     angle / solid-angle units are irrelevant to model scale and are ignored.
-
-    An SI unit that appears ONLY inside a conversion-based unit's defining
-    measure is that conversion's mandatory basis (ISO 10303-41), not a second
-    model unit — counting it flagged EVERY inch-authored export (20 of 28 NIST
-    real CAD files, 2026-08-09).  Basis entities are excluded.  The exclusion
-    over-approximates (all ids referenced from the measure entity are treated
-    as basis), which can only UNDER-count — preserving the module's fail-safe
-    direction.  A basis entity that is ALSO independently assigned in a unit
-    context is likewise excluded (under-report); scoping units by reachability
-    from the geometry context is a design question left open in BACKLOG (M.15).
+    FAIL-SAFE: a context ref that does not resolve, or a unit form the
+    regexes do not recognize, is simply not counted — under-report, never a
+    false positive. A conversion-based unit that inlines its SI basis in the
+    same entity counts once as the conversion (checked first).
     """
     data = _strip_comments(data)
     ents = {int(m.group(1)): m.group(2) for m in _STMT_BODY.finditer(data)}
-    basis: set = set()
-    for m in _CONV_LENGTH_REF.finditer(data):
-        measure = ents.get(int(m.group(1)), "")
-        for r in _ID_REF.findall(measure):
-            basis.add(int(r))
     units: set = set()
-    for eid, body in ents.items():
-        if eid in basis:
-            continue
-        for m in _SI_LENGTH.finditer(body):
-            prefix = (m.group(1) or "$").strip(".")
-            units.add(("SI", prefix or "$"))
-    for m in _CONV_LENGTH.finditer(data):
-        units.add(("CONV", m.group(1).upper()))
+    for m in _GUAC_LIST.finditer(data):
+        for r in _ID_REF.findall(m.group(1)):
+            body = ents.get(int(r), "")
+            cm = _CONV_LENGTH.search(body)
+            if cm:
+                units.add(("CONV", cm.group(1).upper()))
+                continue
+            sm = _SI_LENGTH.search(body)
+            if sm:
+                prefix = (sm.group(1) or "$").strip(".")
+                units.add(("SI", prefix or "$"))
     return units
 
 
@@ -237,6 +377,8 @@ def lint_text(text: str) -> str:
         return "DUPLICATE_ID"
     if dangling_refs(data):
         return "DANGLING_REF"
+    if slot_type_violations(ents):
+        return "SLOT_TYPE"
     if len(_length_units(data)) > 1:
         return "UNITS_INCONSISTENT"
     if degenerate_axes(ents):
@@ -251,6 +393,7 @@ def lint_detail(text: str) -> dict:
     return {
         "DUPLICATE_ID": duplicate_ids(data),
         "DANGLING_REF": dangling_refs(data),
+        "SLOT_TYPE": slot_type_violations(ents),
         "UNITS_INCONSISTENT": sorted(str(u) for u in _length_units(data)) if len(_length_units(data)) > 1 else [],
         "AXIS_DEGENERATE": degenerate_axes(ents),
     }

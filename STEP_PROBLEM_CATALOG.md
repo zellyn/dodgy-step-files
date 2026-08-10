@@ -3254,6 +3254,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({heal, warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must heal or emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(18) ifc=schema_n/a`
 
 ### Tsh026 — Coincident / duplicate `ADVANCED_FACE` instances in `CLOSED_SHELL`
@@ -3398,6 +3399,7 @@ _Section summary: 101 entries._
 - **OCC behavior**: loads shape(1) but the built shape is BRepCheck-invalid; the base builds an empty shell (0 faces); the swept profile is an unbounded LINE (a construction type-error), so no reversed angular sweep is ever represented. The CLEAN copy (declared defect removed) is still BRepCheck-invalid, so the invalidity comes from the degenerate/toy topology, not the declared defect; shape(1)/invalid does not witness the claimed kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Tsh037 — Free wires/edges in compound (Q029, F080 — no faces, INTERNAL orientation)
@@ -3542,6 +3544,7 @@ _Section summary: 101 entries._
 - **Model impact**: The wire/loop closes with a topological gap or self-intersection; the parent face loads with broken bounds, BRepCheck reports `BRepCheck_NotClosed` or `BRepCheck_SelfIntersectingWire`, and downstream face triangulation skips or mis-bounds the region.
 - **Tier-3 assertion**: edge[0].curve_type == "circle"
 - **Tier-3 assertion**: edge[0].analytic.radius == 1.0
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a`
 
 ### Twi005 — ORIENTED_EDGE.edge_element references non-EDGE_CURVE
@@ -3558,6 +3561,7 @@ _Section summary: 101 entries._
 - **Byte assertion**: contains(b'VERTEX_POINT(')
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: The malformed oriented-edge is silently dropped; the parent face's wire has one fewer edge than declared, with no diagnostic distinguishing this from a well-formed bound.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Twi006 — ORIENTED_EDGE underlying EDGE_CURVE is null/missing reference
@@ -7611,6 +7615,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Tier-3 assertion**: shape_null == False
 - **Tier-3 assertion**: n_vertices_total == 1
 - **Model impact**: Defect causes the loader to either abort, silently drop the affected entity, or accept it with corrupted attributes; downstream operations on the affected sub-shape produce results inconsistent with the producer's intent.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### P023 — Mixed `FACE_OUTER_BOUND` orientation flag (negative-volume pocket)
@@ -13875,6 +13880,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') >= 5
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: Geometric-utility computation (intersection, projection, extrema) returns a wrong or NULL result; downstream operations that depend on it propagate the wrong value into the loaded geometry.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 - **Fixture path**: step-examples/12-2c-surfaces/Gb001.stp
 
@@ -13908,6 +13914,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count_entity_def(b'CARTESIAN_POINT') == 5
 - **Tier-3 assertion**: shape_null == True
 - **Model impact**: Geometric-utility computation (intersection, projection, extrema) returns a wrong or NULL result; downstream operations that depend on it propagate the wrong value into the loaded geometry.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 - **Fixture path**: step-examples/12-2c-surfaces/Gb003.stp
 
@@ -14121,6 +14128,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **OCC behavior**: OCC accepts and loads a valid shape(1) — the transferred model is the referenced GEOMETRIC_CURVE_SET (1-vertex compound); the trailing-comma records are unreferenced orphans, so removing (clean) or exaggerating (huge) the defect leaves shape-counts and BRepCheck validity unchanged. shape(1) does not witness a kernel bug (a parser tolerating a trailing comma still loads the same shape).
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Ad090 — Lower-case `End-ISO-10303-21` token rejected
@@ -14162,6 +14170,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: count(b',') >= 5 and matches(rb'\(\d+,\d+,\d+,\d+,\d+,\d+\)')
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Ad092 — Crash reading large STEP file: exception during transfer
@@ -16325,6 +16334,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'CARTESIAN_POINT') and contains(b'DIRECTION')
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ad031 — Malformed `FILE_DESCRIPTION` (missing `implementation_level` argument) triggers use-after-free in deferred header diagnostic
@@ -16619,6 +16629,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: count(b'.T.') + count(b'.F.') >= 5
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Ad059 — Mismatched weight / pole counts in BSpline (writer-emitted)
@@ -16719,6 +16730,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'EDGE_LOOP') and contains(b'ORIENTED_EDGE') and contains(b'#200')
 - **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ### Ad083 — Multiple `PRODUCT`s share the same name; only `NEXT_ASSEMBLY_USAGE_OCCURRENCE` id disambiguates (assembly reader flat-load label collision)
@@ -16780,6 +16792,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: OCC accepts and loads a valid shape(1); the type-confusion/overflow attribute records (mis-typed AXIS2_PLACEMENT location, 1.0E+999 coordinate, bad direction reference) are unreferenced orphans that never enter the built shape. Removing (clean) or exaggerating (huge, 1.0E+9999) them leaves shape-counts and validity unchanged; the declared 'silent masking of a segfault-class fault' is a runtime diagnostic-stream behavior, not observable here. shape(1) does not witness a kernel bug.
 - **Severity**: P2
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 
 ---
@@ -20169,6 +20182,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: loads shape(1) but the built shape is BRepCheck-invalid; the MAPPED_ITEM mirror instance is not resolved on the plain read path, so the built shape is an empty shell whether the mirror is present or removed. The CLEAN copy (declared defect removed) is still BRepCheck-invalid, so the invalidity comes from the degenerate/toy topology, not the declared defect; shape(1)/invalid does not witness the claimed kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Tsh049 — Internal edges lost during shell-level face merge
@@ -20193,6 +20207,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ### Tsh050 — Edges on shared face boundary not deduplicated after merge
@@ -20239,6 +20254,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: loads shape(1) but the built shape is BRepCheck-invalid; the scaled/non-unit ref_direction rides on an unresolved MAPPED_ITEM; the built shape is an empty invalid shell whether the direction is (2,0,0) or (1,0,0). The CLEAN copy (declared defect removed) is still BRepCheck-invalid, so the invalidity comes from the degenerate/toy topology, not the declared defect; shape(1)/invalid does not witness the claimed kernel bug.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Tsh052 — Inversed normals on revolved-shape import
@@ -20262,6 +20278,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ---
@@ -20312,6 +20329,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: accepts with ERR diagnostic (loads shape(1)); outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Shell topology loads with inconsistent face orientations or non-manifold edges; BRepCheck flags the shell as invalid, and boolean / offset operations on the solid either produce wrong-sided results or fail outright.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 
 ### Tsh055 — Merging adjacent same-surface faces with opposite normals returns inverted face
@@ -20525,6 +20543,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: crashes (signal 11) on this fixture (catalog disallows crash). Kernel-bug witnessed: receivers should produce one of {heal}; never crash.
 - **Severity**: P0
 - **Model impact**: Parser dereferences invalid memory while processing the malformed token; the load process is killed by a signal and no shape is delivered.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ### Twi092 — Wire with degenerated edge dropped silently on export
@@ -20624,6 +20643,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'shared_top_midpoint')
 - **Byte assertion**: contains(b'inner_triangle_apex_at_V_shared')
 - **Model impact**: Parser dereferences invalid memory while processing the malformed token; the load process is killed by a signal and no shape is delivered.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ### Twi096 — Wire with internal cross-loop translates incorrectly
@@ -21784,6 +21804,7 @@ _Section summary: 41 entries._
 - **OCC behavior**: crashes (signal 11) on this fixture (catalog disallows crash). Kernel-bug witnessed: receivers should produce one of {heal}; never crash.
 - **Severity**: P0
 - **Model impact**: Parser dereferences invalid memory while processing the malformed token; the load process is killed by a signal and no shape is delivered.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ### Twi080 — Wire splitting must propagate from underlying edge/curve splits
@@ -22000,6 +22021,7 @@ _Section summary: 41 entries._
 - **Byte assertion**: contains(b'FACE_OUTER_BOUND(')
 - **Byte assertion**: contains(b'(5.0,5.0,0.0)')
 - **Model impact**: Parser dereferences invalid memory while processing the malformed token; the load process is killed by a signal and no shape is delivered.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ### Tfa038 — Face on closed surface lacks outer boundary
@@ -22262,6 +22284,7 @@ they capture invariants shared by a family of healing methods. Filed under
 - **Closure intent**: sheet
 - **Notes**: Umbrella over all sub-shape Perform() methods. 2026-07-12 rewire (audit finding, exchange VERDICT_AUDIT.md process notes): the representation previously referenced ONLY part (b) (`#120`, the `OPEN_SHELL`) — `#143=GEOMETRIC_SET('compound_three_defects',(#59,#120,#142))` itself was never referenced by anything, leaving parts (a) `#59` (the defective face) and (c) `#142` (the free wire) genuinely unreachable from the shape-representation root. Fixed by rewiring `#9061=MANIFOLD_SURFACE_SHAPE_REPRESENTATION` to reference `#143` (the `GEOMETRIC_SET` of all three) instead of `#120` directly — matching this corpus's own precedent for a `GEOMETRIC_SET` as a direct representation item (see M192: `GEOMETRIC_SET` of bare `CARTESIAN_POINT`s wired the same way). All three sub-shapes are now reachable in the Part-21 entity graph. IMPORTANT correction to the prior explanation, found during live-oracle verification: the "orphaned... so OCC yields empty" reasoning was factually wrong about the MECHANISM, though the recorded `occt=empty` OUTCOME was already correct — isolated testing (2026-07-12, OCP 7.8.1) shows `#120` alone, even when directly (non-orphaned) wired as the representation's sole item, ALREADY yields `occt=empty`: a bare `OPEN_SHELL` wired directly into `MANIFOLD_SURFACE_SHAPE_REPRESENTATION` (unlike every other legitimate corpus fixture, which wraps it in a `SHELL_BASED_SURFACE_MODEL` first — confirmed by control tests against A085/A089/Tsh022) is not translated; wrapping it in a `SHELL_BASED_SURFACE_MODEL` makes it a live `shape(1)`. Separately, `GEOMETRIC_SET` cannot carry topological items (`ADVANCED_FACE`/`OPEN_SHELL`/`EDGE_LOOP` are not valid `geometric_set_select` members — only point/curve/surface are); isolated testing confirms even a single valid `ADVANCED_FACE` wrapped alone in a `GEOMETRIC_SET` yields `occt=empty` (items silently untranslated, not an error). So `#143` reproduces the SAME `occt=empty/empty` outcome as before — Expected validation is UNCHANGED, no NEEDS-ORACLE-REFRESH — but now for the structurally honest reason (graph-reachable, oracle-invisible via `GEOMETRIC_SET`'s item-type restriction) rather than a false orphaning explanation. Separate finding, flagged for the maintainer rather than fixed here (out of scope for a minimal reachability fix, and NOT safe to wire live): part (a)'s face `#59` (the "sub-tolerance scrambled inner wire, wrong orientation" `FACE_INNER_BOUND`) reliably CRASHES OCCT (`signal(11)`) if it is EVER made a live, OCCT-translated representation item — tested directly as the sole bare item, wrapped in its own `OPEN_SHELL`+`SHELL_BASED_SURFACE_MODEL`, and combined with the wrapped shell-b — all three configurations segfault. This is a more severe defect than "heals or is oracle-invisible"; it may warrant its own crash-bug fixture (`occt=signal(11)/signal(11)`, matching the Tsh139/Tsh140 convention) in a future wave, but is NOT wired live here to avoid shipping a crashing fixture under an entry whose own contract is graceful multi-defect convergence. `Hea011` (§12.3c) has the identical orphaning + bare-`OPEN_SHELL` pattern (`#61=GEOMETRIC_SET(...)` unreferenced, `#9061` wired directly to `#45` the bare `OPEN_SHELL`) — confirmed independently to also yield `occt=empty` — flagged for the maintainer; not fixed here (out of this task's scope). Synonyms: "multi-defect shape needs pipeline convergence", "fix order changes end state", "shape orchestrator must converge not loop", "compound with mixed defects healing".
 - **Model impact**: ShapeHealing pass either fixes the defect (loaded model differs from input bytes by the healing edits) or fails the heal (loaded model retains the original invalidity); BRepCheck status reflects which path was taken.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 
 ### Hea002 — Solid-level healing on MANIFOLD_SOLID_BREP wrapping an OPEN_SHELL (instead of CLOSED_SHELL): iterate shell fixes and re-evaluate closure
@@ -22904,6 +22927,7 @@ B-spline degree-3 curve with poles clustered in XY plane but high-curvature inte
 Degree-2 B-spline surface marked `.QUASI_UNIFORM_KNOTS.` but knot vectors are piecewise (0.0, 0.25, 0.75, 1.0) and (0.0, 0.4, 0.6, 1.0). Init dispatch recognizes form tag and skips careful split logic, causing incorrect patch extraction.
 - **Notes**: RUNTIME-VERIFIED 2026-08-09 — this file's recorded `signal(11)` is driven by an inline entity instance written directly inside another entity's argument list (a vector constructor carrying a bare coordinate list where a direction reference belongs). A conforming exchange file may only define entity instances as top-level numbered statements, so the reader cannot bind the inline construct, the attribute resolves to null, and the abort happens during loading — before any repair routine runs. Full census in `BACKLOG.md` (M.18).
 - **Expected kernel behavior**: reject at parse time: `LINE.pnt` is declared `CARTESIAN_POINT` but names a `VERTEX_POINT`, and the `SHELL_BASED_SURFACE_MODEL` boundary list holds a face where a shell is declared. Diagnose the slot and its expected type; do not dereference the resolved handle.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=reject`
 ### Gn056 — ShapeAnalysis_Curve.FillBndBox exact-mode knot-boundary clamping
 
@@ -22927,6 +22951,7 @@ Full-circle CIRCLE entity with radius 1,000,000 meters. GetSamplePoints caps at 
 Degree-2 B-spline surface with symmetric knot vectors (0.0, 0.5, 1.0) in both U and V. Extraction algorithm applies knot insertions in order-dependent sequence, producing asymmetric Bezier patches despite symmetric input structure.
 - **Notes**: RUNTIME-VERIFIED 2026-08-09 — this file's recorded `signal(11)` is driven by an inline entity instance written directly inside another entity's argument list (a vector constructor carrying a bare coordinate list where a direction reference belongs). A conforming exchange file may only define entity instances as top-level numbered statements, so the reader cannot bind the inline construct, the attribute resolves to null, and the abort happens during loading — before any repair routine runs. Full census in `BACKLOG.md` (M.18).
 - **Expected kernel behavior**: reject at parse time: `LINE.pnt` is declared `CARTESIAN_POINT` but names a `VERTEX_POINT`, and the `SHELL_BASED_SURFACE_MODEL` boundary list holds a face where a shell is declared. Diagnose the slot and its expected type; do not dereference the resolved handle.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=reject`
 ### Gn059 — ShapeAnalysis_Curve.FillBndBox SearchForExtremum drift
 
@@ -23852,6 +23877,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **Fixture path**: step-examples/12-2b-nurbs/Gn169.stp
 - **Fixture kind**: scaffold
 - **Tier-3 assertion**: load == "ok"
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### Gn170 — B-spline surface with extreme knot ratio and clustering
 - **Category**: §12.2b NURBS
@@ -24991,6 +25017,7 @@ Control poles coplanar (XY) but curve deviates significantly in Z. ShapeAnalysis
 - **OCC behavior**: silently accepts (no diagnostic, loads shape(1)); outside catalog's allowed set ({reject, warn-and-proceed}). Live-verified (this worktree's OCCT 7.8.1, heal-on and heal-off identical): the `*`-implicit `edge_element` is silently tolerated on this reader — no crash. The PrusaSlicer crash this entry pattern-derives from (FreeCAD #26994) is a separate downstream receiver's behavior on the same malformed pattern, not reproduced by this worktree's oracles.
 - **Severity**: P1
 - **Model impact**: The `*`-implicit `edge_element` is silently accepted without a diagnostic distinguishing it from a well-formed reference; other receivers (e.g. PrusaSlicer, per the source bug report) crash outright on the same pattern.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 
 ### A102 — Cap part exports as STEP that downstream slicers flag as damaged (open shell wrapped as solid)
@@ -25303,6 +25330,7 @@ Rectangular face with interior notch that, when removed, leaves 0.1-unit gap bet
 - **Reproducer recipe**: `ADVANCED_FACE` whose `FACE_INNER_BOUND` wraps an `EDGE_LOOP` containing a single edge (open, not closed); load via ordinary `STEPControl_Reader`.
 - **Expected kernel behavior**: reject the malformed bound with a clear per-entity diagnostic (a bound wire must be closed); never crash.
 - **Notes**: Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — the original title/description claimed face-splitting repair's binary-split loop silently misses zones beyond the first pair; that method is never invoked (the reader crashes first). Root cause isolated by removal-test to the non-closed single-edge `FACE_INNER_BOUND`s. Same crash class as Tfa118. Synonyms: "single-edge inner bound crash", "open wire face bound segfault", "malformed splitter bound crashes reader".
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa086 — Rectangular face with three inner hole wires (not just a claimed 2-wire-vs-3-wire edge case) crashes the reader (SIGSEGV) as soon as the extra bound wire is present; loads cleanly with only the outer wire — coincident-edge wire merging is never reached
 
@@ -25312,6 +25340,7 @@ Rectangular face with interior notch that, when removed, leaves 0.1-unit gap bet
 
 - **Expected kernel behavior**: Reject with a diagnostic naming the ADVANCED_FACE's extra inner-hole bound: isolation shows the outer wire alone loads cleanly but restoring even one of the three side-by-side inner hole wires reproduces a SIGSEGV, so a correct kernel must detect that a multi-bound face of this construction cannot be safely translated and refuse to build it (or the specific inner bound) with a diagnostic rather than crashing the process; if the inner bound is dropped, the face must still be built from the surviving outer wire and the diagnostic must say so, since silently completing the shell without the intended holes changes the model.
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed coincident-edge wire merging handles the 2-wire coincidence case but misses the 3rd wire; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: "multi-bound face crashes reader, outer-alone loads clean", "any single inner hole (not just a 3rd) crashes the reader".
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa087 — Thin rectangle face at the exact strip-detection aspect-ratio threshold (100:1) loads as an ordinary valid face; CheckStripEdges is never invoked to classify it
 
@@ -25350,6 +25379,7 @@ Rectangular face with interior notch that, when removed, leaves 0.1-unit gap bet
 ### Tfa090 — face-repair.Perform: mode-flag ordering
 Face with reversed outer orientation and incomplete inner bound (missing closing edge). Mode-flag order in Perform prevents FixNaturalBound from running before orientation repair, blocking proper edge-completion and orientation correction sequence. Square 5.0 × 5.0 with 1.0 × 1.0 incomplete hole.
 - **Expected kernel behavior**: Reject with a diagnostic naming the malformed bound: the FACE_INNER_BOUND's EDGE_LOOP has only 3 edges, and its last edge (ending at vertex v_h3) never returns to the loop's starting vertex (v_h0) -- an open, non-closed wire, not a valid bound. Verify that every bound wire closes (its last edge's end vertex coincides with its first edge's start vertex) before building the face; reject an unclosed bound with a diagnostic naming it rather than walking it as if it were closed, and never let an unclosed bound crash the process. The face's separately-encoded reversed outer-bound sense (.F.) is ordinary valid STEP and must still be honored once the malformed inner bound is handled.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa091 — Face with two inner wires sharing a tangent-touch vertex crashes the reader (SIGSEGV) as soon as the extra bound wire is present; loads cleanly with only the outer wire — loop-wire repair is never reached
 
@@ -25359,6 +25389,7 @@ Face with reversed outer orientation and incomplete inner bound (missing closing
 
 - **Expected kernel behavior**: Reject with a diagnostic naming the second FACE_INNER_BOUND (the tangent-touching inner wire): isolation shows the outer wire alone loads cleanly but restoring either inner wire reproduces a SIGSEGV, so a correct kernel must detect that this multi-bound construction cannot be safely translated and refuse to build the offending bound with a diagnostic rather than crashing; if the bound is dropped, the face must still be built from the outer wire and remaining valid bound, and the diagnostic must report the drop since it removes a hole from the intended geometry.
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed loop-wire repair merges intersecting loops and produces a wire with a self-touch vertex; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: "multi-bound face crashes reader, outer-alone loads clean", "tangent-touching inner wire crashes reader, outer-alone loads clean".
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa092 — B-spline saddle-surface face (mixed convex/concave curvature) loads as an ordinary valid face with its encoded edge orientations intact; twisted-face checking is never invoked to classify it
 
@@ -25383,6 +25414,7 @@ Face with reversed outer orientation and incomplete inner bound (missing closing
 
 - **Expected kernel behavior**: Reading a face with several bound wires whose edges carry only 3D curves and no pcurves must never terminate the process: derive each edge's 2D representation by projecting it onto the host surface, and if an individual bound cannot be projected or classified, drop that bound with a diagnostic naming it and still build the face from the bounds that remain usable. Only once the face exists should a healing pass compare each wire's enclosed area against the model tolerance — the 0.0025-area hole here is a small hole beside a 1.0-area hole, not sub-tolerance debris, so both must survive.
 - **Notes**: **See also**: Tfa135. Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed small-area-wire repair applies its removal threshold check only to outer wires, leaving inner wires uninspected; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: "multi-bound face crashes reader, outer-alone loads clean", "any inner wire (large or tiny) crashes the reader, outer-alone loads clean".
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa094 — Inner FACE_BOUND rectangle reuses the outer hexagonal wire's own vertex entity as its corner (shared endpoint, not a T-junction)
 
@@ -25407,6 +25439,7 @@ Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-16): the top fac
 - **Notes**: RUNTIME-VERIFIED 2026-08-09 — this file's recorded `signal(11)` is driven by the revolved surface's axis attribute holding a full three-axis placement where a single-axis placement is declared; the reader's downcast yields null and the abort happens while converting the surface, before the titled condition can be exercised. This was the long-open Twi144 mystery: repairing the line-direction references alone cannot reach this slot. Census in `BACKLOG.md` (M.18).
 - **Expected kernel behavior**: Reject with a diagnostic naming the ADVANCED_FACE on this SURFACE_OF_REVOLUTION: isolation shows the crash persists even after stripping all four apex/meridian inner-loop wires down to the outer 4-edge boundary alone, so a correct kernel must detect that this face cannot be safely translated on this surface and refuse to build it with a diagnostic naming the face and surface, rather than crashing the process — the specific structural trigger beyond the outer boundary is not established, so the check must be conservative rather than target a specific meridian construct.
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed periodic-degenerate seam repair mishandles the revolution-axis degenerate apex edge; that method is never reached (crash occurs first), and isolation testing shows the crash persists even with all apex/meridian wires removed — the title's specific "degenerate apex" mechanism is not what triggers this crash. Root cause of the crash itself is NOT fully isolated in this pass (unlike Tfa106/Tfa126, no single invalid-bound-topology cause was found). Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: "revolution-surface outer-boundary-alone crashes reader", "degenerate-apex construction not the actual crash cause".
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa096 — Cube face whose outer wire is four zero-length (collapsed-to-a-point) edges has its ENTIRE bound dropped on load (0 edges), not silently skipped while still attached — same unbounded-surface-fallback family as Tfa098/Tfa114/Tfa115/Tfa117/Tfa252; orientation repair is never reached
 
@@ -25517,6 +25550,7 @@ Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-16): the top fac
 **Geometry**: Cylindrical surface (U-periodic) with outer loop and tiny inner wire at z=2 crossing the U=0/2PI seam boundary.
 - **Expected kernel behavior**: Reject with a diagnostic naming the tiny inner wire straddling the cylinder's U-seam at z=2: even though both the outer and inner wires are individually properly closed, a correct kernel must detect that this seam-crossing near-coincident-vertex wire on a periodic surface cannot be safely processed and refuse to build the face with a diagnostic, rather than crash during translation — the precise failure mechanism (hypothesized as seam-aware pcurve projection instability) is not fully isolated, so the check must key on the seam-crossing, near-zero-area wire pattern rather than a narrower cause.
 - **Notes**: Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed small-area-wire repair's area calculation doesn't account for seam wrapping; that method is never reached (crash occurs first). Root cause of the crash itself is NOT fully isolated in this pass (unlike Tfa085/Tfa106/Tfa118, both wires are validly closed) — recorded honestly as a hypothesis rather than a verified mechanism, per `SEGFAULT_CHARACTERIZATION.md` convention. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14, which also flags this crash's root cause as needing further isolation. Synonyms: "tiny wire crosses cylinder seam crashes reader", "periodic surface seam-crossing wire segfault".
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa106 — FACE_INNER_BOUND wrapping a single, non-closed edge crashes the reader (SIGSEGV) — same class as Tfa085/Tfa118, not a FixLoopWire merge-logic bug
 
@@ -25530,6 +25564,7 @@ Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-16): the top fac
 
 - **Expected kernel behavior**: Reject with a diagnostic naming each FACE_INNER_BOUND whose EDGE_LOOP wraps exactly one non-closed edge (entities #73 and #93): a bound wire must close back to its own start vertex, and a single-edge EDGE_LOOP that does not do so must be detected and rejected with a diagnostic before the face is built, rather than crash the reader — dropping the malformed bounds and building the face from the outer wire alone is an acceptable fallback provided the diagnostic still names each bad bound.
 - **Notes**: Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed `FixLoopWire`'s nested-loop merge logic loses containment information; that method is never reached (crash occurs first). **See also**: Tfa085, Tfa118 (same single-edge-bound crash family). Synonyms: "single-edge inner bound crash concentric wires", "non-closed nested bound segfault".
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa107 — High-curvature surface spot detection
 
@@ -25542,6 +25577,7 @@ Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-16): the top fac
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3c-faces/Tfa107.stp`
 
 - **Expected kernel behavior**: Reject with a diagnostic naming the offending edge: edge4_v_rev's LINE references a DIRECTION entity directly as its direction attribute instead of wrapping it in a VECTOR (its sibling edges all correctly use a VECTOR built from their DIRECTION) -- a type mismatch against the schema's requirement that a Line's direction be a Vector. Detect the wrong-typed reference during entity resolution and reject the malformed edge with a diagnostic naming it; never dereference a wrongly-typed entity and let the process crash.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa108 — Natural boundary on trimmed surface
 
@@ -25675,6 +25711,7 @@ Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-16): the top fac
 
 - **Expected kernel behavior**: Reject with a diagnostic naming the ADVANCED_FACE's concentric inner bounds: even though the outer circle and both inner circular holes (radii 2.0 and 1.0) are each properly closed 2-edge loops, a correct kernel must detect that this three-concentric-wire construction cannot be safely translated and refuse to build the face with a diagnostic, rather than crash during translation — the precise structural trigger among the concentric bounds is not fully isolated, so the check must key on the pattern (multiple concentric closed inner bounds sharing one CIRCLE center) rather than a narrower single-edge defect.
 - **Notes**: Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed `FixLoopWire`'s merge logic collapses concentric circles into one doubled-up wire; that method is never reached (crash occurs first), and unlike Tfa085/Tfa106/Tfa118, all three wires here ARE validly closed — root cause of the crash is not fully isolated in this pass (recorded honestly per `SEGFAULT_CHARACTERIZATION.md` convention rather than guessed). Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14, which flags this crash's root cause as needing further isolation.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa117 — A zero-length EDGE_CURVE in one face's wire causes the reader to drop that face's ENTIRE boundary (unbounded-surface fallback), not just the bad edge
 
@@ -25702,6 +25739,7 @@ Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-16): the top fac
 
 - **Expected kernel behavior**: Reject with a diagnostic naming the FACE_INNER_BOUND whose EDGE_LOOP wraps a single non-closed edge: isolation confirms removing this malformed bound loads the outer semicircle wire cleanly, so a correct kernel must detect that a bound's EDGE_LOOP does not close back to its start vertex and reject or drop that bound with a diagnostic before building the face, rather than crash the reader.
 - **Notes**: Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed face-splitting repair silently returns `IsDone=true, NewFaces=0`; the file actually segfaults the reader before any healing method could run (the `signal(11)` Expected validation below was already correct; only the prose was wrong). Same crash class as Tfa085 (independently isolated). **See also**: Tfa085.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa119 — Outer wire's LINE curves use non-conformant Part21 syntax (point argument wrapped in a spurious aggregate) and fail to build; combined with a live inner wire, the reader crashes (SIGSEGV) before any twisted-face checking classification
 
@@ -25715,6 +25753,7 @@ Live-oracle verified (validation/.venv, OCP/OCCT 7.8.1, 2026-07-16): the top fac
 
 - **Expected kernel behavior**: Reject with a diagnostic naming the outer wire's LINE entities whose point argument is wrapped in a non-conformant aggregate (LINE('name',(#N),#dir) instead of a plain #N reference): a correct kernel must detect this malformed syntax and either repair the reference (unwrapping the spurious aggregate) so the outer wire's edges build normally, or reject the face with a diagnostic naming the malformed LINE entities — never let a face whose outer wire fails to build (0 edges) proceed to translation with a live inner wire, since that combination is what crashes the reader.
 - **Notes**: Corrected 2026-07-16 (truth-in-labeling audit): retitled/redescribed — original claimed twisted-face checking's orientation logic doesn't handle an opposite-winding inner wire; that method is never reached. Isolation test shows the outer wire's malformed `LINE` syntax causes its edges to fail to build (0 edges) even without the inner wire; the SIGSEGV itself requires the inner wire's presence but the precise failure mechanism connecting the two is not fully isolated in this pass (recorded honestly per `SEGFAULT_CHARACTERIZATION.md` convention). **See also**: Tfa118 (same malformed-`LINE`-syntax anomaly, different crash cause). Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa120 — Trimmed conical face loads intact with its encoded boundary; FixAddNaturalBound is never invoked on an ordinary read
 
@@ -25773,6 +25812,7 @@ ADVANCED_FACE hosted inside a `GEOMETRIC_CURVE_SET`, whose builder dispatch only
 
 - **Expected kernel behavior**: Before building a face, verify that every bound wire actually closes — the last edge's end vertex must coincide, within tolerance, with the first edge's start vertex. A `FACE_INNER_BOUND` wrapping a 2-edge loop that does not close must be either closed by inserting the missing segment when the gap is within tolerance, or dropped with a diagnostic naming the bound while the face is still built from its remaining valid bounds; an unclosed bound must never be walked as though it were closed, and reading one must not terminate the process.
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixLoopWire's outer/inner-loop assumption breaks when wires spatially cross; that method is never reached (crash occurs first), and the actual structural cause is an invalid non-closed 2-edge bound, not a crossing-loop scenario. **See also**: Tfa085, Tfa106, Tfa118 (same non-closed-bound crash family). Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: "non-closed 2-edge inner bound crashes reader", "invalid bound topology, not crossing-loop merge bug".
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa127 — Thin rectangular face (10x1.5) loads as an ordinary valid face; pin-face checking is never invoked to classify it
 
@@ -25824,6 +25864,7 @@ Reproducer: rectangular face with a B-spline (not line) top edge; no T-junction 
 
 - **Expected kernel behavior**: Given two bounds of the same face that share a collinear segment — here an inner wire that re-uses one of the outer wire's own edges — detect the overlap by intersecting edge pairs across the two wires, then resolve it: split the participating edges at the ends of the shared span and rebuild both wires over a single shared segment edge, then rebuild the face from the modified wires. If the overlap cannot be resolved, drop the offending bound with a diagnostic naming it; reading a face whose bounds share an edge must not terminate the process.
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed coincident-edge wire merging cannot decide which wire owns the shared edge segment; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: "multi-bound face crashes reader, outer-alone loads clean", "shared-edge-reusing inner wire crashes reader (NOT GEOMETRIC_CURVE_SET-orphaned, contra Q14's flagged note)".
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa132 — B-spline surface with a genuinely duplicated control-point column (real C0 fold, not a placeholder) causes the reader to drop the face entirely: the OPEN_SHELL survives as an empty container (0 faces, 0 wires, 0 edges); twisted-face checking is never reached
 
@@ -25841,6 +25882,7 @@ Reproducer: rectangular face with a B-spline (not line) top edge; no T-junction 
 
 - **Expected kernel behavior**: Decide each bound wire's role from geometry — point-in-face containment classification against the other wires of the same face — rather than trusting the declared `FACE_OUTER_BOUND`/`FACE_INNER_BOUND` labels or the raw winding direction, then reverse only the wires that disagree with the consensus and report each reversal. What must hold is the RELATIVE sense of outer and hole wires, not the absolute sense of any one of them; and reading a multi-bound face whose edges carry no pcurves must not terminate the process.
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed orientation repair flips the outer wire's winding, breaking the inner wires' relative-consistency; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: "multi-bound face crashes reader, outer-alone loads clean", "inner wires crash reader regardless of relative winding, outer-alone loads clean".
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa134 — strip-face checking strip-with-pin
 
@@ -25851,6 +25893,7 @@ Strip-like face (30×0.5 rectangle) with a pin protrusion (2×2 square) at one e
 **Defect class**: small-face checking.strip-face checking_at659` (line 662).
 
 - **Expected kernel behavior**: Reject with a diagnostic naming the offending bound: the face's inner bound (the "pin", spanning y in [-2,0]) does not lie inside its outer bound (the "strip", spanning y in [0,0.5]) at all -- the two wires meet only along the shared segment from (0,0) to (2,0), and the inner wire's entire footprint sits outside the outer wire's region. An inner bound must define a hole strictly within its outer wire's footprint; classify each candidate inner wire by containment against the outer wire before accepting it as a hole, and reject (never crash) when containment fails.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa135 — Face with three small inner wires (not a claimed cascading-removal effect) crashes the reader (SIGSEGV) as soon as the extra bound wire is present; loads cleanly with only the outer wire — small-area-wire repair is never reached
 
@@ -25860,6 +25903,7 @@ Strip-like face (30×0.5 rectangle) with a pin protrusion (2×2 square) at one e
 
 - **Expected kernel behavior**: Reject with a diagnostic naming the extra bound wire: a planar face whose outer wire alone loads cleanly but which crashes as soon as any one of its declared inner (small-area) wires is added must have that construction rejected during shape translation before the crash, not allowed to abort the process — building the face from the outer wire only, with a diagnostic identifying the dropped inner wire, is preferable to a hard crash.
 - **Notes**: **See also**: Tfa093. Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed small-area-wire repair removes the first small wire, which changes the area context and cascades removal of the second; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: "multi-bound face crashes reader, outer-alone loads clean", "first inner wire alone crashes reader, no cascade needed".
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa136 — FACE_BOUND wrapping a single, non-closed edge entirely outside the face's bounds loads silently with no diagnostic (OCCT tolerates; gmsh rejects)
 
@@ -25880,6 +25924,7 @@ Strip-like face (30×0.5 rectangle) with a pin protrusion (2×2 square) at one e
 **Root cause**: not a specific single-edge-bound defect (unlike the Tfa085/Tfa106/Tfa118 family) — isolation confirms the crash trigger is the presence of the additional bound wire as encoded, but the precise internal mechanism (e.g. `BRepLib` pcurve/tolerance handling on multi-bound faces of this construction) was not traced further in this pass.
 
 - **Expected kernel behavior**: Reject with a diagnostic naming the inner hole wire: a rectangular face whose outer wire alone loads cleanly but which crashes as soon as the inner rectangular-hole wire is added must have that construction rejected during shape translation before the crash — build the face from the outer wire only, flagging the dropped hole wire, rather than letting the process abort.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed twisted-face checking classifies twist using only the outer wire's winding, missing the hole's counter-winding contribution; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: "multi-bound face crashes reader, outer-alone loads clean", "inner hole wire crashes reader, outer-alone loads clean".
 ### Tfa138 — Tiny near-degenerate 3-edge boundary wire on a SURFACE_OF_REVOLUTION whose profile runs radially (producing a disk, not a cylinder, despite being named 'cylinder_srf') crashes the reader (SIGSEGV); root cause not fully isolated; FixAddNaturalBound is never reached
@@ -25890,6 +25935,7 @@ Strip-like face (30×0.5 rectangle) with a pin protrusion (2×2 square) at one e
 
 - **Notes**: RUNTIME-VERIFIED 2026-08-09 — this file's recorded `signal(11)` is driven by the revolved surface's axis attribute holding a full three-axis placement where a single-axis placement is declared; the reader's downcast yields null and the abort happens while converting the surface, before the titled condition can be exercised. This was the long-open Twi144 mystery: repairing the line-direction references alone cannot reach this slot. Census in `BACKLOG.md` (M.18).
 - **Expected kernel behavior**: Reject with a diagnostic naming the boundary wire on this SURFACE_OF_REVOLUTION: a profile curve running radially (perpendicular to the rotation axis) produces a degenerate disk rather than the surface the entity's name implies, and combined with a boundary wire whose vertices sit only ~0.01-0.02mm apart near the disk's parametric singularity at its center, the construction must be rejected before shape translation rather than allowed to crash the process.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed FixAddNaturalBound incorrectly constructs a natural boundary at an assumed seam-closure point on a surface flagged u_closed but not actually closed; that method is never reached (crash occurs first). The real, verified structural anomaly is different from the title's claim: the SURFACE_OF_REVOLUTION's profile curve is radial (perpendicular to the rotation axis), producing a disk rather than a cylinder. Root cause of the crash itself is NOT fully isolated in this pass. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: "radial-profile revolution surface crashes reader", "disk surface mislabeled as cylinder crashes on tiny boundary".
 ### Tfa139 — Tiny planar face with an internal pin-shaped hole loop crashes the reader (SIGSEGV) as soon as the extra bound wire is present; loads cleanly with only the outer wire — spot-face checking is never reached
@@ -25900,6 +25946,7 @@ Strip-like face (30×0.5 rectangle) with a pin protrusion (2×2 square) at one e
 
 - **Expected kernel behavior**: Reject with a diagnostic naming the internal hole loop: a tiny planar face whose outer wire alone loads cleanly but which crashes as soon as the internal pin-shaped hole loop is added must have that loop rejected during shape translation before the crash — build the face from the outer wire only, with a diagnostic identifying the dropped loop, rather than aborting the process.
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed spot-face checking classifies the face as a degenerate 'spot' without accounting for the internal pin-loop feature; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: "multi-bound face crashes reader, outer-alone loads clean", "internal pin-loop hole crashes reader, outer-alone loads clean".
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa140 — Rectangular face with a self-intersecting (figure-8) inner wire crashes the reader (SIGSEGV) as soon as the extra bound wire is present; loads cleanly with only the outer wire — loop-wire repair is never reached
 
@@ -25909,6 +25956,7 @@ Strip-like face (30×0.5 rectangle) with a pin protrusion (2×2 square) at one e
 
 - **Expected kernel behavior**: Reject with a diagnostic naming the self-intersecting inner wire: a rectangular face whose outer wire alone loads cleanly but which crashes as soon as the figure-8 self-intersecting inner wire is added must have that wire rejected before shape translation (self-intersection is detectable before ever attempting to build topology from it) rather than crashing the process or silently producing non-manifold output.
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit): retitled/redescribed — original claimed loop-wire repair produces non-manifold output instead of rejecting/healing the self-intersecting inner path; that method is never reached because the file crashes (SIGSEGV) during shape translation before any wire-level healing pass runs. Isolation testing (stripping the extra bound wire) confirms the outer-bound-alone face loads cleanly; the crash is reproduced by restoring the additional wire. Part of the ~127-entry face-repair/small-face-check misnomer family — see `BACKLOG.md` Q14. Synonyms: "multi-bound face crashes reader, outer-alone loads clean", "self-intersecting inner wire crashes reader, outer-alone loads clean".
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa141 — Face with two inner wires (one LINE-edged, one geometrically-identical B-spline-edged) crashes the reader (SIGSEGV) as soon as the extra bound wire is present; loads cleanly with only the outer wire — coincident-edge wire merging is never reached
 
@@ -26289,6 +26337,7 @@ Outer wire is pre-split at x=5 on both its top and bottom edges; a "splitter" `L
 **Expected behavior**: reject the malformed/non-conformant input with a clear per-entity diagnostic; never crash. A crash is a genuine robustness defect worth keeping in the corpus — just not evidence of the specific classifier misbehavior originally claimed.
 - **Expected kernel behavior**: Reject with a diagnostic naming the ADVANCED_FACE (not the inner wire specifically, since removing the inner bound entirely still reproduces the crash): the crash's true trigger lies elsewhere in this file's construction, so a correct kernel must isolate and reject whatever malformed construct is actually responsible with a diagnostic before shape translation, rather than aborting the process — the collapsed-tip triangular inner wire itself is not the cause and must not be blamed by any diagnostic that is emitted.
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed as an honest crash-robustness fixture — original claimed pin-face checking produces a specific silent misclassification/undefined-behavior outcome; in reality the process crashes before that method (or any face-repair/small-face-check method) is ever reached. The crash itself is genuine and is retained as the fixture's real, verified defect (Expected validation unchanged: `signal(11)/signal(11)`). Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: "collapsed-pin-tip crash persists without inner wire".
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa178 — PLANE face with a triangular inner wire touching an outer corner crashes the reader (SIGSEGV) even with the inner wire removed; small-area-wire repair is never reached
 
@@ -26299,6 +26348,7 @@ Outer wire is pre-split at x=5 on both its top and bottom edges; a "splitter" `L
 **Expected behavior**: reject the malformed/non-conformant input with a clear per-entity diagnostic; never crash. A crash is a genuine robustness defect worth keeping in the corpus — just not evidence of the specific classifier misbehavior originally claimed.
 - **Expected kernel behavior**: Reject with a diagnostic naming the ADVANCED_FACE (not the inner wire specifically, since removing the inner bound entirely still reproduces the crash): the crash's true trigger lies elsewhere in this file's construction, so a correct kernel must isolate and reject whatever malformed construct is actually responsible with a diagnostic before shape translation, rather than aborting the process — the inner wire's corner-touching vertex itself is not the cause and must not be blamed by any diagnostic that is emitted.
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed as an honest crash-robustness fixture — original claimed small-area-wire repair produces a specific silent misclassification/undefined-behavior outcome; in reality the process crashes before that method (or any face-repair/small-face-check method) is ever reached. The crash itself is genuine and is retained as the fixture's real, verified defect (Expected validation unchanged: `signal(11)/signal(11)`). Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: "corner-touching inner wire crash persists without inner wire".
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa179 — PLANE face whose outer wire includes a zero-length LINE edge crashes the reader (SIGSEGV); twisted-face checking is never reached
 
@@ -26309,6 +26359,7 @@ Outer wire is pre-split at x=5 on both its top and bottom edges; a "splitter" `L
 **Expected behavior**: reject the malformed/non-conformant input with a clear per-entity diagnostic; never crash. A crash is a genuine robustness defect worth keeping in the corpus — just not evidence of the specific classifier misbehavior originally claimed.
 - **Expected kernel behavior**: Reject with a diagnostic naming the degenerate zero-length LINE edge in the outer wire (from (10,0,0) to itself): before building the face, detect any edge whose start and end points coincide within tolerance and refuse to sample a tangent/normal from it — a load must never crash; if the edge cannot simply be dropped without breaking the wire's closure, reject the whole face with the diagnostic rather than aborting the process.
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed as an honest crash-robustness fixture — original claimed twisted-face checking produces a specific silent misclassification/undefined-behavior outcome; in reality the process crashes before that method (or any face-repair/small-face-check method) is ever reached. The crash itself is genuine and is retained as the fixture's real, verified defect (Expected validation unchanged: `signal(11)/signal(11)`). Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: "zero-length LINE edge crash".
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa180 — PLANE face with outer and inner wires sharing a B-spline curve edge crashes the reader (SIGSEGV) even with the inner wire removed; coincident-edge wire merging is never reached
 
@@ -26319,6 +26370,7 @@ Outer wire is pre-split at x=5 on both its top and bottom edges; a "splitter" `L
 **Expected behavior**: reject the malformed/non-conformant input with a clear per-entity diagnostic; never crash. A crash is a genuine robustness defect worth keeping in the corpus — just not evidence of the specific classifier misbehavior originally claimed.
 - **Expected kernel behavior**: Reject with a diagnostic naming the shared B_SPLINE_CURVE_WITH_KNOTS edge referenced by both the outer wire and the FACE_INNER_BOUND: detect that a curved edge is aliased across two distinct wires of the same face before translation and refuse to build the face from it — since the crash persists even with the inner bound entirely removed, the malformed construct evidently lies elsewhere in the file as well, so a correct reader must validate the whole shape's edge/wire graph up front and reject any face it cannot safely construct, never letting translation abort the process.
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed as an honest crash-robustness fixture — original claimed coincident-edge wire merging produces a specific silent misclassification/undefined-behavior outcome; in reality the process crashes before that method (or any face-repair/small-face-check method) is ever reached. The crash itself is genuine and is retained as the fixture's real, verified defect (Expected validation unchanged: `signal(11)/signal(11)`). Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: "shared B-spline edge crash persists without inner wire".
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa181 — PLANE face with a 4-edge outer wire and a 5-edge inner wire (claimed open-ended tail) loads intact as an ordinary two-wire face; FixLoopWire is never invoked on an ordinary read
 
@@ -26971,6 +27023,7 @@ Mode-flag initialization (-1 default) prevents undefined comparisons in NeedFix(
 - **Expected kernel behavior**: Reject with a diagnostic naming the ADVANCED_FACE on the SURFACE_OF_REVOLUTION whose 4-edge EDGE_LOOP reuses the same profile edge twice — once forward, once reversed — to close the periodic seam: before translating, detect that the same edge entity appears twice in one loop with opposite senses and refuse to build the face from it — a load must never crash; since the reused edge is structurally load-bearing for the loop's closure, the whole face (and the read, if dropping it breaks the shell) must be rejected with the diagnostic instead of aborting the process.
 - **Tier-3 assertion**: load == "ok"
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed as an honest crash-robustness fixture — original claimed periodic-degenerate seam repair produces a specific silent misclassification/undefined-behavior outcome; in reality the process crashes before that method (or any face-repair/small-face-check method) is ever reached. The crash itself is genuine and is retained as the fixture's real, verified defect (Expected validation unchanged: `signal(11)/signal(11)`). Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: "surface-of-revolution degenerate-seam crash".
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tfa234 — CYLINDRICAL_SURFACE face (radius 1.5) with an explicit seam edge loads intact; FixAddNaturalBound is never invoked on an ordinary read
 
@@ -27325,6 +27378,7 @@ Integrated face-healing pipeline; mode-dependent cascade via base-slant-apex dec
 **Pattern**: 6-edge loop (4 main + 2 dummy seam) on CYLINDRICAL_SURFACE; dummy pair inserted at P1 with pcurves offset from true seam.
 **Coverage**: ShapeFix_Wire.FixDummySeam seam edge validation and removal when seam no longer coincides with surface seam.
 - **Expected kernel behavior**: The last two edges form an out-and-back pair: both run between the same two vertices along the same line, and both pcurves sit at u=0.002 spanning v from 1.0 down to 0.5 and back, enclosing nothing. They are appended at the end of the loop, after the edge that returns to the start vertex, so the listed sequence is not a connected chain — reorder the edges into a connected chain first, which places the pair at the junction it really belongs to. Then remove both and rejoin the neighbours at the combined vertex: the pair is not a genuine surface seam, because a real seam lies on the periodic boundary at u=0 or u=2pi, not at u=0.002.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi112 — ShapeFix_Wire.FixGaps2d 2D-gap repair on cylindrical surface
 
@@ -27512,12 +27566,14 @@ Three edges forming chain with vertex duplicates: v1→v2(dup)→v3(dup)→v4. F
 Wire on a 3D surface (plane) where two edges intersect in 2D parameter space but not in 3D. The healer over-eagerly splits both edges at the parameter-space intersection, missing that the 3D gap should absorb the discrepancy. Tests tolerance-vs-geometry logic in intersection repair.
 - **Expected kernel behavior**: The second edge lies wholly at z=1 while the face's surface is the z=0 plane; projected into the face's parameters it crosses the first edge at (5,5), but in 3D the two are 1.0 unit apart, seven orders of magnitude above the declared accuracy. Qualify every parameter-space crossing against the 3D geometry before repairing it, and split only when the 3D separation at the crossing is within tolerance — so no split may happen here. Report the actual defects instead: the second edge does not lie on the face's surface, the first edge's `LINE` along (1,0,0) does not pass through its declared end vertex (10,10,0), and the two edges share no vertex, so the wire is not a chain at all.
 - **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi138 — ShapeAnalysis_Wire.CheckSmall edge-length comparison
 
 Wire with a tiny edge below the threshold where CheckSmall comparison uses parameter-difference (not arc-length) for some curve types. B-spline with degenerate knot multiplicity creates large 3D arc from small parameter range; checker falsely classifies as small. Tests parameter vs. arc-length measurement.
 - **Expected kernel behavior**: The edge's curve is declared degree 3 with knots (0.0, 1.0) at multiplicities (4,4) — eight knots — but carries only three control points, where a clamped cubic needs four; the identity knot-count = control-point-count + degree + 1 fails. Validate that identity before evaluating any B-spline and reject the curve with a diagnostic naming the entity, rather than reading past the end of the control-point array. Only once a curve is valid may an edge-smallness test run, and that test must measure 3D arc length, or endpoint-and-midpoint coincidence, never the width of the parameter range — a narrow parameter range can carry an arbitrarily long arc.
 - **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi139 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before reorder-seed repair is reached
 - **Status**: retitled 2026-08-07: bytes show 5/5 LINEs (#110, #116, #122, #127, #131) with a DIRECTION entity (#12, #115, #121, #126, #130) in the vector slot instead of a `#N` reference to a VECTOR; the reader aborts in transfer, so the seed-choice defect the old title named is never reached. Same crash class as the Twi218/222/224/225/227/231 cohort. Retitle-not-repair per the Q14 precedent. See BACKLOG (I).
@@ -27525,6 +27581,7 @@ Wire with a tiny edge below the threshold where CheckSmall comparison uses param
 Wire with 5 edges where the reorder algorithm picks edge[2] as seed; reorder propagates from seed but seed had wrong orientation, causing adjacent edges to fail head-to-tail test. Tests seed selection and propagation in wire-order repair.
 - **Expected kernel behavior**: Reject with a diagnostic naming each unbuildable curve: every one of the wire's five LINE entities (#110, #116, #122, #127, #131) has a DIRECTION where Part 21 requires a `#N` reference to a VECTOR, so no edge curve can be constructed at all. A kernel must report the first construction failure per entity rather than dereferencing a null curve; whatever wire-ordering question the pentagon-with-a-reflex-vertex-at-(0.5,0.5) shape was meant to pose is unreachable until every LINE in the file is fixed.
 - **Notes**: **See also**: Twi226, Twi229. RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi140 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before tail-detection repair is reached
 - **Status**: retitled 2026-08-07: bytes show 2/2 LINEs (#110, #131) with a DIRECTION entity (#12, #130) in the vector slot instead of a `#N` reference to a VECTOR; the reader aborts in transfer, so the tail defect the old title named is never reached. Same crash class as the Twi218/222/224/225/227/231 cohort. Retitle-not-repair per the Q14 precedent. See BACKLOG (I).
@@ -27532,12 +27589,14 @@ Wire with 5 edges where the reorder algorithm picks edge[2] as seed; reorder pro
 Wire with last edge a B-spline whose tangent at endpoint is undefined (degenerate knot with multiplicity = degree+1). CheckTail's tangent calculation fails silently, leaving defective tail undetected. Tests tangent-vector robustness on singular curves.
 - **Expected kernel behavior**: Reject with a diagnostic naming entities #110 and #131: both LINEs put a DIRECTION where Part 21 requires a `#N` reference to a VECTOR, so neither of the wire's two straight edges can be built. Separately, the middle edge's B_SPLINE_CURVE_WITH_KNOTS (#122) repeats its first pole and its last pole back-to-back (poles #102,#102,#120,#120), which collapses the derivative to zero at both ends of that degree-3 curve — a genuinely degenerate tail tangent that a kernel must also flag once the file parses at all, rather than silently accepting an undefined direction.
 - **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi141 — ShapeFix_Wire.FixSelfIntersectingEdge close-loop iteration
 
 Wire forms a near-closed loop with a tiny self-intersecting tail; iteration limit (30 cycles) reached before resolution leaves tail intact. Tests loop-removal convergence and iteration-runaway prevention. Common in real CAD data with micro-features near closure.
 - **Expected kernel behavior**: The first four edges already close a 10x10 square; a fifth edge then runs 0.05 units from the closure vertex (0,0,0) back along the +X axis, lying exactly on top of the first edge for its whole length. Treat the last-versus-first pair as a candidate like any other, detect the collinear overlap, and cut the stub away so the four-edge closed square is restored; the repair must terminate, so bound the number of re-detection passes and fail loudly with a diagnostic if the overlap survives them, rather than exhausting an iteration cap and returning silently. That stub's declared direction (1.0, 0.5, 0.0) also does not pass through its own end vertex (0.05,0,0), and must be rejected on that basis.
 - **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi142 — ShapeFix_Wire.FixDegenerated insertion at index 0
 
@@ -27546,6 +27605,7 @@ Wire with degenerate edge (zero-length) at position 0; FixDegenerated's index lo
 **Root cause**: Off-by-one or missing boundary check when index equals 0.
 - **Expected kernel behavior**: The loop's first entry is a zero-length edge: its two distinct vertex instances both sit at (0,0,0). Handle removal at index 0 exactly as at any other index — drop the edge, merge the two coincident vertices into one, and re-close the ring so the last edge's end becomes the new first edge's start, remembering that index 0's predecessor is the last edge and not index -1 — leaving a four-edge closed square. An implementation that special-cases only interior positions leaves a dangling vertex or reads out of range; the fourth edge must also be rejected, since its `LINE` along (0,-1,0) from (10,10,0) never reaches its declared end vertex (0,10,0).
 - **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi143 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before intersecting-edge analysis is reached
 - **Status**: retitled 2026-08-07: bytes show 5/5 LINEs (#110, #120, #133, #143, #151) with a DIRECTION entity (#12, #132, #142, #150) in the vector slot instead of a `#N` reference to a VECTOR (two of the LINEs, #110 and #120, both point at the same #12); the reader aborts in transfer, so the overlap defect the old title named is never reached. Same crash class as the Twi218/222/224/225/227/231 cohort. Retitle-not-repair per the Q14 precedent. See BACKLOG (I).
@@ -27555,6 +27615,7 @@ Two parallel edges coincident along their entire length but in opposite directio
 **Root cause**: Direction check doesn't recognize antiparallel coincident edges as intersecting.
 - **Expected kernel behavior**: Reject with a diagnostic naming each unbuildable curve: all five of the wire's LINE entities put a DIRECTION where Part 21 requires a `#N` reference to a VECTOR, so no edge curve can be constructed. Once curves can be built, the file still separately describes edge #111 running (0,0)->(10,0) and edge #121 running (10,0)->(0,0) back along the identical LINE #110/#120 pair — full-length antiparallel overlap on the same underlying geometry — which a kernel must flag as a degenerate/coincident boundary rather than accept as two independent, non-intersecting edges.
 - **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi144 — ShapeFix_Wire.FixSeam non-cylindrical periodic surface
 
@@ -27563,6 +27624,7 @@ Wire on periodic SURFACE_OF_REVOLUTION (conical profile) crossing seam; FixSeam 
 **Root cause**: Hardcoded cylinder-only logic; needs generalization for all periodic surfaces.
 - **Notes**: RUNTIME-VERIFIED 2026-08-09 — this file's recorded `signal(11)` is driven by the revolved surface's axis attribute holding a full three-axis placement where a single-axis placement is declared; the reader's downcast yields null and the abort happens while converting the surface, before the titled condition can be exercised. This was the long-open Twi144 mystery: repairing the line-direction references alone cannot reach this slot. Census in `BACKLOG.md` (M.18).
 - **Expected kernel behavior**: The face's surface is a revolution of the line through (5,0,0) with direction (1,0,1) about the Z axis — a cone — but the wire carries no pcurves, three of its four edges have end vertices that do not lie on their own `LINE`s (one runs along (1,0,0) from (5,0,0) yet ends at (6,2,3)), and the chain is broken because the first edge ends at (7.071,0,2.071) while the second starts at a second vertex instance back at (5,0,0). Validate every edge against its own curve and against the face's surface before any seam reasoning, and reject or repair the off-curve vertices first. Where an edge genuinely crosses the periodic boundary, take the period shift from the surface's own u-period — a revolution with a slanted profile has the same 2pi period as a cylinder — rather than from a cylinder-only special case.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 - **Notes**:
 ### Twi145 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before 3D-gap analysis is reached
@@ -27573,6 +27635,7 @@ Wire on surface where 3D edges have a real gap but parametric 2D curves connect 
 **Root cause**: Logic assumes 2D closure guarantees 3D closure; missing independent 3D gap check.
 - **Expected kernel behavior**: Reject with a diagnostic naming each unbuildable curve: all four of the wire's LINE entities put a DIRECTION where Part 21 requires a `#N` reference to a VECTOR, so no edge curve can be built. Once that is fixed, the file still separately places edge #111's end vertex at (10.0,0.0,0.0) while edge #126's start vertex #121 sits at (10.1,0.0,0.0) — a real 0.1-unit 3D gap between consecutive edges — which a kernel must detect by comparing actual endpoint coordinates rather than trusting the EDGE_LOOP's listed order.
 - **Notes**: **See also**: Twi228. RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi146 — ShapeFix_Wire.FixLacking wrap-around on closed surface
 
@@ -27581,25 +27644,30 @@ Wire on cylinder missing edge crossing periodic seam; FixLacking inserts edge bu
 **Root cause**: Period wrapping not accounted when inserting closure edge on periodic surface.
 - **Expected kernel behavior**: The closing edge is a straight `LINE` from (-5,0,0) to (5,0,0): a diameter chord through the cylinder's axis, so it does not lie on the radius-5 surface and no pcurve can be projected for it. Construct a closure on a periodic surface in parameter space rather than in 3D: the wire's u values run 0, pi/2, pi, so the closure must continue in the same direction to u=2pi rather than jumping back to u=0, keeping the contour monotone in u and free of self-overlap. If no closure can be placed on the surface — as here — reject the edge with a diagnostic instead of projecting a chord onto an arbitrary meridian.
 - **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi147 — A direction whose ratio list nests an aggregate where three reals are required makes the reader abort
 - **Status**: retitled 2026-08-02: bytes contain `#128=DIRECTION('',(-1.47552825814757,(1.0,0.0)))`, a nested aggregate where three reals are required. See BACKLOG (K).
 Wire with a gap bridged by extending one edge; the extension creates a self-intersection with another edge. FixGaps3d fails to detect the induced self-intersection before committing the fix.
 - **Expected kernel behavior**: The first edge ends at vertex (5,0,0) and the second begins at a distinct vertex (5.01,0,0): a 0.01 gap on a 10-unit contour, five orders of magnitude above the declared 1.0E-7 accuracy. Close it by changing geometry — extend one edge's line or trim the other to a shared point, and merge the two vertices — rather than by inflating vertex tolerance to 0.01, and re-test the modified edge against every other edge of the wire for newly created crossings or overlaps before committing, backing out or moving the other end if the fix introduces one. The fourth edge's direction entity must be rejected as well: its ratios are written as `(-1.47552825814757,(1.0,0.0))`, a nested aggregate rather than three reals, and must not be guessed at.
 - **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi148 — ShapeAnalysis_Wire.CheckClosed degenerate-tolerance
 Wire whose closing distance is exactly equal to the closure tolerance (1.0E-7). Non-strict equality (==) leads to false-positive closure, masking incomplete loop detection.
 - **Expected kernel behavior**: The wire's last edge ends at (1.0E-7, 0, 0) while its first begins at (0,0,0), so the closure gap is exactly the file's declared distance accuracy of 1.0E-7. Fix one convention for that boundary case and apply it identically in analysis and repair — treating a distance less than or equal to tolerance as coincident is the safe choice, since tolerance means indistinguishable at this accuracy — and then actually merge the two vertices so the wire becomes topologically closed. Reporting closure while leaving two distinct vertices in place is the failure mode: downstream face building still sees an open contour.
 - **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi149 — ShapeFix_Wire.FixDummySeam non-orientable surface
 Wire on non-orientable surface; FixDummySeam assumes orientability and incorrectly removes a seam edge that is actually topology-defining.
 - **Expected kernel behavior**: The wire is a closed 5x5 rectangle on a `PLANE`. Its second and fourth edges run in exactly opposite directions, (0,1,0) and (0,-1,0), but they lie 5 units apart at x=5 and x=0 and are not consecutive, so a duplicate-pair test must require both adjacency in the wire and curves that coincide within tolerance along their length — opposite tangent direction alone is not evidence. Neither condition holds here, so all four edges must be kept; removing the fourth would open the boundary and destroy the face.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi150 — ShapeAnalysis_Wire.CheckLacking parallel-tangent
 Adjacent edges with tangents parallel to within tolerance; CheckLacking's tangent-discontinuity test returns false-negative, failing to detect lack of sufficient continuity.
 - **Expected kernel behavior**: At the junction (10,0,0) the two edges share a vertex exactly, and the outgoing direction (0.999875, 0.015625, 0) differs from the incoming (1,0,0) by only 0.0156 rad. A missing-edge check asks whether consecutive edges meet in position, not whether their tangents agree, so nothing may be inserted here; a near-parallel tangent is a smoothness observation and must be reported separately, if at all. The defects a consistency check should catch on this file are edges 2, 3 and 4, whose declared `LINE` directions do not pass through their own end vertices — edge 2's line reaches y about 0.156 at x=20 while its end vertex sits at y=0.1.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi151 — Cubic B-spline whose control polygon is strictly x-monotonic, so neither claimed cusp exists: splitting it is a false positive
 - **Status**: retitled 2026-08-04 — verified independently 2026-08-04: control x-ordinates [-2.0, -1.0, 0.0, 1.0, 2.0] are strictly increasing; a 400-point de Boor sample yields 0 self-intersections. NEGATIVE CONTROL. The old title named a self-intersection/cusp/negligible-wire defect the geometry does not contain. Retitle-not-repair per the Q14 precedent; the `Expected kernel behavior` already states the false-positive-avoidance requirement. See BACKLOG (L).
@@ -27607,6 +27675,7 @@ Adjacent edges with tangents parallel to within tolerance; CheckLacking's tangen
 Single edge with a cusp (zero-derivative point); FixSelfIntersectingEdge tries to split at cusp but the parameter is undefined due to degeneracy.
 - **Expected kernel behavior**: The edge's curve is a degree-3 B-spline whose five control points have strictly increasing x (-2, -1, 0, 1, 2), so its derivative never vanishes and the curve is x-monotone: it has no cusp and no self-crossing, even though its control polygon dips below the chord. Locate cusp candidates by subdividing the curve and evaluating the derivative, and refuse to split at any parameter where the derivative is non-zero — the correct outcome is to leave this edge intact. Two `VECTOR` entities in the file are also written with two attributes and an inline coordinate list where a direction reference and a magnitude are required, and must be rejected rather than default-filled.
 - **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi152 — ShapeFix_Wire.FixIntersectingEdges line-segment-vs-circle-arc
 
@@ -27663,6 +27732,7 @@ Wire contains same edge twice with forward and reverse orientations. FixReorder 
 **Source**: OCCT_HEAL_COVERAGE_V3.md ShapeFix_Wire.FixReorder_at1352, _at488  
 **Root cause**: EDGE_LOOP reorder logic does not detect duplicate edge references with opposite orientations; treats them as independent entities
 - **Expected kernel behavior**: Reject with a diagnostic naming entity #72: its LINE puts a DIRECTION (#70) where Part 21 requires a `#N` reference to a VECTOR, so the closing edge's curve cannot be built. Once that is fixed, the EDGE_LOOP still lists edge-curve #100 twice — once as ORIENTED_EDGE #110 (`.T.`) and again as #114 (`.F.`) — alongside edges #101-#103; a kernel must recognize that the same EDGE_CURVE reference appearing twice in one loop, even with opposite orientation flags, does not by itself make a 5-sided boundary and should be rejected or collapsed rather than treated as five independent sides.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi157 — ShapeAnalysis_Wire.CheckSelfIntersection figure-8 wire
 Wire whose path forms a figure-8 (crosses itself at one point). CheckSelfIntersection must detect the crossing at the self-intersection point where the two lobes meet.
@@ -27673,6 +27743,7 @@ Wire whose path forms a figure-8 (crosses itself at one point). CheckSelfInterse
 Wire on cylindrical surface where 2D pcurves leave a gap exactly at u=0 (the seam). FixGaps2d's gap-bridging fails to handle seam-crossing correctly.
 - **Notes**: RUNTIME-VERIFIED 2026-08-09 — this file's recorded `signal(11)` is driven by the revolved surface's axis attribute holding a full three-axis placement where a single-axis placement is declared; the reader's downcast yields null and the abort happens while converting the surface, before the titled condition can be exercised. This was the long-open Twi144 mystery: repairing the line-direction references alone cannot reach this slot. Census in `BACKLOG.md` (M.18).
 - **Expected kernel behavior**: The face's surface is a revolution of a radius-1 `CIRCLE` lying in the z=0 plane about the Z axis through that circle's own centre: every point of the generatrix is the same distance from the axis, so the swept surface collapses back onto the single circle and has no two-parameter domain. Check a revolution's generatrix for this coaxial degeneracy before building any parametric geometry on it, and reject the surface and its face with a diagnostic. The sole edge, a vertical line from (1,0,0) to (1,0,1.5), does not lie on that circle at all, so no seam-gap repair is meaningful — there is no parameter space in which to compute one.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi159 — ShapeAnalysis_Wire.CheckOrder wire-completely-reversed
 4-edge closed wire where all edges are .F. orientation. CheckOrder should detect reverse-traversal and flag it as a fixable mode rather than failing silently.
@@ -28309,6 +28380,7 @@ Surface with seam at u=π/4 (not standard 0 or 2π). FixDummySeam's heuristic as
 **Minimal reproducer**: Wire with 3 consecutive small tail edges (0.2 mm each) plus main edge. Call FixTails() expecting all tails removed; observe: first tail removed, second tail classification fails due to index shift.
 
 - **Expected kernel behavior**: Beyond the main edge's end at (10,0,0) the boundary continues through several 0.2-unit collinear stubs to (11,0,0.1) and the closing edge then runs straight back to the origin, so the protrusion is a single hair spread across four edges — and the chain is separately broken between the stub ending at (10.2,0,0) and the one starting at (10.4,0,0). Trim the whole out-and-back excursion back to the branch point at (10,0,0) rather than deleting one edge, re-deriving what remains of the protrusion after each removal instead of walking a list captured earlier, and close or report the 0.2 break. Guard curve construction while doing so: every line in this file names a direction in its vector slot, and each unbuildable curve must be reported per entity.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi223 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before order-mode-disagreement analysis is reached
 - **Status**: retitled 2026-08-07: bytes show 3/3 LINEs (#131, #134, #137) all referencing the same DIRECTION entity (#101) in the vector slot instead of a `#N` reference to a VECTOR; the reader aborts in transfer, so the seam-order defect the old title named is never reached. Same crash class as the Twi218/222/224/225/227/231 cohort. Retitle-not-repair per the Q14 precedent. See BACKLOG (I).
@@ -28321,6 +28393,7 @@ Surface with seam at u=π/4 (not standard 0 or 2π). FixDummySeam's heuristic as
 
 - **Expected kernel behavior**: Reject with a diagnostic naming each unbuildable curve: all three of the wire's LINE entities point at #101, a DIRECTION, where Part 21 requires a `#N` reference to a VECTOR, so no edge curve on this cylindrical wire can be built. The seam-crossing scenario the old title described — PCURVEs parametrized at u=0, u=π/2, and u=π wrapping around a periodic surface — is unreachable until every LINE in the file is fixed.
 - **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi224 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before any 3D gap repair is reached
 - **Status**: retitled 2026-08-02: bytes show 3/3 LINEs with a DIRECTION in the vector slot. Causally confirmed — inserting a real VECTOR and repointing the lines makes the file load (1 root, non-null). The gap defect the old title named is never reached. See BACKLOG (I).
@@ -28333,6 +28406,7 @@ Surface with seam at u=π/4 (not standard 0 or 2π). FixDummySeam's heuristic as
 
 - **Expected kernel behavior**: Before closing a gap by moving a curve's end, weigh the gap against the edges it would alter: the 2.5-unit separation between the edge ending at (1,0,0) and the edge starting at (3.5,0,0) exceeds the whole 1.0-unit length of the first edge. Refuse to extend an edge by more than its own length — insert a fresh bridging edge between the two free vertices instead, or report the wire as unrepairably open quoting the gap and both edge lengths. Getting that far means refusing to build a curve whose vector attribute holds a direction entity, as all three lines here do, and saying which entity failed rather than dereferencing a null curve.
 - **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi225 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before self-intersection analysis is reached
 - **Status**: retitled 2026-08-02: bytes show 5/5 LINEs with a DIRECTION in the vector slot; the reader aborts before the self-intersection check. See BACKLOG (I).
@@ -28344,6 +28418,7 @@ Surface with seam at u=π/4 (not standard 0 or 2π). FixDummySeam's heuristic as
 **Minimal reproducer**: Wire with "Y" junction: vertex V_branch where 3 edges meet. CheckSelfIntersection reports FAIL3 (intersection detected) but the configuration is a topological branch, not a crossing.
 
 - **Expected kernel behavior**: The vertex at (5,0,0) is the end of one edge and the start of three more, so this bound is a branching graph rather than a simple closed contour. Count the edge-ends incident on each vertex and, where the count exceeds two, treat the wire as several loops or chains glued at a point — separate them or reject the bound naming the vertex — rather than reporting the shared point as a curve crossing to be split, which would only recreate the same junction. The lines here are equally unbuildable, a direction standing where a vector must, and that has to surface as a diagnostic rather than an abort partway through translation.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi226 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before boundary-intersection repair is reached
 - **Status**: retitled 2026-08-07: bytes show 4/4 LINEs (#130, #133, #136, #139) with a DIRECTION entity (#102, #132, #135, #138) in the vector slot instead of a `#N` reference to a VECTOR; the reader aborts in transfer, so the boundary-touch defect the old title named is never reached. Same crash class as the Twi218/222/224/225/227/231 cohort. Retitle-not-repair per the Q14 precedent. See BACKLOG (I).
@@ -28355,12 +28430,14 @@ Surface with seam at u=π/4 (not standard 0 or 2π). FixDummySeam's heuristic as
 **Minimal reproducer**: Wire on trimmed plane where Edge2 terminates exactly at boundary u=10, and Edge3 starts there. FixIntersectingEdges detects boundary touch as intersection and inserts spurious vertex, breaking edge sequence.
 - **Expected kernel behavior**: Reject with a diagnostic naming each unbuildable curve: all four of the wire's LINE entities put a DIRECTION where Part 21 requires a `#N` reference to a VECTOR, so no edge curve can be built. Whatever boundary-touch question the (10.0,5.0,0.0)-to-(9.9,5.1,0.0) corner was meant to pose is unreachable until every LINE in the file is fixed.
 - **Notes**: **See also**: Twi139. RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi227 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before pcurve gap repair is reached
 - **Status**: retitled 2026-08-02: bytes show 5/5 LINEs with a DIRECTION in the vector slot, plus a B-spline surface with a mismatched control-point arity. See BACKLOG (I).
 
 Wire on B-spline surface with non-uniform pcurve. FixGaps2d's bridge logic assumes uniform knot spacing; non-uniform knot distributions cause misaligned 2D geometry when gaps are bridged.
 - **Expected kernel behavior**: Reject the file, naming each unbuildable curve: LINE entities #400, #405, #408, #410, and #412 all put a DIRECTION (#102) where Part 21 requires a `#N` reference to a VECTOR, so five of the wire's six edge curves cannot be constructed. Two further PCURVE definitions (#403, #406) compound the malformation one level deeper, writing `#B_SPLINE_CURVE_WITH_KNOTS(...)` and `#LINE(...)` inline instead of as `#N` references. A kernel must surface a per-entity diagnostic for the first construction failure it hits rather than dereferencing a null curve; the pcurve-gap defect the old title named is unreachable because none of the wire's LINE-based edges can be built at all.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi228 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before large-coordinate gap analysis is reached
 - **Status**: retitled 2026-08-07: bytes show 6/6 LINEs (#130, #132, #135, #138, #141, #144) with a DIRECTION entity (#102, #134, #137, #140, #143) in the vector slot instead of a `#N` reference to a VECTOR; the reader aborts in transfer, so the large-coordinate gap defect the old title named is never reached. Same crash class as the Twi218/222/224/225/227/231 cohort. Retitle-not-repair per the Q14 precedent. See BACKLOG (I).
@@ -28368,6 +28445,7 @@ Wire on B-spline surface with non-uniform pcurve. FixGaps2d's bridge logic assum
 Adjacent vertices at coordinates 1e6 with gap at 1e-6 scale. CheckGap3d's relative tolerance fails because absolute coordinate magnitude dominates comparison, missing the geometrically significant gap.
 - **Expected kernel behavior**: Reject with a diagnostic naming each unbuildable curve: all six of the wire's LINE entities put a DIRECTION where Part 21 requires a `#N` reference to a VECTOR, so no edge curve can be built. Once curves can be built, vertex #111 at (1000005.0,1000000.0,0.0) and vertex #112 at (1000005.0000001,1000000.0000001,0.0) still leave a genuine ~1e-7 gap between edges #131 and #133 at 1e6-scale coordinates — small in absolute terms but the file's declared 1.0E-7 accuracy is exactly that order, so a kernel must compare the actual endpoint distance rather than a scale-relative tolerance that would drown a real gap at this magnitude.
 - **Notes**: **See also**: Twi145. RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi229 — Every LINE puts a direction entity in the slot that requires a vector, so the reader aborts before degenerate-edge reorder repair is reached
 - **Status**: retitled 2026-08-07: bytes show 5/5 LINEs (#130, #132, #134, #136, #138), all referencing the same DIRECTION entity #102, in the vector slot instead of a `#N` reference to a VECTOR; the reader aborts in transfer, so the all-degenerate defect the old title named is never reached. Same crash class as the Twi218/222/224/225/227/231 cohort. Retitle-not-repair per the Q14 precedent. See BACKLOG (I).
@@ -28375,6 +28453,7 @@ Adjacent vertices at coordinates 1e6 with gap at 1e-6 scale. CheckGap3d's relati
 Wire with all edges degenerate (zero-length). FixReorder has no direction to use for ordering and produces unspecified result.
 - **Expected kernel behavior**: Reject with a diagnostic naming each unbuildable curve: all five of the wire's LINE entities put the same DIRECTION (#102) where Part 21 requires a `#N` reference to a VECTOR, so no edge curve can be built. Independently, every one of this wire's five vertices (#110-#114) sits at the identical point (5.0,5.0,0.0), so even a correctly-built wire would have five zero-length edges; a kernel must reject a wire whose vertices are all coincident rather than attempt to order them.
 - **Notes**: **See also**: Twi139. RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi230 — Two LINEs write an unparseable `#TYPE(...)` token in the vector slot, so the reader aborts before high-knot-count intersection analysis is reached
 - **Status**: retitled 2026-08-07: bytes show LINE #401's third argument written as `#DIRECTION('',(0.0,1.0,0.0))` and LINE #405's as `#DIRECTION('',(0.0,-1.0,0.0))` — a `#` immediately followed by a type name, which is neither a valid `#N` entity reference (references are `#` + digits only) nor a valid inline aggregate. This is a third malformation variant distinct from the inline-aggregate (Twi218-class, no `#` prefix) and wrong-typed-reference (Twi222-class, valid `#N` pointing at the wrong entity type) patterns already catalogued. A later B_SPLINE_CURVE_WITH_KNOTS (#403) repeats the same stray-`#TYPE(...)` error in its pole list (`#CARTESIAN_POINT(...)`), but the reader aborts at #401 first, so the many-knots defect the old title named is never reached. See BACKLOG (I).
@@ -28388,6 +28467,7 @@ Wire with high-knot-count B-spline edges. CheckIntersectingEdges's sub-segment c
 Wire missing edge where existing path passes through degenerate vertex. FixLacking's insertion logic doesn't account for degenerate intermediate vertices in edge connectivity.
 - **Expected kernel behavior**: The second edge ends on a vertex at (5,5,0) and the next begins on a separate vertex instance at exactly the same point, leaving the wire disconnected in the middle although nothing geometric is missing. Merge vertices that coincide within tolerance and re-point their incident edges at the survivor, rather than inserting a connecting edge that would necessarily have zero length; only a genuine separation in the surface's parameter space justifies inserting one. Because every line in this file carries a direction in the slot reserved for a vector, curve construction has to fail loudly before any of that is attempted.
 - **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Twi232 — ShapeFix_Wire.FixSelfIntersection two-edges-two-intersections
 
@@ -29772,6 +29852,7 @@ minima near the target ISO parameter, leading to alternating evaluations.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs134.stp
 - **Fixture kind**: scaffold
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Gs135 — ShapeUpgrade_ConvertSurfaceToBezierBasis with-self-intersecting
 - **Category**: §12.2c surfaces (sub-class: face)
@@ -29798,6 +29879,7 @@ singularities in rotated frame.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs136.stp
 - **Fixture kind**: scaffold
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Gs137 — ShapeUpgrade_SplitSurface non-axis-aligned-split
 - **Category**: §12.2c surfaces (sub-class: surface)
@@ -29809,6 +29891,7 @@ clamped to nearest representable machine-precision double.
 - **Model impact**: Surface and trimming geometry
 - **Fixture path**: step-examples/12-2c-surfaces/Gs137.stp
 - **Fixture kind**: scaffold
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Gs138 — A B-spline surface missing four of its thirteen attributes, with a flat control-point list where a grid is required, makes the reader abort
 - **Status**: retitled 2026-08-02: bytes are `B_SPLINE_SURFACE_WITH_KNOTS('',1,1,(#20,#21,#22,#23),...)` — 9 attributes where the schema requires 13, and a flat control-point list where a grid is required — plus a LINE with a CARTESIAN_POINT in the direction slot. A bilinear patch is valid geometry, so the old title's premise was unfounded. See BACKLOG (H).
@@ -29824,6 +29907,7 @@ trimming or intersection operations assume richer surface.
 - **Fixture path**: step-examples/12-2c-surfaces/Gs138.stp
 - **Fixture kind**: scaffold
 - **Notes**: RUNTIME-VERIFIED 2026-08-08 by minimal reproducer — of the two anomalies named in the title, only the missing attributes cause the abort. Built a correct 13-attribute surface (loads), then introduced each defect alone: a flat control-point list where a grid is required LOADS; knot multiplicities written as reals LOAD; a control-point count contradicting the multiplicities LOADS; **omitting the four attributes, which shifts every later argument into the wrong slot, aborts**. Debugger on the minimal case lands at the same converter entry point and fault address as this fixture. So the flat list is a real byte-level anomaly but is NOT part of the crash mechanism.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Gs139 — IsUClosed pole-singularity false positive
 - **Category**: §12.2c surfaces (sub-class: ShapeAnalysis_Surface closure detection)
@@ -30598,6 +30682,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Description**: Two OPEN_SHELL entities intended to merge into one closed solid; sewing pass should join them but a vertex-tolerance mismatch leaves a gap in the merged result
 - **Reproducer recipe**: Feed two open shells to ShapeUpgrade_ShellSewing.Apply(); observe that edges intended to merge do not due to tolerance deviation
 - **Expected kernel behavior**: Kernel should either merge shells successfully within tolerance or raise a clear non-closure diagnostic
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: Resulting shell must be manifold; edges must have matching endpoints; no free wires allowed
 - **Tier-3 assertion**: load == "ok"
 
@@ -30608,6 +30693,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Description**: Shell with 4 faces meeting at a central vertex (star-shaped junction); reorienting one face requires propagating orientation change to neighbors; cascade is incomplete, leaving some faces in inconsistent orientation
 - **Reproducer recipe**: Feed open shell with 4 faces + central vertex to FixFaceOrientation; verify all face normals point consistently outward after fix
 - **Expected kernel behavior**: Kernel must fully propagate orientation fix across all connected faces meeting at junction
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: All face normal vectors must be consistently oriented; no outward-inward mixed orientations at shared edges
 - **Tier-3 assertion**: load == "ok"
 
@@ -30618,6 +30704,7 @@ OFFSET_SURFACE (+0.5 distance) with asymmetric coverage vs base bounds; myOffset
 - **Description**: Input compound contains 3+ shells; LoadShells iterates across them; iteration order affects subsequent healing results, indicating non-deterministic or order-dependent state
 - **Reproducer recipe**: Create compound with 3 shells in different order; call LoadShells; observe healing outcome changes with shell order
 - **Expected kernel behavior**: Healing outcome must be deterministic regardless of shell order in input compound
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: All output shells must pass closure and manifold checks; healing results must be identical for same input shells in any order
 - **Tier-3 assertion**: load == "ok"
 
@@ -30822,6 +30909,7 @@ Shell-level RemoveInternalWires is called but doesn't propagate to face-level in
 
 **File:** `Tsh106.stp`
 - **Expected kernel behavior**: The 4x4 face's 2x2 inner bound has every oriented edge individually reversed but the list order left unchanged, so consecutive entries do not join — read backwards, the same list is a properly connected clockwise hole. Reorder the oriented edges into a connected chain (reversing the sequence, not just the individual senses) before doing anything else with the wire. The hole encloses 4 square units against a declared accuracy of 1.0E-7, so it is a genuine hole: preserve it, and do not fill it as a negligible-area wire.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh107 — ShapeFix_Shell.Perform double-orient oscillation
 
@@ -30838,6 +30926,7 @@ Sewing tolerance set to 0.0; Apply should reject or use Confusion as minimum but
 
 **File:** `Tsh108.stp`
 - **Expected kernel behavior**: The two faces abut along x=1 but each owns its boundary: face 2's vertices sit at x=1.0000001, exactly the file's declared 1.0E-7 distance accuracy away from face 1's, and the two boundary edges are separate entities. Never let a caller-supplied sewing tolerance fall below the model's declared accuracy — clamp it to that floor — so this pair is recognised as one boundary and merged into a single shared edge with merged vertices instead of requiring bit-exact equality. Separately, one `VECTOR` entity names itself as its own direction attribute: detect the reference cycle while resolving the instance graph and reject that entity with a diagnostic rather than recursing into it.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh109 — ShapeFix_Shell.Perform rejection orphan vertices
 Face rejection in Perform() configured to reject faces failing checks creates orphan vertices. When a single face is rejected from a multi-face shell, its vertices become unreferenced by remaining faces, and downstream operations dereference invalid geometry pointers.
@@ -30936,6 +31025,7 @@ Box shell with bottom + 4 sides; top face omitted, creating free edges on the up
 
 Face with 3 internal wires (holes); RemoveInternalWires iterates internal wires but removes them in wrong order, leaving inconsistent face state. OCCT processes multi-hole faces; iteration order mismatch causes dangling wire references.
 - **Expected kernel behavior**: The 100x100 face has three 10x10 inner bounds whose loops run counter-clockwise, the same sense as the outer bound, so outer and inner boundaries put material on the same side and the face interior is undefined. Classify each wire by containment — all three lie strictly inside the outer loop and are mutually disjoint — then reverse every wire whose sense disagrees with the consensus, so holes are traversed opposite to the outer boundary. Each hole encloses 100 square units against a declared accuracy of 1.0E-7, so none may be discarded as a negligible-area wire, and all three must be settled in one classification pass so the result does not depend on iteration order.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 - **Notes**: Provenance tier: bytes-only (Q5 full-corpus 2026-07-01).
 ### Tsh125 — ShapeFix_Shell.Perform recursive context
@@ -30962,6 +31052,7 @@ Two shells in sewing input (Shell 1 and Shell 2) have implicitly different toler
 Shell with 5 faces; Perform's early-exit condition (myStatus contains FAIL2) triggers on false positive during face 2 processing, halting before faces 3–5 are processed. Remaining faces skip orientation fixing.
 - **Notes**: RUNTIME-VERIFIED 2026-08-09 — this file's recorded `signal(11)` is driven by an inline entity instance written directly inside another entity's argument list (a vector constructor carrying a bare coordinate list where a direction reference belongs). A conforming exchange file may only define entity instances as top-level numbered statements, so the reader cannot bind the inline construct, the attribute resolves to null, and the abort happens during loading — before any repair routine runs. Full census in `BACKLOG.md` (M.18).
 - **Expected kernel behavior**: Two of the five faces are individually broken: the x=0 face's three-edge loop contains an edge whose `LINE` lies along x=0, y=10 while its declared end vertex is (0,0,10), and the x=10 face uses two edges whose `LINE`s carry a zero-magnitude `VECTOR`. Validate each edge against its own curve and vertices before the shell-level pass, and keep any such failure local to its face: record the diagnostic, set that face aside, and continue so the remaining faces still receive a consistent orientation. A per-face failure must never short-circuit the shell pass and leave later faces unprocessed.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh129 — ShapeFix_Shell.Perform compound-input
 **Defect**: ShapeFix_Shell.Perform receives COMPOUND with multiple CLOSED_SHELLs; processes first shell only, silently ignores rest.
@@ -31040,6 +31131,7 @@ Shell with inverted face orientation. ShapeFix_Shell::Perform called twice; seco
 **Fault axis**: `orientation_seam_inconsistency`
 - **Expected kernel behavior**: The closed shell's three faces share no edges at all: each cap is bounded by a single full-period `CIRCLE` edge whose start and end vertex coincide, while the cylindrical wall's loop is closed by straight lines from (-50,0,100) to (50,0,100) and from (-50,0,0) to (50,0,0) — chords through the axis that do not lie on the radius-50 surface. Do not trust the closed-shell declaration: split each full-period closed edge at a parametric break so it can be matched to a neighbour, recompute the free boundaries, and if the wall boundary still cannot be matched to the cap circles, report the shell as open and name the unmatched faces rather than emitting a solid. One `EDGE_CURVE` also names a `VERTEX_POINT` in its curve slot; reject that entity with a diagnostic instead of dereferencing it as geometry.
 - **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh140 — ShapeAnalysis_Shell.CheckOrientedShells curved-faces
 
@@ -31051,6 +31143,7 @@ Shell with inverted face orientation. ShapeFix_Shell::Perform called twice; seco
 
 **Fault axis**: `curved_face_normal_fallacy`
 - **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. The three-face open shell mixes two planar caps (z=0, z=50) with a CYLINDRICAL_SURFACE side face bounded by two full circular edges; the cylindrical face carries same_sense=.F. and one cap also carries same_sense=.F.. A kernel must never crash on this input, and an orientation-consistency check written only in terms of a planar face normal cannot be applied unmodified to a curved face — it needs the surface's own local normal field (varying with parameter) rather than a single fixed direction, or curved faces are misclassified by construction.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh141 — ShapeUpgrade_ShellSewing.Apply self-sewing
 
@@ -31129,6 +31222,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 **Fixture**: `/Users/zellyn/gh/dodgy-step-files/step-examples/12-3a-shells/Tsh149.stp`
 
 - **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. The 8-face hexagonal prism mixes two planar caps (same_sense=.T.) with six CYLINDRICAL_SURFACE side faces (all same_sense=.F.), and each side face's own EDGE_LOOP closes on a degenerate zero-length EDGE_CURVE (start vertex == end vertex, used twice) rather than a proper seam. A kernel must never crash on this input: reject a face whose loop includes an edge with identical start and end vertices before running any per-face orientation propagation over the prism's six curved sides.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh150 — ShapeAnalysis_Shell.CheckOrientedShells thin-shell
 
@@ -31205,6 +31299,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 **Impact**: Merged shell contains mixed curve types at same edge; downstream algorithms expect uniform representation.
 
 - **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Shell1 (OPEN_SHELL #400) has two planar faces sharing a LINE-curve seam at x=[0,10],y=[0,10]; Shell2 (OPEN_SHELL #401) has a single face on a B_SPLINE_SURFACE_WITH_KNOTS whose boundary at the matching seam position uses a B_SPLINE_CURVE instead of a LINE. A kernel must never crash on this input: when merging or comparing edges at a shared seam position across shells, compare their actual sampled geometry rather than assuming curve types match, and reject or convert rather than blindly splicing a LINE boundary to a B-spline one.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh157 — ShapeFix_Shell.Perform circular-fix-dependency
 
@@ -31225,6 +31320,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 
 **Impact**: Seam edge direction inconsistency undetected; breaks surface continuity assumptions in downstream healing.
 - **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Three cylindrical band faces share a seam along the circular boundary; the seam edge is referenced with the same ORIENTED_EDGE sense (.T.) in adjacent faces' loops in some places rather than the opposite sense a manifold pair requires. A kernel must never crash on this input: classify a shared edge as free or properly shared by checking both its 3D proximity and its traversal direction in each referencing face's loop, since a proximity-only check cannot distinguish a correctly shared seam from two faces that happen to run the same edge the same way.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh159 — ShapeFix_Shell.FixFaceOrientation tetrahedron-flipped
 
@@ -31233,6 +31329,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 **Fixture**: Regular tetrahedron with west face marked `.F.` (inverted); all other faces outward-oriented. Edge reuse ensures no free edges, but face4's flipped same_sense breaks propagation chain.
 
 - **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Of the tetrahedron's four faces, three (base, front, right) carry same_sense=.T. and the fourth (left, sharing edges with both base and right) carries .F., while all six edges are shared correctly (no free edges). A kernel must never crash on this input, and resolving orientation from only immediate pairwise adjacency is not sufficient: the propagation must continue until every face's orientation has been checked against all of its neighbours, not just the first one visited, or a single dissenting face like this one can be missed.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh160 — ShapeAnalysis_Shell.CheckOrientedShells inverted-trace
 
@@ -31250,6 +31347,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 **Fixture**: Two coplanar triangles sharing one edge, second triangle vertex offset by 0.001 units in z to simulate near-coincident geometry requiring sewing. Valid output, but history-map defect breaks change auditing.
 
 - **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Two triangles share edge e01 exactly, but the third vertex of the second triangle is offset by 0.001 units in z from where the first triangle's geometry would place it — inside typical sewing tolerance but well outside the file's declared 1e-7 accuracy. A kernel must never crash on this input: any merge or adjustment made to reconcile near-coincident geometry during sewing must be recorded (which vertices/edges moved, and by how much) so the operation is auditable, not applied as an untracked silent adjustment.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh162 — ShapeFix_Shell.Perform reports-fixed-but-still-broken
 
@@ -31258,6 +31356,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 **Fixture**: Square base + 4 triangular sides. West face's same_sense=`.F.` and reversed edges simulate state where simple flip detection passes but deeper consistency checks fail. Perform's exit condition is satisfied prematurely.
 
 - **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Four of the pyramid's five faces (base plus south/east/north sides) carry same_sense=.T.; the west side carries .F. with its EDGE_LOOP also authored with reversed edge senses relative to the other three side faces. A kernel must never crash on this input, and after applying an orientation fix it must re-verify the shell against the same consistency test used to detect the defect before reporting success — declaring the fix done without that re-check can leave the reported status disagreeing with the shell's actual, still-inconsistent state.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh163 — ShapeAnalysis_Shell.FreeEdges edge-by-vertex-coincidence
 
@@ -31268,6 +31367,7 @@ Two-triangle shell with all edges shared between faces (no free boundary). FreeE
 
 **Catalog**: Wave 43 baseline — 5 STEP shell fixtures targeting OCCT heal subsystem consensus/orientation/sewing/history defects. All fixtures use AUTOMOTIVE_DESIGN v3.1.1 schema, SHELL_BASED_SURFACE_MODEL wrapper, and mandatory PRODUCT chain. ID range Tsh159–Tsh163.
 - **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Two EDGE_CURVEs both start or end at the same shared vertex, but the LINE geometry underlying one of them does not actually pass through that vertex's coordinates — a topological match with a geometric discontinuity. A kernel must never crash on this input: a free-edge or connectivity check based only on shared VERTEX_POINT identity is not sufficient — verify that each edge's curve geometry actually reaches the vertex coordinates it claims to reference, and report a mismatch as a defect rather than treating vertex-identity alone as proof of geometric continuity.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh164 — ShapeFix_Shell.Perform with-context-pollution
 
@@ -31331,6 +31431,7 @@ Two distinct shells geometrically overlapping. Apply() ignores intersection; mer
 
 Non-manifold vertex shared by three faces with conflicting outward normals. FixFaceOrientation() orientation propagation cannot resolve 3-way conflict.
 - **Expected kernel behavior**: Live oracle measurement: OCCT crashes (SIGSEGV) reading this file, on both the heal-on and heal-off path. Three mutually perpendicular triangular faces (xy-, xz-, yz-plane) all share a single VERTEX_POINT at the origin, with no shared edges between any pair — a non-manifold vertex where three faces meet at a point rather than along an edge. A kernel must never crash on this input: an orientation-propagation algorithm written only in terms of edge-adjacent neighbour pairs has no defined notion of 'consistent' for three faces meeting only at a point, so this configuration must be detected and reported as a non-manifold vertex rather than fed into pairwise edge-based propagation logic that has nothing to propagate along.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh173 — ShapeAnalysis_Shell.LoadShells with-recursive-compound
 
@@ -31602,6 +31703,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Reads as non-manifold shell with conflicting face normals
 - **Fixture path**: step-examples/12-3a-shells/Tsh199.stp
 - **Fixture kind**: scaffold
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh200 — BadEdges uninitialized extent
 - **Category**: §12.3a shells (sub-class: lazy-initialization)
@@ -31612,6 +31714,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Reads as clean shell despite containing undetected gap edges
 - **Fixture path**: step-examples/12-3a-shells/Tsh200.stp
 - **Fixture kind**: scaffold
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh201 — Multi-connected edge unbounded iteration
 - **Category**: §12.3a shells (sub-class: non-manifold-handling)
@@ -31622,6 +31725,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Reads as three-face configuration; kernel may hang or timeout on fix attempt
 - **Fixture path**: step-examples/12-3a-shells/Tsh201.stp
 - **Fixture kind**: scaffold
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh202 — Context null-initialize state accumulation
 - **Category**: §12.3a shells (sub-class: state-management)
@@ -31632,6 +31736,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Reads as valid; repeated Perform() produces over-fixed faces
 - **Fixture path**: step-examples/12-3a-shells/Tsh202.stp
 - **Fixture kind**: scaffold
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh203 — Sewing distance tolerance filter gap
 - **Category**: §12.3a shells (sub-class: edge-merging-tolerance)
@@ -31642,6 +31747,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Reads as open shell with invisible seam
 - **Fixture path**: step-examples/12-3a-shells/Tsh203.stp
 - **Fixture kind**: scaffold
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh204 — Duplicate faces orientation inconsistency
 - **Category**: §12.3a shells (sub-class: duplicate mutation)
@@ -31652,6 +31758,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Duplicate face handling produces undefined shell semantics
 - **Fixture path**: step-examples/12-3a-shells/Tsh204.stp
 - **Fixture kind**: scaffold
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh205 — Shells extraction partition loss
 - **Category**: §12.3a shells (sub-class: incomplete decomposition)
@@ -31662,6 +31769,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Orphaned face partition unreachable by topology validation
 - **Fixture path**: step-examples/12-3a-shells/Tsh205.stp
 - **Fixture kind**: scaffold
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh206 — Context null state accumulation
 - **Category**: §12.3a shells (sub-class: state accumulation)
@@ -31672,6 +31780,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Double-fixed topology with cumulative reshape state
 - **Fixture path**: step-examples/12-3a-shells/Tsh206.stp
 - **Fixture kind**: scaffold
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh207 — Progress abort inconsistent error state
 - **Category**: §12.3a shells (sub-class: inconsistent error reporting)
@@ -31682,6 +31791,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Partially healed shell masquerades as failed operation
 - **Fixture path**: step-examples/12-3a-shells/Tsh207.stp
 - **Fixture kind**: scaffold
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh208 — Closed flag sync failure
 - **Category**: §12.3a shells (sub-class: invariant violation)
@@ -31692,6 +31802,7 @@ Compound with nested shell references. LoadShells() recursion incomplete when de
 - **Model impact**: Invalid solid construction from non-closed shell marked closed
 - **Fixture path**: step-examples/12-3a-shells/Tsh208.stp
 - **Fixture kind**: scaffold
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Tsh209 — U-closed seam-edge period wrapping
 - **Category**: §12.3a shells (sub-class: parametric-seam)
@@ -31904,6 +32015,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Reproducer recipe**: see `step-examples/12-2a-pcurves/Gp046.stp`; the fixture file's top comment names the specific OCCT method and line range.
 - **Expected kernel behavior**: detect or heal per the named OCCT branch; the fixture demonstrates the buggy input pattern.
 - **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ### Gp047 — ShapeAnalysis_Edge.CheckPCurveRange parameter-domain mismatch
@@ -31913,6 +32025,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Reproducer recipe**: see `step-examples/12-2a-pcurves/Gp047.stp`; the fixture file's top comment names the specific OCCT method and line range.
 - **Expected kernel behavior**: detect or heal per the named OCCT branch; the fixture demonstrates the buggy input pattern.
 - **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ### Gp048 — ShapeFix_Edge.FixAddPCurve degenerate-curve at cone apex
@@ -31934,6 +32047,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 - **Reproducer recipe**: see `step-examples/12-2a-pcurves/Gp049.stp`; the fixture file's top comment names the specific OCCT method and line range.
 - **Expected kernel behavior**: detect or heal per the named OCCT branch; the fixture demonstrates the buggy input pattern.
 - **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 - **Notes**:
 
@@ -32005,6 +32119,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 **Expected kernel behavior**: Apply LOCATION transformation symmetrically to both 3D and pcurve samples during comparison.  
 - **Notes**: RUNTIME-VERIFIED 2026-08-09 — this file's recorded `signal(11)` is driven by a core geometry entity written with the wrong number of arguments (typically the name string omitted, which shifts every later value one slot left, putting a reference where a string belongs). The abort happens during loading — before any repair routine runs. Full census in `BACKLOG.md` (M.18).
 - **Expected kernel behavior**: reject at parse time: `B_SPLINE_CURVE_WITH_KNOTS` is given 10 arguments where the schema declares 9, so every later argument sits in the wrong slot; additionally `ADVANCED_FACE.bounds` holds a raw `EDGE_LOOP` where a `FACE_BOUND` is declared, and that loop lists an `EDGE_CURVE` with no `ORIENTED_EDGE` wrapper. Report the entity and the expected arity/type.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=accept(0)`
 
 ---
@@ -32027,6 +32142,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 **Reproducer**: Create loop-back edge (same vertex both ends); call CheckPCurveRange; observe nondeterministic result.  
 - **Notes**: RUNTIME-VERIFIED 2026-08-09 — this file's recorded `signal(11)` is driven by a core geometry entity written with the wrong number of arguments (typically the name string omitted, which shifts every later value one slot left, putting a reference where a string belongs). The abort happens during loading — before any repair routine runs. Full census in `BACKLOG.md` (M.18).
 - **Expected kernel behavior**: Given an edge whose start and end vertex are the same entity and whose 3D curve and pcurve both collapse to a single point, detect the zero-length parameter domain BEFORE any range comparison: the check must not assume two distinct vertex parameters, must not divide by or normalise against a zero span, and must return the same verdict on every run. Classify such an edge as degenerate and report it per-entity; a degenerate edge must never take down the read.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=accept(0)`
 
 ---
@@ -32039,6 +32155,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 **Reproducer**: Create edge where start==end in 3D; call FixSameParameter; check tolerance value is NaN.  
 - **Notes**: RUNTIME-VERIFIED 2026-08-09 — this file's recorded `signal(11)` is driven by a core geometry entity written with the wrong number of arguments (typically the name string omitted, which shifts every later value one slot left, putting a reference where a string belongs). The abort happens during loading — before any repair routine runs. Full census in `BACKLOG.md` (M.18).
 - **Expected kernel behavior**: Given an edge whose 3D curve has zero arc length (both ends are the same point), test for the zero before using the length as a divisor: fall back to the model's default tolerance rather than computing a length-scaled one, so the edge's tolerance can never become NaN or infinite. Mark the edge degenerate — a candidate to be merged away with its neighbours — and report it; a non-finite tolerance must never be propagated into the topology.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=accept(0)`
 
 ---
@@ -32052,6 +32169,7 @@ Three triangular faces forming incomplete closure (free edge between faces 1–2
 **Expected kernel behavior**: GetEndTangent2d detects seam position; normalizes to consistent side (U<π or U>π convention).  
 - **Notes**: RUNTIME-VERIFIED 2026-08-09 — this file's recorded `signal(11)` is driven by a core geometry entity written with the wrong number of arguments (typically the name string omitted, which shifts every later value one slot left, putting a reference where a string belongs). The abort happens during loading — before any repair routine runs. Full census in `BACKLOG.md` (M.18).
 - **Expected kernel behavior**: reject at parse time: `B_SPLINE_CURVE_WITH_KNOTS` is given 10 arguments where the schema declares 9; additionally `ADVANCED_FACE.bounds` holds a raw `EDGE_LOOP` where a `FACE_BOUND` is declared, and that loop lists an `EDGE_CURVE` with no `ORIENTED_EDGE` wrapper. Report the entity and the expected arity/type.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=accept(0)`
 
 ### Gp061 — ShapeAnalysis_Edge.CheckCurve3dWithPCurve sample-count threshold
@@ -32330,6 +32448,7 @@ Edge whose 3D curve and pcurve trace the same geometric path but with reversed p
 
 - **Expected kernel behavior**: reject at parse time: `LINE.dir` is declared `VECTOR` but names a `CARTESIAN_POINT`. Diagnose the mistyped reference instead of constructing a direction from whatever the handle resolves to.
 - **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Gp097 — ShapeFix_Edge.FixAddPCurve composite-curve-on-surface
 
@@ -32352,6 +32471,7 @@ Two edges where an arc is tangent to a line at a single point. CheckOverlapping 
 
 - **Expected kernel behavior**: reject at parse time: `LINE.dir` is declared `VECTOR` but names a `CARTESIAN_POINT`. Diagnose the mistyped reference instead of constructing a direction from whatever the handle resolves to.
 - **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Gp099 — ShapeFix_Edge.FixSameParameter very-long-edge
 
@@ -32363,6 +32483,7 @@ Edge of extreme length (1e6 units). FixSameParameter's tolerance computation und
 
 - **Expected kernel behavior**: reject at parse time: `LINE.dir` is declared `VECTOR` but names a `CARTESIAN_POINT`. Diagnose the mistyped reference instead of constructing a direction from whatever the handle resolves to.
 - **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Gp100 — ShapeAnalysis_Edge.GetEndTangent2d POLYLINE first-point
 
@@ -32595,6 +32716,7 @@ Pcurve is TRIMMED_CURVE. GetEndTangent2d uses untrimmed-curve tangent at trim bo
 - **Fixture path**: step-examples/12-2a-pcurves/Gp131.stp
 - **Fixture kind**: scaffold
 - **Notes**: RUNTIME-VERIFIED 2026-08-08 — the recorded crash comes from this file's straight-line direction argument, which references a plain direction where the schema declares a vector carrying a magnitude; repairing that one reference makes the file load, so the titled condition is never reached. See BACKLOG (M).
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 ### Gp132 — PCurve projection tolerance escalation unchecked
 - **Category**: §12.2a pcurves (sub-class: ShapeFix_Edge.FixAddPCurve)
@@ -34112,6 +34234,7 @@ Two edges geometrically coincident but opposite-directed (edge 1: v1→v2, edge 
 Vertex tolerance evaluation on cone apex (singular surface point). FixVertexTolerance evaluates surface curvature at apex, producing unbounded tolerance due to infinite curvature. Edge from apex to base point on cone surface with parametric tolerance inference. Tests geometry curvature singularity handling.
 - **Expected kernel behavior**: accept: the single edge runs from the cone's genuine apex vertex (0,0,0) to a base point (1,0,0) on a `CONE` of half-angle 0.5 rad. A correct kernel should treat the apex as a removable singularity with a well-defined, positive, bounded tolerance derived from nearby surface curvature -- not the unbounded value that direct curvature evaluation at the exact apex parameter would produce.
 - **Tier-3 assertion**: load == "ok"
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a`
 ### N107 — ShapeAnalysis_ShapeTolerance.AddTolerance with-history
 
@@ -39253,6 +39376,7 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: contains(b'ORIENTED_EDGE')
 - **Byte assertion**: contains(b"ORIENTED_EDGE('',*,*,")
 - **Tier-3 assertion**: load == "ok"
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a`
 - **Model impact**: Stack overflow → process crash in importers without cycle guard; denial-of-service via minimal crafted file.
 
@@ -48370,6 +48494,7 @@ exercised against CGAL PMP / MeshFix.
 - **OCC behavior**: stack-overflows (signal 11) on the unbounded `EdgeStart`/`EdgeEnd` self-recursion (catalog disallows crash). Kernel-bug witnessed: receivers should produce one of {reject, heal-by-dropping-edge}, never crash.
 - **Severity**: P1
 - **Model impact**: Crafted input drives the parser's derived-attribute accessors into unbounded mutual recursion; the load process is killed by a signal (stack exhaustion) and no shape is delivered — a denial-of-service on any receiver that dereferences the edge without a cycle guard.
+- **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
 ### Twi284 — Consecutive wire edges share a corner location via two distinct `VERTEX_POINT` entities (coincident, not reused)

@@ -20,9 +20,17 @@ import glob
 import json
 import os
 import re
+import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "IMPLEMENTERS_ROADMAP.md")
+
+# The slot-type table is CANONICAL in the structural oracle (v3, 2026-08-09) —
+# one table, two checkers: the oracle's entity-level linter and this script's
+# text-level crash census. This script keeps its own checker so the published
+# crash-refusability numbers cannot drift with tokenizer differences.
+sys.path.insert(0, os.path.join(ROOT, "validation", "src"))
+from step_corpus._structural_oracle import SLOT_TYPES  # noqa: E402
 
 # ---------------------------------------------------------------- load
 
@@ -209,59 +217,13 @@ def _args_of(txt: str, m) -> list[str]:
     return []
 
 
-# ---- schema-declared types for reference-valued slots -------------------------
-# Hand-entered from ISO 10303-42 and checked against the corpus: every "violation"
-# reported in a NON-crashing file was read individually, and six legitimate subtypes
-# (BEZIER_SURFACE, DEGENERATE_TOROIDAL_SURFACE, BLENDED_EDGE_SURFACE,
-# COMPOSITE_CURVE_ON_SURFACE, COMPLEX_TRIANGULATED_FACE, TRIANGULATED_FACE) were missing
-# from a first draft. Each expectation is a SET because these attributes are declared
-# with SUPERTYPES -- EDGE_CURVE.edge_geometry is a CURVE, so LINE/CIRCLE/B_SPLINE all fit.
-_SURFACE = {"PLANE", "CYLINDRICAL_SURFACE", "CONICAL_SURFACE", "SPHERICAL_SURFACE",
-            "TOROIDAL_SURFACE", "B_SPLINE_SURFACE_WITH_KNOTS", "B_SPLINE_SURFACE",
-            "RATIONAL_B_SPLINE_SURFACE", "SURFACE_OF_REVOLUTION", "OFFSET_SURFACE",
-            "SURFACE_OF_LINEAR_EXTRUSION", "RECTANGULAR_TRIMMED_SURFACE",
-            "CURVE_BOUNDED_SURFACE", "RECTANGULAR_COMPOSITE_SURFACE", "SURFACE_REPLICA",
-            "BEZIER_SURFACE", "DEGENERATE_TOROIDAL_SURFACE", "BLENDED_EDGE_SURFACE",
-            "UNIFORM_SURFACE", "QUASI_UNIFORM_SURFACE", "SWEPT_SURFACE"}
-_CURVE = {"LINE", "CIRCLE", "ELLIPSE", "HYPERBOLA", "PARABOLA", "POLYLINE",
-          "B_SPLINE_CURVE_WITH_KNOTS", "B_SPLINE_CURVE", "RATIONAL_B_SPLINE_CURVE",
-          "TRIMMED_CURVE", "COMPOSITE_CURVE", "SURFACE_CURVE", "SEAM_CURVE",
-          "INTERSECTION_CURVE", "OFFSET_CURVE_3D", "PCURVE", "CURVE_REPLICA",
-          "BOUNDED_CURVE", "CONIC", "DEGENERATE_PCURVE", "COMPOSITE_CURVE_ON_SURFACE",
-          "BEZIER_CURVE", "UNIFORM_CURVE", "QUASI_UNIFORM_CURVE", "CURVE_ON_SURFACE"}
-_POINT = {"CARTESIAN_POINT", "POINT_ON_CURVE", "POINT_ON_SURFACE", "POINT_REPLICA",
-          "DEGENERATE_PCURVE"}
-_LOOP = {"EDGE_LOOP", "POLY_LOOP", "VERTEX_LOOP"}
-_FBOUND = {"FACE_BOUND", "FACE_OUTER_BOUND"}
-_SHELL = {"CLOSED_SHELL", "OPEN_SHELL", "ORIENTED_CLOSED_SHELL"}
-_FACE = {"ADVANCED_FACE", "FACE_SURFACE", "ORIENTED_FACE", "SUBFACE",
-         "TRIANGULATED_FACE", "COMPLEX_TRIANGULATED_FACE", "CURVE_BOUNDED_SURFACE"}
-
-# entity -> {argument index: (legal types, arg_is_a_list)}
-SLOT_TYPES = {
-    "LINE":                      {1: (_POINT, False), 2: ({"VECTOR"}, False)},
-    "VECTOR":                    {1: ({"DIRECTION"}, False)},
-    "VERTEX_POINT":              {1: (_POINT, False)},
-    "EDGE_CURVE":                {1: ({"VERTEX_POINT"}, False), 2: ({"VERTEX_POINT"}, False),
-                                  3: (_CURVE, False)},
-    "ORIENTED_EDGE":             {3: ({"EDGE_CURVE"}, False)},
-    "EDGE_LOOP":                 {1: ({"ORIENTED_EDGE"}, True)},
-    "FACE_BOUND":                {1: (_LOOP, False)},
-    "FACE_OUTER_BOUND":          {1: (_LOOP, False)},
-    "ADVANCED_FACE":             {1: (_FBOUND, True), 2: (_SURFACE, False)},
-    "FACE_SURFACE":              {1: (_FBOUND, True), 2: (_SURFACE, False)},
-    "CLOSED_SHELL":              {1: (_FACE, True)},
-    "OPEN_SHELL":                {1: (_FACE, True)},
-    "MANIFOLD_SOLID_BREP":       {1: (_SHELL, False)},
-    "SHELL_BASED_SURFACE_MODEL": {1: (_SHELL, True)},
-    # axis_position is declared AXIS1_PLACEMENT; files supplying an
-    # AXIS2_PLACEMENT_3D crash the revolution converter. Solved the long-open
-    # Twi144 mystery: its LINE.dir repair still crashed because this sixth
-    # consumer was never touched (an inline/ref-repair cannot reach it).
-    # 6 crashers carry it; both non-crasher carriers (Tsh036, P022) are
-    # deliberate revolution-defect fixtures.
-    "SURFACE_OF_REVOLUTION":     {2: ({"AXIS1_PLACEMENT"}, False)},
-}
+# SLOT_TYPES (imported above): hand-entered from ISO 10303-42, negative-class
+# audited individually, six legitimate subtypes restored after the first draft.
+# The SURFACE_OF_REVOLUTION row solved the long-open Twi144 mystery: its
+# LINE.dir repair still crashed because this sixth wrong-type consumer was
+# never touched (an inline/ref-repair cannot reach it). 6 crashers carry it;
+# both non-crasher carriers (Tsh036, P022) are deliberate revolution-defect
+# fixtures.
 
 
 def _slot_type_violation(txt: str, kind: dict) -> bool:

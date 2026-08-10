@@ -1890,7 +1890,9 @@
       "ZDI-25-615 / CVE-2025-9450 (Dassault eDrawings UAF/uninit on JT)",
       "06-nist-sfa.md S007"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "silent-loss",
       "adversarial"
@@ -2713,7 +2715,9 @@
     "sources": [
       "18-other-issues.md I017 (`ShapeFix_Shape` huge memory), I018 (Linux/Docker RSS), I019 (LSAN reports `STEPControl_Controller::Init` enum allocations)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "silent-loss",
       "adversarial"
@@ -2994,7 +2998,9 @@
     "sources": [
       "18-other-issues.md I059 (OCCT #844)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "adversarial"
     ],
@@ -3161,7 +3167,9 @@
       "04-occt-translation.md Q078",
       "03-occt-tests.md R073 (`parse.rules` ignores `OSD_Exception_ACCESS_VIOLATION`, `Software error`, `Syntax error`, `Transfer error`)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "adversarial"
     ],
@@ -3280,7 +3288,9 @@
     "sources": [
       "OCCT MANTIS#0031756 (OCCT MANTIS tracker 502 as of 2026-05-02)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "adversarial"
     ],
@@ -3357,7 +3367,9 @@
     "sources": [
       "OCCT MANTIS#0024759 (OCCT MANTIS tracker 502 as of 2026-05-02)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "adversarial"
     ],
@@ -4884,7 +4896,9 @@
     "sources": [
       "https://github.com/prusa3d/PrusaSlicer/issues/11305 (PrusaSlicer 2.6.1 + OCCT 7.x: stack overflow on import of file with circular ORIENTED_EDGE reference). B4 wave-4 DEF-B (LGPL-clean — pattern only, no bytes copied)."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "adversarial"
@@ -44060,7 +44074,9 @@
     "sources": [
       "deep-pass v3 record matching OCCT method/branch (see file comment)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -44093,7 +44109,9 @@
     "sources": [
       "deep-pass v3 record matching OCCT method/branch (see file comment)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -44163,7 +44181,9 @@
     "sources": [
       "deep-pass v3 record matching OCCT method/branch (see file comment)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -44400,7 +44420,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -44467,7 +44489,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -44500,7 +44524,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -44533,7 +44559,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -45788,7 +45816,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -45855,7 +45885,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -45888,7 +45920,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -46985,7 +47019,9 @@
     "sources": [
       "OCCT/ShapeAnalysis_Curve::Project (line 230)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -51295,7 +51331,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -51401,7 +51439,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -55245,7 +55285,9 @@
     "sources": [
       "OCCT/ShapeUpgrade_SplitSurfaceContinuity, GeomAPI_ProjectPointOnCurve"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "geometry"
     ],
@@ -55663,7 +55705,9 @@
     "sources": [
       "OCCT Approx_Status.NoApproximation (uncovered class evidence)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "geometry"
     ],
@@ -55739,7 +55783,9 @@
     "sources": [
       "OCCT GeomLib_CheckBSplineCurve (uncovered class evidence)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "silent-loss",
@@ -60476,7 +60522,9 @@
     "sources": [
       "OCCT/ShapeAnalysis (see fixture)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -60544,7 +60592,9 @@
     "sources": [
       "OCCT/ShapeAnalysis (see fixture)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -60577,7 +60627,9 @@
     "sources": [
       "OCCT/ShapeAnalysis (see fixture)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -60610,7 +60662,9 @@
     "sources": [
       "OCCT/ShapeAnalysis (see fixture)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "geometry"
@@ -65473,7 +65527,9 @@
     "sources": [
       "08-occt-gitlog.md G034 (Mantis 29784)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -65831,7 +65887,9 @@
     "sources": [
       "18-other-issues.md I012 (OCCT #378)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "topology"
     ],
@@ -66280,7 +66338,9 @@
       "OCCT MANTIS#0028529",
       "OCCT MANTIS#0031441 (OCCT MANTIS tracker 502 as of 2026-05-02)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "topology"
     ],
@@ -66321,7 +66381,9 @@
       "OCCT MANTIS#0026635",
       "OCCT MANTIS#0027315 (OCCT MANTIS tracker 502 as of 2026-05-02)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -66400,7 +66462,9 @@
       "OCCT MANTIS#0028529",
       "OCCT MANTIS#0030534 (OCCT MANTIS tracker 502 as of 2026-05-02)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "topology"
     ],
@@ -66441,7 +66505,9 @@
       "OCCT MANTIS#0030221",
       "OCCT GitHub#699 (OCCT MANTIS tracker 502 as of 2026-05-02)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -66524,7 +66590,9 @@
       "OCCT MANTIS#0030790",
       "OCCT MANTIS#0028913 (OCCT MANTIS tracker 502 as of 2026-05-02)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -67512,7 +67580,9 @@
     "sources": [
       "OCCT ShapeUpgrade_ShellSewing.Apply()"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "topology"
     ],
@@ -67546,7 +67616,9 @@
     "sources": [
       "OCCT ShapeFix_Shell.FixFaceOrientation()"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "topology"
     ],
@@ -67580,7 +67652,9 @@
     "sources": [
       "OCCT ShapeAnalysis_Shell.LoadShells()"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "topology"
     ],
@@ -68430,7 +68504,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -68497,7 +68573,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -69035,7 +69113,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -69167,7 +69247,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -69540,7 +69622,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -69573,7 +69657,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -69878,7 +69964,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -70115,7 +70203,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -70182,7 +70272,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -70215,7 +70307,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -70282,7 +70376,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -70315,7 +70411,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -70348,7 +70446,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -70653,7 +70753,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -71570,7 +71672,9 @@
     "sources": [
       "OCCT/ShapeFix_Shell.FixFaceOrientation"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -71603,7 +71707,9 @@
     "sources": [
       "OCCT/ShapeAnalysis_Shell.BadEdges_at281"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -71636,7 +71742,9 @@
     "sources": [
       "OCCT/ShapeFix_Shell.FixFaceOrientation.multiconnect_edge_loop_unbounded"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -71669,7 +71777,9 @@
     "sources": [
       "OCCT/ShapeFix_Shell.Perform.context_null_initialize"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -71702,7 +71812,9 @@
     "sources": [
       "OCCT/BRepBuilderAPI_Sewing.AnalysisNearestEdges.distance_tolerance_filter"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -71735,7 +71847,9 @@
     "sources": [
       "OCCT/ShapeFix_Shell.FixFaceOrientation"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -71768,7 +71882,9 @@
     "sources": [
       "OCCT/ShapeFix_Shell.FixFaceOrientation"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -71801,7 +71917,9 @@
     "sources": [
       "OCCT/ShapeFix_Shell.Perform"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -71834,7 +71952,9 @@
     "sources": [
       "OCCT/ShapeFix_Shell.Perform"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -71867,7 +71987,9 @@
     "sources": [
       "OCCT/ShapeFix_Shell.Perform"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -74228,7 +74350,9 @@
       "04-occt-translation.md Q004",
       "08-occt-gitlog.md G012 (Mantis 0029979)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -74274,7 +74398,9 @@
     "sources": [
       "04-occt-translation.md Q005"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -76867,7 +76993,9 @@
     "sources": [
       "OCCT `ShapeUpgrade_RemoveInternalWires::Perform` (`ShapeUpgrade_RemoveInternalWires.hxx:51`)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -77324,7 +77452,9 @@
     "sources": [
       "OCCT MANTIS#0028414 (OCCT MANTIS tracker 502 as of 2026-05-02)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -77487,7 +77617,9 @@
     "sources": [
       "OCCT MANTIS#0004968 (OCCT MANTIS tracker 502 as of 2026-05-02)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -78087,7 +78219,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -78976,7 +79110,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -79009,7 +79145,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -79045,7 +79183,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -79078,7 +79218,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -79111,7 +79253,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -79144,7 +79288,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -79177,7 +79323,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -79210,7 +79358,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -79245,7 +79395,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -79278,7 +79430,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -79311,7 +79465,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -79344,7 +79500,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -79377,7 +79535,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -79410,7 +79570,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -79443,7 +79605,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -79613,7 +79777,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -79680,7 +79846,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -81883,7 +82051,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -81916,7 +82086,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -81949,7 +82121,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -81982,7 +82156,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -82017,7 +82193,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -82050,7 +82228,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -82085,7 +82265,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -82120,7 +82302,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -82186,7 +82370,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -83982,7 +84168,9 @@
       "Pattern-mined from prusa3d/PrusaSlicer#11305 — pattern only, no bytes",
       "the attached `stack-overflow.step` is a user-uploaded proprietary CAD export (DESCRIBE-ONLY, never ingested). ASAN report: frames alternate `StepShape_OrientedEdge::EdgeEnd()` ⇄ `EdgeStart()` in `OCCTWrapper.so`."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -84981,7 +85169,9 @@
     "sources": [
       "OCCT `ShapeFix_Shape::Perform` (`ShapeFix_Shape.hxx:58`)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -86829,7 +87019,9 @@
     "sources": [
       "OCCT `ShapeFix_Face::Perform` (`ShapeFix_Face.hxx:165`)"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -88630,7 +88822,9 @@
       "removing just one of the two still crashes",
       "a single one-edge bound alone is sufficient to reproduce the SIGSEGV."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -88663,7 +88857,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -88802,7 +88998,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -88835,7 +89033,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -88912,7 +89112,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -88979,7 +89181,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -89335,7 +89539,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -89371,7 +89577,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -89404,7 +89612,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -89733,7 +89943,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -89805,7 +90017,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -89840,7 +90054,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -90101,7 +90317,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -90270,7 +90488,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -90338,7 +90558,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -90371,7 +90593,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -90406,7 +90630,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -90478,7 +90704,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -90511,7 +90739,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -90544,7 +90774,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -90577,7 +90809,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -91930,7 +92164,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -91963,7 +92199,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -91996,7 +92234,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -92029,7 +92269,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -93979,7 +94221,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "topology"
@@ -98892,7 +99136,9 @@
     "sources": [
       "synthesized — no external source cited"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "topology"
     ],
@@ -106697,7 +106943,9 @@
       "FreeCAD #26994",
       "bug-reporter language: \"Export of PartDesign body containing Boolean Cut with SubShapeBinder is broken\", \"PrusaSlicer just crashes for STEP\", \"the very STEP exported by FreeCAD makes it crash on re-import\"."
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "crash",
       "assembly"
@@ -108214,7 +108462,9 @@
     "sources": [
       "FreeCAD #16681"
     ],
-    "structural_assertions": [],
+    "structural_assertions": [
+      "struct == SLOT_TYPE"
+    ],
     "taxonomy": [
       "assembly"
     ],

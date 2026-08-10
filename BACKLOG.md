@@ -2620,6 +2620,47 @@ ill-typed, so it tested nothing. With a synthesised DIRECTION, three of the four
 Same failure shape as the inline-entity mistake above -- **an invalid instrument returns
 a negative that looks like a finding.**
 
+#### (M.20) DECISIONS EXECUTED: SLOT_TYPE is structural-oracle v3; UNITS_INCONSISTENT rescoped. 2026-08-09
+
+Maintainer approved both open proposals; both shipped together.
+
+**SLOT_TYPE adopted ((M.8) closed).** The slot-type table moved to
+`_structural_oracle.py` as the CANONICAL copy — `make_roadmap.py` now imports it
+(one table, two checkers; the roadmap keeps its own text-level checker so the
+published crash numbers cannot drift, and the regenerated roadmap is byte-identical:
+still 163/177 = 92 %). The oracle got an entity-level checker (`slot_type_violations`),
+priority DUPLICATE_ID > DANGLING_REF > **SLOT_TYPE** > UNITS_INCONSISTENT >
+AXIS_DEGENERATE. The (M.8) cost estimate was wrong in our favor: `format_live_spec`
+carries no structural token, so adoption rewrites ZERO Expected lines and creates
+ZERO DRIFT — the only CI surfaces were the exact-match assertion test, the controls
+test, and the schema (which does not enumerate codes).
+
+**UNITS_INCONSISTENT rescoped ((M.15)/(M.16) closed).** `_length_units` now counts
+only units ASSIGNED by a `GLOBAL_UNIT_ASSIGNED_CONTEXT` — that is what "ambiguous
+model scale" means. Conversion bases and self-denominated measures (PMI tolerances,
+derived units) no longer count. The basis-exclusion machinery from the first fix is
+superseded and removed.
+
+**Measured, with denominators, on the shipped implementation:**
+- 4/4 pre-existing non-DANGLING assertions hold (Ad122, Ad136, U049, Ad135).
+- Controls: 17 scanned, 0 flagged.
+- NIST real exports: 28 scanned re-fetched, SLOT_TYPE 0/28; UNITS 1/28 and the
+  survivor is `nist_ftc_07_asme1_rd` — the genuinely dual-context file (one context
+  assigns INCH, another SI-mm). Exactly the predicted residue.
+- Corpus: 125 fixtures lint SLOT_TYPE (every one a deliberate wrong-type-slot
+  carrier from the crash campaign, whose non-crashing hits were read individually);
+  UNITS verdicts 15 -> 8, all defect fixtures, U049's assertion intact.
+
+**Growth: 125 new `struct == SLOT_TYPE` structural assertions** added to those
+entries — the wrong-type mechanism is now a per-fixture CI-checked property instead
+of a roadmap statistic, so no regen can silently drop the defect. This is the
+structural-linter lever the 2026-07-06 saturation memo predicted would reopen
+assertion growth.
+
+Note: `tests/data/mutation_snapshot.json` predates v3 and is stale w.r.t. the new
+code (the test compares against frozen data, so CI is unaffected); refresh it the
+next time a mutation-test run is wanted anyway.
+
 #### (M.19) Twi144's long-open mystery SOLVED — and it takes coverage to 92 %. 2026-08-09
 
 The memory file's "Unexplained" entry: Twi144 hits site A with all five `LINE.dir`
