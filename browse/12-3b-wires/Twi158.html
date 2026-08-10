@@ -32,8 +32,13 @@
 <p></p></section>
 <section><h2>Expected kernel behavior</h2>
 <p>The face&#x27;s surface is a revolution of a radius-1 `CIRCLE` lying in the z=0 plane about the Z axis through that circle&#x27;s own centre: every point of the generatrix is the same distance from the axis, so the swept surface collapses back onto the single circle and has no two-parameter domain. Check a revolution&#x27;s generatrix for this coaxial degeneracy before building any parametric geometry on it, and reject the surface and its face with a diagnostic. The sole edge, a vertical line from (1,0,0) to (1,0,1.5), does not lie on that circle at all, so no seam-gap repair is meaningful — there is no parameter space in which to compute one.</p></section>
+<section><h2>Notes</h2>
+<p>RUNTIME-VERIFIED 2026-08-09 — this file&#x27;s recorded `signal(11)` is driven by the revolved surface&#x27;s axis attribute holding a full three-axis placement where a single-axis placement is declared; the reader&#x27;s downcast yields null and the abort happens while converting the surface, before the titled condition can be exercised. This was the long-open Twi144 mystery: repairing the line-direction references alone cannot reach this slot. Census in `BACKLOG.md` (M.18).</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Cross-references</h2>
+<p><a href="Twi144.html">Twi144</a></p>
+</section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
 </section>

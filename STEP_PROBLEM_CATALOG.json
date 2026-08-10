@@ -79667,7 +79667,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3b-wires/Twi158.stp",
     "id": "Twi158",
-    "notes": "",
+    "notes": "RUNTIME-VERIFIED 2026-08-09 — this file's recorded `signal(11)` is driven by the revolved surface's axis attribute holding a full three-axis placement where a single-axis placement is declared; the reader's downcast yields null and the abort happens while converting the surface, before the titled condition can be exercised. This was the long-open Twi144 mystery: repairing the line-direction references alone cannot reach this slot. Census in `BACKLOG.md` (M.18).",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",

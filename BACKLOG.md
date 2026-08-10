@@ -2620,6 +2620,26 @@ ill-typed, so it tested nothing. With a synthesised DIRECTION, three of the four
 Same failure shape as the inline-entity mistake above -- **an invalid instrument returns
 a negative that looks like a finding.**
 
+#### (M.19) Twi144's long-open mystery SOLVED — and it takes coverage to 92 %. 2026-08-09
+
+The memory file's "Unexplained" entry: Twi144 hits site A with all five `LINE.dir`
+repaired and no other VECTOR in the file. Reproduced the repair today (synthesize real
+VECTORs, repoint all five): **still crashes.** Then read the rest of the file:
+
+    #30=SURFACE_OF_REVOLUTION('',#25,#22);      #22 = AXIS2_PLACEMENT_3D
+
+`axis_position` is declared **AXIS1_PLACEMENT**. A sixth wrong-type consumer, on an
+attribute the slot-type table didn't cover — and one no reference-repair could reach,
+which is exactly why the original experiment failed and the mystery stayed open.
+
+Measured: 6 crashers carry it (Tsh052 Tfa095 Tfa138 Tfa233 Twi144 Twi158 — four were in
+the remaining 18 unexplained), 2 non-crashers (Tsh036, P022 — both deliberate
+revolution-defect fixtures). Added `SURFACE_OF_REVOLUTION[2] -> AXIS1_PLACEMENT` to
+SLOT_TYPES: **163/177 = 92 % refusable at parse time.** The six carriers gained
+RUNTIME-VERIFIED notes.
+
+14 crashers remain: 6 stripped-symbol, 2 legal complex-instance rationals, 6 singletons.
+
 #### (M.18) FULL crash census overturns "heterogeneous tail": coverage 74 % -> 89 %. 2026-08-09
 
 **(M.7)'s conclusion was wrong, and the reason is methodological.** I had declared the

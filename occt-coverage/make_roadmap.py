@@ -254,6 +254,13 @@ SLOT_TYPES = {
     "OPEN_SHELL":                {1: (_FACE, True)},
     "MANIFOLD_SOLID_BREP":       {1: (_SHELL, False)},
     "SHELL_BASED_SURFACE_MODEL": {1: (_SHELL, True)},
+    # axis_position is declared AXIS1_PLACEMENT; files supplying an
+    # AXIS2_PLACEMENT_3D crash the revolution converter. Solved the long-open
+    # Twi144 mystery: its LINE.dir repair still crashed because this sixth
+    # consumer was never touched (an inline/ref-repair cannot reach it).
+    # 6 crashers carry it; both non-crasher carriers (Tsh036, P022) are
+    # deliberate revolution-defect fixtures.
+    "SURFACE_OF_REVOLUTION":     {2: ({"AXIS1_PLACEMENT"}, False)},
 }
 
 
