@@ -49255,6 +49255,34 @@ exercised against CGAL PMP / MeshFix.
 - **Model impact**: The importer either aborts with a low-level indexing error (no geometry, no actionable diagnostic) or, in a lenient reader, fabricates/wraps a vertex the file never declared; downstream vertex-buffer and adjacency assumptions read past the end of the vertex table.
 
 
+### Ip054 — 3MF degenerate triangle (two equal vertex indices) silently accepted
+- **Category**: §12.15 import-format parser robustness (sub-class: degenerate-triangle)
+- **Sources**: Pattern-mined from the 3MF Consortium Core spec §4.1.2 (a triangle's three vertex indices MUST be distinct) + mikedh/trimesh 3MF loader (MIT — pattern only, no bytes copied).
+- **Description**: A 3MF mesh's final `<triangle>` names `v1="1" v2="1" v3="3"` — two of its three indices are equal, so it is a zero-area (degenerate) triangle. The 3MF Core spec explicitly requires the three indices of every triangle to be distinct; this is a 3MF-specific constraint that flat formats (OBJ/OFF/PLY) do not impose, so it is not exercised by Ip001/Ip010. A conforming loader must reject or drop the degenerate face; a lenient loader keeps it, silently changing the mesh's face set and area.
+- **Reproducer recipe**: an OPC/ZIP package (parts `[Content_Types].xml`, `_rels/.rels`, `3D/3dmodel.model`) with 4 `<vertex>` elements and 4 `<triangle>` elements where the last is `<triangle v1="1" v2="1" v3="3"/>` (v1==v2). Packed STORED with fixed 1980-01-01 timestamps so the malformed XML is literally present and the archive is byte-reproducible.
+- **Expected kernel behavior**: enforce the distinct-index rule — reject or drop the degenerate triangle with a diagnostic naming it; never let a zero-area face enter the mesh unremarked, where it corrupts normals, adjacency, and area/volume computations.
+- **Byte assertion**: contains(b'<triangle v1="1" v2="1" v3="3"/>')
+- **Fixture path**: import-examples/12-15-import-formats/Ip054.3mf
+- **Fixture kind**: raw import-format file (parser-robustness; graded against trimesh, not Part-21)
+- **Notes**: Cross-oracle: trimesh 4.12.2 (+networkx/lxml) silently loads 4 faces including the degenerate one — computed surface area 1.5000 vs 2.3660 for the valid tetrahedron, i.e. the wrong face silently enters the mesh with no diagnostic — verified 2026-08-11. Synonyms: "3MF degenerate triangle", "zero-area face repeated index", "triangle indices not distinct", "collapsed 3mf triangle". Provenance tier: bytes-only.
+- **Severity**: P3
+- **Model impact**: A retained zero-area triangle produces a null face normal, breaks edge-adjacency and manifold checks, and skews area/volume — the reconstructed solid silently disagrees with a spec-conforming reader that would have dropped the face.
+
+
+### Ip055 — 3MF build item references a non-existent objectid → silent total geometry loss
+- **Category**: §12.15 import-format parser robustness (sub-class: dangling-object-reference)
+- **Sources**: Pattern-mined from the 3MF Consortium Core spec §5 (`<build><item>` `objectid` must resolve to a declared `<object>`) + mikedh/trimesh 3MF loader (MIT — pattern only, no bytes copied).
+- **Description**: The `<resources>` section declares one `<object id="1">` carrying the mesh, but the `<build><item objectid="99"/>` names object 99, which does not exist. The build section is the list of objects actually placed in the output; an item that resolves to nothing means the assembled scene is empty even though a complete, valid mesh sits in `<resources>`. A robust loader must diagnose the dangling `objectid`; a lenient one emits an empty result and no error.
+- **Reproducer recipe**: an OPC/ZIP package whose model part declares `<object id="1">` with a valid 4-vertex / 4-triangle tetrahedron mesh but whose `<build>` contains only `<item objectid="99"/>`. Packed STORED with fixed 1980-01-01 timestamps.
+- **Expected kernel behavior**: resolve every `<item objectid>` against the declared objects and reject an unresolved reference with a diagnostic naming the missing id; never return an empty model silently when the file contains real geometry the build section failed to reference.
+- **Byte assertion**: contains(b'objectid="99"')
+- **Fixture path**: import-examples/12-15-import-formats/Ip055.3mf
+- **Fixture kind**: raw import-format file (parser-robustness; graded against trimesh, not Part-21)
+- **Notes**: Cross-oracle: trimesh 4.12.2 (+networkx/lxml) loads 0 vertices / 0 faces — complete valid mesh in, empty scene out, no diagnostic — verified 2026-08-11. A container-format instance of the corpus's silent-total-geometry-loss class. Synonyms: "3MF dangling objectid", "build item references missing object", "3mf empty build resolution", "unresolved objectid silent empty". Provenance tier: bytes-only.
+- **Severity**: P2
+- **Model impact**: The importer returns an empty model while a valid mesh sits unreferenced in resources; a pipeline that trusts the loader sees "no geometry" and cannot distinguish it from a genuinely empty file, silently dropping the part.
+
+
 ### Twi292 — Short arc straddling a closed curve's parameter seam: projected endpoint parameters come back swapped (w1 > w2)
 - **Category**: §12.3b wire-loop (sub-class: closed-edge splitting, periodic-parameter-order)
 - **Sources**: OCCT `ShapeAnalysis_TransferParametersProj::TransferRange` (`ShapeAnalysis_TransferParametersProj.cxx:291-297,305-311` @ `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`); occt-coverage/tkshhealing/problems.json `tkshh-closed-edge-full-period-unsplit`, subvariant "Swapped parameter order after projection, with epsilon-safe range reconstruction"
