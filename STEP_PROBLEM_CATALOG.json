@@ -36356,6 +36356,40 @@
   },
   {
     "byte_assertions": [
+      "contains(b'facet count field = 5 but only 2 facets follow')"
+    ],
+    "category": "§12.15 import-format parser robustness (sub-class: declared-count-exceeds-body)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": "trimesh 4.12.2 loads 0 faces / 0 vertices (the 84 + 50×5 = 334-byte expectation fails against the 184-byte file, so the loader yields an empty mesh) — silent-empty, no diagnostic — verified 2026-08-11. A stricter reader would over-read 150 bytes past EOF. Synonyms: \"binary STL facet count mismatch\", \"STL header count exceeds body\", \"declared facets exceed data\", \"uint32 facet count over-run\". Provenance tier: bytes-only.",
+    "description": "A binary STL stores a `uint32` facet count immediately after its 80-byte header; the rest of the file must be exactly `count × 50` bytes. This file's count field says 5 but only 2 facets (100 bytes) physically follow. The count field is the sole length signal a binary-STL reader has — there is no per-facet delimiter and no EOF marker — so a reader that trusts it either reads 3 facets' worth of bytes past the end, or (trimesh) detects the size inconsistency and bails to an empty mesh with no diagnostic. This is the binary sibling of the ASCII PLY count-mismatch Ip002; the header does NOT begin with \"solid\", so it is unambiguously binary and distinct from the mis-detection trap Ip023.",
+    "expected_kernel_behavior": "validate that `file_size == 84 + 50 × count` before trusting the count; on mismatch reject with a diagnostic (declared count vs facets derivable from size), never read past the facet array and never silently return an empty mesh when facet data is present.",
+    "expected_validation": "",
+    "fixture_kind": null,
+    "fixture_path": "import-examples/12-15-import-formats/Ip056.stl",
+    "id": "Ip056",
+    "notes": "Cross-oracle: trimesh 4.12.2 loads 0 faces / 0 vertices (the 84 + 50×5 = 334-byte expectation fails against the 184-byte file, so the loader yields an empty mesh) — silent-empty, no diagnostic — verified 2026-08-11. A stricter reader would over-read 150 bytes past EOF. Synonyms: \"binary STL facet count mismatch\", \"STL header count exceeds body\", \"declared facets exceed data\", \"uint32 facet count over-run\". Provenance tier: bytes-only.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-only",
+    "reproducer": "80-byte header (any text not beginning with \"solid\"), then `uint32` little-endian value 5, then exactly 2 facet records of 50 bytes each. Total 184 bytes where a count-of-5 file would be 334.",
+    "section": "12.15",
+    "section_dir": "12-15-import-formats",
+    "see_also": [],
+    "sender": "",
+    "severity": "P2",
+    "sources": [
+      "Pattern-mined from the binary STL de-facto format (80-byte header + uint32 facet count + 50 bytes/facet) + mikedh/trimesh STL loader size-consistency check (MIT — pattern only, no bytes copied)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "syntax"
+    ],
+    "tier3_assertions": [],
+    "title": "Binary STL facet-count header disagrees with the facet data present → silent-empty"
+  },
+  {
+    "byte_assertions": [
       "bytes_starts_with(b'\\xef\\xbb\\xbf')",
       "matches(rb'\\xef\\xbb\\xbf')"
     ],

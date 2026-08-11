@@ -354,13 +354,31 @@ divergence as clean as Ip016's OFF version, so skipped as redundant/weaker.
 loader we don't have (assimp/Open3D/tinygltf), or was tried-and-dropped above):**
 - [ ] Remaining assimp classes needing assimp itself (not trimesh) to observe: glTF ExtractData-NULL
       #6609 (glTF 1.0, trimesh doesn't support v1.0 well), animation-channel-target-NULL #6611, degenerate
-      UV → tangent-space OOB #6350 (trimesh doesn't compute tangent space), STL count/size #4304 (binary,
-      out of this batch's text-only scope), OFF infinite-loop DoS #6604 (hard to pin statically, hang risk).
+      UV → tangent-space OOB #6350 (trimesh doesn't compute tangent space), STL count/size #4304 (binary —
+      now DONE as Ip056, graded via trimesh not assimp), OFF infinite-loop DoS #6604 (hard to pin
+      statically, hang risk).
 - [ ] Open3D cross-loader differentials (OBJ vertex-reference disorder, PLY RPly truncation/CRLF) — needs
       an `open3d` dependency, not yet tried; heavier install than trimesh/pycollada.
 - [ ] **First FBX coverage** (deep-nesting #6501, PolygonVertexIndex #6635) — needs a minimal ASCII FBX
       that assimp/loaders will actually parse. Medium lift.
-- [ ] **First 3MF coverage** (triangle-ref #1128) — needs a ZIP/OPC container writer. Bigger lift.
+- [x] **First 3MF coverage** — DONE 2026-08-11 (Ip053-055). No new infra needed: Python stdlib `zipfile`
+      IS the OPC/ZIP container writer, packed STORED with fixed 1980 timestamps so the malformed XML is
+      literal in the bytes and byte-reproducible. Graded live vs trimesh 4.12.2 (+networkx/lxml). Three
+      distinct classes: Ip053 triangle index out-of-range → uncaught IndexError (crash); Ip054 degenerate
+      triangle (v1==v2, 3MF distinct-index rule unenforced) → silent geometry corruption; Ip055 build item
+      → non-existent objectid → silent total geometry loss. ("Bigger lift" was wrong — the container writer
+      is 15 lines of stdlib.)
+- [x] **Binary STL count/size #4304** — DONE 2026-08-11 (Ip056). Header facet-count field = 5 but only 2
+      facets present → trimesh silent-empty (0 faces). Binary sibling of the text-PLY count-mismatch Ip002;
+      header not "solid" so distinct from the mis-detection trap Ip023.
+- [ ] **Mesh-format vein still LIVE (next scoped wave).** trimesh 4.12.2 reads several independent formats
+      the corpus does NOT yet cover; each is genuine independent-reader yield (not OCCT-wrapped). Graded but
+      not yet built: 3MF `unknown-unit` (trimesh ignores unit enum — weak), 3MF `no-model-part` → uncaught
+      StopIteration (marginal). Not yet graded: **GLB (binary glTF) chunk-framing** (12-byte header + JSON/BIN
+      chunk length prefixes — distinct from the text-glTF accessor-overrun Ip004), **3DXML** (Dassault ZIP),
+      **CTM** (OpenCTM compressed), **XYZ** point-cloud. Container/binary length-prefix formats are the
+      richest trap source (cf. Draco, PLY, binary-STL). Author-time grading pattern: `uv run --with networkx
+      --with lxml python` (ephemeral, no venv/pyproject mutation).
 - [x] **Draco `.drc` codec** — DONE (Tier-1 wave, 2026-07-17): DracoPy 2.0.0 installed in `validation/.venv`
       (encode base mesh → mutate one field → observe `DracoPy.decode`); 7 landed (Ip046–Ip052), first-ever
       compressed-codec coverage. Ip050 = silent-empty-decode (the dangerous non-rejecting case). 3

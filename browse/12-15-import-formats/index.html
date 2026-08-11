@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</h1>
 <p class="blurb">Raw malformed import-format files (OBJ/PLY/OFF/glTF/COLLADA/3MF/FBX) that exercise a parser&#x27;s robustness: header-count lies, out-of-range indices, dangling refs, truncated/encoding faults. Graded against independent loaders (assimp, trimesh); not Part-21.</p>
-<p class="meta">36 entries</p>
+<p class="meta">37 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
@@ -54,6 +54,7 @@
 <tr><td><a href="Ip053.html"><code>Ip053</code></a></td><td>3MF triangle vertex index exceeds vertex count (out-of-range reference inside the OPC container)</td><td><code>bytes-only</code></td><td><code></code></td></tr>
 <tr><td><a href="Ip054.html"><code>Ip054</code></a></td><td>3MF degenerate triangle (two equal vertex indices) silently accepted</td><td><code>bytes-only</code></td><td><code></code></td></tr>
 <tr><td><a href="Ip055.html"><code>Ip055</code></a></td><td>3MF build item references a non-existent objectid → silent total geometry loss</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip056.html"><code>Ip056</code></a></td><td>Binary STL facet-count header disagrees with the facet data present → silent-empty</td><td><code>bytes-only</code></td><td><code></code></td></tr>
 </tbody></table>
 </main>
 <footer>

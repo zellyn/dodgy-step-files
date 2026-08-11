@@ -49283,6 +49283,20 @@ exercised against CGAL PMP / MeshFix.
 - **Model impact**: The importer returns an empty model while a valid mesh sits unreferenced in resources; a pipeline that trusts the loader sees "no geometry" and cannot distinguish it from a genuinely empty file, silently dropping the part.
 
 
+### Ip056 — Binary STL facet-count header disagrees with the facet data present → silent-empty
+- **Category**: §12.15 import-format parser robustness (sub-class: declared-count-exceeds-body)
+- **Sources**: Pattern-mined from the binary STL de-facto format (80-byte header + uint32 facet count + 50 bytes/facet) + mikedh/trimesh STL loader size-consistency check (MIT — pattern only, no bytes copied).
+- **Description**: A binary STL stores a `uint32` facet count immediately after its 80-byte header; the rest of the file must be exactly `count × 50` bytes. This file's count field says 5 but only 2 facets (100 bytes) physically follow. The count field is the sole length signal a binary-STL reader has — there is no per-facet delimiter and no EOF marker — so a reader that trusts it either reads 3 facets' worth of bytes past the end, or (trimesh) detects the size inconsistency and bails to an empty mesh with no diagnostic. This is the binary sibling of the ASCII PLY count-mismatch Ip002; the header does NOT begin with "solid", so it is unambiguously binary and distinct from the mis-detection trap Ip023.
+- **Reproducer recipe**: 80-byte header (any text not beginning with "solid"), then `uint32` little-endian value 5, then exactly 2 facet records of 50 bytes each. Total 184 bytes where a count-of-5 file would be 334.
+- **Expected kernel behavior**: validate that `file_size == 84 + 50 × count` before trusting the count; on mismatch reject with a diagnostic (declared count vs facets derivable from size), never read past the facet array and never silently return an empty mesh when facet data is present.
+- **Byte assertion**: contains(b'facet count field = 5 but only 2 facets follow')
+- **Fixture path**: import-examples/12-15-import-formats/Ip056.stl
+- **Fixture kind**: raw import-format file (parser-robustness; graded against trimesh, not Part-21)
+- **Notes**: Cross-oracle: trimesh 4.12.2 loads 0 faces / 0 vertices (the 84 + 50×5 = 334-byte expectation fails against the 184-byte file, so the loader yields an empty mesh) — silent-empty, no diagnostic — verified 2026-08-11. A stricter reader would over-read 150 bytes past EOF. Synonyms: "binary STL facet count mismatch", "STL header count exceeds body", "declared facets exceed data", "uint32 facet count over-run". Provenance tier: bytes-only.
+- **Severity**: P2
+- **Model impact**: The facet count is a trusted length prefix; a reader that does not cross-check it against file size either over-reads past the facet array (garbage or heap over-read) or, like trimesh, discards a partially-valid mesh entirely and returns empty with no way for the caller to tell a size-inconsistent file from an empty one.
+
+
 ### Twi292 — Short arc straddling a closed curve's parameter seam: projected endpoint parameters come back swapped (w1 > w2)
 - **Category**: §12.3b wire-loop (sub-class: closed-edge splitting, periodic-parameter-order)
 - **Sources**: OCCT `ShapeAnalysis_TransferParametersProj::TransferRange` (`ShapeAnalysis_TransferParametersProj.cxx:291-297,305-311` @ `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`); occt-coverage/tkshhealing/problems.json `tkshh-closed-edge-full-period-unsplit`, subvariant "Swapped parameter order after projection, with epsilon-safe range reconstruction"
