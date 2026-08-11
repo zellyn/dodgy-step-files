@@ -64,11 +64,11 @@ Honest caveat: 1 deviating fixture — `Gn169` — does not crash, so the count 
 
 ## What this page does *not* cover
 
-**2548 of the 2548 STEP fixtures (100%) carry a written `Expected kernel behavior`.** The other 0 are real fixtures with real, CI-verified assertions — they are good *tests* — but they do not state what a correct kernel should do, so they teach an implementer nothing on their own. They are marked † below. Most of that remainder is deliberate: an entry whose bytes were found to contradict its own title is left unspecced ON PURPOSE, because a specification written on a disproved claim would propagate the error rather than fix it.
+**2549 of the 2549 STEP fixtures (100%) carry a written `Expected kernel behavior`.** The other 0 are real fixtures with real, CI-verified assertions — they are good *tests* — but they do not state what a correct kernel should do, so they teach an implementer nothing on their own. They are marked † below. Most of that remainder is deliberate: an entry whose bytes were found to contradict its own title is left unspecced ON PURPOSE, because a specification written on a disproved claim would propagate the error rather than fix it.
 
-It cites **620 of the 2548 STEP fixtures (24%)**. The other 1928 are real, CI-verified fixtures that simply have not been linked to a named repair mechanism yet — they are reachable through the catalog and [`browse/`](browse/), just not from here. So this is a *starting* map, not an exhaustive one: finishing a tier does not mean you have handled everything the corpus knows about. Growing the linkage is tracked in `occt-coverage/`.
+It cites **620 of the 2549 STEP fixtures (24%)**. The other 1929 are real, CI-verified fixtures that simply have not been linked to a named repair mechanism yet — they are reachable through the catalog and [`browse/`](browse/), just not from here. So this is a *starting* map, not an exhaustive one: finishing a tier does not mean you have handled everything the corpus knows about. Growing the linkage is tracked in `occt-coverage/`.
 
-> Of the two, **linkage is currently the larger gap** (1928 fixtures vs 0).
+> Of the two, **linkage is currently the larger gap** (1929 fixtures vs 0).
 
 ## Tier summary
 
