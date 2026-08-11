@@ -378,10 +378,17 @@ loader we don't have (assimp/Open3D/tinygltf), or was tried-and-dropped above):*
       prefix +24 → trimesh over-reads into the BIN chunk → JSONDecodeError; distinct binary-container-framing
       layer vs the text-glTF accessor-overrun Ip004. (Graded-and-dropped GLB variants: total_length header
       wrong → trimesh silently ignores it, loads fine → benign, no fixture; BIN chunkLength overrun → trimesh
-      rejects cleanly → good behavior, no fixture.) Still not graded: **3DXML** (Dassault ZIP), **CTM**
-      (OpenCTM compressed), **XYZ** point-cloud. Container/binary length-prefix formats are the richest trap
-      source (cf. Draco, PLY, binary-STL, GLB). Author-time grading pattern: `uv run --with networkx --with
-      lxml python` (ephemeral, no venv/pyproject mutation).
+      rejects cleanly → good behavior, no fixture.) **Wave paused here 2026-08-11 at a tooling boundary** (5 fixtures shipped: Ip053-057).
+      Remaining formats assessed and set aside: **CTM** needs the openctm C lib / `ctmconv` — trimesh has a
+      loader but NO exporter, so a valid CTM can't be synthesized to mutate without external tooling (same
+      "needs tooling we don't have" class as assimp/Open3D above). **3DXML** (Dassault ZIP+XML) is the same
+      container class as 3MF — its OOB-index / dangling-ref traps would be redundant with Ip053/Ip055; only
+      worth it if a 3DXML-*specific* structure (product-structure refs) yields a distinct mode. **XYZ**
+      point-cloud is a trivial `x y z` text format, low value. So the accessible-tooling yield of the
+      mesh-format vein is essentially mined; the next distinct step is a format needing new tooling (openctm,
+      assimp for FBX) or a genuinely independent B-rep reader ([[project_mining_saturation]]). Container/binary
+      length-prefix formats remain the richest trap source (Draco, PLY, binary-STL, GLB). Author-time grading
+      pattern: `uv run --with networkx --with lxml python` (ephemeral, no venv/pyproject mutation).
 - [x] **Draco `.drc` codec** — DONE (Tier-1 wave, 2026-07-17): DracoPy 2.0.0 installed in `validation/.venv`
       (encode base mesh → mutate one field → observe `DracoPy.decode`); 7 landed (Ip046–Ip052), first-ever
       compressed-codec coverage. Ip050 = silent-empty-decode (the dangerous non-rejecting case). 3
