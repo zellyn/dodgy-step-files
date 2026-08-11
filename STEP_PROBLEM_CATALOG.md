@@ -16548,7 +16548,6 @@ _Section summary: 41 entries._
 - **Notes**: **See also**: Ad043. **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers must reject this fixture per the catalog's stated invariant.
 - **Byte assertion**: matches(rb"EDGE_LOOP\('[^']*',\(\)\)")
 - **Byte assertion**: contains(b'EDGE_LOOP')
-- **Tier-3 assertion**: load == "ok"
 - **Model impact**: Crafted input drives the parser into an undefined-behavior path; observed effects range from silent acceptance with no model, to OOB read producing junk attribute values, to process termination by signal.
 - **Structural assertion**: struct == EMPTY_AGGREGATE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
@@ -27087,7 +27086,6 @@ Mode-flag initialization (-1 default) prevents undefined comparisons in NeedFix(
 **Expected behavior**: reject the malformed/non-conformant input with a clear per-entity diagnostic; never crash. A crash is a genuine robustness defect worth keeping in the corpus — just not evidence of the specific classifier misbehavior originally claimed.
 - **Notes**: RUNTIME-VERIFIED 2026-08-09 — this file's recorded `signal(11)` is driven by the revolved surface's axis attribute holding a full three-axis placement where a single-axis placement is declared; the reader's downcast yields null and the abort happens while converting the surface, before the titled condition can be exercised. This was the long-open Twi144 mystery: repairing the line-direction references alone cannot reach this slot. Census in `BACKLOG.md` (M.18).
 - **Expected kernel behavior**: Reject with a diagnostic naming the ADVANCED_FACE on the SURFACE_OF_REVOLUTION whose 4-edge EDGE_LOOP reuses the same profile edge twice — once forward, once reversed — to close the periodic seam: before translating, detect that the same edge entity appears twice in one loop with opposite senses and refuse to build the face from it — a load must never crash; since the reused edge is structurally load-bearing for the loop's closure, the whole face (and the read, if dropping it breaks the shell) must be rejected with the diagnostic instead of aborting the process.
-- **Tier-3 assertion**: load == "ok"
 - **Notes**: Corrected 2026-07-17 (truth-in-labeling audit, Q14 second half): retitled/redescribed as an honest crash-robustness fixture — original claimed periodic-degenerate seam repair produces a specific silent misclassification/undefined-behavior outcome; in reality the process crashes before that method (or any face-repair/small-face-check method) is ever reached. The crash itself is genuine and is retained as the fixture's real, verified defect (Expected validation unchanged: `signal(11)/signal(11)`). Part of the ~127-entry face-repair/small-face-check misnomer family identified in the truth-in-labeling audit — see `BACKLOG.md` Q14 for the full list and remediation approach. Synonyms: "surface-of-revolution degenerate-seam crash".
 - **Structural assertion**: struct == SLOT_TYPE
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
@@ -48414,8 +48412,6 @@ exercised against CGAL PMP / MeshFix.
 - **Byte assertion**: count_entity_def(b'COORDINATES_LIST') == 1
 - **Byte assertion**: count_entity_def(b'TRIANGULATED_FACE') == 6
 - **Byte assertion**: contains(b'TESSELLATED_SHELL')
-- **Tier-3 assertion**: shape_null == False
-- **Tier-3 assertion**: n_vertices_total == 0
 - **Severity**: P1
 - **Model impact**: A viewer or kernel that mis-reads the shared packed array (0-based, or expecting per-face lists) drops or scrambles facets; current OCCT/gmsh instead crash outright on load, taking down the whole batch-processing pipeline rather than degrading gracefully.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`

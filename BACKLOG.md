@@ -2797,6 +2797,14 @@ inspected individually): 76 assertions added, 30 skipped with reasons.**
     the 5 two-arg-VECTOR M-fixtures (M051/057/060/072/073) — that would reopen the deliberate
     M.24 scaffold-incidental skip; they remain byte-assertion fixtures, now free of the false
     tier-3 claim. Completes the vacuous-assertion class started by the Gs002/Gb002/Gb003 fixes.
+  - **Vacuous-tier-3 sweep COMPLETED (2026-08-10):** generalized the check to ANY tier-3
+    assertion (not just `shape_null==True`) on a `signal(11)` fixture, measuring tier3 rc for
+    each. Complete class = 0 genuine, all vacuous. Final 3 removed: Ad050 (`load=="ok"`, keeps
+    struct==EMPTY_AGGREGATE), Tfa233 (`load=="ok"`, keeps struct==SLOT_TYPE), Pmi164
+    (`shape_null==False` + `n_vertices_total==0`, keeps 3 byte assertions). The whole corpus is
+    now internally consistent on this axis: no fixture asserts a loaded-shape property while its
+    Expected line says the fixture crashes. Broader consistency sweep also confirmed 0
+    loads-but-asserts-null and 0 empty-but-asserts-geometry contradictions across all 3353 entries.
   - Pf025 (empty OPEN_SHELL is scaffold, claim is the vertex-loop bound),
     M070/M193/M194/M195/M199 (empty lists incidental to tessellation minimalism),
     3 `.input` quarantine files (no catalog entries).

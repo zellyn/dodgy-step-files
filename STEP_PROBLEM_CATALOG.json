@@ -2445,9 +2445,7 @@
       "crash",
       "adversarial"
     ],
-    "tier3_assertions": [
-      "load == \"ok\""
-    ],
+    "tier3_assertions": [],
     "title": "Empty `EDGE_LOOP` / empty wire / empty entity iterator crashes reader"
   },
   {
@@ -94837,9 +94835,7 @@
       "crash",
       "topology"
     ],
-    "tier3_assertions": [
-      "load == \"ok\""
-    ],
+    "tier3_assertions": [],
     "title": "ADVANCED_FACE on a SURFACE_OF_REVOLUTION with a degenerate seam (profile edge used forward and reversed) crashes the reader (SIGSEGV); periodic-degenerate seam repair is never reached"
   },
   {
@@ -115779,10 +115775,7 @@
       "crash",
       "pmi"
     ],
-    "tier3_assertions": [
-      "shape_null == False",
-      "n_vertices_total == 0"
-    ],
+    "tier3_assertions": [],
     "title": "Single shared `COORDINATES_LIST` for a whole `TESSELLATED_SHELL`, 1-based integer indices [VALID-BUT-HARD]"
   },
   {
