@@ -374,11 +374,14 @@ loader we don't have (assimp/Open3D/tinygltf), or was tried-and-dropped above):*
 - [ ] **Mesh-format vein still LIVE (next scoped wave).** trimesh 4.12.2 reads several independent formats
       the corpus does NOT yet cover; each is genuine independent-reader yield (not OCCT-wrapped). Graded but
       not yet built: 3MF `unknown-unit` (trimesh ignores unit enum — weak), 3MF `no-model-part` → uncaught
-      StopIteration (marginal). Not yet graded: **GLB (binary glTF) chunk-framing** (12-byte header + JSON/BIN
-      chunk length prefixes — distinct from the text-glTF accessor-overrun Ip004), **3DXML** (Dassault ZIP),
-      **CTM** (OpenCTM compressed), **XYZ** point-cloud. Container/binary length-prefix formats are the
-      richest trap source (cf. Draco, PLY, binary-STL). Author-time grading pattern: `uv run --with networkx
-      --with lxml python` (ephemeral, no venv/pyproject mutation).
+      StopIteration (marginal). **GLB (binary glTF) chunk-framing DONE 2026-08-11 (Ip057):** JSON chunkLength
+      prefix +24 → trimesh over-reads into the BIN chunk → JSONDecodeError; distinct binary-container-framing
+      layer vs the text-glTF accessor-overrun Ip004. (Graded-and-dropped GLB variants: total_length header
+      wrong → trimesh silently ignores it, loads fine → benign, no fixture; BIN chunkLength overrun → trimesh
+      rejects cleanly → good behavior, no fixture.) Still not graded: **3DXML** (Dassault ZIP), **CTM**
+      (OpenCTM compressed), **XYZ** point-cloud. Container/binary length-prefix formats are the richest trap
+      source (cf. Draco, PLY, binary-STL, GLB). Author-time grading pattern: `uv run --with networkx --with
+      lxml python` (ephemeral, no venv/pyproject mutation).
 - [x] **Draco `.drc` codec** — DONE (Tier-1 wave, 2026-07-17): DracoPy 2.0.0 installed in `validation/.venv`
       (encode base mesh → mutate one field → observe `DracoPy.decode`); 7 landed (Ip046–Ip052), first-ever
       compressed-codec coverage. Ip050 = silent-empty-decode (the dangerous non-rejecting case). 3

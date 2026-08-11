@@ -49297,6 +49297,20 @@ exercised against CGAL PMP / MeshFix.
 - **Model impact**: The facet count is a trusted length prefix; a reader that does not cross-check it against file size either over-reads past the facet array (garbage or heap over-read) or, like trimesh, discards a partially-valid mesh entirely and returns empty with no way for the caller to tell a size-inconsistent file from an empty one.
 
 
+### Ip057 — GLB (binary glTF) JSON chunk-length prefix overruns into the binary payload
+- **Category**: §12.15 import-format parser robustness (sub-class: chunk-length-overrun)
+- **Sources**: Pattern-mined from the glTF 2.0 GLB container spec §4.4 (chunk = uint32 chunkLength + uint32 chunkType + data) + mikedh/trimesh GLB loader (MIT — pattern only, no bytes copied).
+- **Description**: A GLB file is a 12-byte header (`glTF` magic, version, total length) followed by length-prefixed chunks: a JSON chunk then an optional BIN chunk, each introduced by its own `uint32` chunkLength. Here the JSON chunk's real payload is 456 bytes but its length prefix declares 480 — 24 bytes too many. A reader that trusts the prefix slices 480 bytes and parses them as JSON, reading 24 bytes of the following BIN chunk (its length/type header) as if they were JSON text. This is the **binary-container-framing** analogue of the semantic accessor-overrun Ip004: the defect is one layer lower, in the chunk framing that a text `.gltf` file does not have.
+- **Reproducer recipe**: a valid single-triangle glTF 2.0 (POSITION accessor + indices, one BIN chunk) assembled as a GLB, then set the JSON chunk's `uint32` length prefix to (actual JSON length + 24) so it reaches past the padded JSON into the BIN chunk header. All other bytes untouched.
+- **Expected kernel behavior**: bound every chunk-length prefix against the declared total file length and the bytes actually remaining before trusting it; reject a chunk that claims more bytes than the file provides for it, never slice/parse past the chunk's real payload into the adjacent chunk.
+- **Byte assertion**: contains(b'glTF')
+- **Fixture path**: import-examples/12-15-import-formats/Ip057.glb
+- **Fixture kind**: raw import-format file (parser-robustness; graded against trimesh, not Part-21)
+- **Notes**: Cross-oracle: trimesh 4.12.2 raises `JSONDecodeError: Extra data: line 1 column 457` — it read the 24 over-declared bytes (the BIN chunk's length+type words) into the JSON string and failed to parse them — verified 2026-08-11. A stricter/native reader over-reads binary memory. trimesh does bound the *BIN* chunk length (rejects that cleanly), but not the *JSON* chunk length. Synonyms: "GLB chunk length overrun", "glTF binary chunkLength exceeds payload", "GLB JSON chunk over-read", "binary glTF framing length prefix". Provenance tier: bytes-only.
+- **Severity**: P2
+- **Model impact**: The chunk-length prefix is a trusted framing field; a reader that does not bound it against the file either crashes parsing binary bytes as JSON (trimesh) or, in a native reader, reads past the chunk into adjacent memory — a classic length-prefix over-read on adversarial input.
+
+
 ### Twi292 — Short arc straddling a closed curve's parameter seam: projected endpoint parameters come back swapped (w1 > w2)
 - **Category**: §12.3b wire-loop (sub-class: closed-edge splitting, periodic-parameter-order)
 - **Sources**: OCCT `ShapeAnalysis_TransferParametersProj::TransferRange` (`ShapeAnalysis_TransferParametersProj.cxx:291-297,305-311` @ `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`); occt-coverage/tkshhealing/problems.json `tkshh-closed-edge-full-period-unsplit`, subvariant "Swapped parameter order after projection, with epsilon-safe range reconstruction"
