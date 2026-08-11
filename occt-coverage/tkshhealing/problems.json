@@ -99,17 +99,12 @@
     ],
     "fixture_ids": [
       "Gp022",
-      "Twi082",
-      "Twi070",
-      "Twi133",
-      "Twi246",
-      "Gp050",
-      "Gp073",
-      "Twi040",
       "Gp045",
+      "Gp050",
       "Gp052",
       "Gp059",
       "Gp066",
+      "Gp073",
       "Gp074",
       "Gp078",
       "Gp081",
@@ -120,7 +115,13 @@
       "Gp107",
       "Gp114",
       "Gp130",
-      "Gp133"
+      "Gp133",
+      "Gp135",
+      "Twi040",
+      "Twi070",
+      "Twi082",
+      "Twi133",
+      "Twi246"
     ],
     "coverage_verdict": "COVERED",
     "notes": "MERGED with group-C record: ShapeAnalysis_Edge::CheckSameParameter / ShapeFix_Edge::FixSameParameter and the ShapeFix_Wire::FixEdgeCurves same-parameter block are detection/fix/driver of one defect. Heavily mined in 12-2a: simple, B-spline-recursion, and periodic sub-cases all fixtured. Related machinery (ShapeAnalysis_TransferParametersProj) is listed in excluded.json, not counted separately. || Source-record notes: [D-wire] Gp022 (SameParameter=.T. asserted with different parameterisations), Twi082 (same_range flag false claim), Twi070 (mid-edge drift, endpoints agree) all verified from records. Rich FixSameParameter mechanism coverage in 12-2a (Gp045, Gp052, Gp059, Gp066, Gp074, Gp078, Gp081, Gp084). FixSameParameter internals belong to the ShapeFix_Edge group; the wire-level orchestration and CheckCurveGap are this group's. | [C-edge-vertex-facesplit as tkshh-edge-parametrization-desynchronized] Extensive coverage across simple, B-spline, and periodic sub-cases. This is the most heavily mined problem in the group.",
@@ -235,13 +236,14 @@
     ],
     "fixture_ids": [
       "Gp001",
+      "Gp012",
+      "Gp019",
       "Gp035",
       "Gp042",
-      "Gp019",
       "Gp048",
       "Gp076",
-      "Twi047",
-      "Gp012"
+      "Gp128",
+      "Twi047"
     ],
     "coverage_verdict": "COVERED",
     "notes": "Absorbed the missing-pcurve half of group-C's edge-missing-curve-representation record (ShapeFix_Edge::FixAddPCurve; ShapeFix_Wire::FixEdgeCurves is the driver). Plain projection variants well covered (Gp001/Gp035/Gp042, composite-surface Gp019). DOWNGRADED to PARTIAL on cross-check: the seam-edge variant - synthesizing BOTH period-shifted pcurves for a seam - is only weakly evidenced (Gp076 exercises the path but entangles it with other defects); a clean dedicated fixture is missing. || Source-record notes: [D-wire] Gp001/Gp035/Gp042 records verified as edge-with-3D-curve-but-no-PCURVE inputs. The projection machinery itself is ShapeFix_Edge::FixAddPCurve (edge group's slice); listed here because ShapeFix_Wire::FixEdgeCurves is the wire-level driver. Coordinate with the ShapeFix_Edge group to avoid double counting. | [C-edge-vertex-facesplit as tkshh-edge-missing-curve-representation] Missing-pcurve (Gp001, incl. composite-surface sub-case Gp019 and analytic-surface case Gp035) and missing-3D-curve (Twi047) are cleanly and directly covered. The seam/periodic-pcurve-pair subvariant is only weakly represented: Gp076 exercises FixAddPCurve's seam path but is entangled with an unrelated C-1 positional-break defect on the 3D curve (comment states 'driving OCC shape_null=True'), so it is not a clean single-defect demonstration of the seam-pcurve-pair mechanism alone.",
@@ -386,15 +388,16 @@
       "collinear segment overlap between wires, small (<50%) -> 2-edge split; large (>50%) -> 3-edge reconstruction with shared segment"
     ],
     "fixture_ids": [
+      "N141",
       "Tfa039",
-      "Twi250",
+      "Tfa045",
       "Tfa126",
       "Tfa131",
       "Tfa160",
-      "N141",
-      "Twi249",
       "Tfa253",
-      "Tfa254"
+      "Tfa254",
+      "Twi249",
+      "Twi250"
     ],
     "coverage_verdict": "COVERED",
     "notes": "Tfa039 verified: planar face with two crossing (non-nested) inner FACE_BOUND quads -- the canonical transverse case. Twi250: two wires intersecting at the midpoint of one edge with equidistant endpoints (FindVertAndSplitEdge endpoint-selection). Tfa126: outer and hole wires cross. Tfa131/Tfa160 verified: two wires sharing a coincident collinear segment (segment-overlap input; note OCC yields empty on these GEOMETRIC_CURVE_SET fixtures). N141 exercises vertex-tolerance selection at the junction; Twi249 the CutEdge tiny-range guard. Missing: a fixture demonstrating the large (>50%) overlap 3-edge reconstruction, and a clean endpoint-endpoint UnionVertexes case between two wires of a proper ADVANCED_FACE. | Wave-2 (2026-07-12, adversarial verifier) (C1): Tfa253 closes the large (>50%) overlap 3-edge-reconstruction subvariant -- outer bottom edge (0,0)-(10,0) and inner-hole bottom edge (2,0)-(9,0) are exactly collinear on y=0 (70%/100% of respective edge lengths, a genuine collinear overlap, not a transverse crossing); live: authored 8 edges -> n_edges_total=10 post-heal (ShapeFix_IntersectionTool's large-overlap 3-edge-reconstruction path adds edges), brepcheck.valid=True, face[0].area=79.0 exactly (100-21), matching every catalog assertion. Tfa254 closes the endpoint-endpoint UnionVertexes subvariant on a proper ADVANCED_FACE -- inner triangle's (0,0) corner is an independent VERTEX_POINT coincident with the outer square's own (0,0) corner (both genuine edge endpoints, never mid-edge); live: 7 authored VERTEX_POINT -> confirmed 6 unique TopoDS_Vertex via TopExp::MapShapes (UnionVertexes fired), n_edges_total=9 matches, direct BRepCheck_Analyzer.Result(face).Status() query shows the single honestly-reported side effect BRepCheck_InvalidImbricationOfWires (not the class's own IntersectingWires target, correctly noted as such). Both were the class's last two listed missing subvariants per WORK_PACKETS.md. PARTIAL -> COVERED.",
@@ -728,6 +731,7 @@
       "Gp158",
       "Gp159",
       "Gp160",
+      "Gs145",
       "Gs148",
       "Tfa200"
     ],
@@ -893,6 +897,7 @@
       "edges shared by 3+ faces (non-manifold) handled specially via isAccountMultiConex to avoid merging incompatible faces into one group"
     ],
     "fixture_ids": [
+      "Tfa034",
       "Tsh070",
       "Tsh074",
       "Tsh080",
@@ -907,7 +912,8 @@
       "Tsh132",
       "Tsh139",
       "Tsh144",
-      "Tsh149"
+      "Tsh149",
+      "Tsh191"
     ],
     "coverage_verdict": "COVERED",
     "notes": "Section 12-3a-shells has a large, deliberately-authored family (15+ fixtures) explicitly named after ShapeFix_Shell.FixFaceOrientation covering multiconnect-edge classification, duplicate-face removal, single-face shells, tangent/reverse-edge propagation, T-junction ambiguity, and specific shell topologies (cylindrical, hexagonal, flat, T-shaped non-manifold). Bo024 (unit cube, all 6 faces same_sense=.F., globally but uniformly inverted) was checked and correctly maps to the DIFFERENT tkshh-solid-globally-inverted-shell problem below, not this one -- confirming the corpus distinguishes uniform-shell-inversion from mixed-face-orientation. Note: genuinely non-orientable (Mobius-like) face groups are detected but NOT repaired by this method (isolated into single-face shells with a FAIL status) -- that sub-case is excluded below as a detection-only limitation, not folded in as a covered subvariant.",
@@ -996,6 +1002,8 @@
       "vertex sits on the interior of an edge of the same wire"
     ],
     "fixture_ids": [
+      "Tfa010",
+      "Tfa079",
       "Tfa249"
     ],
     "coverage_verdict": "COVERED",

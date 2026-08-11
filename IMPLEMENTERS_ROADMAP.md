@@ -2,7 +2,7 @@
 
 **Audience: you are writing a CAD kernel and need to survive real-world STEP files.** This document is the corpus re-cut along the axis you actually work on.
 
-The catalog ([`STEP_PROBLEM_CATALOG.md`](STEP_PROBLEM_CATALOG.md)) is organised one entry per broken file, which is right for auditing and wrong for building — 3335 entries do not tell you where to start. This page inverts it into the **169 distinct repair mechanisms** those files exercise, ordered so the failures that hurt users most come first, each pointing at the fixtures that prove you got it right (620 fixtures cited).
+The catalog ([`STEP_PROBLEM_CATALOG.md`](STEP_PROBLEM_CATALOG.md)) is organised one entry per broken file, which is right for auditing and wrong for building — 3335 entries do not tell you where to start. This page inverts it into the **169 distinct repair mechanisms** those files exercise, ordered so the failures that hurt users most come first, each pointing at the fixtures that prove you got it right (628 fixtures cited).
 
 > **Generated file — do not edit.** `python3 occt-coverage/make_roadmap.py`.
 > Everything below is joined from `occt-coverage/*/problems.json` and the catalog's CI-verified `Expected validation` lines. No hand-entered claims.
@@ -66,9 +66,9 @@ Honest caveat: 1 deviating fixture — `Gn169` — does not crash, so the count 
 
 **2549 of the 2549 STEP fixtures (100%) carry a written `Expected kernel behavior`.** The other 0 are real fixtures with real, CI-verified assertions — they are good *tests* — but they do not state what a correct kernel should do, so they teach an implementer nothing on their own. They are marked † below. Most of that remainder is deliberate: an entry whose bytes were found to contradict its own title is left unspecced ON PURPOSE, because a specification written on a disproved claim would propagate the error rather than fix it.
 
-It cites **620 of the 2549 STEP fixtures (24%)**. The other 1929 are real, CI-verified fixtures that simply have not been linked to a named repair mechanism yet — they are reachable through the catalog and [`browse/`](browse/), just not from here. So this is a *starting* map, not an exhaustive one: finishing a tier does not mean you have handled everything the corpus knows about. Growing the linkage is tracked in `occt-coverage/`.
+It cites **628 of the 2549 STEP fixtures (25%)**. The other 1921 are real, CI-verified fixtures that simply have not been linked to a named repair mechanism yet — they are reachable through the catalog and [`browse/`](browse/), just not from here. So this is a *starting* map, not an exhaustive one: finishing a tier does not mean you have handled everything the corpus knows about. Growing the linkage is tracked in `occt-coverage/`.
 
-> Of the two, **linkage is currently the larger gap** (1929 fixtures vs 0).
+> Of the two, **linkage is currently the larger gap** (1921 fixtures vs 0).
 
 ## Tier summary
 
@@ -81,6 +81,14 @@ It cites **620 of the 2549 STEP fixtures (24%)**. The other 1929 are real, CI-ve
 
 ## T0 crash-exposing
 
+### `tkshh-shell-inconsistent-face-orientation`
+
+*TKShHealing* · 15 fixtures · observed: loads×10, crash×5 · **15/15 carry a written spec** · corpus coverage: COVERED
+
+A shell's constituent faces have inconsistent orientation relative to each other -- some faces are flipped relative to a globally-consistent (outward-facing) convention, possibly combined with exact-duplicate faces, edges shared by three or more faces (non-manifold connectivity), or a mismatch between the shell's cached Closed flag and its actual free-edge state. OCCT repairs this by…
+
+**Test against:** `Tfa034`, `Tsh070`, `Tsh085`, `Tsh090`, `Tsh094`, `Tsh100`, `Tsh104`, `Tsh112`, `Tsh122`, `Tsh128`, `Tsh132`, `Tsh139` …and 3 more
+
 ### `tkshh-face-small-area-wire`
 
 *TKShHealing* · 13 fixtures · observed: loads×7, crash×5, empty×1 · **13/13 carry a written spec** · corpus coverage: COVERED
@@ -89,21 +97,13 @@ A face contains a wire that encloses (near-)zero area in UV -- a sliver loop, a 
 
 **Test against:** `Tfa208`, `Tfa123`, `Twi045`, `Tfa130`, `Tfa093`, `Tfa077`, `Twi044`, `Twi079`, `Tsh089`, `Tsh106`, `Tsh113`, `Tsh124` …and 1 more
 
-### `tkshh-shell-inconsistent-face-orientation`
-
-*TKShHealing* · 13 fixtures · observed: loads×8, crash×5 · **13/13 carry a written spec** · corpus coverage: COVERED
-
-A shell's constituent faces have inconsistent orientation relative to each other -- some faces are flipped relative to a globally-consistent (outward-facing) convention, possibly combined with exact-duplicate faces, edges shared by three or more faces (non-manifold connectivity), or a mismatch between the shell's cached Closed flag and its actual free-edge state. OCCT repairs this by…
-
-**Test against:** `Tsh070`, `Tsh085`, `Tsh090`, `Tsh094`, `Tsh100`, `Tsh104`, `Tsh112`, `Tsh122`, `Tsh128`, `Tsh132`, `Tsh139`, `Tsh144` …and 1 more
-
 ### `tkshh-edge-3d-2d-parameterization-mismatch`
 
-*TKShHealing* · 23 fixtures · observed: loads×10, empty×10, crash×3 · **23/23 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 24 fixtures · observed: empty×11, loads×10, crash×3 · **24/24 carry a written spec** · corpus coverage: COVERED
 
 An edge's 3D curve and its pcurve disagree as parameterizations: at the same parameter the 3D point and the surface-evaluated pcurve point diverge beyond tolerance (SameParameter violation), the declared parameter ranges differ while SameRange is asserted, the pcurve's range is invalid for its surface domain, or the two representations drift apart mid-edge while agreeing at the ends.
 
-**Test against:** `Gp022`, `Twi082`, `Twi070`, `Twi133`, `Twi246`, `Gp050`, `Gp073`, `Twi040`, `Gp045`, `Gp052`, `Gp059`, `Gp066` …and 11 more
+**Test against:** `Gp022`, `Gp045`, `Gp050`, `Gp052`, `Gp059`, `Gp066`, `Gp073`, `Gp074`, `Gp078`, `Gp081`, `Gp084`, `Gp091` …and 12 more
 
 ### `tkshh-wire-lacking-edge-2d`
 
@@ -115,11 +115,11 @@ Two consecutive edges share a vertex in 3D (topologically connected) but their p
 
 ### `tkshh-edge-missing-pcurve`
 
-*TKShHealing* · 8 fixtures · observed: loads×4, crash×3, empty×1 · **8/8 carry a written spec** · corpus coverage: COVERED
+*TKShHealing* · 9 fixtures · observed: loads×4, crash×3, empty×2 · **9/9 carry a written spec** · corpus coverage: COVERED
 
 An edge used in a face's wire has no pcurve on that face's surface (only a 3D curve). The 2D representation must be computed by projecting the 3D curve onto the surface (with special handling for seams and singular rows).
 
-**Test against:** `Gp001`, `Gp035`, `Gp042`, `Gp019`, `Gp048`, `Gp076`, `Twi047`, `Gp012`
+**Test against:** `Gp001`, `Gp012`, `Gp019`, `Gp035`, `Gp042`, `Gp048`, `Gp076`, `Gp128`, `Twi047`
 
 ### `tkshh-wire-adjacent-edges-intersect`
 
@@ -145,6 +145,14 @@ A single edge's curve crosses itself: the pcurve (and correspondingly the 3D cur
 
 **Test against:** `Twi103`, `Twi129`, `Twi141`, `Twi151`, `Twi166`, `Twi172`, `Twi188`, `Twi206`, `Twi269`, `Gn024`
 
+### `tkshh-face-intersecting-wires`
+
+*TKShHealing* · 10 fixtures · observed: loads×5, empty×3, crash×2 · **10/10 carry a written spec** · corpus coverage: COVERED
+
+Two DIFFERENT wires of the same face intersect each other in UV: a hole boundary crosses the outer boundary, two hole wires cross, or wires share a collinear segment. Holes cut by intersecting wires make containment/orientation undecidable. OCCT's ShapeFix_IntersectionTool::FixIntersectingWires intersects all edge pairs across wire pairs and repairs exactly like the self-intersection case:…
+
+**Test against:** `N141`, `Tfa039`, `Tfa045`, `Tfa126`, `Tfa131`, `Tfa160`, `Tfa253`, `Tfa254`, `Twi249`, `Twi250`
+
 ### `tkshh-seam-pcurves-swapped`
 
 *TKShHealing* · 10 fixtures · observed: loads×5, empty×3, crash×2 · **10/10 carry a written spec** · corpus coverage: COVERED
@@ -152,14 +160,6 @@ A single edge's curve crosses itself: the pcurve (and correspondingly the 3D cur
 A seam edge on a periodic surface carries two pcurves (one per side of the seam), but they are assigned to the wrong sides - the FORWARD-orientation pcurve is the one that belongs to the REVERSED side and vice versa (or both slots carry the same curve), breaking UV closure by one period.
 
 **Test against:** `Twi022`, `Twi071`, `Twi121`, `Twi144`, `Twi154`, `Twi183`, `Twi201`, `Twi217`, `Twi268`, `Gp011`
-
-### `tkshh-face-intersecting-wires`
-
-*TKShHealing* · 9 fixtures · observed: loads×4, empty×3, crash×2 · **9/9 carry a written spec** · corpus coverage: COVERED
-
-Two DIFFERENT wires of the same face intersect each other in UV: a hole boundary crosses the outer boundary, two hole wires cross, or wires share a collinear segment. Holes cut by intersecting wires make containment/orientation undecidable. OCCT's ShapeFix_IntersectionTool::FixIntersectingWires intersects all edge pairs across wire pairs and repairs exactly like the self-intersection case:…
-
-**Test against:** `Tfa039`, `Twi250`, `Tfa126`, `Tfa131`, `Tfa160`, `N141`, `Twi249`, `Tfa253`, `Tfa254`
 
 ### `tkshh-wire-duplicate-opposed-edge-pair`
 
@@ -447,6 +447,14 @@ An edge lies on a closed surface and is associated with two pcurves (via a SEAM_
 
 **Test against:** `Gs193`, `Gp013`, `Gp011`, `Gs028`, `Twi022`, `Gp119`, `Gp190`, `Gp194`
 
+### `tkshh-pcurve-collapse-onto-surface-singularity`
+
+*TKShHealing* · 7 fixtures · observed: loads×7 · **7/7 carry a written spec** · corpus coverage: COVERED
+
+When an edge's 3D curve runs through (or partially through) one of a surface's known singularities (see tkshh-surface-analytic-singularity-detection), the corresponding pcurve's 2D samples must be recognized as degenerate and repaired rather than left as noisy/undefined UV values: if the whole pcurve collapses onto the singularity, its non-degenerate parametric axis is evenly redistributed…
+
+**Test against:** `Gp157`, `Gp158`, `Gp159`, `Gp160`, `Gs145`, `Gs148`, `Tfa200`
+
 ### `tkshh-surface-closure-vs-declared-periodicity-mismatch`
 
 *TKShHealing* · 7 fixtures · observed: loads×7 · **7/7 carry a written spec** · corpus coverage: COVERED
@@ -518,14 +526,6 @@ An edge has no 3D curve (only a pcurve on a surface, or no geometry at all). The
 A face lies on a closed (periodic) surface -- cylinder, torus, sphere, periodic B-spline -- and its boundary wraps around the periodic direction, but the file contains no seam edge. The wire closes in 3D yet is open in UV parameter space (e.g. two half-circles at top and bottom of a cylinder with nothing joining them along the U=0 isoline). OCCT detects the 2D-open wires, chooses a seam…
 
 **Test against:** `Twi020`, `Tfa199`, `Tfa215`, `Gp137`, `Gs141`, `Xp015`
-
-### `tkshh-pcurve-collapse-onto-surface-singularity`
-
-*TKShHealing* · 6 fixtures · observed: loads×6 · **6/6 carry a written spec** · corpus coverage: COVERED
-
-When an edge's 3D curve runs through (or partially through) one of a surface's known singularities (see tkshh-surface-analytic-singularity-detection), the corresponding pcurve's 2D samples must be recognized as degenerate and repaired rather than left as noisy/undefined UV values: if the whole pcurve collapses onto the singularity, its non-degenerate parametric axis is evenly redistributed…
-
-**Test against:** `Gp157`, `Gp158`, `Gp159`, `Gp160`, `Gs148`, `Tfa200`
 
 ### `tkshh-wire-pcurve-period-shifted`
 
@@ -934,6 +934,14 @@ A compound/comp-solid contains one or more degenerate 'sliver' solids -- artifac
 A solid built from a single closed shell has its overall orientation globally inverted: every face is consistently flipped together, so classifying a point at infinity against the resulting solid reports it as 'inside' (i.e. the shell bounds the complement of the intended region -- material and void are swapped). OCCT repairs this by reversing the entire shell (all faces at once) so the…
 
 **Test against:** `Bo024`, `Ps001`, `Tsh010`
+
+### `tkshh-splitting-vertex-face`
+
+*TKShHealing* · 3 fixtures · observed: loads×3 · **3/3 carry a written spec** · corpus coverage: COVERED
+
+A face contains a vertex that is NOT an endpoint of a given edge of that same face, but whose 3D position projects within tolerance onto the interior of that edge's curve (a geometric T-junction/self-touch that isn't expressed as shared topology). OCCT detects this ('splitting vertex') and repairs it by inserting a synthetic splitting edge from the vertex to its projected point and dividing…
+
+**Test against:** `Tfa010`, `Tfa079`, `Tfa249`
 
 ### `tkshh-surface-implicit-degenerate-edge`
 
@@ -1430,12 +1438,4 @@ Tessellated geometry (TRIANGULATED_FACE / COMPLEX_TRIANGULATED_FACE) whose trian
 A tessellated item's normals table does not have exactly three components per row (not valid XYZ vectors). The normals are silently ignored and the mesh is built without them, rather than misreading the data or failing the face.
 
 **Test against:** `M199`
-
-### `tkshh-splitting-vertex-face`
-
-*TKShHealing* · 1 fixtures · observed: loads×1 · **1/1 carry a written spec** · corpus coverage: COVERED
-
-A face contains a vertex that is NOT an endpoint of a given edge of that same face, but whose 3D position projects within tolerance onto the interior of that edge's curve (a geometric T-junction/self-touch that isn't expressed as shared topology). OCCT detects this ('splitting vertex') and repairs it by inserting a synthetic splitting edge from the vertex to its projected point and dividing…
-
-**Test against:** `Tfa249`
 

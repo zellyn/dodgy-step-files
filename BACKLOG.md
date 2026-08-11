@@ -1487,6 +1487,33 @@ reclassify bytes-sufficient→runtime-only. Data: scratchpad NO_PINNING_AUDIT.md
 - Everything else verified demonstrating. Coverage: reachability+mutation across all ~2400 STEP fixtures,
   double-verified, over-flags rejected (Pmi075/M008 cleared).
 
+## Roadmap linkage growth — SAFE method + first increment (2026-08-11)
+
+The roadmap's larger gap is LINKAGE: 1932 of 2558 STEP fixtures were not linked to a named
+repair mechanism in `occt-coverage/*/problems.json` (only 626 linked; the roadmap cites 620).
+Bulk auto-linking by title similarity is UNSAFE — a wrong link sends a kernel author to a fixture
+that doesn't demonstrate the mechanism. **Established a provable, verified method** (three gates,
+each measured):
+1. **Sources-method match**: link only fixtures whose `Sources` field names a `Class::Method`
+   matching EXACTLY ONE problems.json class's `occt_evidence` (25 candidates). The fixture itself
+   cites the mechanism — not a guess.
+2. **Reclassification filter**: drop any candidate whose Notes carry a reclassification /
+   does-not-invoke / oracle-invisible / orphaned flag (25→15). This correctly caught
+   Tfa071/103/115/150 — the fixtures the 2026-07-18 re-audit found NEVER invoke
+   `FixPeriodicDegenerated` despite citing it (the exact false-positive class).
+3. **Title verification**: confirm the title names the mechanism's defining concept (15→8). Caught
+   **Gp127** (title "missing P-curve" vs matched class "pcurve-REVERSED" — a genuine mismatch) plus
+   weak matches (Gs147, Tsh192, Tsh193, Gp134) — held back, not linked.
+
+**First increment: 8 links** (Tfa034/Tsh191 → shell-inconsistent-face-orientation; Tfa045 →
+face-intersecting-wires; Tfa010/Tfa079 → splitting-vertex-face; Gp128 → edge-missing-pcurve;
+Gp135 → edge-3d-2d-parameterization-mismatch; Gs145 → pcurve-collapse-onto-surface-singularity).
+Roadmap fixtures-cited 620→628; class tallies unchanged (linked to already-COVERED classes, so
+fixture-level coverage grew, not class-level). **Next linkage wave**: re-run the 3-gate method as
+more fixtures gain `Class::Method` Sources citations, and hand-verify the 5 weak/mismatch holdbacks
+individually. The gate-2 reclassification filter is the key safety mechanism — never link on
+Sources-match alone.
+
 ## OCCT problem-coverage — Tier-2 pass (2026-07-17)
 
 **Scoreboard now: STEP-exercisable 126/16/1 = 88.1% COVERED, 99.3% at-least-PARTIAL — ONE GAP left.**
