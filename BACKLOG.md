@@ -1530,6 +1530,21 @@ the two lower-confidence tiers and confirmed both are NOT safely auto-linkable:
 **Conclusion: the safe AUTOMATED linkage vein is exhausted at 9 total (8 exact + Tfa031).** Everything
 beyond needs per-fixture manual reading — NEVER bulk-link on class-only or multi-match Sources.
 
+**Manual linkage TESTED on the pcurve (Gp) cluster (2026-08-11) — 0 safe links, decisive guardrail.**
+Read 25 unlinked Gp descriptions against the ~23 pcurve mechanisms. Only 2 were unambiguous
+single-mechanism matches by description: Gp005 ("3D curve through sphere pole / cone apex" →
+`tkshh-pcurve-collapse-onto-surface-singularity`) and Gp015 ("clips PCURVE to edge param range, trim
+fails" → `stp-pcurve-trim-range-repair`). BOTH turned out to carry "honest reclassification (2026-07-18)"
+flags: **oracle-invisible** — OCC recomputes the pcurve on transfer (per Gp193), so the declared defect
+does not survive into the built shape; shape(1) does not witness the mechanism. Linking them would send a
+kernel author to a fixture that does NOT exercise the claimed repair. **So the reclassification gate is
+MANDATORY for manual linkage too, not just automated** — and the visually-best description matches are
+exactly the ones most likely to be reclassified-invisible (they were unlinked precisely because they don't
+cleanly demonstrate). Net: the manual pcurve batch yielded 0 safe links; the genuinely-linkable subset
+(matches a mechanism AND demonstrates it) is largely already captured by the 9 automated links. The
+remaining linkage campaign is genuinely low-yield and must apply the reclassification gate per fixture —
+best scoped by the maintainer with a token budget, not run open-ended.
+
 ## OCCT problem-coverage — Tier-2 pass (2026-07-17)
 
 **Scoreboard now: STEP-exercisable 126/16/1 = 88.1% COVERED, 99.3% at-least-PARTIAL — ONE GAP left.**
