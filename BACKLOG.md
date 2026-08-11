@@ -378,7 +378,13 @@ loader we don't have (assimp/Open3D/tinygltf), or was tried-and-dropped above):*
       prefix +24 → trimesh over-reads into the BIN chunk → JSONDecodeError; distinct binary-container-framing
       layer vs the text-glTF accessor-overrun Ip004. (Graded-and-dropped GLB variants: total_length header
       wrong → trimesh silently ignores it, loads fine → benign, no fixture; BIN chunkLength overrun → trimesh
-      rejects cleanly → good behavior, no fixture.) **Wave paused here 2026-08-11 at a tooling boundary** (5 fixtures shipped: Ip053-057).
+      rejects cleanly → good behavior, no fixture.) **Wave paused here 2026-08-11 at a tooling boundary** (6 fixtures shipped: Ip053-058; Ip058 = 3MF
+      duplicate object id → silent geometry doubling, the too-much-geometry counterpart to Ip055's total
+      loss). **3MF-specific traps now mined** — graded-and-dropped this round (measure-the-claim saved two
+      wrong fixtures): NaN/INF vertex coords are NOT silently accepted (trimesh drops the bad vertex, bbox
+      stays finite); self-referential / mutually-recursive `<components>` load empty (0/0), no DoS hang —
+      they collapse into the Ip055 class; malformed (non-well-formed) XML is correctly rejected (XMLSyntaxError
+      = good behavior). So 3MF is exhausted for distinct modes at trimesh's fidelity.
       Remaining formats assessed and set aside: **CTM** needs the openctm C lib / `ctmconv` — trimesh has a
       loader but NO exporter, so a valid CTM can't be synthesized to mutate without external tooling (same
       "needs tooling we don't have" class as assimp/Open3D above). **3DXML** (Dassault ZIP+XML) is the same

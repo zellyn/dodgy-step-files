@@ -49311,6 +49311,20 @@ exercised against CGAL PMP / MeshFix.
 - **Model impact**: The chunk-length prefix is a trusted framing field; a reader that does not bound it against the file either crashes parsing binary bytes as JSON (trimesh) or, in a native reader, reads past the chunk into adjacent memory — a classic length-prefix over-read on adversarial input.
 
 
+### Ip058 — 3MF duplicate object id silently doubles geometry (resource-id uniqueness violation)
+- **Category**: §12.15 import-format parser robustness (sub-class: duplicate-resource-id)
+- **Sources**: Pattern-mined from the 3MF Consortium Core spec §3.1 (every resource `id` in a model MUST be unique) + mikedh/trimesh 3MF loader (MIT — pattern only, no bytes copied).
+- **Description**: The `<resources>` section declares two `<object>` elements that both use `id="1"`, and `<build><item objectid="1"/>` references that id. The 3MF Core spec requires resource ids to be unique within a model; a duplicate makes every reference to that id ambiguous. A conforming reader must reject the duplicate id (or deterministically pick one); a lenient reader resolves the reference to both objects and includes each object's mesh, silently doubling the geometry into coincident, non-manifold faces. This is the opposite failure direction from the dangling-reference Ip055 (which loses all geometry): here an ambiguous id yields too much.
+- **Reproducer recipe**: an OPC/ZIP package whose model part declares two `<object id="1">` elements, each carrying the same valid 4-vertex / 4-triangle tetrahedron mesh, with `<build><item objectid="1"/>`. Packed STORED with fixed 1980-01-01 timestamps.
+- **Expected kernel behavior**: enforce resource-id uniqueness at parse time; reject a model that reuses an id (or, at minimum, resolve each reference to exactly one object) — never silently union two objects sharing an id into overlapping coincident geometry.
+- **Byte assertion**: contains(b'<object id="1" type="model">')
+- **Fixture path**: import-examples/12-15-import-formats/Ip058.3mf
+- **Fixture kind**: raw import-format file (parser-robustness; graded against trimesh, not Part-21)
+- **Notes**: Cross-oracle: trimesh 4.12.2 (+networkx/lxml) loads 4 vertices / 8 faces — both id="1" objects are included, so all 4 triangles appear twice as coincident faces (a valid single object loads 4/4) — silent, no diagnostic — verified 2026-08-11. Graded-and-dropped siblings this round: NaN/INF vertex coordinates are NOT silently accepted (trimesh drops the offending vertex — no NaN reaches the mesh, bbox stays finite), and self-referential / mutually-recursive `<components>` load empty (0/0) rather than hanging, i.e. they collapse into the Ip055 silent-total-loss class, not a DoS. Synonyms: "3MF duplicate object id", "resource id not unique", "3mf id collision doubles mesh", "coincident faces from duplicate id". Provenance tier: bytes-only.
+- **Severity**: P2
+- **Model impact**: Duplicated coincident faces make the mesh non-manifold — boolean operations, winding-number inside/outside tests, and area/volume all misbehave on overlapping zero-gap geometry the producer never intended.
+
+
 ### Twi292 — Short arc straddling a closed curve's parameter seam: projected endpoint parameters come back swapped (w1 > w2)
 - **Category**: §12.3b wire-loop (sub-class: closed-edge splitting, periodic-parameter-order)
 - **Sources**: OCCT `ShapeAnalysis_TransferParametersProj::TransferRange` (`ShapeAnalysis_TransferParametersProj.cxx:291-297,305-311` @ `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`); occt-coverage/tkshhealing/problems.json `tkshh-closed-edge-full-period-unsplit`, subvariant "Swapped parameter order after projection, with epsilon-safe range reconstruction"
