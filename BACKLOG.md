@@ -2787,6 +2787,16 @@ inspected individually): 76 assertions added, 30 skipped with reasons.**
     mislabeled-duplicate candidate for maintainer regen/quarantine (it demonstrates SLOT_TYPE +
     EMPTY_AGGREGATE, both covered elsewhere, not its titled B-spline cusp) — made truthful in
     place; the deeper regen/quarantine call remains a maintainer decision.
+  - **Vacuous-tier-3 sweep (2026-08-10):** the `shape_null==True` tier-3 assertion is
+    self-contradictory on a `signal(11)` fixture (a crash is not a load-to-null) AND never
+    evaluates (tier3 itself crashes rc=139, so the assertion is tolerated-absent). Grepped all
+    entries with `occt=signal(11)` + `shape_null==True`: 13 (Gn016, P009, M068, M069, M072,
+    M073, M096, M060, M057, M019, M020, M022, M051), all measured to crash tier3. Removed the
+    dead assertion from all 13; byte assertions and the two existing structural assertions
+    (M069 EMPTY_AGGREGATE, M096 INLINE_INSTANCE) preserved. Did NOT add ARG_COUNT assertions to
+    the 5 two-arg-VECTOR M-fixtures (M051/057/060/072/073) — that would reopen the deliberate
+    M.24 scaffold-incidental skip; they remain byte-assertion fixtures, now free of the false
+    tier-3 claim. Completes the vacuous-assertion class started by the Gs002/Gb002/Gb003 fixes.
   - Pf025 (empty OPEN_SHELL is scaffold, claim is the vertex-loop bound),
     M070/M193/M194/M195/M199 (empty lists incidental to tessellation minimalism),
     3 `.input` quarantine files (no catalog entries).

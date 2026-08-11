@@ -50157,9 +50157,7 @@
       "round-trip",
       "geometry"
     ],
-    "tier3_assertions": [
-      "shape_null == True"
-    ],
+    "tier3_assertions": [],
     "title": "`SURFACE_OF_REVOLUTION` on `ELLIPSE`: basis curve becomes `TRIMMED_CURVE` over rational B-spline plus non-unit axis `DIRECTION` after round-trip"
   },
   {
@@ -108842,9 +108840,7 @@
       "crash",
       "assembly"
     ],
-    "tier3_assertions": [
-      "shape_null == True"
-    ],
+    "tier3_assertions": [],
     "title": "Helical sweep tessellates with garbled facets at seam"
   },
   {
@@ -116707,9 +116703,7 @@
     "taxonomy": [
       "crash"
     ],
-    "tier3_assertions": [
-      "shape_null == True"
-    ],
+    "tier3_assertions": [],
     "title": "TRIANGLE_STRIP / TRIANGLE_FAN in COMPLEX_TRIANGULATED_FACE mis-decoded"
   },
   {
@@ -116751,9 +116745,7 @@
     "taxonomy": [
       "crash"
     ],
-    "tier3_assertions": [
-      "shape_null == True"
-    ],
+    "tier3_assertions": [],
     "title": "Tessellated face style binding lost (no TransferBRep_ShapeBinder)"
   },
   {
@@ -116830,9 +116822,7 @@
       "crash",
       "silent-loss"
     ],
-    "tier3_assertions": [
-      "shape_null == True"
-    ],
+    "tier3_assertions": [],
     "title": "STL-derived tessellated_solid / triangulated_face ignored by importers"
   },
   {
@@ -117966,9 +117956,7 @@
       "crash",
       "silent-loss"
     ],
-    "tier3_assertions": [
-      "shape_null == True"
-    ],
+    "tier3_assertions": [],
     "title": "Bare GEOMETRIC_SET / GEOMETRIC_CURVE_SET with non-geometric children or mesh-as-surfaces"
   },
   {
@@ -118208,9 +118196,7 @@
       "crash",
       "spec-violation"
     ],
-    "tier3_assertions": [
-      "shape_null == True"
-    ],
+    "tier3_assertions": [],
     "title": "File declaring AP203 schema but emitting AP242-arity entities"
   },
   {
@@ -118333,9 +118319,7 @@
     "taxonomy": [
       "crash"
     ],
-    "tier3_assertions": [
-      "shape_null == True"
-    ],
+    "tier3_assertions": [],
     "title": "External reference resolves to the same file as the main file"
   },
   {
@@ -118644,9 +118628,7 @@
     "taxonomy": [
       "crash"
     ],
-    "tier3_assertions": [
-      "shape_null == True"
-    ],
+    "tier3_assertions": [],
     "title": "Pretessellated geometry skipped on STEP write"
   },
   {
@@ -118687,9 +118669,7 @@
     "taxonomy": [
       "crash"
     ],
-    "tier3_assertions": [
-      "shape_null == True"
-    ],
+    "tier3_assertions": [],
     "title": "`TRIANGULATED_FACE` emitted without `pnval` indices"
   },
   {
@@ -118803,9 +118783,7 @@
     "taxonomy": [
       "crash"
     ],
-    "tier3_assertions": [
-      "shape_null == True"
-    ],
+    "tier3_assertions": [],
     "title": "AP238 toolpath_curve open chain claimed as closed contour"
   },
   {
@@ -118841,9 +118819,7 @@
     "taxonomy": [
       "crash"
     ],
-    "tier3_assertions": [
-      "shape_null == True"
-    ],
+    "tier3_assertions": [],
     "title": "AP238 part-coordinate vs machine-coordinate unit mismatch"
   },
   {
@@ -119729,9 +119705,7 @@
       "crash",
       "spec-violation"
     ],
-    "tier3_assertions": [
-      "shape_null == True"
-    ],
+    "tier3_assertions": [],
     "title": "AP238 trajectory missing connecting curves between adjacent segments"
   },
   {

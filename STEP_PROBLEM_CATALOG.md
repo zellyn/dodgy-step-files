@@ -2163,7 +2163,6 @@ _Section summary: 82 entries._
 - **Expected kernel behavior**: heal; preserve analytic basis curve (no Trimmed wrapper); reset orthonormal X/Y axes within 1e-6.
 - **Notes**: **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({heal}). Kernel-bug witnessed: catalog asks for healing; OCC neither heals nor rejects; the input is dropped on the floor without diagnostic. Synonyms: "ELLIPSE basis curve becomes TRIMMED_CURVE on round-trip", "surface_of_revolution loses analytic ellipse basis", "non-unit axis direction after BSpline round-trip", "rational B-spline approximation of ellipse replaces analytic curve", "ellipse swept basis turns into NURBS after STEP read-back".
 - **Byte assertion**: contains(b'B_SPLINE_CURVE')
-- **Tier-3 assertion**: shape_null == True
 - **Model impact**: The B-spline definition is structurally invalid (knot multiplicity, degree, or control-net mismatch); the curve/surface either evaluates to NaN at parameter queries or is discarded, leaving its parent face/edge with degenerate geometry.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
@@ -7427,7 +7426,6 @@ End of file. Total: 38 entries (A001.A038).
 - **Severity**: P1
 - **Byte assertion**: contains(b'SURFACE_CURVE')
 - **Byte assertion**: contains(b'PCURVE')
-- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Defect causes the loader to either abort, silently drop the affected entity, or accept it with corrupted attributes; downstream operations on the affected sub-shape produce results inconsistent with the producer's intent.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
@@ -10851,7 +10849,6 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected kernel behavior**: Heal and accept: tessellated content emitted whenever the output schema supports it; config controls reading, not writing. Must not silently skip.
 - **Notes**: Synonyms: "tessellation dropped on write", "STEP writer drops triangulation", "pretessellated faces silently lost", "TESSELLATED_FACE not exported", "tessellation gating flag unset". **See also**: M056.
 - **Byte assertion**: contains(b'TRIANGULATED_FACE')
-- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
@@ -10870,7 +10867,6 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'TRIANGULATED_FACE')
 - **Byte assertion**: contains(b'no_pnval')
 - **Byte assertion**: contains(b"TRIANGULATED_FACE('no_pnval','',(#100),(),(),(),'',$)")
-- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
@@ -10946,7 +10942,6 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'COMPOSITE_CURVE')
 - **Byte assertion**: contains(b'TRAJECTORY')
-- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -10977,7 +10972,6 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'TRAJECTORY')
 - **Byte assertion**: count_entity_def(b'GEOMETRIC_REPRESENTATION_ITEM') >= 1
-- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({heal, reject}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -11598,7 +11592,6 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Byte assertion**: contains(b'AP238_STEP_NC_MIM')
 - **Byte assertion**: contains(b'TRAJECTORY')
 - **Byte assertion**: contains(b'COMPOSITE_CURVE_SEGMENT')
-- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -13459,7 +13452,6 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Notes**: Synonyms: "STEP self-reference loop", "external reference loops", "external file is same as main", "DOCUMENT_FILE points to self". **See also**: A012, Ad052.
 - **Byte assertion**: contains(b'DOCUMENT_FILE')
 - **Byte assertion**: contains(b"'M060.stp'")
-- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({warn-and-proceed}). Kernel-bug witnessed: receivers enforcing the spec must emit a diagnostic this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -14717,7 +14709,6 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected kernel behavior**: reject attribute-count mismatches strictly; or, in tolerant mode, log the schema mismatch and accept the entity with the minimum-arity interpretation. Document the chosen policy.
 - **Notes**: Synonyms: "AP203 schema declared but uses AP242 entities", "schema-version vs entity-vocabulary disagreement", "AP203 tag with AP242 arity", "FILE_SCHEMA mismatch with DATA". **See also**: A030, Lh019.
 - **Byte assertion**: contains(b'CONFIG_CONTROL_DESIGN')
-- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({reject}). Kernel-bug witnessed: receivers enforcing the spec must reject this fixture.
 - **Severity**: P1
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
@@ -15001,7 +14992,6 @@ _Section summary: 52 entries._
 - **Notes**: Synonyms: "TRIANGLE_STRIP indices misaligned", "fan strip mis-decoded", "complex_triangulated_face strip wrong", "tessellation strip topology mishandled".
 - **Byte assertion**: contains(b'COMPLEX_TRIANGULATED_FACE')
 - **Byte assertion**: contains(b'((0,(1,2,3,4)))')
-- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
@@ -15017,7 +15007,6 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'STYLED_ITEM')
 - **Byte assertion**: contains(b'TRIANGULATED_FACE')
 - **Byte assertion**: contains(b'COLOUR_RGB')
-- **Tier-3 assertion**: shape_null == True
 - **OCC behavior**: crashes with signal(11) (SIGSEGV) during transfer; outside catalog's allowed set ({heal}). Kernel-bug witnessed: receivers enforcing the spec must heal or reject this fixture.
 - **Severity**: P1
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
@@ -15048,7 +15037,6 @@ _Section summary: 52 entries._
 - **Byte assertion**: contains(b'COMPLEX_TRIANGULATED_SURFACE_SET')
 - **Byte assertion**: contains(b'stl_origin_cube')
 - **Byte assertion**: count_entity_def(b'MANIFOLD_SOLID_BREP') == 0
-- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Tessellated geometry attached to the BRep loads with inconsistent or missing triangle data; viewers that prefer the producer's tessellation render incorrect facets, while kernels that re-mesh from the BRep ignore the defect entirely.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
@@ -15485,7 +15473,6 @@ _Section summary: 52 entries._
 - **Notes**: Synonyms: "bare GEOMETRIC_SET silent-empty", "wireframe-only file appears empty", "GEOMETRIC_CURVE_SET with non-geometric children", "bare surface set rejected as no solid". **OCC behavior**: silently produces empty results on bare `GEOMETRIC_SET` / `GEOMETRIC_CURVE_SET` files without surfacing the wireframe-only or surface-only nature of the input; kernel mishandling; the catalog above forbids silent drop.
 - **Byte assertion**: contains(b'GEOMETRIC_SET')
 - **Byte assertion**: contains(b'DESCRIPTIVE_REPRESENTATION_ITEM')
-- **Tier-3 assertion**: shape_null == True
 - **Model impact**: Auxiliary entity attaches incorrectly to its target geometry; the BRep itself is valid but presentation/tessellation/property metadata is lost or routed to the wrong sub-shape.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
