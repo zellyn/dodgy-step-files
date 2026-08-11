@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</h1>
 <p class="blurb">Raw malformed import-format files (OBJ/PLY/OFF/glTF/COLLADA/3MF/FBX) that exercise a parser&#x27;s robustness: header-count lies, out-of-range indices, dangling refs, truncated/encoding faults. Graded against independent loaders (assimp, trimesh); not Part-21.</p>
-<p class="meta">33 entries</p>
+<p class="meta">34 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
@@ -51,6 +51,7 @@
 <tr><td><a href="Ip050.html"><code>Ip050</code></a></td><td>Draco encoder-method/body mismatch → silent-empty decode</td><td><code>bytes-only</code></td><td><code></code></td></tr>
 <tr><td><a href="Ip051.html"><code>Ip051</code></a></td><td>Draco point-cloud `num_points` count-driven bomb</td><td><code>bytes-only</code></td><td><code></code></td></tr>
 <tr><td><a href="Ip052.html"><code>Ip052</code></a></td><td>Draco point-cloud attribute `num_components` overflow</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip053.html"><code>Ip053</code></a></td><td>3MF triangle vertex index exceeds vertex count (out-of-range reference inside the OPC container)</td><td><code>bytes-only</code></td><td><code></code></td></tr>
 </tbody></table>
 </main>
 <footer>

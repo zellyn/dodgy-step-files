@@ -49241,6 +49241,20 @@ exercised against CGAL PMP / MeshFix.
 - **Model impact**: A reader that computes `num_points × num_components × elem_size` without overflow/range checks under-allocates the attribute buffer and overruns it on decode.
 
 
+### Ip053 — 3MF triangle vertex index exceeds vertex count (out-of-range reference inside the OPC container)
+- **Category**: §12.15 import-format parser robustness (sub-class: index-out-of-range)
+- **Sources**: Pattern-mined from mikedh/trimesh#2205 (3MF loader) + the 3MF Consortium Core spec §4.1 (triangle indices must be < vertex count) (MIT — pattern only, no bytes copied).
+- **Description**: A 3MF package is an OPC (ZIP) container whose `3D/3dmodel.model` part carries `<vertices>` and `<triangles>` XML. This mesh declares 4 vertices but the final `<triangle>` names `v3="9"`. The 3MF Core spec requires every triangle index to be less than the vertex count; unlike a flat OBJ/OFF file the index is buried two layers deep (unzip → parse XML → index the vertex array), so a loader that validates the XML but not the index range will index a NumPy/array vertex table out of bounds. This is the container-format sibling of the flat out-of-range traps Ip001 (OBJ) and Ip010 (OFF).
+- **Reproducer recipe**: an OPC/ZIP package with the three standard parts (`[Content_Types].xml`, `_rels/.rels`, `3D/3dmodel.model`), the model part declaring exactly 4 `<vertex>` elements and 4 `<triangle>` elements where the last is `<triangle v1="1" v2="2" v3="9"/>` (index 9 exceeds the 0..3 range). Packed STORED (uncompressed) with fixed 1980-01-01 entry timestamps so the malformed XML is literally present in the bytes and the archive is byte-reproducible.
+- **Expected kernel behavior**: range-check every triangle index against the vertex count before indexing the vertex array; reject with a diagnostic naming the offending triangle and index, never let an untrusted index drive an unchecked array access.
+- **Byte assertion**: contains(b'v3="9"')
+- **Fixture path**: import-examples/12-15-import-formats/Ip053.3mf
+- **Fixture kind**: raw import-format file (parser-robustness; graded against trimesh, not Part-21)
+- **Notes**: Cross-oracle: trimesh 4.12.2 (+networkx/lxml) raises an uncaught `IndexError: index 9 is out of bounds for axis 0 with size 4` — a bare low-level crash rather than a clean "invalid 3MF" rejection — verified 2026-08-11. Synonyms: "3MF triangle index out of range", "3mf vertex index exceeds count", "OPC mesh OOB triangle", "index-past-end 3MF triangle". Provenance tier: bytes-only.
+- **Severity**: P2
+- **Model impact**: The importer either aborts with a low-level indexing error (no geometry, no actionable diagnostic) or, in a lenient reader, fabricates/wraps a vertex the file never declared; downstream vertex-buffer and adjacency assumptions read past the end of the vertex table.
+
+
 ### Twi292 — Short arc straddling a closed curve's parameter seam: projected endpoint parameters come back swapped (w1 > w2)
 - **Category**: §12.3b wire-loop (sub-class: closed-edge splitting, periodic-parameter-order)
 - **Sources**: OCCT `ShapeAnalysis_TransferParametersProj::TransferRange` (`ShapeAnalysis_TransferParametersProj.cxx:291-297,305-311` @ `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`); occt-coverage/tkshhealing/problems.json `tkshh-closed-edge-full-period-unsplit`, subvariant "Swapped parameter order after projection, with epsilon-safe range reconstruction"
