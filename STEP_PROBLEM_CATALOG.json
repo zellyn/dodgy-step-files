@@ -65622,14 +65622,14 @@
     "category": "§12.3a shell-orientation",
     "closure_defect": null,
     "closure_intent": "sheet",
-    "cross_oracle_note": "pure-Python Part-21 validator accepts (`accept`); OCCT crashes (`signal(11)`). The crash is on the kernel side; the file is spec-conformant Part-21.",
+    "cross_oracle_note": "pure-Python Part-21 validator accepts (`accept`); OCCT also accepts.",
     "description": "STEP file with empty `EDGE_LOOP(..,())` crashes reader. Similarly: `EDGE_BASED_WIREFRAME_MODEL` with empty boundary or empty `connected_edge_set`; `FACE_BASED_SURFACE_MODEL` with empty face list.",
     "expected_kernel_behavior": "reject the malformed entity, continue reading; never crash.",
     "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a",
     "fixture_kind": null,
     "fixture_path": "step-examples/12-3a-shells/Tsh023.stp",
     "id": "Tsh023",
-    "notes": "**See also**: Twi001. Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT crashes (`signal(11)`). The crash is on the kernel side; the file is spec-conformant Part-21. **OCC behavior**: crashes (signal 11) on the empty `EDGE_LOOP`; exactly the kernel mishandling the catalog above forbids; documented here so kernel authors know this is what OCC currently does. Synonyms: \"wire has no edges\", \"empty face boundary list\", \"shell with zero faces crashes reader\", \"loop with empty edge aggregate\", \"empty list crashes import\".",
+    "notes": "**See also**: Twi001. Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT also accepts. **Fidelity correction (2026-08-11, RUNTIME-VERIFIED, OCP/OCCT 7.8.1)**: earlier prose here claimed OCCT crashes signal(11) on the empty `EDGE_LOOP`; the live oracle and the CI-verified Expected line both show OCC LOADS shape(1) (n_roots=1, non-null) — it silently accepts and builds a shape, dropping the empty loop rather than crashing. **OCC behavior**: loads shape(1) — silently accepts the empty `EDGE_LOOP` and drops it without diagnostic; the catalog above forbids silent acceptance of the malformed empty aggregate, so the soundness concern is the silent drop, not a crash. Synonyms: \"wire has no edges\", \"empty face boundary list\", \"shell with zero faces\", \"loop with empty edge aggregate\", \"empty edge list silently accepted\".",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -65650,6 +65650,7 @@
     ],
     "taxonomy": [
       "crash",
+      "silent-loss",
       "topology"
     ],
     "tier3_assertions": [
@@ -116795,7 +116796,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-8-mixed/M022.stp",
     "id": "M022",
-    "notes": "Synonyms: \"mesh-only AP242 appears empty\", \"STL-derived tessellation ignored\", \"triangulated_face skipped by importer\", \"B-rep-only reader drops mesh entities\", \"BRL-CAD step-g ignores tessellated solid and triangulated face entities\". **OCC behavior**: silently produces empty results on mesh-only AP242 files (the BRep path consumes nothing) without surfacing that mesh entities were skipped; kernel mishandling; the catalog above forbids silent drop. Correction (Wave-3 adversarial verification, 2026-07-12): the abnormal-termination trigger is the GEOMETRIC_SET/GEOMETRIC_CURVE_SET wrapper around the tessellated entity, not COORDINATES_LIST sharing — minimal pair re-verified (identical entity with a private list loads cleanly when wired directly as the sole representation item; the same entity wrapped in a set terminates abnormally regardless of list sharing). Recorded outcome and Expected line remain accurate; see M193-M199 for the direct-wiring fallback fixtures this previously blocked.",
+    "notes": "Synonyms: \"mesh-only AP242 appears empty\", \"STL-derived tessellation ignored\", \"triangulated_face skipped by importer\", \"B-rep-only reader drops mesh entities\", \"BRL-CAD step-g ignores tessellated solid and triangulated face entities\". **OCC behavior**: crashes (signal 11) during transfer — RUNTIME-VERIFIED (2026-08-11, OCP/OCCT 7.8.1): the GEOMETRIC_SET/GEOMETRIC_CURVE_SET wrapper around the tessellated entity terminates OCC abnormally, matching both the Wave-3 correction below and the CI-verified `occt=signal(11)` line; the earlier \"silently produces empty results\" wording here was stale. Receivers must reject the malformed input rather than crash. Correction (Wave-3 adversarial verification, 2026-07-12): the abnormal-termination trigger is the GEOMETRIC_SET/GEOMETRIC_CURVE_SET wrapper around the tessellated entity, not COORDINATES_LIST sharing — minimal pair re-verified (identical entity with a private list loads cleanly when wired directly as the sole representation item; the same entity wrapped in a set terminates abnormally regardless of list sharing). Recorded outcome and Expected line remain accurate; see M193-M199 for the direct-wiring fallback fixtures this previously blocked.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -116812,8 +116813,7 @@
     ],
     "structural_assertions": [],
     "taxonomy": [
-      "crash",
-      "silent-loss"
+      "crash"
     ],
     "tier3_assertions": [],
     "title": "STL-derived tessellated_solid / triangulated_face ignored by importers"
@@ -117927,7 +117927,7 @@
     "fixture_kind": null,
     "fixture_path": "step-examples/12-8-mixed/M051.stp",
     "id": "M051",
-    "notes": "Synonyms: \"bare GEOMETRIC_SET silent-empty\", \"wireframe-only file appears empty\", \"GEOMETRIC_CURVE_SET with non-geometric children\", \"bare surface set rejected as no solid\". **OCC behavior**: silently produces empty results on bare `GEOMETRIC_SET` / `GEOMETRIC_CURVE_SET` files without surfacing the wireframe-only or surface-only nature of the input; kernel mishandling; the catalog above forbids silent drop.",
+    "notes": "Synonyms: \"bare GEOMETRIC_SET silent-empty\", \"wireframe-only file appears empty\", \"GEOMETRIC_CURVE_SET with non-geometric children\", \"bare surface set rejected as no solid\". **OCC behavior**: crashes (signal 11) during transfer — RUNTIME-VERIFIED (2026-08-11, OCP/OCCT 7.8.1): the bare `GEOMETRIC_SET` / `GEOMETRIC_CURVE_SET` wrapper terminates OCC abnormally (matching the CI-verified `occt=signal(11)` line); the earlier \"silently produces empty results\" wording was stale. Receivers must reject the malformed input rather than crash.",
     "occ_behavior_note": null,
     "pair_with": null,
     "provenance_tier": "bytes-sufficient",
@@ -117946,8 +117946,7 @@
     ],
     "structural_assertions": [],
     "taxonomy": [
-      "crash",
-      "silent-loss"
+      "crash"
     ],
     "tier3_assertions": [],
     "title": "Bare GEOMETRIC_SET / GEOMETRIC_CURVE_SET with non-geometric children or mesh-as-surfaces"

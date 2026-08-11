@@ -16,6 +16,7 @@
 <p class="category">§12.3a shell-orientation</p>
 <p class="tag-pills">
 <a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 <a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
 </p>
 </header>
@@ -34,7 +35,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>reject the malformed entity, continue reading; never crash.</p></section>
 <section><h2>Notes</h2>
-<p>**See also**: Twi001. Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT crashes (`signal(11)`). The crash is on the kernel side; the file is spec-conformant Part-21. **OCC behavior**: crashes (signal 11) on the empty `EDGE_LOOP`; exactly the kernel mishandling the catalog above forbids; documented here so kernel authors know this is what OCC currently does. Synonyms: &quot;wire has no edges&quot;, &quot;empty face boundary list&quot;, &quot;shell with zero faces crashes reader&quot;, &quot;loop with empty edge aggregate&quot;, &quot;empty list crashes import&quot;.</p></section>
+<p>**See also**: Twi001. Cross-oracle: pure-Python Part-21 validator accepts (`accept`); OCCT also accepts. **Fidelity correction (2026-08-11, RUNTIME-VERIFIED, OCP/OCCT 7.8.1)**: earlier prose here claimed OCCT crashes signal(11) on the empty `EDGE_LOOP`; the live oracle and the CI-verified Expected line both show OCC LOADS shape(1) (n_roots=1, non-null) — it silently accepts and builds a shape, dropping the empty loop rather than crashing. **OCC behavior**: loads shape(1) — silently accepts the empty `EDGE_LOOP` and drops it without diagnostic; the catalog above forbids silent acceptance of the malformed empty aggregate, so the soundness concern is the silent drop, not a crash. Synonyms: &quot;wire has no edges&quot;, &quot;empty face boundary list&quot;, &quot;shell with zero faces&quot;, &quot;loop with empty edge aggregate&quot;, &quot;empty edge list silently accepted&quot;.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=shape(1)/shape(1) gmsh=shape(10) ifc=schema_n/a</code></p></section>
 <section><h2>Closure intent</h2>

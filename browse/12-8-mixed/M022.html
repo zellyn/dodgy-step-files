@@ -16,7 +16,6 @@
 <p class="category">§12.8 (sub-class: mesh-as-brep)</p>
 <p class="tag-pills">
 <a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
-<a class="tag tag-silent-loss" href="../by-tag/silent-loss/index.html">silent-loss</a>
 </p>
 </header>
 <main>
@@ -35,7 +34,7 @@
 <section><h2>Expected kernel behavior</h2>
 <p>import as mesh object (or convert mesh to lightweight surface); never silently drop.</p></section>
 <section><h2>Notes</h2>
-<p>Synonyms: &quot;mesh-only AP242 appears empty&quot;, &quot;STL-derived tessellation ignored&quot;, &quot;triangulated_face skipped by importer&quot;, &quot;B-rep-only reader drops mesh entities&quot;, &quot;BRL-CAD step-g ignores tessellated solid and triangulated face entities&quot;. **OCC behavior**: silently produces empty results on mesh-only AP242 files (the BRep path consumes nothing) without surfacing that mesh entities were skipped; kernel mishandling; the catalog above forbids silent drop. Correction (Wave-3 adversarial verification, 2026-07-12): the abnormal-termination trigger is the GEOMETRIC_SET/GEOMETRIC_CURVE_SET wrapper around the tessellated entity, not COORDINATES_LIST sharing — minimal pair re-verified (identical entity with a private list loads cleanly when wired directly as the sole representation item; the same entity wrapped in a set terminates abnormally regardless of list sharing). Recorded outcome and Expected line remain accurate; see M193-M199 for the direct-wiring fallback fixtures this previously blocked.</p></section>
+<p>Synonyms: &quot;mesh-only AP242 appears empty&quot;, &quot;STL-derived tessellation ignored&quot;, &quot;triangulated_face skipped by importer&quot;, &quot;B-rep-only reader drops mesh entities&quot;, &quot;BRL-CAD step-g ignores tessellated solid and triangulated face entities&quot;. **OCC behavior**: crashes (signal 11) during transfer — RUNTIME-VERIFIED (2026-08-11, OCP/OCCT 7.8.1): the GEOMETRIC_SET/GEOMETRIC_CURVE_SET wrapper around the tessellated entity terminates OCC abnormally, matching both the Wave-3 correction below and the CI-verified `occt=signal(11)` line; the earlier &quot;silently produces empty results&quot; wording here was stale. Receivers must reject the malformed input rather than crash. Correction (Wave-3 adversarial verification, 2026-07-12): the abnormal-termination trigger is the GEOMETRIC_SET/GEOMETRIC_CURVE_SET wrapper around the tessellated entity, not COORDINATES_LIST sharing — minimal pair re-verified (identical entity with a private list loads cleanly when wired directly as the sole representation item; the same entity wrapped in a set terminates abnormally regardless of list sharing). Recorded outcome and Expected line remain accurate; see M193-M199 for the direct-wiring fallback fixtures this previously blocked.</p></section>
 <section><h2>Expected validation</h2>
 <p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
 <section><h2>Byte assertions</h2><ul class="assertions">

@@ -38,6 +38,21 @@ to the machine-verified `Expected validation` line — so it drifts. Two problem
   → FIX: correct each OCC-behavior line to match the machine token (careful, per-class: crash-vs-shape
   overclaims may indicate a fixture that no longer demonstrates and needs live re-check, not just a prose swap).
   Detector: `scratchpad` python comparing OCC-behavior prose keyword vs Expected occt token.
+  → **RESOLVED 2026-08-11.** Re-measured to current state: the 89-fixture estimate was mostly resolved by
+  intervening work (Q14, shape1-bug reaudit, the Gs002/Gb002/Gb003 + vacuous-assertion fidelity passes). A
+  naive keyword detector was UNRELIABLE here (natural-language prose) — it reported 211 → 102 → 38
+  "contradictions" across three iterations, almost all checker false positives (`must reject` requirement
+  boilerplate read as behavior; "loads shape(1) as an empty shell" mis-tagged; "silently accepts (no
+  diagnostic, empty result)" mis-tagged) — a textbook [[feedback_measure_the_claim]] case. The disciplined
+  endpoint: stop trusting the fuzzy detector, extract the ~4 genuinely-suspicious first-clause candidates, and
+  MEASURE each against the LIVE ORACLE (the arbiter). Result: exactly 4 genuine prose-vs-reality contradictions,
+  all with the CI-verified Expected line correct and the prose stale — **Tsh023** (prose "crashes signal 11",
+  live/Expected = shape(1); OCC does NOT crash on an empty EDGE_LOOP, it loads and drops it), **M022** & **M051**
+  (prose "silently produces empty", live/Expected = signal(11); the GEOMETRIC_SET wrapper crashes — M022's own
+  Notes already said "terminates abnormally", so its OCC-behavior line was self-inconsistent), **Hea016** (prose
+  "empty result", live/Expected = shape(1)). All 4 corrected to match the live oracle. Title-level mismatches
+  remain on Tsh023 ("crashes reader") and Hea016 ("empty solid output") — flagged for a future title pass, not
+  fixed here (bigger change than a prose swap).
 - **(B) SOUNDNESS (maintainer judgment) — 358 fixtures: `occt=shape(1)` ("OCC loaded a valid shape")
   labelled a kernel bug against `{heal}`/`{reject}` (allowed set excludes accept/warn).** The concern
   (from the Gp193 finding that OCC unconditionally recomputes pcurves = it *heals*): "loaded shape(1)" may
