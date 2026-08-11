@@ -846,10 +846,11 @@
     ],
     "subvariants": [],
     "fixture_ids": [
+      "A067",
+      "Tfa031",
       "Tsh082",
       "Tsh098",
-      "Tsh133",
-      "A067"
+      "Tsh133"
     ],
     "coverage_verdict": "COVERED",
     "notes": "Tsh082/Tsh098/Tsh133/N143 directly reference ShapeUpgrade_RemoveLocations.MakeNewShape/Remove. A067 demonstrates the broader real-world consequence (baking placements into geometry breaks shared-subshape sharing across assembly instances), corroborating the same underlying input pattern (non-identity locations that a baking pass must resolve) from the assembly-instancing angle.",

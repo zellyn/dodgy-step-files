@@ -1514,6 +1514,22 @@ more fixtures gain `Class::Method` Sources citations, and hand-verify the 5 weak
 individually. The gate-2 reclassification filter is the key safety mechanism — never link on
 Sources-match alone.
 
+**Deeper tiers measured + guardrails (2026-08-11).** After the 8 exact-`Class::Method` links, checked
+the two lower-confidence tiers and confirmed both are NOT safely auto-linkable:
+- **Multi-match (10):** a `Class::Method` matching 2+ classes. 8 of 10 carry reclassification flags
+  ("loads intact"/"loads with reversed…" — the re-audit fixtures that don't demonstrate); the other 2
+  (Gp196, Twi277) match 8 classes each — too ambiguous. **0 safe links.**
+- **Class-only (68):** a bare Class (`ShapeAnalysis`, `ShapeUpgrade_ConvertSurfaceToBezierBasis`) matching
+  exactly one class. **DEMONSTRATED UNSAFE** — the bare class appears in many mechanisms' evidence, so the
+  single-match is usually COINCIDENTAL and the fixture's real mechanism (from its title) differs: Gs094-100
+  cite `ShapeAnalysis` and single-match `face-wire-orientation-wrong` but are actually about UV-clamp /
+  Bezier-basis / singularities / area-splitting; Gn134-138 cite `ConvertSurfaceToBezierBasis` and
+  single-match `thin-patch-filter` but are about splitting. Auto-linking these 68 would create ~67 WRONG
+  links. Only **Tfa031** (ShapeUpgrade_RemoveLocations → `tkshh-shape-unbaked-location-transform`, title
+  literally "Locations attached to sub-shapes") is a genuine class-only match — linked (roadmap 628→629).
+**Conclusion: the safe AUTOMATED linkage vein is exhausted at 9 total (8 exact + Tfa031).** Everything
+beyond needs per-fixture manual reading — NEVER bulk-link on class-only or multi-match Sources.
+
 ## OCCT problem-coverage — Tier-2 pass (2026-07-17)
 
 **Scoreboard now: STEP-exercisable 126/16/1 = 88.1% COVERED, 99.3% at-least-PARTIAL — ONE GAP left.**

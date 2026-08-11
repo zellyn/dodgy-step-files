@@ -2,7 +2,7 @@
 
 **Audience: you are writing a CAD kernel and need to survive real-world STEP files.** This document is the corpus re-cut along the axis you actually work on.
 
-The catalog ([`STEP_PROBLEM_CATALOG.md`](STEP_PROBLEM_CATALOG.md)) is organised one entry per broken file, which is right for auditing and wrong for building — 3335 entries do not tell you where to start. This page inverts it into the **169 distinct repair mechanisms** those files exercise, ordered so the failures that hurt users most come first, each pointing at the fixtures that prove you got it right (628 fixtures cited).
+The catalog ([`STEP_PROBLEM_CATALOG.md`](STEP_PROBLEM_CATALOG.md)) is organised one entry per broken file, which is right for auditing and wrong for building — 3335 entries do not tell you where to start. This page inverts it into the **169 distinct repair mechanisms** those files exercise, ordered so the failures that hurt users most come first, each pointing at the fixtures that prove you got it right (629 fixtures cited).
 
 > **Generated file — do not edit.** `python3 occt-coverage/make_roadmap.py`.
 > Everything below is joined from `occt-coverage/*/problems.json` and the catalog's CI-verified `Expected validation` lines. No hand-entered claims.
@@ -66,9 +66,9 @@ Honest caveat: 1 deviating fixture — `Gn169` — does not crash, so the count 
 
 **2549 of the 2549 STEP fixtures (100%) carry a written `Expected kernel behavior`.** The other 0 are real fixtures with real, CI-verified assertions — they are good *tests* — but they do not state what a correct kernel should do, so they teach an implementer nothing on their own. They are marked † below. Most of that remainder is deliberate: an entry whose bytes were found to contradict its own title is left unspecced ON PURPOSE, because a specification written on a disproved claim would propagate the error rather than fix it.
 
-It cites **628 of the 2549 STEP fixtures (25%)**. The other 1921 are real, CI-verified fixtures that simply have not been linked to a named repair mechanism yet — they are reachable through the catalog and [`browse/`](browse/), just not from here. So this is a *starting* map, not an exhaustive one: finishing a tier does not mean you have handled everything the corpus knows about. Growing the linkage is tracked in `occt-coverage/`.
+It cites **629 of the 2549 STEP fixtures (25%)**. The other 1920 are real, CI-verified fixtures that simply have not been linked to a named repair mechanism yet — they are reachable through the catalog and [`browse/`](browse/), just not from here. So this is a *starting* map, not an exhaustive one: finishing a tier does not mean you have handled everything the corpus knows about. Growing the linkage is tracked in `occt-coverage/`.
 
-> Of the two, **linkage is currently the larger gap** (1921 fixtures vs 0).
+> Of the two, **linkage is currently the larger gap** (1920 fixtures vs 0).
 
 ## Tier summary
 
@@ -719,6 +719,14 @@ A closed body is encoded on a B-spline surface that is geometrically closed but 
 
 **Test against:** `Gp013`, `Gp181`, `Gp182`, `Gp194`
 
+### `tkshh-shape-unbaked-location-transform`
+
+*TKShHealing* · 4 fixtures · observed: loads×4 · **4/4 carry a written spec** · corpus coverage: COVERED
+
+Shape sub-elements (faces, edges, vertices, or entire branches of a compound) carry a non-identity TopLoc_Location transform applied at the topology level rather than having their geometry expressed directly in absolute/global coordinates. This is a normal and valid OCCT representation, but is inconvenient or actively broken for some consumers/algorithms/round-trips that don't correctly track…
+
+**Test against:** `A067`, `Tfa031`, `Tsh098`, `Tsh133`
+
 ### `tkshh-spot-face`
 
 *TKShHealing* · 4 fixtures · observed: loads×4 · **4/4 carry a written spec** · corpus coverage: COVERED
@@ -910,14 +918,6 @@ An edge spans the full period of a closed curve - its start and end vertex coinc
 A 3D point needs to be projected onto a Geom_Curve/edge whose parametrization is itself abnormal: FirstParameter()>LastParameter() (reversed range), an unbounded/infinite parametric domain (e.g. an unclamped Geom_Line), or a curve that has degenerated to (near-)zero length (e.g. coincident control points). Project()/NextProject() must swap the range, special-case infinite bounds, and tolerate…
 
 **Test against:** `Gs029`, `Gp129`, `Gp037`
-
-### `tkshh-shape-unbaked-location-transform`
-
-*TKShHealing* · 3 fixtures · observed: loads×3 · **3/3 carry a written spec** · corpus coverage: COVERED
-
-Shape sub-elements (faces, edges, vertices, or entire branches of a compound) carry a non-identity TopLoc_Location transform applied at the topology level rather than having their geometry expressed directly in absolute/global coordinates. This is a normal and valid OCCT representation, but is inconvenient or actively broken for some consumers/algorithms/round-trips that don't correctly track…
-
-**Test against:** `Tsh098`, `Tsh133`, `A067`
 
 ### `tkshh-sliver-solid`
 
