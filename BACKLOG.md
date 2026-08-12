@@ -378,9 +378,11 @@ loader we don't have (assimp/Open3D/tinygltf), or was tried-and-dropped above):*
       prefix +24 → trimesh over-reads into the BIN chunk → JSONDecodeError; distinct binary-container-framing
       layer vs the text-glTF accessor-overrun Ip004. (Graded-and-dropped GLB variants: total_length header
       wrong → trimesh silently ignores it, loads fine → benign, no fixture; BIN chunkLength overrun → trimesh
-      rejects cleanly → good behavior, no fixture.) **Wave paused here 2026-08-11 at a tooling boundary** (6 fixtures shipped: Ip053-058; Ip058 = 3MF
-      duplicate object id → silent geometry doubling, the too-much-geometry counterpart to Ip055's total
-      loss). **3MF-specific traps now mined** — graded-and-dropped this round (measure-the-claim saved two
+      rejects cleanly → good behavior, no fixture.) **Wave paused here 2026-08-11/12 at a tooling boundary** (7 fixtures shipped: Ip053-059). Ip058 = 3MF
+      duplicate object id → silent geometry doubling (too-much-geometry counterpart to Ip055's total loss).
+      Ip059 = glTF triangle index ≥ POSITION count → trimesh SILENTLY keeps the OOB face `[[0,1,9]]`
+      (contrast Ip001's OBJ IndexError crash); this filled the last clean cross-format gap in the
+      out-of-range family (OBJ/OFF/PLY/3MF/glTF now all covered; STL is index-free, COLLADA is Ip005). **3MF-specific traps now mined** — graded-and-dropped this round (measure-the-claim saved two
       wrong fixtures): NaN/INF vertex coords are NOT silently accepted (trimesh drops the bad vertex, bbox
       stays finite); self-referential / mutually-recursive `<components>` load empty (0/0), no DoS hang —
       they collapse into the Ip055 class; malformed (non-well-formed) XML is correctly rejected (XMLSyntaxError

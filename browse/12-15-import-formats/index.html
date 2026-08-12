@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</h1>
 <p class="blurb">Raw malformed import-format files (OBJ/PLY/OFF/glTF/COLLADA/3MF/FBX) that exercise a parser&#x27;s robustness: header-count lies, out-of-range indices, dangling refs, truncated/encoding faults. Graded against independent loaders (assimp, trimesh); not Part-21.</p>
-<p class="meta">39 entries</p>
+<p class="meta">40 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
@@ -57,6 +57,7 @@
 <tr><td><a href="Ip056.html"><code>Ip056</code></a></td><td>Binary STL facet-count header disagrees with the facet data present → silent-empty</td><td><code>bytes-only</code></td><td><code></code></td></tr>
 <tr><td><a href="Ip057.html"><code>Ip057</code></a></td><td>GLB (binary glTF) JSON chunk-length prefix overruns into the binary payload</td><td><code>bytes-only</code></td><td><code></code></td></tr>
 <tr><td><a href="Ip058.html"><code>Ip058</code></a></td><td>3MF duplicate object id silently doubles geometry (resource-id uniqueness violation)</td><td><code>bytes-only</code></td><td><code></code></td></tr>
+<tr><td><a href="Ip059.html"><code>Ip059</code></a></td><td>glTF triangle index value exceeds the POSITION accessor count (silent out-of-bounds face)</td><td><code>bytes-only</code></td><td><code></code></td></tr>
 </tbody></table>
 </main>
 <footer>

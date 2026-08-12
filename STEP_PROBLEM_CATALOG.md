@@ -49325,6 +49325,20 @@ exercised against CGAL PMP / MeshFix.
 - **Model impact**: Duplicated coincident faces make the mesh non-manifold — boolean operations, winding-number inside/outside tests, and area/volume all misbehave on overlapping zero-gap geometry the producer never intended.
 
 
+### Ip059 — glTF triangle index value exceeds the POSITION accessor count (silent out-of-bounds face)
+- **Category**: §12.15 import-format parser robustness (sub-class: index-out-of-range)
+- **Sources**: Pattern-mined from the glTF 2.0 spec §3.7.2.1 (a primitive's index values must be < the referenced attribute accessor's `count`) + mikedh/trimesh glTF loader (MIT — pattern only, no bytes copied).
+- **Description**: A glTF mesh primitive supplies a POSITION accessor with `count` 3 (three vertices) but its `indices` accessor names triangle `(0, 1, 9)` — vertex index 9 does not exist. The glTF spec requires every index value to be less than the attribute accessor count. This is the glTF/semantic-layer member of the out-of-range family already covered for OBJ (Ip001), OFF (Ip010), PLY (Ip013), and 3MF (Ip053); it is distinct from Ip004 (which over-runs a bufferView at the byte level) because here the JSON and byte layout are internally consistent — only the decoded index *value* is out of range. Critically, the observed failure mode is the opposite of Ip001's: where the OBJ loader raises immediately, the glTF loader silently keeps the out-of-bounds triangle.
+- **Reproducer recipe**: a self-contained glTF 2.0 (data-URI buffer) with a 3-vertex POSITION accessor and an `indices` accessor of 3 `UNSIGNED_SHORT` values `0, 1, 9`; the `9` exceeds the vertex count.
+- **Expected kernel behavior**: validate every index value against the referenced accessor's count at load time; reject with a diagnostic naming the offending index, or drop the face — never admit a face whose vertex reference points past the end of the vertex array into downstream geometry.
+- **Byte assertion**: contains(b'triangle index 9 exceeds the 3-vertex POSITION accessor')
+- **Fixture path**: import-examples/12-15-import-formats/Ip059.gltf
+- **Fixture kind**: raw import-format file (parser-robustness; graded against trimesh, not Part-21)
+- **Notes**: Cross-oracle: trimesh 4.12.2 loads the mesh with faces `[[0, 1, 9]]` over only 3 vertices (valid range 0..2) — the out-of-bounds face is silently retained with no diagnostic (contrast Ip001, where the OBJ loader raises IndexError on the analogous defect) — verified 2026-08-11. Synonyms: "glTF index out of range", "gltf triangle index exceeds vertex count", "primitive index past accessor count", "OOB face index glTF". Provenance tier: bytes-only.
+- **Severity**: P2
+- **Model impact**: A face carrying a vertex index past the end of the vertex buffer makes every downstream consumer read out of bounds — a native reader indexing a contiguous vertex array fetches adjacent memory (garbage coordinates or a crash); trimesh's numpy indexing would raise only when the face array is later dereferenced, so the corrupt topology travels silently until it detonates far from the parse site.
+
+
 ### Twi292 — Short arc straddling a closed curve's parameter seam: projected endpoint parameters come back swapped (w1 > w2)
 - **Category**: §12.3b wire-loop (sub-class: closed-edge splitting, periodic-parameter-order)
 - **Sources**: OCCT `ShapeAnalysis_TransferParametersProj::TransferRange` (`ShapeAnalysis_TransferParametersProj.cxx:291-297,305-311` @ `bd2a789f15235755ce4d1a3b07379a2e062fdc2e`); occt-coverage/tkshhealing/problems.json `tkshh-closed-edge-full-period-unsplit`, subvariant "Swapped parameter order after projection, with epsilon-safe range reconstruction"
