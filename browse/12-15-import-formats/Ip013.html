@@ -27,13 +27,13 @@
 <li>Pattern-mined from assimp/assimp#5341 downstream (&quot;face list index ≥ declared vertex count&quot;, validation-caught but post-parse) (BSD-3-Clause — pattern only, no bytes copied).</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An ASCII PLY declares `element vertex 3` and a face row `3 0 1 5` — index `5` is ≥ the 3-vertex table. Unlike Ip001 (OBJ) and Ip010 (OFF), where the loader bounds-checks the index *at parse time* and raises immediately, a PLY `vertex_indices` list is stored as raw integers with no bounds-check during `LoadVertex`/face assembly — the file loads successfully with the bad index sitting unvalidated inside the face array. The defect surfaces later, only when something actually dereferences the face (e.g. building `.triangles`).</p></section>
+<p>An ASCII PLY declares `element vertex 3` and a face row `3 0 1 5` — index `5` is ≥ the 3-vertex table. The PLY loader stores `vertex_indices` as raw integers with no bounds-check during `LoadVertex`/face assembly, so the out-of-range `5` is retained unvalidated inside the face array at parse — the same deferred behavior as the OFF loader (Ip010). The format&#x27;s genuine contrast is with OBJ (Ip001/Ip006), whose loader validates each index as it reads it and rejects at parse. The retained bad index surfaces only when the face array is dereferenced (e.g. building `.triangles`).</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>an ASCII PLY whose `vertex_indices` face list names an index ≥ the declared `element vertex` count.</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>validate every face index against the declared vertex count at parse time (same discipline OBJ/OFF importers apply), not lazily on first dereference.</p></section>
+<p>validate every face index against the declared vertex count at parse time (as the OBJ loader does), not lazily on first dereference.</p></section>
 <section><h2>Notes</h2>
-<p>Cross-oracle: trimesh 4.12.2 `trimesh.load()` **succeeds** with `m.faces == [[0, 1, 5]]` — the out-of-range `5` is retained unchecked — and only accessing `m.triangles` (which indexes `m.vertices` by `m.faces`) raises `IndexError: index 5 is out of bounds for axis 0 with size 3` — verified 2026-07-12. A deferred-validation gap distinct from Ip001/Ip010, where the equivalent OBJ/OFF loads raise immediately. Synonyms: &quot;PLY face index unvalidated on load&quot;, &quot;deferred IndexError on triangles&quot;, &quot;PLY vertex_indices OOB lazy failure&quot;, &quot;load succeeds bad index&quot;. Provenance tier: bytes-only.</p></section>
+<p>Cross-oracle: with trimesh 4.12.2, default `trimesh.load(&#x27;…Ip013.ply&#x27;)` raises `IndexError: index 5 is out of bounds for axis 0 with size 3` — but the raise fires inside `process()`/`merge_vertices`, NOT in the PLY loader: `trimesh.load(…, process=False)` returns a mesh whose `m.faces == [[0, 1, 5]]` (the out-of-range `5` retained unchecked), and the IndexError then defers until `m.triangles` dereferences it — re-verified 2026-08-12 (corrects an earlier note that read the deferral as a plain-load success and mis-cited OFF/Ip010 as parse-time-checking). The genuine contrast is OBJ (Ip001/Ip006), which raises even with `process=False` because its loader bounds-checks at parse; OFF-positive (Ip010) defers exactly like PLY. Synonyms: &quot;PLY face index unvalidated on load&quot;, &quot;deferred IndexError on triangles&quot;, &quot;PLY vertex_indices OOB lazy failure&quot;, &quot;process=False retains bad index&quot;. Provenance tier: bytes-only.</p></section>
 <section><h2>Expected validation</h2>
 <p><code></code></p></section>
 <section><h2>Provenance tier</h2>
@@ -42,7 +42,7 @@
 <li><code>contains(b&#x27;3 0 1 5&#x27;)</code></li>
 </ul></section>
 <section><h2>Cross-references</h2>
-<p><a href="Ip001.html">Ip001</a>, <a href="Ip010.html">Ip010</a></p>
+<p><a href="Ip010.html">Ip010</a>, <a href="Ip001.html">Ip001</a>, <a href="Ip006.html">Ip006</a></p>
 </section>
 <section><h2>Live oracle output</h2>
 <p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
