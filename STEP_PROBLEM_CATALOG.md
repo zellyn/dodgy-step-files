@@ -38941,6 +38941,21 @@ exercised against CGAL PMP / MeshFix.
 - **Severity**: P1
 - **Model impact**: An AP242 tessellated export whose writer emitted one empty container kills every downstream importer of the file; the crash surfaces in mesh-centric viewers that otherwise never touch B-rep code paths.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
+
+### M202 — Auxiliary GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION alongside the primary solid B-rep
+- **Category**: §12.8 mixed (sub-class: multi-representation selection — auxiliary geometrically-bounded set beside the primary advanced-brep)
+- **Sources**: Pattern-mined from Formlabs/foxtrot #24 (a pure-Rust, non-OCCT STEP reader; MIT — pattern only, no bytes copied). foxtrot's representation-matching "falls through the root representation match" and panics ("Could not get shape from GeometricallyBoundedSurfaceShapeRepresentation") on the auxiliary representation instead of skipping it and triangulating the real B-rep.
+- **Description**: A STEP part carries two representations of its shape tied by a `SHAPE_REPRESENTATION_RELATIONSHIP`: the primary `ADVANCED_BREP_SHAPE_REPRESENTATION` (a real `MANIFOLD_SOLID_BREP` — one clean truncated-cone face) and an auxiliary `GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION` whose items are a `GEOMETRIC_CURVE_SET` of construction geometry (a `LINE` and a `CIRCLE` off to the side). This is a common real-world CAD export — the writer emits construction/wireframe geometry as a secondary geometrically-bounded representation next to the solid. A reader must select the advanced-brep representation to build the solid and treat the geometrically-bounded auxiliary representation as free-form non-solid geometry.
+- **Reproducer recipe**: a `MANIFOLD_SOLID_BREP` wrapped in an `ADVANCED_BREP_SHAPE_REPRESENTATION`, plus a `GEOMETRIC_CURVE_SET` (a `LINE` + a `CIRCLE`) wrapped in a `GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION`, both sharing one geometric context and tied by a `SHAPE_REPRESENTATION_RELATIONSHIP`.
+- **Expected kernel behavior**: resolve the multi-representation shape by selecting the advanced-brep representation for the solid and absorbing (or skipping) the auxiliary geometrically-bounded set as free-form geometry; never fail to find the root representation or crash trying to build a solid from the auxiliary set.
+- **Notes**: RUNTIME-VERIFIED (2026-08-12, OCP/OCCT 7.8.1): OCCT accepts and loads shape(1) in both heal modes, pulling the auxiliary line+circle into the result compound alongside the cone shell (vertex 12 / edge 7 vs the cone face alone); part21_strict clean (0 unresolved refs). The independent Rust reader foxtrot panics on the same construct (#24) — an OCCT-handles / independent-reader-fails divergence. Synonyms: "auxiliary geometrically-bounded surface representation", "construction geometry alongside solid brep", "multiple shape representations related", "GEOMETRIC_CURVE_SET wireframe next to brep", "representation-selection robustness". Provenance tier: bytes-sufficient.
+- **Byte assertion**: contains(b'GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION')
+- **Byte assertion**: contains(b'SHAPE_REPRESENTATION_RELATIONSHIP')
+- **Byte assertion**: contains(b'GEOMETRIC_CURVE_SET')
+- **Tier-3 assertion**: shape_null == False
+- **Severity**: P3
+- **Model impact**: A reader that iterates representations and tries to build a shape from each one panics or errors on the auxiliary geometrically-bounded set instead of selecting the B-rep — losing the entire part on a file structure OCCT (and any robust reader) loads without issue.
+- **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a`
 ### Wr053 — Toroidal-surface portion of fused solid corrupted on STEP round-trip
 - **Category**: §12.13 writer-pathology (sub-class: torus-surface write corruption)
 - **Sources**: Pattern-mined from OCCT/tests/bugs/step/bug32556 (LGPL-clean — pattern only, no bytes copied). OCCT regression: torus(5, 3) fused with cylinder(radius 2, height 10) should round-trip to a 12-edge / 7-vertex result; OCCT-pre-fix produced a corrupted shape with non-matching counts.

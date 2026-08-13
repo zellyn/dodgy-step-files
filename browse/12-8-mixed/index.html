@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>§12.8 Mixed (tessellation, validation properties, etc.)</h1>
 <p class="blurb">Mixed / auxiliary defects: tessellation, validation properties, schema-version edge cases, AP238 deep-feature.</p>
-<p class="meta">228 entries</p>
+<p class="meta">229 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
@@ -223,6 +223,7 @@
 <tr><td><a href="M199.html"><code>M199</code></a></td><td>Tessellated face&#x27;s per-face normal row has the wrong number of components; the reader silently leaves every node&#x27;s normal unset rather than misreading the row</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="M200.html"><code>M200</code></a></td><td>Polygon loop with an empty vertex-point list</td><td><code>bytes-sufficient</code></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="M201.html"><code>M201</code></a></td><td>Tessellated solid with an empty items list</td><td><code>bytes-sufficient</code></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="M202.html"><code>M202</code></a></td><td>Auxiliary GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION alongside the primary solid B-rep</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Os001.html"><code>Os001</code></a></td><td>Offset of a surface whose normals flip sign</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Os002.html"><code>Os002</code></a></td><td>Inward offset by a distance equal to a cylinder&#x27;s radius (face collapses to axis)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Os003.html"><code>Os003</code></a></td><td>Inward offset by a distance greater than a cylinder&#x27;s radius (face inverts)</td><td><code>bytes-sufficient</code></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>

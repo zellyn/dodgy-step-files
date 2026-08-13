@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M202 — Auxiliary GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION alongside the primary solid B-rep</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <span class="sep">/</span> <span class="current">M202</span>
+</nav>
+<header class="title-bar">
+<h1>M202 <span class="sep">—</span> <span class="entry-title">Auxiliary GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION alongside the primary solid B-rep</span></h1>
+<p class="category">§12.8 mixed (sub-class: multi-representation selection — auxiliary geometrically-bounded set beside the primary advanced-brep)</p>
+<p class="severity-badge severity-p3">P3 — cosmetic / metadata-only</p>
+<p class="tag-pills">
+<a class="tag tag-topology" href="../by-tag/topology/index.html">topology</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-8-mixed/M202.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-8-mixed/M202.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from Formlabs/foxtrot #24 (a pure-Rust, non-OCCT STEP reader</li>
+<li>MIT — pattern only, no bytes copied). foxtrot&#x27;s representation-matching &quot;falls through the root representation match&quot; and panics (&quot;Could not get shape from GeometricallyBoundedSurfaceShapeRepresentation&quot;) on the auxiliary representation instead of skipping it and triangulating the real B-rep.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A STEP part carries two representations of its shape tied by a `SHAPE_REPRESENTATION_RELATIONSHIP`: the primary `ADVANCED_BREP_SHAPE_REPRESENTATION` (a real `MANIFOLD_SOLID_BREP` — one clean truncated-cone face) and an auxiliary `GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION` whose items are a `GEOMETRIC_CURVE_SET` of construction geometry (a `LINE` and a `CIRCLE` off to the side). This is a common real-world CAD export — the writer emits construction/wireframe geometry as a secondary geometrically-bounded representation next to the solid. A reader must select the advanced-brep representation to build the solid and treat the geometrically-bounded auxiliary representation as free-form non-solid geometry.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a `MANIFOLD_SOLID_BREP` wrapped in an `ADVANCED_BREP_SHAPE_REPRESENTATION`, plus a `GEOMETRIC_CURVE_SET` (a `LINE` + a `CIRCLE`) wrapped in a `GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION`, both sharing one geometric context and tied by a `SHAPE_REPRESENTATION_RELATIONSHIP`.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>resolve the multi-representation shape by selecting the advanced-brep representation for the solid and absorbing (or skipping) the auxiliary geometrically-bounded set as free-form geometry; never fail to find the root representation or crash trying to build a solid from the auxiliary set.</p></section>
+<section><h2>Notes</h2>
+<p>RUNTIME-VERIFIED (2026-08-12, OCP/OCCT 7.8.1): OCCT accepts and loads shape(1) in both heal modes, pulling the auxiliary line+circle into the result compound alongside the cone shell (vertex 12 / edge 7 vs the cone face alone); part21_strict clean (0 unresolved refs). The independent Rust reader foxtrot panics on the same construct (#24) — an OCCT-handles / independent-reader-fails divergence. Synonyms: &quot;auxiliary geometrically-bounded surface representation&quot;, &quot;construction geometry alongside solid brep&quot;, &quot;multiple shape representations related&quot;, &quot;GEOMETRIC_CURVE_SET wireframe next to brep&quot;, &quot;representation-selection robustness&quot;. Provenance tier: bytes-sufficient.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION&#x27;)</code></li>
+<li><code>contains(b&#x27;SHAPE_REPRESENTATION_RELATIONSHIP&#x27;)</code></li>
+<li><code>contains(b&#x27;GEOMETRIC_CURVE_SET&#x27;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+</ul></section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* M202: one product carries two representations of its shape tied by a <mark>SHAPE_REPRESENTATION_RELATIONSHIP</mark>: a primary ADVANCED_BREP_SHAPE_REPRESENTATION (a real MANIFOLD_SOLID_BREP, one clean truncated-cone face) and an auxiliary <mark>GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION</mark> whose items are a <mark>GEOMETRIC_CURVE_SET</mark> of construction geometry (a LINE and a CIRCLE off to the side); a reader must select the advanced-brep representation to build the solid and treat the geometrically-bounded auxiliary representation as free-form non-solid geometry, never try to build a solid from the auxiliary set and fail resolving the root representation; synonyms: auxiliary geometrically-bounded surface representation, construction geometry alongside solid, multiple shape representations related, <mark>GEOMETRIC_CURVE_SET</mark> wireframe next to brep, representation-selection robustness; the auxiliary GBSSR and its <mark>GEOMETRIC_CURVE_SET</mark> are the defect carriers */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;M202&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;M202.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=CONICAL_SURFACE(&#x27;&#x27;,#4,1.0,0.4);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(0.577206781262,0.0,1.0));
+<span class="lineno">17</span>#8=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">18</span>#9=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">20</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">21</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">22</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">23</span>#14=CIRCLE(&#x27;&#x27;,#13,1.0);
+<span class="lineno">24</span>#15=EDGE_CURVE(&#x27;&#x27;,#8,#8,#14,.T.);
+<span class="lineno">25</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">26</span>#17=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">27</span>#18=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">28</span>#19=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#16,#17,#18);
+<span class="lineno">29</span>#20=CIRCLE(&#x27;&#x27;,#19,0.577206781262);
+<span class="lineno">30</span>#21=EDGE_CURVE(&#x27;&#x27;,#9,#9,#20,.T.);
+<span class="lineno">31</span>#22=DIRECTION(&#x27;&#x27;,(-0.389418342309,0.0,0.921060994003));
+<span class="lineno">32</span>#23=VECTOR(&#x27;&#x27;,#22,1.08570442838);
+<span class="lineno">33</span>#24=LINE(&#x27;&#x27;,#6,#23);
+<span class="lineno">34</span>#25=EDGE_CURVE(&#x27;&#x27;,#8,#9,#24,.T.);
+<span class="lineno">35</span>#26=ORIENTED_EDGE(&#x27;&#x27;,$,$,#25,.T.);
+<span class="lineno">36</span>#27=ORIENTED_EDGE(&#x27;&#x27;,$,$,#21,.T.);
+<span class="lineno">37</span>#28=ORIENTED_EDGE(&#x27;&#x27;,$,$,#25,.F.);
+<span class="lineno">38</span>#29=ORIENTED_EDGE(&#x27;&#x27;,$,$,#15,.F.);
+<span class="lineno">39</span>#30=EDGE_LOOP(&#x27;&#x27;,(#26,#27,#28,#29));
+<span class="lineno">40</span>#31=FACE_OUTER_BOUND(&#x27;&#x27;,#30,.T.);
+<span class="lineno">41</span>#32=ADVANCED_FACE(&#x27;&#x27;,(#31),#5,.T.);
+<span class="lineno">42</span>#33=CLOSED_SHELL(&#x27;&#x27;,(#32));
+<span class="lineno">43</span>#34=MANIFOLD_SOLID_BREP(&#x27;&#x27;,#33);
+<span class="lineno">44</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">45</span>#9051=PRODUCT(&#x27;M202&#x27;,&#x27;M202&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">46</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">47</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">48</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">49</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">50</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">51</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">52</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">53</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">54</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">55</span>#9061=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;&#x27;,(#34),#9060);
+<span class="lineno">56</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">57</span>#9063=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">58</span>#9064=DIRECTION(&#x27;&#x27;,(0.0,1.0,0.0));
+<span class="lineno">59</span>#9065=VECTOR(&#x27;&#x27;,#9064,5.0);
+<span class="lineno">60</span>#9066=LINE(&#x27;&#x27;,#9063,#9065);
+<span class="lineno">61</span>#9067=CARTESIAN_POINT(&#x27;&#x27;,(10.0,0.0,0.0));
+<span class="lineno">62</span>#9068=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">63</span>#9069=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">64</span>#9070=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#9067,#9068,#9069);
+<span class="lineno">65</span>#9071=CIRCLE(&#x27;&#x27;,#9070,2.0);
+<span class="lineno">66</span>#9072=<mark>GEOMETRIC_CURVE_SET</mark>(&#x27;construction&#x27;,(#9066,#9071));
+<span class="lineno">67</span>#9073=<mark>GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION</mark>(&#x27;auxiliary_construction&#x27;,(#9072),#9060);
+<span class="lineno">68</span>#9074=<mark>SHAPE_REPRESENTATION_RELATIONSHIP</mark>(&#x27;main solid + auxiliary set&#x27;,&#x27;auxiliary construction geometry&#x27;,#9061,#9073);
+<span class="lineno">69</span>ENDSEC;
+<span class="lineno">70</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="M201.html">&larr; M201</a> <a class="up" href="index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a> <a class="next" href="Os001.html">Os001 &rarr;</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>

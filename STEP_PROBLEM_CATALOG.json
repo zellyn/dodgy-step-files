@@ -124084,6 +124084,45 @@
     "title": "Tessellated solid with an empty items list"
   },
   {
+    "byte_assertions": [
+      "contains(b'GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION')",
+      "contains(b'SHAPE_REPRESENTATION_RELATIONSHIP')",
+      "contains(b'GEOMETRIC_CURVE_SET')"
+    ],
+    "category": "§12.8 mixed (sub-class: multi-representation selection — auxiliary geometrically-bounded set beside the primary advanced-brep)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A STEP part carries two representations of its shape tied by a `SHAPE_REPRESENTATION_RELATIONSHIP`: the primary `ADVANCED_BREP_SHAPE_REPRESENTATION` (a real `MANIFOLD_SOLID_BREP` — one clean truncated-cone face) and an auxiliary `GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION` whose items are a `GEOMETRIC_CURVE_SET` of construction geometry (a `LINE` and a `CIRCLE` off to the side). This is a common real-world CAD export — the writer emits construction/wireframe geometry as a secondary geometrically-bounded representation next to the solid. A reader must select the advanced-brep representation to build the solid and treat the geometrically-bounded auxiliary representation as free-form non-solid geometry.",
+    "expected_kernel_behavior": "resolve the multi-representation shape by selecting the advanced-brep representation for the solid and absorbing (or skipping) the auxiliary geometrically-bounded set as free-form geometry; never fail to find the root representation or crash trying to build a solid from the auxiliary set.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-8-mixed/M202.stp",
+    "id": "M202",
+    "notes": "RUNTIME-VERIFIED (2026-08-12, OCP/OCCT 7.8.1): OCCT accepts and loads shape(1) in both heal modes, pulling the auxiliary line+circle into the result compound alongside the cone shell (vertex 12 / edge 7 vs the cone face alone); part21_strict clean (0 unresolved refs). The independent Rust reader foxtrot panics on the same construct (#24) — an OCCT-handles / independent-reader-fails divergence. Synonyms: \"auxiliary geometrically-bounded surface representation\", \"construction geometry alongside solid brep\", \"multiple shape representations related\", \"GEOMETRIC_CURVE_SET wireframe next to brep\", \"representation-selection robustness\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "a `MANIFOLD_SOLID_BREP` wrapped in an `ADVANCED_BREP_SHAPE_REPRESENTATION`, plus a `GEOMETRIC_CURVE_SET` (a `LINE` + a `CIRCLE`) wrapped in a `GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION`, both sharing one geometric context and tied by a `SHAPE_REPRESENTATION_RELATIONSHIP`.",
+    "section": "12.8",
+    "section_dir": "12-8-mixed",
+    "see_also": [],
+    "sender": "",
+    "severity": "P3",
+    "sources": [
+      "Pattern-mined from Formlabs/foxtrot #24 (a pure-Rust, non-OCCT STEP reader",
+      "MIT — pattern only, no bytes copied). foxtrot's representation-matching \"falls through the root representation match\" and panics (\"Could not get shape from GeometricallyBoundedSurfaceShapeRepresentation\") on the auxiliary representation instead of skipping it and triangulating the real B-rep."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "topology"
+    ],
+    "tier3_assertions": [
+      "shape_null == False"
+    ],
+    "title": "Auxiliary GEOMETRICALLY_BOUNDED_SURFACE_SHAPE_REPRESENTATION alongside the primary solid B-rep"
+  },
+  {
     "byte_assertions": [],
     "category": "§12.8 (sub-class: offset prerequisite)",
     "closure_defect": null,
