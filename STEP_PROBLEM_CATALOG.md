@@ -1457,7 +1457,7 @@ End of file. Total: 45 entries (Ls001–Ls045).
 
 ## §12.2 Geometric representation
 
-_Section summary: 82 entries._
+_Section summary: 561 entries._
 
 ### Gp001 — Missing pcurve on edge — only the 3D curve representation is present
 - **Category**: §12.2a pcurve
@@ -2898,7 +2898,7 @@ End of file.
 
 ## §12.3 Topology
 
-_Section summary: 101 entries._
+_Section summary: 875 entries._
 
 ### Tsh001 — ManifoldSolidBrep.outer references OPEN_SHELL
 - **Category**: §12.3a shell-orientation
@@ -4551,7 +4551,7 @@ End of file. 45 entries. License-clean: descriptions are paraphrased from public
 
 ## §12.4 Tolerance & numerical precision
 
-_Section summary: 70 entries._
+_Section summary: 197 entries._
 
 ### N001 — Vertex `UNCERTAINTY_MEASURE_WITH_UNIT` larger than edge / face value (tolerance hierarchy violation)
 - **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the declared defect (base=empty, clean-repaired=empty); the fixture's only model root is topology (`EDGE_CURVE`/`VERTEX_POINT`) inside a `GEOMETRIC_CURVE_SET` — a geometry-only container with no buildable shape-representation root — which OCC's STEP transfer never builds even when well-formed, so the silent-empty is container/toy-driven, not defect-driven, and no kernel bug is proven.
@@ -6057,7 +6057,7 @@ End of file. 44 distinct entries.
 ## §12.2 geometry (pcurve / surface / nurbs)
 ## §12.5 Units & coordinate systems
 
-_Section summary: 31 entries._
+_Section summary: 41 entries._
 
 ### U001 — Solid Edge mm exported STEP read as meters by Inventor (imported part 1000 times bigger than expected)
 - **Category**: §12.5 (sub-class: wrong-declaration / receiver-side defaulting)
@@ -6640,7 +6640,7 @@ _Section summary: 31 entries._
 ## §12.4 tolerance / precision
 ## §12.6 Assembly hierarchy
 
-_Section summary: 84 entries._
+_Section summary: 113 entries._
 
 ### A-prefix entries (mining batch)
 
@@ -8578,7 +8578,7 @@ End of file. Total: 38 entries (A001.A038).
 - **Expected validation**: `occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a`
 ## §12.7 PMI / GD&T
 
-_Section summary: 106 entries._
+_Section summary: 149 entries._
 
 ### Pmi001 — Hole emitted as two half-cylinders breaks PMI feature association
 - **Category**: §12.7 (sub-class: persistent-id / semantic-vs-graphic)
@@ -14750,7 +14750,7 @@ Total: 68 deduped entries (Pmi001–Pmi068).
 - **Expected validation**: `occt=empty/empty gmsh=empty ifc=schema_n/a`
 ## §12.8 Mixed / auxiliary
 
-_Section summary: 52 entries._
+_Section summary: 229 entries._
 
 ### M002 — AP242 Edition 1 disallows axis2_placement_3d in tessellated_shape_representation
 - **Status**: honest reclassification (2026-07-18, empty-claim re-audit) — empty regardless of the forbidden AXIS2_PLACEMENT_3D; STEPControl builds neither the TESSELLATED_SOLID nor the GEOMETRIC_CURVE_SET-of-points model root; base + CLEAN (defect removed, GCS root dropped) both empty (f=0).
@@ -15566,7 +15566,7 @@ END OF FILE
 
 ## §12.10 Scale & performance
 
-_Section summary: 28 entries._
+_Section summary: 37 entries._
 
 ### Pf001 — Multi-GB Creo AP242 assemblies trigger unbounded receiver memory
 - **Category**: §12.10 (sub-class: file-size / OOM)
@@ -16220,7 +16220,7 @@ bodies (LOTAR, CAx-IF); public CAD forums and bug trackers.
 
 ## §12.11 Adversarial / parser robustness
 
-_Section summary: 41 entries._
+_Section summary: 93 entries._
 
 ### Ad001 — Heap buffer overflow on overlong `'…'` string literal
 - **Category**: §12.11 (sub-class: heap-overflow / fuzz-class)
