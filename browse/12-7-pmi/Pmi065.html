@@ -31,7 +31,7 @@
 <section><h2>Reproducer recipe</h2>
 <p>DDP archive where assembly-level PMI in `assembly.stp` references face 47 in `part_3.stp`; rename/re-export `part_3.stp` and the link breaks. Or set `of_shape` to point at L-Bracket-Assembly (intermediate) when it should point at AS1 (root).</p></section>
 <section><h2>Expected kernel behavior</h2>
-<p>Archive-stable requires DDP integrity check; reject if cross-file refs do not resolve. Verify the of_shape↔root invariant and reject mid-tree anchors. Persistent IDs (Pmi021) are the intended mitigation.</p></section>
+<p>Archive-stable requires DDP integrity check; reject if cross-file refs do not resolve. Verify the of_shape↔root invariant and reject mid-tree anchors. Persistent IDs are the intended mitigation.</p></section>
 <section><h2>Notes</h2>
 <p>**See also**: A013, N044. Synonyms: &quot;DDP / EER cross-file PMI references break on repackaging&quot;, &quot;external PMI reference broken when files moved&quot;, &quot;cross-file PMI link lost on repackage&quot;.</p></section>
 <section><h2>Expected validation</h2>
