@@ -27,7 +27,7 @@
 <li>Pattern-mined from cnr-isti-vclab/meshlab#1163 (`confirmed`) (GPL-3.0 — pattern only, no bytes copied).</li>
 </ul></section>
 <section><h2>Description</h2>
-<p>An OFF file whose header `8 1 0` and body counts are exactly correct (8 vertex rows, 1 face row) — no declared-count-vs-body mismatch, unlike Ip003/Ip010 — defines a single well-formed 7-gon face `7 4 6 0 2 3 1 5`. The face is syntactically valid: all 7 referenced indices are in range and none repeat. vcglib&#x27;s polygon→triangle fan-triangulation path (used by MeshLab&#x27;s OFF importer) mishandles n&gt;4 polygons on this input (ml#1163, `confirmed`). This is a pure differential: the file has no malformation an OFF-spec validator would flag.</p></section>
+<p>An OFF file whose header `8 1 0` and body counts are exactly correct (8 vertex rows, 1 face row) — no declared-count-vs-body mismatch, unlike Ip003 — defines a single well-formed 7-gon face `7 4 6 0 2 3 1 5`. The face is syntactically valid: all 7 referenced indices are in range and none repeat (unlike Ip010&#x27;s out-of-range face index). vcglib&#x27;s polygon→triangle fan-triangulation path (used by MeshLab&#x27;s OFF importer) mishandles n&gt;4 polygons on this input (ml#1163, `confirmed`). This is a pure differential: the file has no malformation an OFF-spec validator would flag.</p></section>
 <section><h2>Reproducer recipe</h2>
 <p>OFF header `8 1 0` matching 8 coordinate rows and 1 face row exactly, with the face line `7 4 6 0 2 3 1 5` — a 7-sided polygon (k=7 followed by 7 valid, non-repeating vertex indices, one vertex of the 8 left unreferenced).</p></section>
 <section><h2>Expected kernel behavior</h2>
