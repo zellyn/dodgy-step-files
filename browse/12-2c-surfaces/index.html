@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>§12.2c Surface / curve degeneracies</h1>
 <p class="blurb">Surface and curve degeneracies, AP242 surface subtypes, geometric-base utilities (Gb).</p>
-<p class="meta">202 entries</p>
+<p class="meta">203 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
@@ -220,6 +220,7 @@
 <tr><td><a href="Gs206.html"><code>Gs206</code></a></td><td>VECTOR with negative magnitude violates ISO 10303-42 `vector` WR1; every oracle accepts it silently</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Gs207.html"><code>Gs207</code></a></td><td>2-ratio DIRECTION as a 3D placement&#x27;s ref_direction violates `axis2_placement_3d` WR3; OCCT accepts silently</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Gs208.html"><code>Gs208</code></a></td><td>TRIMMED_CURVE trim given by two same-type selectors violates `trimmed_curve` WR1/WR2; OCCT accepts silently</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Gs209.html"><code>Gs209</code></a></td><td>RECTANGULAR_TRIMMED_SURFACE with `u1 = u2` violates `rectangular_trimmed_surface` WR1; OCCT silently drops the face</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></td></tr>
 </tbody></table>
 </main>
 <footer>

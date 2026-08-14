@@ -63755,6 +63755,44 @@
   },
   {
     "byte_assertions": [
+      "contains(b\"RECTANGULAR_TRIMMED_SURFACE('zerowidth',\")",
+      "matches(rb\"RECTANGULAR_TRIMMED_SURFACE\\('zerowidth',#\\d+,0\\.0,0\\.0,\")"
+    ],
+    "category": "§12.2c surfaces (sub-class: spec WHERE-rule violation — zero-width rectangular trim → silent face loss)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A rectangular trim must have a non-zero extent in each parametric direction (WR1/WR2). Here the face's `face_geometry` is `RECTANGULAR_TRIMMED_SURFACE('zerowidth',#cone,0.0,0.0,0.0,1.0,.T.,.T.)` — `u1 = u2 = 0.0`, a zero-width trim in u, violating WR1. OCCT accepts the file (`part21_strict` accepts; the structural linter is silent — this is a value constraint, not a slot-type / count / emptiness one) but the zero-width trimmed surface collapses: the `ADVANCED_FACE` built on it is silently dropped, so OCCT returns a shell with **zero faces** (`shape(1)` whose only sub-shape is an empty shell). gmsh returns nothing at all — a cross-oracle divergence on the same bytes.",
+    "expected_kernel_behavior": "reject a rectangular trim whose `u1` equals `u2` (or `v1` equals `v2`) per WR1/WR2; never silently drop the face built on a zero-extent trimmed surface.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2c-surfaces/Gs209.stp",
+    "id": "Gs209",
+    "notes": "RUNTIME-VERIFIED (2026-08-14, OCP/OCCT 7.8.1): `occt=shape(1)/shape(1)` but the returned shell carries **0 faces** — the face on the zero-width RTS is silently lost — while gmsh returns `empty` (a genuine cross-oracle divergence). part21 accepts, structural ok, so this is unrefusable pre-transfer. Distinct from Gp191 (a 2D **pcurve** trim collapse, `w1==w2`): this is a zero-width **surface** rectangular trim (`u1==u2`), a different construct and a different WHERE-rule. Synonyms: \"zero-width RECTANGULAR_TRIMMED_SURFACE\", \"u1 equals u2 trim\", \"zero-extent rectangular trim\", \"collapsed trimmed surface drops face\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "an `ADVANCED_FACE` whose `face_geometry` is a `RECTANGULAR_TRIMMED_SURFACE` with `u1 = u2` (or `v1 = v2`) — here trimming a `CONICAL_SURFACE` to `(0.0, 0.0)` in u.",
+    "section": "12.2c",
+    "section_dir": "12-2c-surfaces",
+    "see_also": [],
+    "sender": "",
+    "severity": "P3",
+    "sources": [
+      "ISO 10303-42 `rectangular_trimmed_surface` `WR1: u1 <> u2` (and `WR2: v1 <> v2`), read from the AP242 MIM LF EXPRESS schema (stepcode `data/ap242/242_mim_lf.exp`). Spec-driven — fourth fixture of the WHERE-rule-mining vein (siblings Gs206–208)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "spec-violation",
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "shape_null == False"
+    ],
+    "title": "RECTANGULAR_TRIMMED_SURFACE with `u1 = u2` violates `rectangular_trimmed_surface` WR1; OCCT silently drops the face"
+  },
+  {
+    "byte_assertions": [
       "matches(rb'CLOSED_SHELL\\s*\\(\\s*\\x27[^\\x27]*\\x27\\s*,\\s*\\(\\s*\\)\\s*\\)')",
       "contains(b'MANIFOLD_SOLID_BREP')",
       "count_entity_def(b'ADVANCED_FACE') == 0"
