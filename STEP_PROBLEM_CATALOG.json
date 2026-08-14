@@ -63793,6 +63793,44 @@
   },
   {
     "byte_assertions": [
+      "contains(b'CONICAL_SURFACE')",
+      "matches(rb\"CONICAL_SURFACE\\('',#\\d+,-\")"
+    ],
+    "category": "§12.2c surfaces (sub-class: spec WHERE-rule violation — negative surface radius → silent face loss)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A cone's reference (base) radius must be non-negative (WR1). Here the face's `face_geometry` is `CONICAL_SURFACE('',#plc,-1.0,0.4)` — a strictly **negative** radius, violating WR1. OCCT accepts the file (`part21_strict` accepts — a negative real is valid syntax; the structural linter is silent — this is a value constraint) but the negative-radius cone's face collapses: the `ADVANCED_FACE` is silently dropped, so OCCT returns a shell with **zero faces** (`shape(1)` whose only sub-shape is an empty shell), and gmsh returns nothing — a cross-oracle divergence on the same bytes.",
+    "expected_kernel_behavior": "reject a `CONICAL_SURFACE` whose `radius` is negative per WR1; never silently drop the face built on a negative-radius cone.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2c-surfaces/Gs210.stp",
+    "id": "Gs210",
+    "notes": "RUNTIME-VERIFIED (2026-08-14, OCP/OCCT 7.8.1): `occt=shape(1)/shape(1)` but the returned shell carries **0 faces** — the negative-radius cone's face is silently lost — while gmsh returns `empty`. part21 accepts, structural ok, so this is unrefusable pre-transfer. Distinct from Gs036 (zero-magnitude / all-zero DIRECTION / colinear axes — a direction/vector/placement degeneracy, not a surface radius sign), from Gs206 (negative VECTOR *magnitude*, which loads a full shape), and from Gs209 (zero-width `RECTANGULAR_TRIMMED_SURFACE`). Synonyms: \"negative cone radius\", \"CONICAL_SURFACE radius below zero\", \"conical_surface WR1 violation\", \"negative-radius cone drops face\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "an `ADVANCED_FACE` whose `face_geometry` is a `CONICAL_SURFACE` with a negative reference `radius`, on an otherwise-valid cone shell.",
+    "section": "12.2c",
+    "section_dir": "12-2c-surfaces",
+    "see_also": [],
+    "sender": "",
+    "severity": "P3",
+    "sources": [
+      "ISO 10303-42 `conical_surface` `WR1: radius >= 0.0`, read from the AP242 MIM LF EXPRESS schema (stepcode `data/ap242/242_mim_lf.exp`). Spec-driven — fifth fixture of the WHERE-rule-mining vein (siblings Gs206–209)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "spec-violation",
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "shape_null == False"
+    ],
+    "title": "CONICAL_SURFACE with negative radius violates `conical_surface` WR1; OCCT silently drops the face"
+  },
+  {
+    "byte_assertions": [
       "matches(rb'CLOSED_SHELL\\s*\\(\\s*\\x27[^\\x27]*\\x27\\s*,\\s*\\(\\s*\\)\\s*\\)')",
       "contains(b'MANIFOLD_SOLID_BREP')",
       "count_entity_def(b'ADVANCED_FACE') == 0"

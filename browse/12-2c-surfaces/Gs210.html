@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gs210 — CONICAL_SURFACE with negative radius violates `conical_surface` WR1; OCCT silently drops the face</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.2c Surface / curve degeneracies</a> <span class="sep">/</span> <span class="current">Gs210</span>
+</nav>
+<header class="title-bar">
+<h1>Gs210 <span class="sep">—</span> <span class="entry-title">CONICAL_SURFACE with negative radius violates `conical_surface` WR1; OCCT silently drops the face</span></h1>
+<p class="category">§12.2c surfaces (sub-class: spec WHERE-rule violation — negative surface radius → silent face loss)</p>
+<p class="severity-badge severity-p3">P3 — cosmetic / metadata-only</p>
+<p class="tag-pills">
+<a class="tag tag-spec-violation" href="../by-tag/spec-violation/index.html">spec-violation</a>
+<a class="tag tag-geometry" href="../by-tag/geometry/index.html">geometry</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-2c-surfaces/Gs210.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-2c-surfaces/Gs210.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>ISO 10303-42 `conical_surface` `WR1: radius &gt;= 0.0`, read from the AP242 MIM LF EXPRESS schema (stepcode `data/ap242/242_mim_lf.exp`). Spec-driven — fifth fixture of the WHERE-rule-mining vein (siblings Gs206–209).</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A cone&#x27;s reference (base) radius must be non-negative (WR1). Here the face&#x27;s `face_geometry` is `CONICAL_SURFACE(&#x27;&#x27;,#plc,-1.0,0.4)` — a strictly **negative** radius, violating WR1. OCCT accepts the file (`part21_strict` accepts — a negative real is valid syntax; the structural linter is silent — this is a value constraint) but the negative-radius cone&#x27;s face collapses: the `ADVANCED_FACE` is silently dropped, so OCCT returns a shell with **zero faces** (`shape(1)` whose only sub-shape is an empty shell), and gmsh returns nothing — a cross-oracle divergence on the same bytes.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>an `ADVANCED_FACE` whose `face_geometry` is a `CONICAL_SURFACE` with a negative reference `radius`, on an otherwise-valid cone shell.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>reject a `CONICAL_SURFACE` whose `radius` is negative per WR1; never silently drop the face built on a negative-radius cone.</p></section>
+<section><h2>Notes</h2>
+<p>RUNTIME-VERIFIED (2026-08-14, OCP/OCCT 7.8.1): `occt=shape(1)/shape(1)` but the returned shell carries **0 faces** — the negative-radius cone&#x27;s face is silently lost — while gmsh returns `empty`. part21 accepts, structural ok, so this is unrefusable pre-transfer. Distinct from Gs036 (zero-magnitude / all-zero DIRECTION / colinear axes — a direction/vector/placement degeneracy, not a surface radius sign), from Gs206 (negative VECTOR *magnitude*, which loads a full shape), and from Gs209 (zero-width `RECTANGULAR_TRIMMED_SURFACE`). Synonyms: &quot;negative cone radius&quot;, &quot;CONICAL_SURFACE radius below zero&quot;, &quot;conical_surface WR1 violation&quot;, &quot;negative-radius cone drops face&quot;. Provenance tier: bytes-sufficient.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&#x27;CONICAL_SURFACE&#x27;)</code></li>
+<li><code>matches(rb&quot;CONICAL_SURFACE\(&#x27;&#x27;,#\d+,-&quot;)</code></li>
+</ul></section>
+<section><h2>Tier-3 assertions</h2><ul class="assertions">
+<li><code>shape_null == False</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="Gs036.html">Gs036</a>, <a href="Gs206.html">Gs206</a>, <a href="Gs209.html">Gs209</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Gs210: the ADVANCED_FACE&#x27;s face_geometry is a <mark>CONICAL_SURFACE</mark> with a strictly NEGATIVE reference radius (<mark>CONICAL_SURFACE</mark>(&#x27;&#x27;,#plc,-1.0,0.4)), violating ISO 10303-42 conical_surface WR1 (radius &gt;= 0.0); OCCT accepts the file (part21 accepts, structural silent â a value constraint) but the negative-radius cone&#x27;s face collapses: it is silently dropped and OCCT returns a shell with ZERO faces while gmsh returns nothing (cross-oracle divergence); distinct from Gs036 (direction/vector/axis degeneracy, not surface radius) and Gs206 (negative VECTOR magnitude, which loads a full shape); spec-driven, mined from the AP242 MIM conical_surface WHERE-rule; expected strict behavior: reject a cone whose radius is negative per WR1; synonyms: negative cone radius, <mark>CONICAL_SURFACE</mark> radius below zero, conical_surface WR1 violation, negative-radius cone drops face; the negative-radius <mark>CONICAL_SURFACE</mark> is the defect carrier */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Gs210&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Gs210.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=<mark>CONICAL_SURFACE(&#x27;&#x27;,#4,-</mark>1.0,0.4);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(0.577206781262,0.0,1.0));
+<span class="lineno">17</span>#8=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">18</span>#9=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">20</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">21</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">22</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">23</span>#14=CIRCLE(&#x27;&#x27;,#13,1.0);
+<span class="lineno">24</span>#15=EDGE_CURVE(&#x27;&#x27;,#8,#8,#14,.T.);
+<span class="lineno">25</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">26</span>#17=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">27</span>#18=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">28</span>#19=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#16,#17,#18);
+<span class="lineno">29</span>#20=CIRCLE(&#x27;&#x27;,#19,0.577206781262);
+<span class="lineno">30</span>#21=EDGE_CURVE(&#x27;&#x27;,#9,#9,#20,.T.);
+<span class="lineno">31</span>#22=DIRECTION(&#x27;&#x27;,(-0.389418342309,0.0,0.921060994003));
+<span class="lineno">32</span>#23=VECTOR(&#x27;&#x27;,#22,1.08570442838);
+<span class="lineno">33</span>#24=LINE(&#x27;&#x27;,#6,#23);
+<span class="lineno">34</span>#25=EDGE_CURVE(&#x27;&#x27;,#8,#9,#24,.T.);
+<span class="lineno">35</span>#26=ORIENTED_EDGE(&#x27;&#x27;,$,$,#25,.T.);
+<span class="lineno">36</span>#27=ORIENTED_EDGE(&#x27;&#x27;,$,$,#21,.T.);
+<span class="lineno">37</span>#28=ORIENTED_EDGE(&#x27;&#x27;,$,$,#25,.F.);
+<span class="lineno">38</span>#29=ORIENTED_EDGE(&#x27;&#x27;,$,$,#15,.F.);
+<span class="lineno">39</span>#30=EDGE_LOOP(&#x27;&#x27;,(#26,#27,#28,#29));
+<span class="lineno">40</span>#31=FACE_OUTER_BOUND(&#x27;&#x27;,#30,.T.);
+<span class="lineno">41</span>#32=ADVANCED_FACE(&#x27;&#x27;,(#31),#5,.T.);
+<span class="lineno">42</span>#33=CLOSED_SHELL(&#x27;&#x27;,(#32));
+<span class="lineno">43</span>#34=MANIFOLD_SOLID_BREP(&#x27;&#x27;,#33);
+<span class="lineno">44</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">45</span>#9051=PRODUCT(&#x27;Gs210&#x27;,&#x27;Gs210&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">46</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">47</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">48</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">49</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">50</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">51</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">52</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">53</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">54</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">55</span>#9061=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;&#x27;,(#34),#9060);
+<span class="lineno">56</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">57</span>ENDSEC;
+<span class="lineno">58</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Gs209.html">&larr; Gs209</a> <a class="up" href="index.html">§12.2c Surface / curve degeneracies</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>
