@@ -48642,6 +48642,20 @@ exercised against CGAL PMP / MeshFix.
 - **Model impact**: A crafted VECTOR with a null orientation slot crashes the importer during transfer of any edge that uses it — the OCCT-side manifestation of a class that is a remote-code-execution vector (uninitialized pointer) in at least one independent commercial reader.
 - **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
 
+### Ad140 — ADVANCED_FACE with a null (`$`) element in its mandatory bounds list → signal(11)
+- **Category**: §12.11 adversarial (sub-class: null element in mandatory aggregate → crash)
+- **Sources**: Null-slot fuzzing of the valid M202 cone (2026-08-13), generalising the ZDI-22-1467 / CVE-2022-43609 (IronCAD) null-mandatory-reference crash class from scalar slots to aggregate elements; pattern only, no bytes copied.
+- **Description**: An `ADVANCED_FACE` supplies `($)` for its mandatory `bounds` list — a non-empty aggregate whose single element is the null token `$` rather than a `FACE_OUTER_BOUND`/`FACE_BOUND` reference. When the reader transfers the face and iterates its bounds, it dereferences the null element without checking that it resolved. Sibling of Ad139: that nulls a mandatory *scalar* reference (`VECTOR.orientation`); this nulls an *element* inside a mandatory *aggregate* — a distinct code path and a distinct structural shape.
+- **Reproducer recipe**: a `MANIFOLD_SOLID_BREP` whose `CLOSED_SHELL` holds one face emitted as `ADVANCED_FACE('',($),#surf,.T.)` — `bounds` is `($)`, a single null element, on an otherwise-valid `CONICAL_SURFACE`.
+- **Expected kernel behavior**: reject a null element in a mandatory aggregate (or drop the face) at parse/transfer time; never iterate into and dereference a null `bounds` element.
+- **Notes**: RUNTIME-VERIFIED (2026-08-13, OCP/OCCT 7.8.1): both heal modes SIGSEGV (8/8 deterministic) and gmsh crashes too — `occt=signal(11)/signal(11)`. `part21_strict` **accepts** (`$` is a legal null token even inside an aggregate; 0 unresolved refs) and the structural linter reports **ok** — `($)` is a *non-empty* aggregate, so the EMPTY_AGGREGATE check (which fires only on `()`) does not catch it. So, like Ad139, this crash is unrefusable pre-transfer, and the candidate sixth structural check must cover BOTH a null scalar-reference slot (Ad139) and a null element in a mandatory aggregate (this). Found by systematic null-slot fuzzing: of the 25 distinct entity types in the M202 cone, exactly two crash OCCT on a nulled first reference — `VECTOR` (Ad139) and `ADVANCED_FACE.bounds` (this); the other 23 are handled gracefully (rc=0), so the class is narrow, not a broad "null any reference" crash. Synonyms: "null bound in ADVANCED_FACE", "null element in bounds list", "$ in face bounds aggregate", "null aggregate element crash". Provenance tier: bytes-sufficient.
+- **Byte assertion**: contains(b'ADVANCED_FACE')
+- **Byte assertion**: matches(rb"ADVANCED_FACE\('',\(\$\)")
+- **OCC behavior**: signal(11) — both heal settings and gmsh SIGSEGV iterating the null `bounds` element.
+- **Severity**: P1
+- **Model impact**: A crafted null element in a mandatory bounds aggregate crashes the importer during face transfer — the aggregate-element sibling of the null-scalar-reference crash Ad139; both are refusable only by a check that our current five do not perform.
+- **Expected validation**: `occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a`
+
 ### Twi282 — Cyclic `ORIENTED_EDGE.edge_element` self-reference → unbounded `EdgeStart`/`EdgeEnd` recursion (stack-overflow DoS)
 - **Category**: §12.3b wire-loop
 - **Sources**: Pattern-mined from prusa3d/PrusaSlicer#11305 — pattern only, no bytes; the attached `stack-overflow.step` is a user-uploaded proprietary CAD export (DESCRIBE-ONLY, never ingested). ASAN report: frames alternate `StepShape_OrientedEdge::EdgeEnd()` ⇄ `EdgeStart()` in `OCCTWrapper.so`.

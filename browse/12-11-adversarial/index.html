@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1>§12.11 Adversarial / parser robustness</h1>
 <p class="blurb">Adversarial / parser-robustness fixtures: malicious or boundary-case inputs intended to expose memory or performance defects.</p>
-<p class="meta">94 entries</p>
+<p class="meta">95 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Provenance</th><th>Expected validation</th></tr></thead><tbody>
@@ -112,6 +112,7 @@
 <tr><td><a href="Ad137.html"><code>Ad137</code></a></td><td>COMPOSITE_CURVE with one numerically degenerate segment (non-monotonic B-spline knots): segment-dropped-not-whole-curve-aborted catch site</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Ad138.html"><code>Ad138</code></a></td><td>Curve element of a curve set whose construction throws is logged and skipped; the rest of the set still translates</td><td><code>bytes-sufficient</code></td><td><code>occt=shape(1)/shape(1) gmsh=shape(3) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="Ad139.html"><code>Ad139</code></a></td><td>VECTOR with null (`$`) orientation on a live edge → signal(11) constructing the direction</td><td><code>bytes-sufficient</code></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="Ad140.html"><code>Ad140</code></a></td><td>ADVANCED_FACE with a null (`$`) element in its mandatory bounds list → signal(11)</td><td><code>bytes-sufficient</code></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 </tbody></table>
 </main>
 <footer>

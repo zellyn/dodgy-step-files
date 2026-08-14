@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1><span class="tag tag-crash">crash</span></h1>
 <p class="blurb">Kernel-side crash (signal-11 / segfault, runtime-error, infinite-loop, OOM).</p>
-<p class="meta">292 entries</p>
+<p class="meta">293 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Section</th><th>Expected validation</th></tr></thead><tbody>
@@ -55,6 +55,7 @@
 <tr><td><a href="../../12-11-adversarial/Ad134.html"><code>Ad134</code></a></td><td>`DIRECTION` with an empty `direction_ratios` list used as the axis of the transferred shape&#x27;s `TOROIDAL_SURFACE`</td><td><a href="../../12-11-adversarial/index.html">§12.11 Adversarial / parser robustness</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-11-adversarial/Ad135.html"><code>Ad135</code></a></td><td>Degenerate AXIS2_PLACEMENT_3D: axis parallel to ref_direction (x-axis undefined)</td><td><a href="../../12-11-adversarial/index.html">§12.11 Adversarial / parser robustness</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(9) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-11-adversarial/Ad139.html"><code>Ad139</code></a></td><td>VECTOR with null (`$`) orientation on a live edge → signal(11) constructing the direction</td><td><a href="../../12-11-adversarial/index.html">§12.11 Adversarial / parser robustness</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-11-adversarial/Ad140.html"><code>Ad140</code></a></td><td>ADVANCED_FACE with a null (`$`) element in its mandatory bounds list → signal(11)</td><td><a href="../../12-11-adversarial/index.html">§12.11 Adversarial / parser robustness</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-3a-shells/Bo003.html"><code>Bo003</code></a></td><td>Two void shells of one solid are nested inside each other</td><td><a href="../../12-3a-shells/index.html">§12.3a Shells / orientation</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(79) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-3a-shells/Bo031.html"><code>Bo031</code></a></td><td>Void shell of a solid that translates to nothing at all: the solid is still built from the outer shell and the surviving void</td><td><a href="../../12-3a-shells/index.html">§12.3a Shells / orientation</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(53) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2c-surfaces/Gb002.html"><code>Gb002</code></a></td><td>Surface tangent / normal undefined at a parameter (LProp_Status.Undefined)</td><td><a href="../../12-2c-surfaces/index.html">§12.2c Surface / curve degeneracies</a></td><td><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></td></tr>
