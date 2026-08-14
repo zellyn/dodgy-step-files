@@ -63717,6 +63717,44 @@
   },
   {
     "byte_assertions": [
+      "contains(b\"TRIMMED_CURVE('samesel',\")",
+      "matches(rb\"\\(PARAMETER_VALUE\\([^)]*\\),PARAMETER_VALUE\")"
+    ],
+    "category": "§12.2c surfaces (sub-class: spec WHERE-rule violation — trim with two same-type selectors, silently accepted)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "When a `TRIMMED_CURVE` gives a trim endpoint with two selectors, WR1/WR2 require them to be of DIFFERENT types (a `CARTESIAN_POINT` and a `PARAMETER_VALUE`) — never two of the same type. Here the seam edge's 3D curve is `TRIMMED_CURVE('samesel',#line,(PARAMETER_VALUE(0.0),PARAMETER_VALUE(0.0)),(PARAMETER_VALUE(L),PARAMETER_VALUE(L)),.T.,.PARAMETER.)` — each trim gives **two PARAMETER_VALUE** selectors, violating WR1 and WR2. OCCT accepts the file and builds the cone solid (`shape(1)`, non-null) with no diagnostic; `part21_strict` accepts (the bytes are syntactically valid); the structural linter is silent.",
+    "expected_kernel_behavior": "reject a trim whose two selectors are the same type (WR1/WR2); a redundant/ambiguous same-type trim must not be silently resolved to one of the two.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2c-surfaces/Gs208.stp",
+    "id": "Gs208",
+    "notes": "RUNTIME-VERIFIED (2026-08-14, OCP/OCCT 7.8.1): `occt=shape(1)/shape(1)`, part21 accepts, structural ok — every oracle silently tolerates the WR1/WR2 violation. Distinct from the corpus's trim-**range** defects (w1/w2 order, out-of-bounds, pcurve trim mismatch — Gp015/Gp028/Gn016/Gs033): this is a structural selector-**type** violation, not a range error. A producer commits it by emitting the trim parameter twice instead of one point + one parameter. gmsh count (shape(7)) is CI-Linux-authoritative if it diverges. Synonyms: \"TRIMMED_CURVE two same-type trim\", \"redundant parameter trim selector\", \"two PARAMETER_VALUE in one trim\", \"trimmed_curve WR1 violation\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "a `TRIMMED_CURVE` whose `trim_1` (and/or `trim_2`) is a set of two `PARAMETER_VALUE` selectors — used as the 3D curve of a real `EDGE_CURVE` so it is on the transfer path.",
+    "section": "12.2c",
+    "section_dir": "12-2c-surfaces",
+    "see_also": [],
+    "sender": "",
+    "severity": "P3",
+    "sources": [
+      "ISO 10303-42 `trimmed_curve` `WR1: (HIINDEX(trim_1) = 1) OR (TYPEOF(trim_1[1]) <> TYPEOF(trim_1[2]))` (and WR2 for `trim_2`), read from the AP242 MIM LF EXPRESS schema (stepcode `data/ap242/242_mim_lf.exp`). Spec-driven — third fixture of the WHERE-rule-mining vein (siblings Gs206, Gs207)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "spec-violation",
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "shape_null == False"
+    ],
+    "title": "TRIMMED_CURVE trim given by two same-type selectors violates `trimmed_curve` WR1/WR2; OCCT accepts silently"
+  },
+  {
+    "byte_assertions": [
       "matches(rb'CLOSED_SHELL\\s*\\(\\s*\\x27[^\\x27]*\\x27\\s*,\\s*\\(\\s*\\)\\s*\\)')",
       "contains(b'MANIFOLD_SOLID_BREP')",
       "count_entity_def(b'ADVANCED_FACE') == 0"

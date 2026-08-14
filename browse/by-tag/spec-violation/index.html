@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1><span class="tag tag-spec-violation">spec-violation</span></h1>
 <p class="blurb">Input violates ISO 10303 / AP-spec text and should be rejected.</p>
-<p class="meta">408 entries</p>
+<p class="meta">409 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Section</th><th>Expected validation</th></tr></thead><tbody>
@@ -42,6 +42,7 @@
 <tr><td><a href="../../12-2c-surfaces/Gs048.html"><code>Gs048</code></a></td><td>`OFFSET_CURVE_2D` with sign of `ref_distance` flipping mid composite-curve chain</td><td><a href="../../12-2c-surfaces/index.html">§12.2c Surface / curve degeneracies</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2c-surfaces/Gs206.html"><code>Gs206</code></a></td><td>VECTOR with negative magnitude violates ISO 10303-42 `vector` WR1; every oracle accepts it silently</td><td><a href="../../12-2c-surfaces/index.html">§12.2c Surface / curve degeneracies</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2c-surfaces/Gs207.html"><code>Gs207</code></a></td><td>2-ratio DIRECTION as a 3D placement&#x27;s ref_direction violates `axis2_placement_3d` WR3; OCCT accepts silently</td><td><a href="../../12-2c-surfaces/index.html">§12.2c Surface / curve degeneracies</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-2c-surfaces/Gs208.html"><code>Gs208</code></a></td><td>TRIMMED_CURVE trim given by two same-type selectors violates `trimmed_curve` WR1/WR2; OCCT accepts silently</td><td><a href="../../12-2c-surfaces/index.html">§12.2c Surface / curve degeneracies</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-15-import-formats/Ip004.html"><code>Ip004</code></a></td><td>glTF accessor over-runs its bufferView (count×stride &gt; byteLength)</td><td><a href="../../12-15-import-formats/index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a></td><td><code></code></td></tr>
 <tr><td><a href="../../12-15-import-formats/Ip007.html"><code>Ip007</code></a></td><td>glTF accessor `componentType` is an invalid enum value</td><td><a href="../../12-15-import-formats/index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a></td><td><code></code></td></tr>
 <tr><td><a href="../../12-15-import-formats/Ip008.html"><code>Ip008</code></a></td><td>glTF node `children[]` references a node index out of range</td><td><a href="../../12-15-import-formats/index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a></td><td><code></code></td></tr>

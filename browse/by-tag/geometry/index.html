@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1><span class="tag tag-geometry">geometry</span></h1>
 <p class="blurb">B-rep / NURBS / surface / curve defect.</p>
-<p class="meta">585 entries</p>
+<p class="meta">586 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Section</th><th>Expected validation</th></tr></thead><tbody>
@@ -581,6 +581,7 @@
 <tr><td><a href="../../12-2c-surfaces/Gs205.html"><code>Gs205</code></a></td><td>Cone apex written as a VERTEX_LOOP bound: the resulting zero-length, curve-less edge is legitimate topology and must survive healing untouched</td><td><a href="../../12-2c-surfaces/index.html">§12.2c Surface / curve degeneracies</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(8) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2c-surfaces/Gs206.html"><code>Gs206</code></a></td><td>VECTOR with negative magnitude violates ISO 10303-42 `vector` WR1; every oracle accepts it silently</td><td><a href="../../12-2c-surfaces/index.html">§12.2c Surface / curve degeneracies</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2c-surfaces/Gs207.html"><code>Gs207</code></a></td><td>2-ratio DIRECTION as a 3D placement&#x27;s ref_direction violates `axis2_placement_3d` WR3; OCCT accepts silently</td><td><a href="../../12-2c-surfaces/index.html">§12.2c Surface / curve degeneracies</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-2c-surfaces/Gs208.html"><code>Gs208</code></a></td><td>TRIMMED_CURVE trim given by two same-type selectors violates `trimmed_curve` WR1/WR2; OCCT accepts silently</td><td><a href="../../12-2c-surfaces/index.html">§12.2c Surface / curve degeneracies</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-8-mixed/M016.html"><code>M016</code></a></td><td>Tessellated curve set missing both coordinates and line_strips</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-8-mixed/M027.html"><code>M027</code></a></td><td>Surface-sampling-point validation property failure</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=empty/empty gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-8-mixed/M050.html"><code>M050</code></a></td><td>Composite material LLAI (Limited Length / Area Indicator) gaps</td><td><a href="../../12-8-mixed/index.html">§12.8 Mixed (tessellation, validation properties, etc.)</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(4) ifc=schema_n/a</code></td></tr>
