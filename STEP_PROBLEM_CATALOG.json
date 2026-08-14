@@ -5334,6 +5334,42 @@
   },
   {
     "byte_assertions": [
+      "contains(b\"VECTOR('null_dir_vector',$,\")"
+    ],
+    "category": "§12.11 adversarial (sub-class: null mandatory scalar-reference → uninitialized-pointer crash)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A `VECTOR` supplies `$` (null) for its mandatory `orientation` DIRECTION reference — `VECTOR('null_dir_vector',$,L)` — and is the direction of a `LINE` used as the 3D curve of a real `EDGE_CURVE` (the seam edge) in a transferred `MANIFOLD_SOLID_BREP`. `$` is a syntactically valid Part-21 null token, so the file parses; but when the reader transfers the edge and constructs the vector, it dereferences the unresolved orientation. This is the OCCT analogue of the IronCAD uninitialized-pointer defect: a reader that builds the direction from the VECTOR without first checking the orientation slot resolved to a DIRECTION crashes.",
+    "expected_kernel_behavior": "validate that the VECTOR's `orientation` slot resolved to a real DIRECTION before using it; drop or reject the malformed VECTOR (and the edge that depends on it) — never dereference an unresolved/uninitialized direction pointer.",
+    "expected_validation": "occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-11-adversarial/Ad139.stp",
+    "id": "Ad139",
+    "notes": "RUNTIME-VERIFIED (2026-08-13, OCP/OCCT 7.8.1): both heal modes SIGSEGV (`occt=signal(11)/signal(11)`); gmsh and the OCAF document layer crash too. The byte-identical cone with a *valid* seam VECTOR loads `shape(1)` (cf. M202), isolating the null-orientation VECTOR as the sole cause. Notably `part21_strict` **accepts** (`$` is a legal null token, 0 unresolved refs) and the non-kernel structural linter reports **ok** — a null in a mandatory *scalar-reference* slot is not one of its five checks (DUPLICATE_ID / DANGLING_REF / SLOT_TYPE / ARG_COUNT / EMPTY_AGGREGATE), so this crash is currently **unrefusable pre-transfer** and suggests a candidate sixth check (null-in-mandatory-reference-slot). First VECTOR-defect crasher in the corpus, mined from an independent reader's CVE. Synonyms: \"null orientation in VECTOR\", \"VECTOR missing direction\", \"uninitialized pointer parsing VECTOR\", \"null mandatory reference slot crash\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "a clean truncated-cone `MANIFOLD_SOLID_BREP` (one `ADVANCED_FACE` on a `CONICAL_SURFACE`, cf. M202) whose seam-edge `LINE` takes its direction from `VECTOR('null_dir_vector',$,L)` — the orientation slot is `$` instead of a `DIRECTION` reference.",
+    "section": "12.11",
+    "section_dir": "12-11-adversarial",
+    "see_also": [],
+    "sender": "",
+    "severity": "P1",
+    "sources": [
+      "Pattern-mined from ZDI-22-1467 / CVE-2022-43609 (IronCAD STP importer: *\"When parsing the VECTOR element, the process does not properly initialize a pointer prior to accessing it\"* — uninitialized-pointer RCE) — an independent, non-OCCT commercial reader",
+      "pattern only, no bytes copied."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "crash",
+      "adversarial"
+    ],
+    "tier3_assertions": [],
+    "title": "VECTOR with null (`$`) orientation on a live edge → signal(11) constructing the direction"
+  },
+  {
+    "byte_assertions": [
       "contains(b'\\\\X2\\\\')",
       "contains(b'EDGE_CURVE')",
       "contains(b'ADVANCED_FACE')"

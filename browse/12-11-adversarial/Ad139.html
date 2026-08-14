@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ad139 — VECTOR with null (`$`) orientation on a live edge → signal(11) constructing the direction</title>
+  <link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body class="entry">
+<nav class="topnav">
+<a href="../../index.html">Home</a> <span class="sep">/</span> <a href="../index.html">All sections</a> <span class="sep">/</span> <a href="index.html">§12.11 Adversarial / parser robustness</a> <span class="sep">/</span> <span class="current">Ad139</span>
+</nav>
+<header class="title-bar">
+<h1>Ad139 <span class="sep">—</span> <span class="entry-title">VECTOR with null (`$`) orientation on a live edge → signal(11) constructing the direction</span></h1>
+<p class="category">§12.11 adversarial (sub-class: null mandatory scalar-reference → uninitialized-pointer crash)</p>
+<p class="severity-badge severity-p1">P1 — silent data loss</p>
+<p class="tag-pills">
+<a class="tag tag-crash" href="../by-tag/crash/index.html">crash</a>
+<a class="tag tag-adversarial" href="../by-tag/adversarial/index.html">adversarial</a>
+</p>
+</header>
+<main>
+<section class="fixture-link">
+<a class="big-link" href="../../step-examples/12-11-adversarial/Ad139.stp">View raw fixture (.stp)</a> <code class="path">step-examples/12-11-adversarial/Ad139.stp</code>
+</section>
+<section><h2>Sources</h2><ul>
+<li>Pattern-mined from ZDI-22-1467 / CVE-2022-43609 (IronCAD STP importer: *&quot;When parsing the VECTOR element, the process does not properly initialize a pointer prior to accessing it&quot;* — uninitialized-pointer RCE) — an independent, non-OCCT commercial reader</li>
+<li>pattern only, no bytes copied.</li>
+</ul></section>
+<section><h2>Description</h2>
+<p>A `VECTOR` supplies `$` (null) for its mandatory `orientation` DIRECTION reference — `VECTOR(&#x27;null_dir_vector&#x27;,$,L)` — and is the direction of a `LINE` used as the 3D curve of a real `EDGE_CURVE` (the seam edge) in a transferred `MANIFOLD_SOLID_BREP`. `$` is a syntactically valid Part-21 null token, so the file parses; but when the reader transfers the edge and constructs the vector, it dereferences the unresolved orientation. This is the OCCT analogue of the IronCAD uninitialized-pointer defect: a reader that builds the direction from the VECTOR without first checking the orientation slot resolved to a DIRECTION crashes.</p></section>
+<section><h2>Reproducer recipe</h2>
+<p>a clean truncated-cone `MANIFOLD_SOLID_BREP` (one `ADVANCED_FACE` on a `CONICAL_SURFACE`, cf. M202) whose seam-edge `LINE` takes its direction from `VECTOR(&#x27;null_dir_vector&#x27;,$,L)` — the orientation slot is `$` instead of a `DIRECTION` reference.</p></section>
+<section><h2>Expected kernel behavior</h2>
+<p>validate that the VECTOR&#x27;s `orientation` slot resolved to a real DIRECTION before using it; drop or reject the malformed VECTOR (and the edge that depends on it) — never dereference an unresolved/uninitialized direction pointer.</p></section>
+<section><h2>Notes</h2>
+<p>RUNTIME-VERIFIED (2026-08-13, OCP/OCCT 7.8.1): both heal modes SIGSEGV (`occt=signal(11)/signal(11)`); gmsh and the OCAF document layer crash too. The byte-identical cone with a *valid* seam VECTOR loads `shape(1)` (cf. M202), isolating the null-orientation VECTOR as the sole cause. Notably `part21_strict` **accepts** (`$` is a legal null token, 0 unresolved refs) and the non-kernel structural linter reports **ok** — a null in a mandatory *scalar-reference* slot is not one of its five checks (DUPLICATE_ID / DANGLING_REF / SLOT_TYPE / ARG_COUNT / EMPTY_AGGREGATE), so this crash is currently **unrefusable pre-transfer** and suggests a candidate sixth check (null-in-mandatory-reference-slot). First VECTOR-defect crasher in the corpus, mined from an independent reader&#x27;s CVE. Synonyms: &quot;null orientation in VECTOR&quot;, &quot;VECTOR missing direction&quot;, &quot;uninitialized pointer parsing VECTOR&quot;, &quot;null mandatory reference slot crash&quot;. Provenance tier: bytes-sufficient.</p></section>
+<section><h2>Expected validation</h2>
+<p><code>occt=signal(11)/signal(11) gmsh=signal(11) ifc=schema_n/a</code></p></section>
+<section><h2>Byte assertions</h2><ul class="assertions">
+<li><code>contains(b&quot;VECTOR(&#x27;null_dir_vector&#x27;,$,&quot;)</code></li>
+</ul></section>
+<section><h2>Cross-references</h2>
+<p><a href="../12-8-mixed/M202.html">M202</a></p>
+</section>
+<section><h2>Live oracle output</h2>
+<p class="muted">No live oracle data — run <code>_run_corpus</code> to populate.</p>
+</section>
+<section><h2>Fixture content</h2>
+<details>
+<summary>Show fixture bytes (with defect highlighting)</summary>
+<pre class="fixture-bytes"><span class="lineno">1</span>ISO-10303-21;
+<span class="lineno">2</span>/* Ad139: a VECTOR entity supplies $ (null) for its mandatory orientation DIRECTION reference and is the direction of a LINE used as the 3D curve of a real EDGE_CURVE in a transferred solid, so the reader constructs the VECTOR on a live path; a reader that allocates the direction pointer while building the VECTOR and dereferences it without checking the orientation slot resolved accesses an uninitialized pointer (ZDI-22-1467 / CVE-2022-43609, IronCAD STP importer); expected robust behavior: validate that the orientation slot holds a DIRECTION before use, drop or reject the malformed VECTOR, never dereference an uninitialized direction pointer; synonyms: null orientation in VECTOR, VECTOR missing direction, uninitialized pointer parsing VECTOR, VECTOR null mandatory reference; the null-orientation VECTOR is the defect carrier */
+<span class="lineno">3</span>HEADER;
+<span class="lineno">4</span>FILE_DESCRIPTION((&#x27;Ad139&#x27;),&#x27;2;1&#x27;);
+<span class="lineno">5</span>FILE_NAME(&#x27;Ad139.stp&#x27;,&#x27;2026-06-17T00:00:00&#x27;,(&#x27;&#x27;),(&#x27;&#x27;),&#x27;cad-research-suite&#x27;,&#x27;&#x27;,&#x27;&#x27;);
+<span class="lineno">6</span>FILE_SCHEMA((&#x27;AUTOMOTIVE_DESIGN { 1 0 10303 214 3 1 1 }&#x27;));
+<span class="lineno">7</span>ENDSEC;
+<span class="lineno">8</span>DATA;
+<span class="lineno">9</span>#9000=APPLICATION_CONTEXT(&#x27;mechanical design&#x27;);
+<span class="lineno">10</span>#1=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">11</span>#2=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">12</span>#3=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">13</span>#4=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#1,#2,#3);
+<span class="lineno">14</span>#5=CONICAL_SURFACE(&#x27;&#x27;,#4,1.0,0.4);
+<span class="lineno">15</span>#6=CARTESIAN_POINT(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">16</span>#7=CARTESIAN_POINT(&#x27;&#x27;,(0.577206781262,0.0,1.0));
+<span class="lineno">17</span>#8=VERTEX_POINT(&#x27;&#x27;,#6);
+<span class="lineno">18</span>#9=VERTEX_POINT(&#x27;&#x27;,#7);
+<span class="lineno">19</span>#10=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,0.0));
+<span class="lineno">20</span>#11=DIRECTION(&#x27;&#x27;,(0.0,0.0,-1.0));
+<span class="lineno">21</span>#12=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">22</span>#13=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#10,#11,#12);
+<span class="lineno">23</span>#14=CIRCLE(&#x27;&#x27;,#13,1.0);
+<span class="lineno">24</span>#15=EDGE_CURVE(&#x27;&#x27;,#8,#8,#14,.T.);
+<span class="lineno">25</span>#16=CARTESIAN_POINT(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">26</span>#17=DIRECTION(&#x27;&#x27;,(0.0,0.0,1.0));
+<span class="lineno">27</span>#18=DIRECTION(&#x27;&#x27;,(1.0,0.0,0.0));
+<span class="lineno">28</span>#19=AXIS2_PLACEMENT_3D(&#x27;&#x27;,#16,#17,#18);
+<span class="lineno">29</span>#20=CIRCLE(&#x27;&#x27;,#19,0.577206781262);
+<span class="lineno">30</span>#21=EDGE_CURVE(&#x27;&#x27;,#9,#9,#20,.T.);
+<span class="lineno">31</span>#22=<mark>VECTOR(&#x27;null_dir_vector&#x27;,$,</mark>1.0857044283832387);
+<span class="lineno">32</span>#23=LINE(&#x27;&#x27;,#6,#22);
+<span class="lineno">33</span>#24=EDGE_CURVE(&#x27;&#x27;,#8,#9,#23,.T.);
+<span class="lineno">34</span>#25=ORIENTED_EDGE(&#x27;&#x27;,$,$,#24,.T.);
+<span class="lineno">35</span>#26=ORIENTED_EDGE(&#x27;&#x27;,$,$,#21,.T.);
+<span class="lineno">36</span>#27=ORIENTED_EDGE(&#x27;&#x27;,$,$,#24,.F.);
+<span class="lineno">37</span>#28=ORIENTED_EDGE(&#x27;&#x27;,$,$,#15,.F.);
+<span class="lineno">38</span>#29=EDGE_LOOP(&#x27;&#x27;,(#25,#26,#27,#28));
+<span class="lineno">39</span>#30=FACE_OUTER_BOUND(&#x27;&#x27;,#29,.T.);
+<span class="lineno">40</span>#31=ADVANCED_FACE(&#x27;&#x27;,(#30),#5,.T.);
+<span class="lineno">41</span>#32=CLOSED_SHELL(&#x27;&#x27;,(#31));
+<span class="lineno">42</span>#33=MANIFOLD_SOLID_BREP(&#x27;&#x27;,#32);
+<span class="lineno">43</span>#9050=PRODUCT_CONTEXT(&#x27;&#x27;,#9000,&#x27;mechanical&#x27;);
+<span class="lineno">44</span>#9051=PRODUCT(&#x27;Ad139&#x27;,&#x27;Ad139&#x27;,&#x27;&#x27;,(#9050));
+<span class="lineno">45</span>#9052=PRODUCT_DEFINITION_FORMATION(&#x27;&#x27;,&#x27;&#x27;,#9051);
+<span class="lineno">46</span>#9053=PRODUCT_DEFINITION_CONTEXT(&#x27;part definition&#x27;,#9000,&#x27;design&#x27;);
+<span class="lineno">47</span>#9054=PRODUCT_DEFINITION(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9052,#9053);
+<span class="lineno">48</span>#9055=PRODUCT_DEFINITION_SHAPE(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,#9054);
+<span class="lineno">49</span>#9056=(LENGTH_UNIT()NAMED_UNIT(*)SI_UNIT(.MILLI.,.METRE.));
+<span class="lineno">50</span>#9057=(NAMED_UNIT(*)PLANE_ANGLE_UNIT()SI_UNIT($,.RADIAN.));
+<span class="lineno">51</span>#9058=(NAMED_UNIT(*)SI_UNIT($,.STERADIAN.)SOLID_ANGLE_UNIT());
+<span class="lineno">52</span>#9059=UNCERTAINTY_MEASURE_WITH_UNIT(LENGTH_MEASURE(1.0E-7),#9056,&#x27;distance_accuracy_value&#x27;,&#x27;&#x27;);
+<span class="lineno">53</span>#9060=(GEOMETRIC_REPRESENTATION_CONTEXT(3)GLOBAL_UNCERTAINTY_ASSIGNED_CONTEXT((#9059))GLOBAL_UNIT_ASSIGNED_CONTEXT((#9056,#9057,#9058))REPRESENTATION_CONTEXT(&#x27;&#x27;,&#x27;3D&#x27;));
+<span class="lineno">54</span>#9061=ADVANCED_BREP_SHAPE_REPRESENTATION(&#x27;&#x27;,(#33),#9060);
+<span class="lineno">55</span>#9062=SHAPE_DEFINITION_REPRESENTATION(#9055,#9061);
+<span class="lineno">56</span>ENDSEC;
+<span class="lineno">57</span>END-ISO-10303-21;
+</pre>
+</details>
+</section>
+</main>
+<footer>
+<nav class="prevnext"><a class="prev" href="Ad138.html">&larr; Ad138</a> <a class="up" href="index.html">§12.11 Adversarial / parser robustness</a></nav>
+<p class="meta">STEP Defect Catalog — auto-generated; edit <code>STEP_PROBLEM_CATALOG.md</code> instead.</p>
+</footer>
+</body>
+</html>
