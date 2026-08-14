@@ -63680,6 +63680,43 @@
   },
   {
     "byte_assertions": [
+      "contains(b\"DIRECTION('bad2d',(1.0,0.0))\")"
+    ],
+    "category": "§12.2c surfaces (sub-class: spec WHERE-rule violation — wrong-dimensionality reference direction, silently accepted)",
+    "closure_defect": null,
+    "closure_intent": null,
+    "cross_oracle_note": null,
+    "description": "A 3D placement's `ref_direction` must itself be 3-dimensional (WR3). Here the conical surface's `AXIS2_PLACEMENT_3D` uses `DIRECTION('bad2d',(1.0,0.0))` — a 2-ratio (dim = 2) direction — as its `ref_direction`, violating WR3. OCCT accepts the file and builds the cone solid (`shape(1)`, non-null) with no diagnostic; `part21_strict` accepts (a 2-ratio DIRECTION is valid Part-21 syntax); the non-kernel structural linter is silent. Every oracle here tolerates the dimensionality mismatch.",
+    "expected_kernel_behavior": "reject a placement `ref_direction`/`axis` whose `dim` is not 3 (per WR2/WR3); never build a 3D frame from a 2-component direction.",
+    "expected_validation": "occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a",
+    "fixture_kind": null,
+    "fixture_path": "step-examples/12-2c-surfaces/Gs207.stp",
+    "id": "Gs207",
+    "notes": "RUNTIME-VERIFIED (2026-08-14, OCP/OCCT 7.8.1): `occt=shape(1)/shape(1)`, part21 accepts, structural ok — every oracle silently tolerates the WR3 violation and OCCT builds a full cone (10 vertices / 5 edges / 1 shell). Distinct from the pcurve dimensionality bugs (a 3D `LINE` in a 2D UV-pcurve slot): this is the **opposite** mismatch (a 2D direction where 3D is required) in a **different** slot (a surface's placement `ref_direction`, not a pcurve item). gmsh count (shape(7)) is CI-Linux-authoritative if it diverges. Synonyms: \"2D direction in 3D placement\", \"two-ratio direction reference\", \"axis2_placement_3d WR3 violation\", \"wrong-dimensionality reference direction\". Provenance tier: bytes-sufficient.",
+    "occ_behavior_note": null,
+    "pair_with": null,
+    "provenance_tier": "bytes-sufficient",
+    "reproducer": "any `AXIS2_PLACEMENT_3D` whose `ref_direction` (or `axis`) references a `DIRECTION` with two direction_ratios instead of three — here the placement of a clean truncated-cone `MANIFOLD_SOLID_BREP`.",
+    "section": "12.2c",
+    "section_dir": "12-2c-surfaces",
+    "see_also": [],
+    "sender": "",
+    "severity": "P3",
+    "sources": [
+      "ISO 10303-42 `axis2_placement_3d` `WR3: (NOT EXISTS(ref_direction)) OR (ref_direction.dim = 3)`, read from the AP242 MIM LF EXPRESS schema (stepcode `data/ap242/242_mim_lf.exp`). Spec-driven — the second fixture of the WHERE-rule-mining vein (sibling of Gs206)."
+    ],
+    "structural_assertions": [],
+    "taxonomy": [
+      "spec-violation",
+      "geometry"
+    ],
+    "tier3_assertions": [
+      "shape_null == False"
+    ],
+    "title": "2-ratio DIRECTION as a 3D placement's ref_direction violates `axis2_placement_3d` WR3; OCCT accepts silently"
+  },
+  {
+    "byte_assertions": [
       "matches(rb'CLOSED_SHELL\\s*\\(\\s*\\x27[^\\x27]*\\x27\\s*,\\s*\\(\\s*\\)\\s*\\)')",
       "contains(b'MANIFOLD_SOLID_BREP')",
       "count_entity_def(b'ADVANCED_FACE') == 0"
