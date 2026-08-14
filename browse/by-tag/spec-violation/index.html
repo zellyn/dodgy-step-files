@@ -14,7 +14,7 @@
 <header class="title-bar">
 <h1><span class="tag tag-spec-violation">spec-violation</span></h1>
 <p class="blurb">Input violates ISO 10303 / AP-spec text and should be rejected.</p>
-<p class="meta">406 entries</p>
+<p class="meta">407 entries</p>
 </header>
 <main>
 <table class="entries"><thead><tr><th>ID</th><th>Title</th><th>Section</th><th>Expected validation</th></tr></thead><tbody>
@@ -40,6 +40,7 @@
 <tr><td><a href="../../12-2c-surfaces/Gs046.html"><code>Gs046</code></a></td><td>`SURFACE_OF_LINEAR_EXTRUSION` with zero-magnitude extrusion vector</td><td><a href="../../12-2c-surfaces/index.html">§12.2c Surface / curve degeneracies</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(5) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2c-surfaces/Gs047.html"><code>Gs047</code></a></td><td>`BLENDED_EDGE_SURFACE` with mismatched fillet radii at a shared vertex</td><td><a href="../../12-2c-surfaces/index.html">§12.2c Surface / curve degeneracies</a></td><td><code>occt=shape(1)/shape(1) gmsh=empty ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-2c-surfaces/Gs048.html"><code>Gs048</code></a></td><td>`OFFSET_CURVE_2D` with sign of `ref_distance` flipping mid composite-curve chain</td><td><a href="../../12-2c-surfaces/index.html">§12.2c Surface / curve degeneracies</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(1) ifc=schema_n/a</code></td></tr>
+<tr><td><a href="../../12-2c-surfaces/Gs206.html"><code>Gs206</code></a></td><td>VECTOR with negative magnitude violates ISO 10303-42 `vector` WR1; every oracle accepts it silently</td><td><a href="../../12-2c-surfaces/index.html">§12.2c Surface / curve degeneracies</a></td><td><code>occt=shape(1)/shape(1) gmsh=shape(7) ifc=schema_n/a</code></td></tr>
 <tr><td><a href="../../12-15-import-formats/Ip004.html"><code>Ip004</code></a></td><td>glTF accessor over-runs its bufferView (count×stride &gt; byteLength)</td><td><a href="../../12-15-import-formats/index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a></td><td><code></code></td></tr>
 <tr><td><a href="../../12-15-import-formats/Ip007.html"><code>Ip007</code></a></td><td>glTF accessor `componentType` is an invalid enum value</td><td><a href="../../12-15-import-formats/index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a></td><td><code></code></td></tr>
 <tr><td><a href="../../12-15-import-formats/Ip008.html"><code>Ip008</code></a></td><td>glTF node `children[]` references a node index out of range</td><td><a href="../../12-15-import-formats/index.html">§12.15 Import-format parser robustness (glTF/OBJ/PLY/OFF/COLLADA/3MF/FBX)</a></td><td><code></code></td></tr>
